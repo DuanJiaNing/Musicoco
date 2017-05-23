@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="lineColor" format="color" /> <!--线条颜色 -->
+    <attr name="lineVisible" format="boolean" /> <!--线条是否可见 -->
+    <attr name="lineLength" format="dimension" /> <!--线条长度 -->
+    <attr name="lineWidth" format="dimension" /> <!--线条宽度-->
+
+    <attr name="dotSize" format="dimension" /> <!--小圆点大小 直径-->
+    <attr name="dotNum" format="integer"/> <!--小圆点个数 -->
+    <attr name="dotColor" format="color" /> <!--小圆点颜色 -->
+
+    <attr name="indicatorColor" format="color" /> <!--指示点颜色 -->
+    <attr name="indicatorSize" format="dimension" /> <!--指示点大小 直径-->
+    <attr name="indicatorPos" format="integer"/> <!--指示点位置，从1开始，水平最左面为1，纵向最上面为1-->
+
+    <attr name="duration" format="integer"/> <!--两点间移动动画时间 -->
+
+    <attr name="dotClickEnable" format="boolean"/><!--小圆点点点击时是否把指示点移到点击的小圆点处，若置为false则只能通过setIndicatorPos()方法改变指示点位置-->
+    <attr name="indicatorDragEnable" format="boolean"/><!--指示点拖拽是否可用-->
+    <attr name="touchEnable" format="boolean"/><!--同时禁用小圆点点击和指示点拖拽-->
+
+    <attr name="IndicatorSwitchAnimation" format="integer"> <!--使用默认提供的动画-->
+        <enum name="none" value="0"/> <!--不使用动画-->
+        <enum name="translation" value="1"/> <!--平移-->
+        <enum name="squeeze" value="2"/><!--"挤扁"-->
+    </attr>
+
+    <attr name="indicatorOrientation" format="integer"> <!--控件方向-->
+        <enum name="vertical" value="0"/> <!--纵向-->
+        <enum name="horizontal" value="1"/> <!--水平-->
+    </attr>
+
+
+    <declare-styleable name="IndicatorView">
+        <attr name="indicatorOrientation"/>
+        <attr name="dotColor" />
+        <attr name="dotSize" />
+        <attr name="dotNum" />
+        <attr name="lineColor" />
+        <attr name="lineVisible" />
+        <attr name="lineLength" />
+        <attr name="lineWidth" />
+        <attr name="indicatorColor" />
+        <attr name="indicatorSize" />
+        <attr name="indicatorPos" />
+        <attr name="duration" />
+        <attr name="IndicatorSwitchAnimation"/>
+        <attr name="dotClickEnable"/>
+        <attr name="indicatorDragEnable"/>
+        <attr name="touchEnable"/>
+    </declare-styleable>
+
+</resources>
