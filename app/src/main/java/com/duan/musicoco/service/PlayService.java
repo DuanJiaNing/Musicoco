@@ -3,11 +3,11 @@ package com.duan.musicoco.service;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 
 import com.duan.musicoco.aidl.Song;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,24 +18,33 @@ import java.util.List;
 
 public class PlayService extends Service {
 
-    private PlayServiceIBinder mIBinder;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        //FIXME
-        List<Song> songs = new ArrayList<>();
-        songs.add(new Song("a"));
-        songs.add(new Song("b"));
-        songs.add(new Song("c"));
-        songs.add(new Song("d"));
-        this.mIBinder = new PlayServiceIBinder(getApplicationContext(),songs);
+
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return mIBinder;
+
+        List<Song> songs = intent.getParcelableArrayListExtra("songs");
+        final PlayServiceIBinder binder = new PlayServiceIBinder(this, songs);
+        new Thread() {
+            @Override
+            public void run() {
+                binder.setPlayMode(PlayManager.MODE_RANDOM);
+                for (; ; ) {
+
+                    SystemClock.sleep(3000);
+                    binder.pre();
+
+                }
+            }
+        }.start();
+
+        return binder;
     }
 
 

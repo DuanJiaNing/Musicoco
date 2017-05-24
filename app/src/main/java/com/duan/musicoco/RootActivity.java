@@ -16,6 +16,8 @@ import com.duan.musicoco.service.PlayService;
 
 public class RootActivity extends AppCompatActivity {
 
+    protected final static String TAG = "musicoco";
+
     private Intent intent;
 
     @Override

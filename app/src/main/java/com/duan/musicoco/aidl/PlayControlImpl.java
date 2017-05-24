@@ -3,24 +3,26 @@ package com.duan.musicoco.aidl;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 
-import com.duan.musicoco.service.MediaManager;
+import com.duan.musicoco.service.PlayManager;
 
 import java.util.List;
 
 /**
- * Created by DuanJiaNing on 2017/5/23.
- * 类中的方法运行在 Binder 线程池中，需要自己处理线程同步
+ * Created by DuanJiaNing on 2017/5/23.<br><br>
+ * 仅有从 {@link com.duan.musicoco.aidl.IPlayControl}.aidl 继承的方法在跨进程调用时有效<br>
+ * 1. 该类中的方法运行在服务端 Binder 线程池中，所有需要处理线程同步<br>
+ * 2. 这些方法被客户端调用时客户端线程会被挂起，如果客户端的线程为 UI 线程，注意处理耗时操作以避免出现的 ANR<br>
  */
 
 public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
 
     protected RemoteCallbackList<IOnSongChangedListener> mListeners;
 
-    private MediaManager manager;
+    private PlayManager manager;
 
     public PlayControlImpl(List<Song> songs) {
         this.mListeners = new RemoteCallbackList<>();
-        this.manager = MediaManager.getMediaController(songs);
+        this.manager = PlayManager.getMediaController(songs);
     }
 
     @Override
@@ -83,7 +85,7 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
 
     @Override
     public synchronized void setPlayMode(int mode) {
-        if (mode >= manager.MODE_DEFAULT && mode <= manager.MODE_RANDOM)
+        if (mode >= PlayManager.MODE_DEFAULT && mode <= PlayManager.MODE_RANDOM)
             manager.setPlayMode(mode);
     }
 

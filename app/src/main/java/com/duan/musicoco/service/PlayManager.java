@@ -14,13 +14,13 @@ import java.util.Random;
  * Created by DuanJiaNing on 2017/5/23.
  */
 
-public class MediaManager {
+public class PlayManager {
 
     private int mCurrentSong;
 
     private int mPlayState;
 
-    private static volatile MediaManager mediaManager = null;
+    private static volatile PlayManager MANAGER = null;
 
     private List<Song> mPlayList = Collections.synchronizedList(new ArrayList<Song>());
 
@@ -43,17 +43,21 @@ public class MediaManager {
     //播放暂停
     public static final int STATUS_PAUSE = 0x12;
 
+    //默认播放模式，列表播放，播放至列表末端时停止播放
     public static final int MODE_DEFAULT = 20;
 
+    //单曲循环
     public static final int MODE_SINGLE_LOOP = 21;
 
+    //列表循环
     public static final int MODE_LIST_LOOP = 22;
 
+    //随机播放
     public static final int MODE_RANDOM = 23;
 
     private int mPlayMode = MODE_DEFAULT;
 
-    private MediaManager(List<Song> songs) {
+    private PlayManager(List<Song> songs) {
 
         this.mPlayList = songs;
         mPlayer = new MediaPlayer();
@@ -66,14 +70,14 @@ public class MediaManager {
 
     }
 
-    public static MediaManager getMediaController(List<Song> songs) {
-        if (mediaManager == null) {
-            synchronized (MediaManager.class) {
-                if (mediaManager == null)
-                    mediaManager = new MediaManager(songs);
+    public static PlayManager getMediaController(List<Song> songs) {
+        if (MANAGER == null) {
+            synchronized (PlayManager.class) {
+                if (MANAGER == null)
+                    MANAGER = new PlayManager(songs);
             }
         }
-        return mediaManager;
+        return MANAGER;
     }
 
     //设置播放模式
