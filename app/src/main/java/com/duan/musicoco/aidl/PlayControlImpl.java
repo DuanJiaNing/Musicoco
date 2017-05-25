@@ -3,7 +3,7 @@ package com.duan.musicoco.aidl;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 
-import com.duan.musicoco.service.PlayManager;
+import com.duan.musicoco.service.PlayController;
 
 import java.util.List;
 
@@ -18,11 +18,11 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
 
     protected RemoteCallbackList<IOnSongChangedListener> mListeners;
 
-    private PlayManager manager;
+    private PlayController manager;
 
     public PlayControlImpl(List<Song> songs) {
         this.mListeners = new RemoteCallbackList<>();
-        this.manager = PlayManager.getMediaController(songs);
+        this.manager = PlayController.getMediaController(songs);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
 
     @Override
     public synchronized void setPlayMode(int mode) {
-        if (mode >= PlayManager.MODE_DEFAULT && mode <= PlayManager.MODE_RANDOM)
+        if (mode >= PlayController.MODE_DEFAULT && mode <= PlayController.MODE_RANDOM)
             manager.setPlayMode(mode);
     }
 

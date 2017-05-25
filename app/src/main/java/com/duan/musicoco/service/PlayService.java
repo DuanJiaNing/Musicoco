@@ -34,9 +34,8 @@ public class PlayService extends Service {
         new Thread() {
             @Override
             public void run() {
-                binder.setPlayMode(PlayManager.MODE_RANDOM);
+                binder.setPlayMode(PlayController.MODE_RANDOM);
                 for (; ; ) {
-
                     SystemClock.sleep(3000);
                     binder.pre();
 

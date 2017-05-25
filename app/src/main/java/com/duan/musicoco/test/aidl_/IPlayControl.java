@@ -1,4 +1,4 @@
-package com.duan.musicoco.aidl_;
+package com.duan.musicoco.test.aidl_;
 
 import android.os.IBinder;
 import android.os.IInterface;

@@ -14,8 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".RootActivity"/>
-        <activity android:name=".PlayActivity"
+        <activity android:name=".app.RootActivity"/>
+        <activity android:name=".play.PlayActivity"
             android:theme="@style/AppThemePlay"
             >
             <intent-filter>

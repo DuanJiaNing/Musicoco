@@ -5,8 +5,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
-import com.duan.musicoco.aidl.Song;
-
 import java.util.HashSet;
 
 /**

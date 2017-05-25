@@ -14,13 +14,13 @@ import java.util.Random;
  * Created by DuanJiaNing on 2017/5/23.
  */
 
-public class PlayManager {
+public class PlayController {
 
     private int mCurrentSong;
 
     private int mPlayState;
 
-    private static volatile PlayManager MANAGER = null;
+    private static volatile PlayController MANAGER = null;
 
     private List<Song> mPlayList = Collections.synchronizedList(new ArrayList<Song>());
 
@@ -57,7 +57,7 @@ public class PlayManager {
 
     private int mPlayMode = MODE_DEFAULT;
 
-    private PlayManager(List<Song> songs) {
+    private PlayController(List<Song> songs) {
 
         this.mPlayList = songs;
         mPlayer = new MediaPlayer();
@@ -70,11 +70,11 @@ public class PlayManager {
 
     }
 
-    public static PlayManager getMediaController(List<Song> songs) {
+    public static PlayController getMediaController(List<Song> songs) {
         if (MANAGER == null) {
-            synchronized (PlayManager.class) {
+            synchronized (PlayController.class) {
                 if (MANAGER == null)
-                    MANAGER = new PlayManager(songs);
+                    MANAGER = new PlayController(songs);
             }
         }
         return MANAGER;

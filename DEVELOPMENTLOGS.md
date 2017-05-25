@@ -13,4 +13,11 @@
 3 实现 IOnSongChangeListener.Stub 接口（`OnSongChangeListener.java`）<br>
 并检测通过。
 
+- 2017-05-25
+
+1 完成 PermissionManager.java ，对权限申请进行判断<br>
+2 搭好了 PlayActivity 的 MVP 架构<br>
+3 从 PlayActivity 中抽离出 PlayServiceConnection 和 PlayServiceManager<br>
+
+
 
