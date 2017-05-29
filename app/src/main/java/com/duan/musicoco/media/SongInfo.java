@@ -32,6 +32,7 @@ final public class SongInfo implements MediaStore.Audio.AudioColumns {
     private long year;
 
     //磁盘上的保存路径
+    //与服务端的 path 域对应，对于同一首歌曲（文件路径相同），两者应该相同
     private String data;
 
     //文件大小 bytes
@@ -52,39 +53,20 @@ final public class SongInfo implements MediaStore.Audio.AudioColumns {
     //MIME type
     private String mime_type;
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
+        if (o == null || getClass() != o.getClass()) return false;
 
         SongInfo songInfo = (SongInfo) o;
 
-        if (date_modified != songInfo.date_modified)
-            return false;
-
-        if (artist != null ? !artist.equals(songInfo.artist) : songInfo.artist != null)
-            return false;
-
-        if (album_id != null ? !album_id.equals(songInfo.album_id) : songInfo.album_id != null)
-            return false;
-
-        if (display_name != null ? !display_name.equals(songInfo.display_name) : songInfo.display_name != null)
-            return false;
-
-        return mime_type != null ? mime_type.equals(songInfo.mime_type) : songInfo.mime_type == null;
+        return data.equals(songInfo.data);
 
     }
 
     @Override
     public int hashCode() {
-        int result = artist != null ? artist.hashCode() : 0;
-        result = 31 * result + (album_id != null ? album_id.hashCode() : 0);
-        result = 31 * result + (display_name != null ? display_name.hashCode() : 0);
-        result = 31 * result + (int) (date_modified ^ (date_modified >>> 32));
-        result = 31 * result + (mime_type != null ? mime_type.hashCode() : 0);
-        return result;
+        return data.hashCode();
     }
 
     @Override
@@ -106,7 +88,7 @@ final public class SongInfo implements MediaStore.Audio.AudioColumns {
                 ", date_added=" + date_added +
                 ", date_modified=" + date_modified +
                 ", mime_type='" + mime_type + '\'' +
-                '}'+"\n";
+                '}' + "\n";
     }
 
     public void setAlbum_id(String album_id) {

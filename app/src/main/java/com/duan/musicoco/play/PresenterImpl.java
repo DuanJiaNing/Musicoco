@@ -17,6 +17,6 @@ public class PresenterImpl implements Contract.Presenter {
 
     @Override
     public void songChanged(Song song, int index) {
-        mView.changeSong();
+        mView.songChanged(song,index);
     }
 }

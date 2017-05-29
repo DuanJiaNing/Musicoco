@@ -1,14 +1,19 @@
 package com.duan.musicoco.play;
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.ComponentName;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.OnSongChangedListener;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.service.PlayService;
 
 /**
  * Created by DuanJiaNing on 2017/5/25.
@@ -31,6 +36,7 @@ public class PlayServiceConnection implements ServiceConnection {
 
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
+
         hasConnected = true;
 
         mControl = IPlayControl.Stub.asInterface(service);
@@ -57,5 +63,8 @@ public class PlayServiceConnection implements ServiceConnection {
     @Override
     public void onServiceDisconnected(ComponentName name) {
         hasConnected = false;
+
+        PlayServiceManager.bindService(mActivity, this);
+
     }
 }

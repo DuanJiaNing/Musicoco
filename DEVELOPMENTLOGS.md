@@ -19,5 +19,8 @@
 2 搭好了 PlayActivity 的 MVP 架构<br>
 3 从 PlayActivity 中抽离出 PlayServiceConnection 和 PlayServiceManager<br>
 
+- 2017-05-25
+
+1 增加服务绑定权限验证<br>
 
 

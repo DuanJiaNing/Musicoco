@@ -9,6 +9,7 @@ import android.os.Parcelable;
 
 public class Song implements Parcelable {
 
+    //与客户端 SongInfo 中的 data 域对应，对于同一首歌曲（文件路径相同），两者应该相同
     public String path;
 
     public Song(String path) {
@@ -23,9 +24,6 @@ public class Song implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.path);
-    }
-
-    public Song() {
     }
 
     protected Song(Parcel in) {

@@ -5,34 +5,43 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import com.duan.musicoco.aidl.Song;
+
 import java.util.HashSet;
+import java.util.Iterator;
 
 /**
  * Created by DuanJiaNing on 2017/5/24.
+ * 线程安全的单例，该类在播放进程中也会用到，此时单例失效。
  */
 
 public class MediaManager {
 
-    private Context mContext;
-
     private HashSet<SongInfo> songs;
 
-    public MediaManager(Context context) {
-        this.mContext = context;
+    private MediaManager() {
     }
 
-    public HashSet<SongInfo> refreshData() {
+    private static class SingletonHolder {
+        private static final MediaManager INSTANCE = new MediaManager();
+    }
+
+    public static final MediaManager getInstance() {
+        return SingletonHolder.INSTANCE;
+    }
+
+    public HashSet<SongInfo> refreshData( Context context) {
         if (songs == null)
-            songs = new HashSet<SongInfo>();
+            songs = new HashSet<>();
         else
             songs.clear();
 
-        Cursor cursor = mContext.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null,
+        Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null,
                 null, null);
         while (cursor.moveToNext()) {
             SongInfo song = new SongInfo();
             song.setAlbum_id(cursor.getString(cursor.getColumnIndex(SongInfo.ALBUM_ID)));
-            song.setAlbum_path(getAlbumArtPicPath(song.getAlbum_id()));
+            song.setAlbum_path(getAlbumArtPicPath(song.getAlbum_id(), context));
             song.setTitle_key(cursor.getString(cursor.getColumnIndex(SongInfo.TITLE_KEY)));
             song.setArtist_key(cursor.getString(cursor.getColumnIndex(SongInfo.ARTIST_KEY)));
             song.setAlbum_key(cursor.getString(cursor.getColumnIndex(SongInfo.ALBUM_KEY)));
@@ -54,12 +63,11 @@ public class MediaManager {
         return songs;
     }
 
-
     //根据专辑 id 获得专辑图片保存路径
-    private String getAlbumArtPicPath(String albumId) {
+    private String getAlbumArtPicPath(String albumId, Context context) {
         String[] projection = {MediaStore.Audio.Albums.ALBUM_ART};
         String imagePath = null;
-        Cursor cur = mContext.getContentResolver().query(Uri.parse("content://media" +
+        Cursor cur = context.getContentResolver().query(Uri.parse("content://media" +
                         MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI.getPath() + "/" + albumId), projection, null, null,
                 null);
         if (cur.getCount() > 0 && cur.getColumnCount() > 0) {
@@ -68,6 +76,20 @@ public class MediaManager {
         }
         cur.close();
         return imagePath;
+    }
+
+    public SongInfo getSongInfo(Song song, Context context) {
+        SongInfo info = null;
+        if (songs == null)
+            refreshData(context);
+
+        Iterator<SongInfo> iterator = songs.iterator();
+        while (iterator.hasNext()) {
+            info = iterator.next();
+            if (info.getData().equals(song.path))
+                break;
+        }
+        return info;
     }
 
 }

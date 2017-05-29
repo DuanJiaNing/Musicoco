@@ -14,8 +14,7 @@ public interface Contract {
 
     interface View extends BaseView<Presenter> {
 
-        //FIXME test
-        void changeSong();
+        void songChanged(Song song, int index);
 
     }
 

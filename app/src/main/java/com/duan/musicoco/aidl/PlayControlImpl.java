@@ -124,4 +124,8 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
         mListeners.finishBroadcast();
     }
 
+    public void releaseMediaPlayer(){
+        manager.releaseMediaPlayer();
+    }
+
 }

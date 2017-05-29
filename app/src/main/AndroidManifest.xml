@@ -5,6 +5,11 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" /> <!--屏幕常亮-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.duan.musicoco.permission.ACCESS_PLAY_SERVICE" />
+
+    <permission
+        android:name="com.duan.musicoco.permission.ACCESS_PLAY_SERVICE"
+        android:protectionLevel="normal" />
 
     <application
         android:allowBackup="true"
@@ -14,19 +19,25 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".app.RootActivity"/>
-        <activity android:name=".play.PlayActivity"
-            android:theme="@style/AppThemePlay"
-            >
+        <activity android:name=".app.RootActivity" />
+        <activity
+            android:name=".play.PlayActivity"
+            android:theme="@style/AppThemePlay">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <service android:name=".service.PlayService"
-            android:process=":playService"
-            />
+        <service
+            android:name=".service.PlayService"
+            android:permission="com.duan.musicoco.permission.ACCESS_PLAY_SERVICE"
+            android:process=":playService">
+            <intent-filter>
+                <action android:name="com.duan.musicoco.action.PLAY_SERVICE" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </service>
 
     </application>
 
