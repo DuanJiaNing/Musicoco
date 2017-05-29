@@ -107,9 +107,6 @@ public class PlayActivity extends RootActivity implements Contract.View {
 
     @Override
     public void songChanged(Song song, int index) {
-        final View vi = findViewById(R.id.play_main_bg);
-        int color = ColorUtils.getRandomBrunetColor();
-        vi.setBackgroundColor(color);
 
         SongInfo info = mediaManager.getSongInfo(song, this);
         Log.i(TAG, "songChanged: " + song.path + " index=" + index);
@@ -119,6 +116,10 @@ public class PlayActivity extends RootActivity implements Contract.View {
     @Override
     public void startPlay(Song song, int index) {
         Log.i(TAG, "startPlay: " + song.path + " index=" + index);
+        final View vi = findViewById(R.id.play_main_bg);
+        int color = ColorUtils.getRandomBrunetColor();
+        vi.setBackgroundColor(color);
+
     }
 
     @Override
@@ -129,7 +130,7 @@ public class PlayActivity extends RootActivity implements Contract.View {
     @Override
     public void onConnected() {
         try {
-            mServiceConnection.takeControl().setPlayMode(PlayController.MODE_SINGLE_LOOP);
+            mServiceConnection.takeControl().setPlayMode(PlayController.MODE_RANDOM);
             mServiceConnection.takeControl().playByIndex(7);
         } catch (RemoteException e) {
             e.printStackTrace();

@@ -17,7 +17,7 @@ import java.util.Random;
 
 public class PlayController {
 
-    private int mCurrentSong;
+    private int mCurrentSong = 0;
 
     private int mPlayState;
 

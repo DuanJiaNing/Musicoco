@@ -27,6 +27,8 @@ public class RootActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
 
+        PlayServiceManager.startPlayService(this);
+
     }
 
     @Override
