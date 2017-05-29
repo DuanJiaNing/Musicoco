@@ -1,6 +1,7 @@
 package com.duan.musicoco.service;
 
 import android.media.MediaPlayer;
+import android.service.notification.NotificationListenerService;
 
 import com.duan.musicoco.aidl.Song;
 
@@ -26,6 +27,12 @@ public class PlayController {
 
     private final MediaPlayer mPlayer;
 
+    public interface NotifyStatusChanged {
+        void notify(Song song, int index, int status);
+    }
+
+    private NotifyStatusChanged mNotifyStatusChanged;
+
     //未知错误
     public static final int ERROR_UNKNOWN = -1;
 
@@ -38,10 +45,13 @@ public class PlayController {
     public static final int STATUS_PLAYING = 0x10;
 
     //播放结束
-    public static final int STATUS_STOP = 0x11;
+    public static final int STATUS_COMPLETE = 0x11;
+
+    //开始播放
+    public static final int STATUS_START = 0x12;
 
     //播放暂停
-    public static final int STATUS_PAUSE = 0x12;
+    public static final int STATUS_PAUSE = 0x13;
 
     //默认播放模式，列表播放，播放至列表末端时停止播放
     public static final int MODE_DEFAULT = 20;
@@ -57,24 +67,26 @@ public class PlayController {
 
     private int mPlayMode = MODE_DEFAULT;
 
-    private PlayController(List<Song> songs) {
+    private PlayController(List<Song> songs, NotifyStatusChanged sl) {
 
         this.mPlayList = songs;
+        this.mNotifyStatusChanged = sl;
         mPlayer = new MediaPlayer();
         mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
+                mNotifyStatusChanged.notify(getCurrentSong(), mCurrentSong, STATUS_COMPLETE);
                 nextSong();
             }
         });
 
     }
 
-    public static PlayController getMediaController(List<Song> songs) {
+    public static PlayController getMediaController(List<Song> songs, NotifyStatusChanged sl) {
         if (MANAGER == null) {
             synchronized (PlayController.class) {
                 if (MANAGER == null)
-                    MANAGER = new PlayController(songs);
+                    MANAGER = new PlayController(songs, sl);
             }
         }
         return MANAGER;
@@ -109,9 +121,16 @@ public class PlayController {
         return mPlayList.get(mCurrentSong);
     }
 
+    public int getCurrentSongIndex() {
+        return mCurrentSong;
+    }
+
     //播放指定曲目
     public int play(Song song) {
-        int index = mPlayList.indexOf(song);
+        return play(mPlayList.indexOf(song));
+    }
+
+    public int play(int index) {
         int result = ERROR_INVALID;
         if (index != -1) { //列表中有该歌曲
             if (mCurrentSong != index) { //不是当前歌曲
@@ -207,7 +226,6 @@ public class PlayController {
     //停止播放
     public void stop() {
         mPlayer.stop();
-        mPlayState = STATUS_STOP;
     }
 
     //暂停播放
@@ -261,6 +279,7 @@ public class PlayController {
         }
 
         if (mPlayState == STATUS_PLAYING) {
+            mNotifyStatusChanged.notify(getCurrentSong(), mCurrentSong, STATUS_START);
             mPlayer.start();
         }
 

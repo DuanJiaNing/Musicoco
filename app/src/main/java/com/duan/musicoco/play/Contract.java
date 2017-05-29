@@ -12,20 +12,14 @@ public interface Contract {
 
     //TODO 补充
 
-    interface View extends BaseView<Presenter> {
+    interface View extends BaseView<BasePresenter> {
 
         void songChanged(Song song, int index);
 
-    }
+        void startPlay(Song song, int index);
 
-    interface Presenter extends BasePresenter {
+        void stopPlay(Song song, int index);
 
-        /**
-         * 当前播放曲目改变
-         * @param song 改变后曲目
-         * @param index 播放列表对应下标
-         */
-        void songChanged(Song song, int index);
-
+        void onConnected();
     }
 }

@@ -5,6 +5,11 @@ import android.os.RemoteException;
 
 /**
  * Created by DuanJiaNing on 2017/5/24.
+ * 用户主动切换歌曲时回调，包含如下几种情况：
+ * 1 播放相同播放列表中指定曲目
+ * 2 切换到 前一首
+ * 3 切换到后一首
+ * 4 切换播放列表
  */
 
 public abstract class OnSongChangedListener extends IOnSongChangedListener.Stub {

@@ -4,13 +4,13 @@
 
 昨天的忘了记录，今天开始记录。<br>
 昨天是开发第一天，主要完成了如下任务：<br>
-1 完成 aidl 中三个类的编写，并在 java 文件夹中实现了 IPlayControl.Stub 接口（`PlayControlImpl.java`）<br>
-2 完成歌曲播放逻辑控制的核心类（`PlayManager.java`），以及 java/../service 包下的其他两个类
+1 完成 aidl 中三个类的编写，并在 java 文件夹中实现了 IPlayControl.Stub 接口（PlayControlImpl.java）<br>
+2 完成歌曲播放逻辑控制的核心类（PlayManager.java），以及 java/../service 包下的其他两个类
 
 今天的:<br>
-1 完成歌曲信息实体类（`SongInfo.java`）<br>
-2 完成部分歌曲信息获取类(`MediaManager.java`)<br>
-3 实现 IOnSongChangeListener.Stub 接口（`OnSongChangeListener.java`）<br>
+1 完成歌曲信息实体类（SongInfo.java）<br>
+2 完成部分歌曲信息获取类(MediaManager.java)<br>
+3 实现 IOnSongChangeListener.Stub 接口（OnSongChangeListener.java）<br>
 并检测通过。
 
 - 2017-05-25
@@ -19,8 +19,9 @@
 2 搭好了 PlayActivity 的 MVP 架构<br>
 3 从 PlayActivity 中抽离出 PlayServiceConnection 和 PlayServiceManager<br>
 
-- 2017-05-25
+- 2017-05-29
 
 1 增加服务绑定权限验证<br>
+2 增加 OnPlayStatusChangeListener aidl 文件及对应抽象类
 
 

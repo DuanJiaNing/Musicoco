@@ -53,17 +53,17 @@ public class PlayService extends Service {
             return null;
         }
 
-        new Thread() {
-            @Override
-            public void run() {
-                iBinder.setPlayMode(PlayController.MODE_RANDOM);
-                for (; ; ) {
-                    SystemClock.sleep(3000);
-                    iBinder.pre();
-
-                }
-            }
-        }.start();
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                iBinder.setPlayMode(PlayController.MODE_RANDOM);
+//                for (; ; ) {
+//                    SystemClock.sleep(3000);
+//                    iBinder.pre();
+//
+//                }
+//            }
+//        }.start();
 
         return iBinder;
     }

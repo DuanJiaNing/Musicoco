@@ -1,37 +1,77 @@
 package com.duan.musicoco.play;
 
 import android.app.Activity;
-import android.app.Service;
 import android.content.ComponentName;
-import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.duan.musicoco.aidl.IPlayControl;
+import com.duan.musicoco.aidl.OnPlayStatusChangedListener;
 import com.duan.musicoco.aidl.OnSongChangedListener;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.service.PlayService;
+import com.duan.musicoco.app.PlayServiceManager;
 
 /**
  * Created by DuanJiaNing on 2017/5/25.
+ * 充当控制类
  */
 
 public class PlayServiceConnection implements ServiceConnection {
 
     public boolean hasConnected = false;
 
-    public IPlayControl mControl;
-
-    private Contract.Presenter mPresenter;
+    private IPlayControl mControl;
 
     private Activity mActivity;
 
-    public PlayServiceConnection(Contract.Presenter presenter, Activity activity) {
+    private Contract.View mView;
+
+    private OnPlayStatusChangedListener mPlayStatusChangedListener;
+    private OnSongChangedListener mSongChangedListener;
+
+    public PlayServiceConnection(Contract.View view, Activity activity) {
         this.mActivity = activity;
-        this.mPresenter = presenter;
+        this.mView = view;
+        this.mSongChangedListener = new OnSongChangedListener() {
+            @Override
+            public void onSongChange(Song which, int index) {
+                final Song s = which;
+                final int in = index;
+                mActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mView.songChanged(s, in);
+                    }
+                });
+            }
+        };
+
+        this.mPlayStatusChangedListener = new OnPlayStatusChangedListener() {
+            @Override
+            public void playStart(Song song, int index) {
+                final Song s = song;
+                final int in = index;
+                mActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mView.startPlay(s, in);
+                    }
+                });
+            }
+
+            @Override
+            public void playStop(Song song, int index) {
+                final Song s = song;
+                final int in = index;
+                mActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mView.stopPlay(s, in);
+                    }
+                });
+            }
+        };
     }
 
     @Override
@@ -42,22 +82,13 @@ public class PlayServiceConnection implements ServiceConnection {
         mControl = IPlayControl.Stub.asInterface(service);
 
         try {
-            mControl.registerOnSongChangedListener(new OnSongChangedListener() {
-                @Override
-                public void onSongChange(Song which, int index) {
-                    final Song s = which;
-                    final int in = index;
-                    mActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mPresenter.songChanged(s, in);
-                        }
-                    });
-                }
-            });
+            mControl.registerOnPlayStatusChangedListener(mPlayStatusChangedListener);
+            mControl.registerOnSongChangedListener(mSongChangedListener);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+
+        mView.onConnected();
     }
 
     @Override
@@ -66,5 +97,19 @@ public class PlayServiceConnection implements ServiceConnection {
 
         PlayServiceManager.bindService(mActivity, this);
 
+    }
+
+    public void unregisterListener() {
+
+        try {
+            mControl.unregisterOnPlayStatusChangedListener(mPlayStatusChangedListener);
+            mControl.unregisterOnSongChangedListener(mSongChangedListener);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public IPlayControl takeControl() {
+        return mControl;
     }
 }

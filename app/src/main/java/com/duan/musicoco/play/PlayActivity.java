@@ -3,18 +3,22 @@ package com.duan.musicoco.play;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.duan.musicoco.BasePresenter;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.PermissionManager;
+import com.duan.musicoco.app.PlayServiceManager;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.media.MediaManager;
 import com.duan.musicoco.media.SongInfo;
+import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.util.ColorUtils;
 
 /**
@@ -29,12 +33,9 @@ public class PlayActivity extends RootActivity implements Contract.View {
 
     private MediaManager mediaManager;
 
-    private Contract.Presenter mPresenter;
-
     public PlayActivity() {
-        mPresenter = new PresenterImpl(this);
-        mServiceConnection = new PlayServiceConnection(mPresenter, this);
-        mServiceManager = new PlayServiceManager(this, mServiceConnection, mPresenter);
+        mServiceConnection = new PlayServiceConnection(this, this);
+        mServiceManager = new PlayServiceManager(this, mServiceConnection);
         mediaManager = MediaManager.getInstance();
 
     }
@@ -67,7 +68,7 @@ public class PlayActivity extends RootActivity implements Contract.View {
             );
             PermissionManager.requestPermission(perMap, this);
         } else {
-            PlayServiceManager.bindService(this,mServiceConnection);
+            PlayServiceManager.bindService(this, mServiceConnection);
         }
     }
 
@@ -77,7 +78,7 @@ public class PlayActivity extends RootActivity implements Contract.View {
         if (requestCode == PermissionManager.PerMap.CATEGORY_MEDIA_READ) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "获取权限成功", Toast.LENGTH_SHORT).show();
-                PlayServiceManager.bindService(this,mServiceConnection);
+                PlayServiceManager.bindService(this, mServiceConnection);
             } else {
                 finish();
             }
@@ -88,13 +89,15 @@ public class PlayActivity extends RootActivity implements Contract.View {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mServiceConnection.hasConnected)
+        if (mServiceConnection.hasConnected) {
+            mServiceConnection.unregisterListener();
             unbindService(mServiceConnection);
+        }
     }
 
     @Override
-    public void setPresenter(Contract.Presenter presenter) {
-        this.mPresenter = presenter;
+    public void setPresenter(BasePresenter presenter) {
+
     }
 
     @Override
@@ -109,6 +112,28 @@ public class PlayActivity extends RootActivity implements Contract.View {
         vi.setBackgroundColor(color);
 
         SongInfo info = mediaManager.getSongInfo(song, this);
+        Log.i(TAG, "songChanged: " + song.path + " index=" + index);
 
     }
+
+    @Override
+    public void startPlay(Song song, int index) {
+        Log.i(TAG, "startPlay: " + song.path + " index=" + index);
+    }
+
+    @Override
+    public void stopPlay(Song song, int index) {
+        Log.i(TAG, "stopPlay: " + song.path + " index=" + index);
+    }
+
+    @Override
+    public void onConnected() {
+        try {
+            mServiceConnection.takeControl().setPlayMode(PlayController.MODE_SINGLE_LOOP);
+            mServiceConnection.takeControl().playByIndex(7);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
