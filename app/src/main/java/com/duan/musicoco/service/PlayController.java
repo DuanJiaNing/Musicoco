@@ -286,4 +286,8 @@ public class PlayController {
         return 1;
     }
 
+    public int getAudioSessionId() {
+        return mPlayer.getAudioSessionId();
+    }
+
 }

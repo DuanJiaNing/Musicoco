@@ -16,19 +16,19 @@
 
     <attr name="duration" format="integer"/> <!--两点间移动动画时间 -->
 
-    <attr name="dotClickEnable" format="boolean"/><!--小圆点点点击时是否把指示点移到点击的小圆点处，若置为false则只能通过setIndicatorPos()方法改变指示点位置-->
     <attr name="indicatorDragEnable" format="boolean"/><!--指示点拖拽是否可用-->
+    <attr name="dotClickEnable" format="boolean"/><!--小圆点点点击时是否把指示点移到点击的小圆点处，若置为false则只能通过setIndicatorPos()方法改变指示点位置-->
     <attr name="touchEnable" format="boolean"/><!--同时禁用小圆点点击和指示点拖拽-->
 
     <attr name="IndicatorSwitchAnimation" format="integer"> <!--使用默认提供的动画-->
-        <enum name="none" value="0"/> <!--不使用动画-->
         <enum name="translation" value="1"/> <!--平移-->
         <enum name="squeeze" value="2"/><!--"挤扁"-->
+        <enum name="none" value="0"/> <!--不使用动画-->
     </attr>
 
     <attr name="indicatorOrientation" format="integer"> <!--控件方向-->
-        <enum name="vertical" value="0"/> <!--纵向-->
         <enum name="horizontal" value="1"/> <!--水平-->
+        <enum name="vertical" value="0"/> <!--纵向-->
     </attr>
 
 

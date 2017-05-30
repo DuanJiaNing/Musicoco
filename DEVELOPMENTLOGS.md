@@ -24,4 +24,10 @@
 1 增加服务绑定权限验证<br>
 2 增加 OnPlayStatusChangeListener aidl 文件及对应抽象类
 
+- 2017-05-30
+
+1 添加 getAudioSessionId 方法<br>
+2 添加三个 fragment 及其对应包<br>
+3 完成 Visualizer 部分功能定义<br>
+4 完善各模块的 mvp 架构<br>
 

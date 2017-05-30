@@ -12,6 +12,9 @@ interface IPlayControl {
 
        int playByIndex(int index);
 
+       //获得会话 ID，以获取频谱
+       int getAudioSessionId();
+
        //上一首
        Song pre();
 

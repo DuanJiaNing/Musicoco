@@ -1,0 +1,96 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#10000000"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/play_status_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/status_bar_height"
+            android:layout_alignParentTop="true" />
+
+        <RelativeLayout
+            android:id="@+id/play_action_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_bar_default_height"
+            android:layout_below="@id/play_status_bar"
+            android:paddingLeft="@dimen/activity_default_margin"
+            android:paddingRight="@dimen/activity_default_margin">
+
+            <ImageButton
+                android:id="@+id/play_hide"
+                app:srcCompat="@drawable/ic_keyboard_arrow_down_black_24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:background="?android:selectableItemBackgroundBorderless"
+                android:backgroundTint="#00ffffff"
+                android:padding="@dimen/activity_default_padding"
+                android:tint="@color/bt_tint"
+                android:layout_alignParentLeft="true" />
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:alpha="0.5">
+
+                <com.duan.musicoco.view.IndicatorView
+                    android:id="@+id/play_indicator"
+                    app:dotColor="@color/text_gray"
+                    app:dotNum="3"
+                    app:dotSize="3dp"
+                    app:indicatorColor="@color/white"
+                    app:indicatorPos="1"
+                    app:indicatorSize="4dp"
+                    app:lineVisible="false"
+                    app:lineWidth="20dp"
+
+                    app:touchEnable="false"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/play_share"
+                app:srcCompat="@drawable/ic_share_black_24dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignTop="@+id/play_hide"
+                android:background="?android:selectableItemBackgroundBorderless"
+                android:backgroundTint="#00ffffff"
+                android:padding="@dimen/activity_default_padding"
+                android:tint="@color/bt_tint" />
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/play_line"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginLeft="@dimen/activity_default_margin_2x"
+            android:layout_marginRight="@dimen/activity_default_margin_2x"
+            android:background="@drawable/play_action_bar_line" />
+    </LinearLayout>
+    
+    <ListView
+        android:id="@+id/play_fragment_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="top"
+        android:fastScrollEnabled="true"
+        android:padding="@dimen/activity_default_padding"
+        android:scrollbarStyle="outsideInset" />
+</LinearLayout>

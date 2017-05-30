@@ -58,6 +58,11 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
         return re;
     }
 
+    @Override
+    public int getAudioSessionId() throws RemoteException {
+        return manager.getAudioSessionId();
+    }
+
     /**
      * 该方法并没有在 aidl 文件中声明，客户端不应调用该方法
      *

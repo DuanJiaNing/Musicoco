@@ -1,6 +1,7 @@
 package com.duan.musicoco.app;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,10 +39,13 @@ public class RootActivity extends AppCompatActivity {
         home.addCategory(Intent.CATEGORY_HOME);
         startActivity(home);
     }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
 }
