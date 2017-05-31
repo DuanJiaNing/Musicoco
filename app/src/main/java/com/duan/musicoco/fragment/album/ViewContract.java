@@ -1,6 +1,5 @@
 package com.duan.musicoco.fragment.album;
 
-import com.duan.musicoco.BasePresenter;
 import com.duan.musicoco.BaseView;
 import com.duan.musicoco.aidl.Song;
 
@@ -9,5 +8,11 @@ import com.duan.musicoco.aidl.Song;
  */
 
 public interface ViewContract extends BaseView<PresenterContract> {
+
+    void startSpin();
+
+    void stopSpin();
+
+    void changeSong(Song song);
 
 }

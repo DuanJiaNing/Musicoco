@@ -34,8 +34,9 @@ public interface BaseView<T> {
     /**
      * init the views of fragment or activity
      * @param view
+     * @param obj
      */
-    void initViews(@Nullable View view);
+    void initViews(@Nullable View view,@Nullable Object obj);
 
 
 }

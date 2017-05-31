@@ -106,6 +106,10 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
         return manager.getCurrentSong();
     }
 
+    public int currentSongIndex(){
+        return manager.getCurrentSongIndex();
+    }
+
     @Override
     public int status() {
         return manager.getPlayState();

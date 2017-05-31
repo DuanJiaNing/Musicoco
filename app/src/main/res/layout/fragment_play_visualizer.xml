@@ -1,11 +1,35 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:gravity="center">
 
-    <com.duan.musicoco.view.PlayVisualizerSurfaceView
-        android:id="@+id/play_album_visualizer"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/status_bar_height"
+            android:layout_alignParentTop="true" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_bar_default_height"
+            android:layout_below="@id/play_status_bar"
+            android:paddingLeft="@dimen/activity_default_margin"
+            android:paddingRight="@dimen/activity_default_margin">
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+   <LinearLayout
+       android:id="@+id/play_album_visualizer_contain"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       android:orientation="vertical"
+       />
 </LinearLayout>

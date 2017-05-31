@@ -17,7 +17,7 @@ import java.util.Random;
 
 public class PlayController {
 
-    private int mCurrentSong = 0;
+    private int mCurrentSong;
 
     private int mPlayState;
 
@@ -53,6 +53,9 @@ public class PlayController {
     //播放暂停
     public static final int STATUS_PAUSE = 0x13;
 
+    //停止
+    public static final int STATUS_STOP = 0x14;
+
     //默认播放模式，列表播放，播放至列表末端时停止播放
     public static final int MODE_DEFAULT = 20;
 
@@ -71,6 +74,8 @@ public class PlayController {
 
         this.mPlayList = songs;
         this.mNotifyStatusChanged = sl;
+        mPlayState = STATUS_STOP;
+
         mPlayer = new MediaPlayer();
         mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -155,6 +160,7 @@ public class PlayController {
     public void releaseMediaPlayer() {
         if (mPlayer != null) {
             mPlayer.release();
+            mPlayState = STATUS_STOP;
         }
     }
 
@@ -225,7 +231,10 @@ public class PlayController {
 
     //停止播放
     public void stop() {
-        mPlayer.stop();
+        if (mPlayState != STATUS_STOP) {
+            mPlayer.stop();
+            mPlayState = STATUS_STOP;
+        }
     }
 
     //暂停播放
@@ -239,8 +248,10 @@ public class PlayController {
 
     //继续播放
     public int resume() {
-        if (mPlayState != STATUS_PLAYING)
+        if (mPlayState != STATUS_PLAYING) {
             mPlayer.start();
+            mPlayState = STATUS_PLAYING;
+        }
         return 1;
     }
 
@@ -279,8 +290,8 @@ public class PlayController {
         }
 
         if (mPlayState == STATUS_PLAYING) {
-            mNotifyStatusChanged.notify(getCurrentSong(), mCurrentSong, STATUS_START);
             mPlayer.start();
+            mNotifyStatusChanged.notify(getCurrentSong(), mCurrentSong, STATUS_START);
         }
 
         return 1;

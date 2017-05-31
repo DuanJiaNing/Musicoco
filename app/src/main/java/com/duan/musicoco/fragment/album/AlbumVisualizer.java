@@ -1,6 +1,5 @@
-package com.duan.musicoco.play;
+package com.duan.musicoco.fragment.album;
 
-import android.media.MediaPlayer;
 import android.media.audiofx.Visualizer;
 
 /**
@@ -8,18 +7,22 @@ import android.media.audiofx.Visualizer;
  */
 
 //TODO
-public class PlayVisualizer {
+public class AlbumVisualizer {
 
     private Visualizer mVisualizer;
 
-    public interface OnUpdateVisualizer {
-        void updateVisualizer(byte[] data);
+
+    public interface OnUpdateVisualizerListener {
+        void updateVisualizer(byte[] data,int rate);
     }
 
-    private OnUpdateVisualizer mUpdateVisualizer;
+    private OnUpdateVisualizerListener mUpdateVisualizer;
 
-    public PlayVisualizer(OnUpdateVisualizer uv) {
-        this.mUpdateVisualizer = uv;
+    public AlbumVisualizer() {
+    }
+
+    public void setUpdateVisualizerListener(OnUpdateVisualizerListener listener) {
+        this.mUpdateVisualizer = listener;
     }
 
     public void setSessionID(int id, int rate) {
@@ -30,7 +33,8 @@ public class PlayVisualizer {
         mVisualizer.setDataCaptureListener(new Visualizer.OnDataCaptureListener() {
             @Override
             public void onWaveFormDataCapture(Visualizer visualizer, byte[] waveform, int samplingRate) {
-                mUpdateVisualizer.updateVisualizer(waveform);
+                if (mUpdateVisualizer != null)
+                    mUpdateVisualizer.updateVisualizer(waveform,samplingRate);
             }
 
             @Override
@@ -39,8 +43,8 @@ public class PlayVisualizer {
             }
         }, rate, true, false);
         mVisualizer.setEnabled(true);
-
     }
+
 
 }
 

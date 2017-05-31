@@ -53,24 +53,7 @@ public class PlayService extends Service {
             return null;
         }
 
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                iBinder.setPlayMode(PlayController.MODE_RANDOM);
-//                for (; ; ) {
-//                    SystemClock.sleep(3000);
-//                    iBinder.pre();
-//
-//                }
-//            }
-//        }.start();
-
         return iBinder;
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override

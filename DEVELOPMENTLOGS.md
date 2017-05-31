@@ -31,3 +31,7 @@
 3 完成 Visualizer 部分功能定义<br>
 4 完善各模块的 mvp 架构<br>
 
+- 2017-05-30
+
+1 完成 AlbumVisualizerSurfaceView 的部分功能<br>
+ 截取图片为圆形，获取图片中的颜色 etc<br>

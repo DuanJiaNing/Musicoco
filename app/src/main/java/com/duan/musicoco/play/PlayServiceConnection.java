@@ -25,12 +25,12 @@ public class PlayServiceConnection implements ServiceConnection {
 
     private Activity mActivity;
 
-    private ViewContract mView;
+    private ActivityViewContract mView;
 
     private OnPlayStatusChangedListener mPlayStatusChangedListener;
     private OnSongChangedListener mSongChangedListener;
 
-    public PlayServiceConnection(ViewContract view, Activity activity) {
+    public PlayServiceConnection(ActivityViewContract view, Activity activity) {
         this.mActivity = activity;
         this.mView = view;
         this.mSongChangedListener = new OnSongChangedListener() {

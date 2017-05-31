@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Chronometer;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
-import android.widget.TextClock;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +34,7 @@ import com.duan.musicoco.service.PlayController;
  * Created by DuanJiaNing on 2017/5/23.
  */
 
-public class PlayActivity extends RootActivity implements ViewContract, View.OnClickListener {
+public class PlayActivity extends RootActivity implements ActivityViewContract, View.OnClickListener {
 
     private final PlayServiceConnection mServiceConnection;
     private final PlayServiceManager mServiceManager;
@@ -57,6 +56,14 @@ public class PlayActivity extends RootActivity implements ViewContract, View.OnC
 
     private SeekBar mSeekBar;
 
+    private boolean isPlaying = false;
+    private ImageButton play;
+
+    private int[] playOrPause = {
+            R.drawable.ic_play_arrow_white_48dp,
+            R.drawable.ic_pause_black_48dp
+    };
+
     public PlayActivity() {
         mServiceConnection = new PlayServiceConnection(this, this);
         mServiceManager = new PlayServiceManager(this, mServiceConnection);
@@ -71,10 +78,10 @@ public class PlayActivity extends RootActivity implements ViewContract, View.OnC
         //FIXME 耗时
         mediaManager.refreshData(this);
 
+        initViews(null, null);
+
         //检查权限
         checkPermission();
-
-        initViews(null);
 
     }
 
@@ -118,12 +125,12 @@ public class PlayActivity extends RootActivity implements ViewContract, View.OnC
 
     @Override
     public void songChanged(Song song, int index) {
-
+        visualizerPresenter.changeSong(song);
     }
 
     @Override
     public void startPlay(Song song, int index) {
-
+        visualizerPresenter.changeSong(song);
     }
 
     @Override
@@ -131,43 +138,59 @@ public class PlayActivity extends RootActivity implements ViewContract, View.OnC
 
     }
 
+    //服务成功连接之后才初始化数据
     @Override
     public void onConnected() {
 
+        initSelfData();
+
         try {
-            mServiceConnection.takeControl().setPlayMode(PlayController.MODE_LIST_LOOP);
-            mServiceConnection.takeControl().playByIndex(1);
+            visualizerPresenter.initData(mServiceConnection.takeControl().currentSong());
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void setPresenter(BasePresenter presenter) {
 
     }
 
+    private void initSelfData() {
+
+        try {
+            int draw = mServiceConnection.takeControl().status() == PlayController.STATUS_PLAYING ? playOrPause[1] : playOrPause[0];
+            play.setImageResource(draw);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+        visualizerPresenter = new VisualizerPresenter(this, visualizerFragment);
+        listPresenter = new ListPresenter(this, listFragment, this);
+        lyricPresenter = new LyricPresenter(this, lyricFragment, this);
+
+    }
+
+
     @Override
-    public void initViews(@Nullable View view) {
+    public void initViews(@Nullable View view, Object obj) {
         mPlayProgress = (Chronometer) findViewById(R.id.play_progress);
         mDuration = (TextView) findViewById(R.id.play_duration);
         mSeekBar = (SeekBar) findViewById(R.id.play_seekBar);
-        ((ImageButton) findViewById(R.id.play_pre_song)).setOnClickListener(this);
-        ((ImageButton) findViewById(R.id.play_next_song)).setOnClickListener(this);
-
-
-        visualizerFragment = new VisualizerFragment();
-        listFragment = new ListFragment();
-        lyricFragment = new LyricFragment();
-
-        visualizerPresenter = new VisualizerPresenter(this, visualizerFragment);
-        listPresenter = new ListPresenter(this, listFragment);
-        lyricPresenter = new LyricPresenter(this, lyricFragment);
-
+        findViewById(R.id.play_pre_song).setOnClickListener(this);
+        findViewById(R.id.play_next_song).setOnClickListener(this);
+        play = (ImageButton) findViewById(R.id.play_song);
+        play.setOnClickListener(this);
         mViewPager = (ViewPager) findViewById(R.id.play_viewPager);
-        mAdapter = new ViewPagerAdapter(getSupportFragmentManager(), visualizerFragment, listFragment, lyricFragment);
+
+        listFragment = new ListFragment();
+        visualizerFragment = new VisualizerFragment();
+        lyricFragment = new LyricFragment();
+        mAdapter = new ViewPagerAdapter(getSupportFragmentManager(), listFragment, visualizerFragment, lyricFragment);
         mViewPager.setAdapter(mAdapter);
         mViewPager.setCurrentItem(1);
+
+    }
+
+
+    @Override
+    public void setPresenter(BasePresenter presenter) {
 
     }
 
@@ -184,6 +207,23 @@ public class PlayActivity extends RootActivity implements ViewContract, View.OnC
             case R.id.play_next_song:
                 try {
                     mServiceConnection.takeControl().next();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.play_song:
+
+                try {
+                    int stat = mServiceConnection.takeControl().status();
+                    if (stat == PlayController.STATUS_PLAYING) {
+                        mServiceConnection.takeControl().pause();
+                        visualizerPresenter.stopPlay();
+                        ((ImageButton) v).setImageResource(playOrPause[0]);
+                    } else {
+                        mServiceConnection.takeControl().resume();
+                        visualizerPresenter.startPlay();
+                        ((ImageButton) v).setImageResource(playOrPause[1]);
+                    }
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }

@@ -8,7 +8,7 @@ import com.duan.musicoco.aidl.Song;
  * Created by DuanJiaNing on 2017/5/25.
  */
 
-public interface ViewContract extends BaseView<BasePresenter> {
+public interface ActivityViewContract extends BaseView<BasePresenter> {
 
     void songChanged(Song song, int index);
 

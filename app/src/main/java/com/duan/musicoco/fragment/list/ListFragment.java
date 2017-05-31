@@ -24,6 +24,7 @@ public class ListFragment extends Fragment implements ViewContract {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_play_list,null);
+        initViews(null,null);
 
         return view;
     }
@@ -34,7 +35,7 @@ public class ListFragment extends Fragment implements ViewContract {
     }
 
     @Override
-    public void initViews(@Nullable View view) {
+    public void initViews(@Nullable View view, Object obj) {
 
     }
 }

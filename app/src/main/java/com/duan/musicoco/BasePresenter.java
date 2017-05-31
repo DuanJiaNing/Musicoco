@@ -22,5 +22,5 @@ package com.duan.musicoco;
 
 public interface BasePresenter {
 
-    void initData();
+    void initData(Object obj);
 }
