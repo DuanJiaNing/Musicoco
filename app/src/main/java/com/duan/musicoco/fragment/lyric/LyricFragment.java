@@ -25,9 +25,6 @@ public class LyricFragment extends Fragment implements ViewContract, View.OnClic
 
     private View view;
 
-    //触摸事件时是否为点击
-    private boolean isClick = false;
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -44,25 +41,7 @@ public class LyricFragment extends Fragment implements ViewContract, View.OnClic
 
     @Override
     public void initViews(@Nullable View view, Object obj) {
-        view.findViewById(R.id.play_lyric_root).setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return false;
-//                switch (event.getAction()) {
-//                    case MotionEvent.ACTION_DOWN:
-//                        isClick = true;
-//                        return true;
-//                    case MotionEvent.ACTION_MOVE:
-//                        isClick = false;
-//                        return false;
-//                    case MotionEvent.ACTION_UP:
-//                        if (isClick)
-//                            getActivity().onBackPressed();
-//                        break;
-//                }
-//                return false;
-            }
-        });
+
     }
 
     @Override
