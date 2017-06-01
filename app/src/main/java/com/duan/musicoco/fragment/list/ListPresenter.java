@@ -13,10 +13,9 @@ public class ListPresenter implements PresenterContract {
     private ViewContract fragmentView;
 
     private ActivityViewContract activityView;
-
     private Context context;
 
-    public ListPresenter(Context context,ViewContract fragment,ActivityViewContract activity) {
+    public ListPresenter(Context context, ViewContract fragment, ActivityViewContract activity) {
         this.context = context;
         this.fragmentView = fragment;
         this.activityView = activity;

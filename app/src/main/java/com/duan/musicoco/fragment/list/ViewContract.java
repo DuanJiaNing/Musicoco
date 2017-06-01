@@ -1,5 +1,7 @@
 package com.duan.musicoco.fragment.list;
 
+import android.view.animation.Animation;
+
 import com.duan.musicoco.BaseView;
 
 /**
@@ -7,5 +9,9 @@ import com.duan.musicoco.BaseView;
  */
 
 public interface ViewContract extends BaseView<PresenterContract> {
+
+    void showFragment(Animation.AnimationListener f);
+
+    void hideFragment(Animation.AnimationListener f);
 
 }

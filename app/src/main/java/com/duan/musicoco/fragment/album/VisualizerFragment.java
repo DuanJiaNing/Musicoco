@@ -1,10 +1,13 @@
 package com.duan.musicoco.fragment.album;
 
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -20,18 +23,22 @@ import com.duan.musicoco.view.AlbumVisualizerSurfaceView;
 
 public class VisualizerFragment extends Fragment implements ViewContract {
 
+    public static final String TAG = "VisualizerFragment";
+
     private PresenterContract presenter;
 
     private View view;
 
     private AlbumVisualizerSurfaceView albumView;
 
+    private boolean isSpin = false;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        //不要让 presenter 控制初始化 View ，此时 view 可能还没执行完 inflate
         view = inflater.inflate(R.layout.fragment_play_visualizer, null);
-        //不用让 presenter 控制初始化 View ，此时 view 可能还没执行完 inflate
-        initViews(view,null);
+        initViews(view, savedInstanceState);
         return view;
     }
 
@@ -45,16 +52,24 @@ public class VisualizerFragment extends Fragment implements ViewContract {
         LinearLayout con = (LinearLayout) view.findViewById(R.id.play_album_visualizer_contain);
         albumView = new AlbumVisualizerSurfaceView(getActivity());
         con.addView(albumView);
+
+
     }
 
     @Override
     public void startSpin() {
         albumView.startSpin();
+        isSpin = true;
     }
 
     @Override
     public void stopSpin() {
         albumView.stopSpin();
+        isSpin = false;
+    }
+
+    public boolean isSpin() {
+        return isSpin;
     }
 
     @Override

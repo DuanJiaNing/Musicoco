@@ -1,12 +1,15 @@
 package com.duan.musicoco.util;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.annotation.IdRes;
 
 /**
  * Created by ai on 2016/11/27.
@@ -19,6 +22,7 @@ public class BitmapUtil {
      * @param bitmap 传入Bitmap对象
      * @return
      */
+    //FIXME 修改算法
     public static Bitmap toRoundBitmap(Bitmap bitmap) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
@@ -71,6 +75,29 @@ public class BitmapUtil {
         canvas.drawBitmap(bitmap, src, dst, paint); //以Mode.SRC_IN模式合并bitmap和已经draw了的Circle
 
         return output;
+    }
+
+    //调整bitmap 大小
+    public Bitmap bitmapResizer(Resources res, @IdRes int id, int reqWidth, int reqHeight) {
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(res, id, options);
+
+        int inSampleSize = 1;
+        if (reqWidth != 0 && reqHeight != 0) {
+            final int height = options.outHeight;
+            final int width = options.outWidth;
+            if (height > reqHeight || width > reqHeight) {
+                final int halfHeight = height / 2;
+                final int halfWidth = width / 2;
+                while ((halfHeight / inSampleSize) >= reqHeight && (halfWidth / inSampleSize) >= reqWidth)
+                    inSampleSize *= 2;
+            }
+        }
+        options.inSampleSize = inSampleSize;
+        options.inJustDecodeBounds = false;
+
+        return BitmapFactory.decodeResource(res, id, options);
     }
 
 

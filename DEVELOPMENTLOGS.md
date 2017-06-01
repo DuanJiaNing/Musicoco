@@ -35,3 +35,7 @@
 
 1 完成 AlbumVisualizerSurfaceView 的部分功能<br>
  截取图片为圆形，获取图片中的颜色 etc<br>
+
+- 2017-06-01
+
+1 完成 LyricFragment 和 ListFragment 的显示和隐藏动画

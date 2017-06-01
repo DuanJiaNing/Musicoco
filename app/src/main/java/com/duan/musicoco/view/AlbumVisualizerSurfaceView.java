@@ -24,6 +24,7 @@ import com.duan.musicoco.fragment.album.AlbumVisualizer;
 import com.duan.musicoco.media.SongInfo;
 import com.duan.musicoco.util.BitmapUtil;
 import com.duan.musicoco.util.ColorUtils;
+import com.duan.musicoco.util.ToastUtil;
 import com.duan.musicoco.view.bezier.BezierImpl;
 import com.duan.musicoco.view.bezier.Gummy;
 
@@ -65,13 +66,6 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
 
     private final int VISUALIZER_UPDATE = 3;
 
-    {
-        //获得持有者
-        mHolder = this.getHolder();
-        //注册功能
-        mHolder.addCallback(this);
-
-    }
 
     public AlbumVisualizerSurfaceView(Context context) {
         super(context);
@@ -86,6 +80,11 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
                 defaultColor,
                 defaultColor
         };
+
+        //获得持有者
+        mHolder = this.getHolder();
+        //注册功能
+        mHolder.addCallback(this);
     }
 
     public AlbumVisualizerSurfaceView(Context context, AttributeSet attrs) {
@@ -139,15 +138,30 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
     }
 
     public void setSong(SongInfo song) {
-        if (song != null) {
+        Bitmap defaultPic = BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_album_pic);
+        if (song != null && song.getAlbum_path() != null) {
             mCurrentSong = song;
             mCurrentPic = BitmapFactory.decodeFile(mCurrentSong.getAlbum_path());
-        } else
-            mCurrentPic = BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_album_pic);
+        } else {
+            mCurrentPic = defaultPic;
+            ToastUtil.showToast(context, "没有专辑图片");
+        }
+
+        //mCurrentSong.getAlbum_path() 可能解析失败
+        if (mCurrentPic == null) {
+            ToastUtil.showToast(context, "专辑图片解析失败");
+            mCurrentPic = Bitmap.createBitmap(defaultPic);
+        }
 
         mCurrentPic = BitmapUtil.toRoundBitmap(mCurrentPic);
         ColorUtils.getColorFormBitmap(mCurrentPic, defaultColor, colors);
+        if (mDrawThread == null) {
+            mDrawThread = new SurfaceDrawThread();
+            mDrawThread.start();
+        }
         mDrawThread.repaint();
+
+        defaultPic.recycle();
 
     }
 

@@ -6,9 +6,14 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.Chronometer;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -20,7 +25,6 @@ import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.PermissionManager;
 import com.duan.musicoco.app.PlayServiceManager;
 import com.duan.musicoco.app.RootActivity;
-import com.duan.musicoco.app.ViewPagerAdapter;
 import com.duan.musicoco.fragment.album.VisualizerFragment;
 import com.duan.musicoco.fragment.album.VisualizerPresenter;
 import com.duan.musicoco.fragment.list.ListFragment;
@@ -41,15 +45,14 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     private final MediaManager mediaManager;
 
     private VisualizerFragment visualizerFragment;
-    private ListFragment listFragment;
     private LyricFragment lyricFragment;
+    private ListFragment listFragment;
 
     private VisualizerPresenter visualizerPresenter;
-    private ListPresenter listPresenter;
     private LyricPresenter lyricPresenter;
+    private ListPresenter listPresenter;
 
-    private ViewPager mViewPager;
-    private ViewPagerAdapter mAdapter;
+    private FrameLayout mFragmentContainer;
 
     private Chronometer mPlayProgress;
     private TextView mDuration;
@@ -59,10 +62,15 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     private boolean isPlaying = false;
     private ImageButton play;
 
+    private FragmentManager fragmentManager;
+
     private int[] playOrPause = {
             R.drawable.ic_play_arrow_white_48dp,
             R.drawable.ic_pause_black_48dp
     };
+
+    private boolean isFragmentAniming = false;
+    private Fragment currentShowing;
 
     public PlayActivity() {
         mServiceConnection = new PlayServiceConnection(this, this);
@@ -162,8 +170,8 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         }
 
         visualizerPresenter = new VisualizerPresenter(this, visualizerFragment);
-        listPresenter = new ListPresenter(this, listFragment, this);
         lyricPresenter = new LyricPresenter(this, lyricFragment, this);
+        listPresenter = new ListPresenter(this, listFragment, this);
 
     }
 
@@ -175,22 +183,80 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         mSeekBar = (SeekBar) findViewById(R.id.play_seekBar);
         findViewById(R.id.play_pre_song).setOnClickListener(this);
         findViewById(R.id.play_next_song).setOnClickListener(this);
+        findViewById(R.id.play_show_list).setOnClickListener(this);
         play = (ImageButton) findViewById(R.id.play_song);
         play.setOnClickListener(this);
-        mViewPager = (ViewPager) findViewById(R.id.play_viewPager);
+        mFragmentContainer = (FrameLayout) findViewById(R.id.play_fragment_container);
+        mFragmentContainer.setOnClickListener(this);
+        mFragmentContainer.setOnTouchListener(new View.OnTouchListener() {
+            private float y;
+            private float dis = 70;
+            private int touchTime = 0;
 
-        listFragment = new ListFragment();
-        visualizerFragment = new VisualizerFragment();
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        //FIXME 快速双击时：动画直接到底并直接开始 hide 动画
+
+                        if (listFragment.isVisible())
+                            return false;
+
+                        y = event.getY();
+                        touchTime = 1;
+                        return true;
+                    case MotionEvent.ACTION_MOVE:
+                        if (event.getY() - y - dis > 0.0001) {
+                            if (visualizerFragment.isVisible()) {
+                                showLyricFragment();
+                                return false;
+                            }
+                        }
+
+                        touchTime++;
+                        return false;
+                    case MotionEvent.ACTION_UP:
+
+                        //用户的点击会触发多个中间事件
+                        if (touchTime < 6)
+                            onClick(v);
+                        break;
+                }
+                return false;
+            }
+        });
+
         lyricFragment = new LyricFragment();
-        mAdapter = new ViewPagerAdapter(getSupportFragmentManager(), listFragment, visualizerFragment, lyricFragment);
-        mViewPager.setAdapter(mAdapter);
-        mViewPager.setCurrentItem(1);
+        visualizerFragment = new VisualizerFragment();
+        listFragment = new ListFragment();
+
+        fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        //顺序 依次叠放
+        transaction.add(R.id.play_fragment_container, visualizerFragment, VisualizerFragment.TAG);
+        transaction.add(R.id.play_fragment_container, lyricFragment, LyricFragment.TAG);
+        transaction.add(R.id.play_fragment_container, listFragment, ListFragment.TAG);
+        transaction.hide(lyricFragment);
+        transaction.hide(listFragment);
+        transaction.commit();
+        currentShowing = visualizerFragment;
 
     }
 
 
     @Override
     public void setPresenter(BasePresenter presenter) {
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (fragmentManager.findFragmentByTag(ListFragment.TAG).isVisible())
+            hideListFragment();
+        else if (fragmentManager.findFragmentByTag(LyricFragment.TAG).isVisible())
+            hideLyricFragment();
+        else
+            super.onBackPressed();
 
     }
 
@@ -228,6 +294,152 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
                     e.printStackTrace();
                 }
                 break;
+            case R.id.play_fragment_container:
+
+                if (fragmentManager.findFragmentByTag(LyricFragment.TAG).isHidden()) {
+                    showLyricFragment();
+                } else {
+                    hideLyricFragment();
+                }
+                break;
+            case R.id.play_show_list:
+
+                if (fragmentManager.findFragmentByTag(ListFragment.TAG).isHidden()) {
+                    showListFragment();
+                } else
+                    hideListFragment();
+                break;
         }
+    }
+
+    //最上面的一定是 ListFragment
+    private void hideListFragment() {
+
+        if (isFragmentAniming)
+            return;
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.show(currentShowing);
+        transaction.commit();
+
+        listFragment.hideFragment(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                isFragmentAniming = true;
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                isFragmentAniming = false;
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.hide(listFragment);
+                transaction.commit();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
+
+    //最上面的可能是 visualizerFragment 或是 LyricFragment
+    private void showListFragment() {
+
+        if (isFragmentAniming)
+            return;
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.show(listFragment);
+        transaction.commit();
+
+        listFragment.showFragment(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                isFragmentAniming = true;
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                isFragmentAniming = false;
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.hide(lyricFragment);
+                transaction.hide(visualizerFragment);
+                transaction.commit();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
+
+    //最上面的一定是 VisualizerFragment
+    private void showLyricFragment() {
+
+        if (isFragmentAniming)
+            return;
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.show(lyricFragment);
+        transaction.commit();
+        lyricFragment.showFragment(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                isFragmentAniming = true;
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                isFragmentAniming = false;
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.hide(visualizerFragment);
+                transaction.commit();
+
+                currentShowing = lyricFragment;
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
+
+    //最上面的一定是 LyricFragment
+    private void hideLyricFragment() {
+
+        if (isFragmentAniming)
+            return;
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.show(visualizerFragment); // 显示但被 LyricFragment 遮挡
+        transaction.commit();
+        lyricFragment.hideFragment(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                isFragmentAniming = true;
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                isFragmentAniming = false;
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.hide(lyricFragment);
+                transaction.commit();
+
+                currentShowing = visualizerFragment;
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
     }
 }
