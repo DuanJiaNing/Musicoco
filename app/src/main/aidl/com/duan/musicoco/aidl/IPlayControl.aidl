@@ -34,7 +34,7 @@ interface IPlayControl {
        int status();
 
        //设置播放列表，返回下一首播放歌曲
-       Song setPlayList(in List<Song> songs);
+       Song setPlayList(in List<Song> songs,int current);
 
        //获得播放列表
        List<Song> getPlayList();

@@ -24,7 +24,6 @@ public class VisualizerPresenter implements PresenterContract {
 
     @Override
     public void initData(Object obj) {
-        changeSong((Song) obj);
     }
 
     @Override

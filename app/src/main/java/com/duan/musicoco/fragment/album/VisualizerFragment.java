@@ -1,13 +1,11 @@
 package com.duan.musicoco.fragment.album;
 
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -15,6 +13,8 @@ import android.widget.LinearLayout;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.media.MediaManager;
+import com.duan.musicoco.media.SongInfo;
+import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.view.AlbumVisualizerSurfaceView;
 
 /**
@@ -38,9 +38,18 @@ public class VisualizerFragment extends Fragment implements ViewContract {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //不要让 presenter 控制初始化 View ，此时 view 可能还没执行完 inflate
         view = inflater.inflate(R.layout.fragment_play_visualizer, null);
-        initViews(view, savedInstanceState);
+        initViews(view, null);
         return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Song song = new PlayPreference(getActivity()).getCurrntSong();
+        updateVisualizer(song, isSpin);
+
+    }
+
 
     @Override
     public void setPresenter(PresenterContract presenter) {
@@ -52,8 +61,6 @@ public class VisualizerFragment extends Fragment implements ViewContract {
         LinearLayout con = (LinearLayout) view.findViewById(R.id.play_album_visualizer_contain);
         albumView = new AlbumVisualizerSurfaceView(getActivity());
         con.addView(albumView);
-
-
     }
 
     @Override
@@ -75,5 +82,11 @@ public class VisualizerFragment extends Fragment implements ViewContract {
     @Override
     public void changeSong(Song song) {
         albumView.setSong(MediaManager.getInstance().getSongInfo(song, getActivity()));
+    }
+
+    @Override
+    public void updateVisualizer(Song song, boolean spin) {
+        SongInfo info = song == null ? null : MediaManager.getInstance().getSongInfo(song, getActivity());
+        albumView.createSurface(info, spin);
     }
 }

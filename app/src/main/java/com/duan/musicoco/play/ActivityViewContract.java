@@ -12,10 +12,21 @@ public interface ActivityViewContract extends BaseView<BasePresenter> {
 
     void songChanged(Song song, int index);
 
-    void startPlay(Song song, int index);
+    void startPlay(Song song, int index, int status);
 
-    void stopPlay(Song song, int index);
+    void stopPlay(Song song, int index, int status);
 
     void onConnected();
+
+    void disConnected();
+
+    void hideListFragment();
+
+    void showListFragment();
+
+    void showLyricFragment();
+
+    void hideLyricFragment();
+
 
 }

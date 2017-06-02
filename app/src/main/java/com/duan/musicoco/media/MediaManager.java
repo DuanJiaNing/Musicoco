@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 
 import com.duan.musicoco.aidl.Song;
 
@@ -78,7 +79,7 @@ public class MediaManager {
         return imagePath;
     }
 
-    public SongInfo getSongInfo(Song song, Context context) {
+    public SongInfo getSongInfo(@NonNull Song song, Context context) {
         SongInfo info = null;
         if (songs == null)
             refreshData(context);

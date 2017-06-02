@@ -1,5 +1,6 @@
 package com.duan.musicoco.aidl;
 
+import android.content.Context;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 
@@ -24,10 +25,13 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
 
     private PlayController manager;
 
-    public PlayControlImpl(List<Song> songs) {
+    private Context context;
+
+    public PlayControlImpl(List<Song> songs,Context context) {
+        this.context = context;
         this.mSongChangeListeners = new RemoteCallbackList<>();
         this.mStatusChangeListeners = new RemoteCallbackList<>();
-        this.manager = PlayController.getMediaController(songs, new NotifyStatusChange());
+        this.manager = PlayController.getMediaController(context,songs, new NotifyStatusChange());
     }
 
     /**
@@ -116,9 +120,13 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
     }
 
     @Override
-    public synchronized Song setPlayList(List<Song> songs) {
-        Song n = manager.setPlayList(songs);
-        notifySongChange(n, 0);
+    public synchronized Song setPlayList(List<Song> songs,int current) {
+        int cu = 0;
+        if (current > 0 && current < songs.size() - 1)
+            cu = current;
+
+        Song n = manager.setPlayList(songs,cu);
+        notifySongChange(n, cu);
         return n;
     }
 
@@ -194,10 +202,10 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
                     try {
                         switch (status) {
                             case PlayController.STATUS_START:
-                                listener.playStart(song, index);
+                                listener.playStart(song, index,status);
                                 break;
-                            case PlayController.STATUS_COMPLETE:
-                                listener.playStop(song, index);
+                            case PlayController.STATUS_STOP:
+                                listener.playStop(song, index,status);
                                 break;
                         }
 

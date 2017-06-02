@@ -15,4 +15,6 @@ public interface ViewContract extends BaseView<PresenterContract> {
 
     void changeSong(Song song);
 
+    void updateVisualizer(Song song,boolean spin);
+
 }

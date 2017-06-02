@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
-import android.widget.Chronometer;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
@@ -32,7 +31,13 @@ import com.duan.musicoco.fragment.list.ListPresenter;
 import com.duan.musicoco.fragment.lyric.LyricFragment;
 import com.duan.musicoco.fragment.lyric.LyricPresenter;
 import com.duan.musicoco.media.MediaManager;
+import com.duan.musicoco.media.SongInfo;
+import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.service.PlayController;
+import com.duan.musicoco.util.Util;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by DuanJiaNing on 2017/5/23.
@@ -54,12 +59,11 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
     private FrameLayout mFragmentContainer;
 
-    private Chronometer mPlayProgress;
+    private TextView mPlayProgress;
     private TextView mDuration;
 
     private SeekBar mSeekBar;
 
-    private boolean isPlaying = false;
     private ImageButton play;
 
     private FragmentManager fragmentManager;
@@ -133,34 +137,79 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
     @Override
     public void songChanged(Song song, int index) {
+        SongInfo info = MediaManager.getInstance().getSongInfo(song, this);
+        int duration = (int) info.getDuration();
         visualizerPresenter.changeSong(song);
+        mDuration.setText(Util.getGenTime(duration));
+
+        mPlayProgress.setText("00:00");
+        mSeekBar.setMax(duration);
+
     }
 
     @Override
-    public void startPlay(Song song, int index) {
-        visualizerPresenter.changeSong(song);
+    public void startPlay(Song song, int index, int status) {
+        startUpdateProgressTask();
+
     }
 
     @Override
-    public void stopPlay(Song song, int index) {
+    public void stopPlay(Song song, int index, int status) {
+        cancelUpdateProgressTask();
+    }
 
+    TimerTask progressUpdateTask;
+
+    public void cancelUpdateProgressTask() {
+        if (progressUpdateTask != null)
+            progressUpdateTask.cancel();
+    }
+
+    public void startUpdateProgressTask() {
+        Timer timer = new Timer();
+        progressUpdateTask = new TimerTask() {
+            int progress;
+
+            @Override
+            public void run() {
+                PlayActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            progress = mServiceConnection.takeControl().getProgress();
+                            mSeekBar.setProgress(progress);
+                            mPlayProgress.setText(Util.getGenTime(progress));
+
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        };
+        timer.schedule(progressUpdateTask, 0, 800);
     }
 
     //服务成功连接之后才初始化数据
     @Override
     public void onConnected() {
-
         initSelfData();
+        visualizerPresenter.initData(null);
 
-        try {
-            visualizerPresenter.initData(mServiceConnection.takeControl().currentSong());
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    }
+
+    @Override
+    public void disConnected() {
 
     }
 
     private void initSelfData() {
+
+        SongInfo info = MediaManager.getInstance().getSongInfo(new PlayPreference(this).getCurrntSong(), this);
+        int duration = (int) info.getDuration();
+        mDuration.setText(Util.getGenTime(duration));
+        mPlayProgress.setText("00:00");
+        mSeekBar.setMax(duration);
 
         try {
             int draw = mServiceConnection.takeControl().status() == PlayController.STATUS_PLAYING ? playOrPause[1] : playOrPause[0];
@@ -175,10 +224,9 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
     }
 
-
     @Override
     public void initViews(@Nullable View view, Object obj) {
-        mPlayProgress = (Chronometer) findViewById(R.id.play_progress);
+        mPlayProgress = (TextView) findViewById(R.id.play_progress);
         mDuration = (TextView) findViewById(R.id.play_duration);
         mSeekBar = (SeekBar) findViewById(R.id.play_seekBar);
         findViewById(R.id.play_pre_song).setOnClickListener(this);
@@ -197,7 +245,6 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        //FIXME 快速双击时：动画直接到底并直接开始 hide 动画
 
                         if (listFragment.isVisible())
                             return false;
@@ -226,6 +273,37 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
             }
         });
 
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            int pos;
+            boolean change = false;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                pos = progress;
+                mPlayProgress.setText(Util.getGenTime(progress));
+                change = true;
+
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                cancelUpdateProgressTask();
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if (change) {
+                    try {
+                        mServiceConnection.takeControl().seekTo(pos);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                startUpdateProgressTask();
+            }
+        });
+
         lyricFragment = new LyricFragment();
         visualizerFragment = new VisualizerFragment();
         listFragment = new ListFragment();
@@ -243,10 +321,8 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
     }
 
-
     @Override
     public void setPresenter(BasePresenter presenter) {
-
     }
 
     @Override
@@ -313,7 +389,8 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     }
 
     //最上面的一定是 ListFragment
-    private void hideListFragment() {
+    @Override
+    public void hideListFragment() {
 
         if (isFragmentAniming)
             return;
@@ -344,7 +421,8 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     }
 
     //最上面的可能是 visualizerFragment 或是 LyricFragment
-    private void showListFragment() {
+    @Override
+    public void showListFragment() {
 
         if (isFragmentAniming)
             return;
@@ -377,7 +455,8 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     }
 
     //最上面的一定是 VisualizerFragment
-    private void showLyricFragment() {
+    @Override
+    public void showLyricFragment() {
 
         if (isFragmentAniming)
             return;
@@ -410,7 +489,8 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     }
 
     //最上面的一定是 LyricFragment
-    private void hideLyricFragment() {
+    @Override
+    public void hideLyricFragment() {
 
         if (isFragmentAniming)
             return;
@@ -442,4 +522,5 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         });
 
     }
+
 }

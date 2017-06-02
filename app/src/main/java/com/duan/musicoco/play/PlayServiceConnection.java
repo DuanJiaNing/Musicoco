@@ -49,25 +49,25 @@ public class PlayServiceConnection implements ServiceConnection {
 
         this.mPlayStatusChangedListener = new OnPlayStatusChangedListener() {
             @Override
-            public void playStart(Song song, int index) {
+            public void playStart(Song song, int index, final int status) {
                 final Song s = song;
                 final int in = index;
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mView.startPlay(s, in);
+                        mView.startPlay(s, in,status);
                     }
                 });
             }
 
             @Override
-            public void playStop(Song song, int index) {
+            public void playStop(Song song, int index, final int status) {
                 final Song s = song;
                 final int in = index;
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mView.stopPlay(s, in);
+                        mView.stopPlay(s, in,status);
                     }
                 });
             }

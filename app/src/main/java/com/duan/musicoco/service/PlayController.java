@@ -1,9 +1,12 @@
 package com.duan.musicoco.service;
 
+import android.content.Context;
 import android.media.MediaPlayer;
 import android.service.notification.NotificationListenerService;
+import android.util.Log;
 
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.preference.PlayPreference;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,6 +19,8 @@ import java.util.Random;
  */
 
 public class PlayController {
+
+    private Context context;
 
     private int mCurrentSong;
 
@@ -42,19 +47,19 @@ public class PlayController {
     public static final int ERROR_DECODE = -3;
 
     //正在播放
-    public static final int STATUS_PLAYING = 0x10;
+    public static final int STATUS_PLAYING = 10;
 
     //播放结束
-    public static final int STATUS_COMPLETE = 0x11;
+    public static final int STATUS_COMPLETE = 11;
 
     //开始播放
-    public static final int STATUS_START = 0x12;
+    public static final int STATUS_START = 12;
 
     //播放暂停
-    public static final int STATUS_PAUSE = 0x13;
+    public static final int STATUS_PAUSE = 13;
 
     //停止
-    public static final int STATUS_STOP = 0x14;
+    public static final int STATUS_STOP = 14;
 
     //默认播放模式，列表播放，播放至列表末端时停止播放
     public static final int MODE_DEFAULT = 20;
@@ -70,8 +75,9 @@ public class PlayController {
 
     private int mPlayMode = MODE_DEFAULT;
 
-    private PlayController(List<Song> songs, NotifyStatusChanged sl) {
+    private PlayController(Context context, List<Song> songs, NotifyStatusChanged sl) {
 
+        this.context = context;
         this.mPlayList = songs;
         this.mNotifyStatusChanged = sl;
         mPlayState = STATUS_STOP;
@@ -80,18 +86,17 @@ public class PlayController {
         mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-                mNotifyStatusChanged.notify(getCurrentSong(), mCurrentSong, STATUS_COMPLETE);
                 nextSong();
             }
         });
 
     }
 
-    public static PlayController getMediaController(List<Song> songs, NotifyStatusChanged sl) {
+    public static PlayController getMediaController(Context context, List<Song> songs, NotifyStatusChanged sl) {
         if (MANAGER == null) {
             synchronized (PlayController.class) {
                 if (MANAGER == null)
-                    MANAGER = new PlayController(songs, sl);
+                    MANAGER = new PlayController(context, songs, sl);
             }
         }
         return MANAGER;
@@ -113,12 +118,12 @@ public class PlayController {
     }
 
     //设置播放列表
-    public Song setPlayList(List<Song> songs) {
+    public Song setPlayList(List<Song> songs, int current) {
 
         this.mPlayList = songs;
-        mCurrentSong = 0;
+        mCurrentSong = current;
         changeSong();
-        return songs.get(0);
+        return songs.get(mCurrentSong);
     }
 
     //当前正在播放曲目
@@ -217,8 +222,8 @@ public class PlayController {
             default:
                 if (mCurrentSong == mPlayList.size() - 1) {
                     mCurrentSong = 0;
+                    mPlayState = STATUS_PAUSE; //使暂停播放
                     changeSong();
-                    stop();
                 } else {
                     mCurrentSong++;
                     changeSong();
@@ -229,18 +234,11 @@ public class PlayController {
         return mPlayList.get(mCurrentSong);
     }
 
-    //停止播放
-    public void stop() {
-        if (mPlayState != STATUS_STOP) {
-            mPlayer.stop();
-            mPlayState = STATUS_STOP;
-        }
-    }
-
     //暂停播放
     public int pause() {
         if (mPlayState == STATUS_PLAYING) {
             mPlayer.pause();
+            mNotifyStatusChanged.notify(getCurrentSong(), mCurrentSong, STATUS_STOP);
             mPlayState = STATUS_PAUSE;
         }
         return mPlayState;
@@ -250,6 +248,7 @@ public class PlayController {
     public int resume() {
         if (mPlayState != STATUS_PLAYING) {
             mPlayer.start();
+            mNotifyStatusChanged.notify(getCurrentSong(), mCurrentSong, STATUS_START);
             mPlayState = STATUS_PLAYING;
         }
         return 1;
@@ -271,10 +270,11 @@ public class PlayController {
      *
      * @return 切换成功返回 1
      */
-    private int changeSong() {
+    private synchronized int changeSong() {
 
         if (mPlayState == STATUS_PLAYING || mPlayState == STATUS_PAUSE) {
             mPlayer.stop();
+            mNotifyStatusChanged.notify(getCurrentSong(), mCurrentSong, STATUS_STOP);
         }
 
         mPlayer.reset();
@@ -283,6 +283,9 @@ public class PlayController {
         try {
             mPlayer.setDataSource(next);
             mPlayer.prepare();
+
+            //保存当前播放歌曲到配置文件
+            new PlayPreference(context).updateCurrentSong(next);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -297,6 +300,7 @@ public class PlayController {
         return 1;
     }
 
+    //用于提取频谱
     public int getAudioSessionId() {
         return mPlayer.getAudioSessionId();
     }

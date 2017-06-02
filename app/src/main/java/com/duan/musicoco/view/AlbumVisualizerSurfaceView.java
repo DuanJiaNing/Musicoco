@@ -13,13 +13,15 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.annotation.ColorInt;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.animation.LinearInterpolator;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.fragment.album.AlbumVisualizer;
 import com.duan.musicoco.media.SongInfo;
 import com.duan.musicoco.util.BitmapUtil;
@@ -35,7 +37,7 @@ import com.duan.musicoco.view.bezier.Gummy;
 public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHolder.Callback,
         AlbumVisualizer.OnUpdateVisualizerListener {
 
-    private static final String TAG = "GummySurfaceView";
+    private static final String TAG = "AlbumVisualizerSurfaceView";
 
     private int mPicWidth;
     private int mPicStrokeWidth = 10;
@@ -45,7 +47,7 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
 
     private Context context;
 
-    private SurfaceDrawThread mDrawThread;
+    private DrawThread mDrawThread;
 
     private Gummy gummy;
 
@@ -60,13 +62,15 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
     private int defaultColor;
     private int[] colors;
 
+    private boolean isSpin = false;
+
     private final int START_SPIN = 1;
 
     private final int STOP_SPIN = 2;
 
     private final int VISUALIZER_UPDATE = 3;
 
-
+    //调用构造函数之后，应立即调用 createSurface 创建 Surface。
     public AlbumVisualizerSurfaceView(Context context) {
         super(context);
         this.context = context;
@@ -81,10 +85,6 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
                 defaultColor
         };
 
-        //获得持有者
-        mHolder = this.getHolder();
-        //注册功能
-        mHolder.addCallback(this);
     }
 
     public AlbumVisualizerSurfaceView(Context context, AttributeSet attrs) {
@@ -96,6 +96,16 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
         this.context = context;
     }
 
+    //当 Surface 被 destory 之后，调用该方法重新创建
+    public void createSurface(SongInfo info, boolean spin) {
+        this.isSpin = spin;
+        this.mCurrentSong = info;
+
+        //获得持有者
+        mHolder = this.getHolder();
+        //注册功能
+        mHolder.addCallback(this);
+    }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
@@ -110,18 +120,18 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
         gummy.setRadius(radius);
         gummy.setInnerLineLengthForAll(radius);
 
-        mDrawThread = new SurfaceDrawThread();
-
-        Bitmap source = BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_album_pic);
-        mCurrentPic = BitmapUtil.toRoundBitmap(source);
-
+        mDrawThread = new DrawThread();
+        mCurrentPic = getAlbumPic(mCurrentSong);
         mDrawThread.start();
+
+        setSong(mCurrentSong);
+        if (isSpin)
+            startSpin();
 
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
     }
 
     @Override
@@ -129,22 +139,22 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
         mDrawThread.quit();
     }
 
+    //确保在 surfaceCreated 和 surfaceDestroyed 之间调用
     public void startSpin() {
         mDrawThread.getHandler().sendEmptyMessage(START_SPIN);
     }
 
+    //确保在 surfaceCreated 和 surfaceDestroyed 之间调用
     public void stopSpin() {
         mDrawThread.getHandler().sendEmptyMessage(STOP_SPIN);
     }
 
-    public void setSong(SongInfo song) {
+    private Bitmap getAlbumPic(SongInfo song) {
         Bitmap defaultPic = BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_album_pic);
         if (song != null && song.getAlbum_path() != null) {
-            mCurrentSong = song;
             mCurrentPic = BitmapFactory.decodeFile(mCurrentSong.getAlbum_path());
         } else {
             mCurrentPic = defaultPic;
-            ToastUtil.showToast(context, "没有专辑图片");
         }
 
         //mCurrentSong.getAlbum_path() 可能解析失败
@@ -153,15 +163,17 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
             mCurrentPic = Bitmap.createBitmap(defaultPic);
         }
 
-        mCurrentPic = BitmapUtil.toRoundBitmap(mCurrentPic);
-        ColorUtils.getColorFormBitmap(mCurrentPic, defaultColor, colors);
-        if (mDrawThread == null) {
-            mDrawThread = new SurfaceDrawThread();
-            mDrawThread.start();
-        }
-        mDrawThread.repaint();
+        return mCurrentPic;
+    }
 
-        defaultPic.recycle();
+    //确保在 surfaceCreated 和 surfaceDestroyed 之间调用
+    public void setSong(SongInfo song) {
+        if (song != null)
+            mCurrentSong = song;
+
+        mCurrentPic = BitmapUtil.toRoundBitmap(getAlbumPic(song));
+        ColorUtils.getColorFormBitmap(mCurrentPic, defaultColor, colors);
+        mDrawThread.repaint();
 
     }
 
@@ -207,6 +219,7 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
         }
     }
 
+    //确保在 surfaceCreated 和 surfaceDestroyed 之间调用
     @Override
     public void updateVisualizer(byte[] data, int rate) {
         this.data = data;
@@ -214,7 +227,7 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
         mDrawThread.getHandler().sendEmptyMessage(VISUALIZER_UPDATE);
     }
 
-    private class SurfaceDrawThread extends Thread {
+    private class DrawThread extends Thread {
 
         private DrawHandler handler;
 
@@ -224,7 +237,7 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
 
         private Looper mLooper;
 
-        public SurfaceDrawThread() {
+        public DrawThread() {
             mPaint = new Paint();
             mPaint.setAntiAlias(true);
         }
