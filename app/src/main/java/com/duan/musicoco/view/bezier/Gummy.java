@@ -50,6 +50,8 @@ public class Gummy {
      * 8.第四个在圆上的点 p4
      */
     private int lot;
+    private final int minLot = 4;
+    private final int defaultLot = 8;
 
     /**
      * 保存每一份的角度大小，和应等于 2PI
@@ -85,8 +87,6 @@ public class Gummy {
      * 并在回调中更新对象的属性并手动刷新。
      */
     private boolean autoInvalidateWhenAnim = false;
-    private int minLot = 4;
-    private int defaultLot = 8;
 
     public interface OnDrawBezier {
         /**
