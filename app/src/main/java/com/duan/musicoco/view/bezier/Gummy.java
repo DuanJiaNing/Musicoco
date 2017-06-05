@@ -85,6 +85,8 @@ public class Gummy {
      * 并在回调中更新对象的属性并手动刷新。
      */
     private boolean autoInvalidateWhenAnim = false;
+    private int minLot = 4;
+    private int defaultLot = 8;
 
     public interface OnDrawBezier {
         /**
@@ -120,7 +122,7 @@ public class Gummy {
     public Gummy(View view, IBezier bezier) {
         this.mBezier = bezier;
         this.view = view;
-        this.lot = 8;
+        this.lot = defaultLot;
         this.radius = 50.0f;
         reset(lot);
     }
@@ -382,7 +384,7 @@ public class Gummy {
      * @param lot 份数，该值不能小于 8 ，且应该为 4 的倍数，当不是 4 的倍数时，将递增该值并取最近的能被 4 整除的数
      */
     public void setLot(int lot) {
-        if (this.lot != lot && lot >= 8) {
+        if (this.lot != lot && lot >= minLot) {
             if (lot % 4 != 0) {
                 while (lot % 4 != 0)
                     lot++;
