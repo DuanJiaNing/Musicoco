@@ -2,6 +2,7 @@ package com.duan.musicoco.view;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -16,6 +17,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.util.StringBuilderPrinter;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.animation.LinearInterpolator;
@@ -52,9 +54,9 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
     private Gummy gummy;
 
     private ValueAnimator rotateAnim;
+    private ValueAnimator colorAnim;
 
-    private byte[] data;
-    private int rate;
+    private float[] lengths;
 
     private SongInfo mCurrentSong;
     private Bitmap mCurrentPic;
@@ -62,13 +64,13 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
     private int defaultColor;
     private int[] colors;
 
-    private boolean isSpin = false;
-
     private final int START_SPIN = 1;
 
     private final int STOP_SPIN = 2;
 
     private final int VISUALIZER_UPDATE = 3;
+
+    private int lot = 40;
 
     //调用构造函数之后，应立即调用 createSurface 创建 Surface。
     public AlbumVisualizerSurfaceView(Context context) {
@@ -96,9 +98,8 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
         this.context = context;
     }
 
-    //当 Surface 被 destory 之后，调用该方法重新创建
-    public void createSurface(SongInfo info, boolean spin) {
-        this.isSpin = spin;
+    //当 Surface 被 destory 之后或在第一次创建时，调用该方法创建 Surface
+    public void createSurface(SongInfo info) {
         this.mCurrentSong = info;
 
         //获得持有者
@@ -113,8 +114,9 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
         mPicWidth = (getWidth() * 3) / 5 - mGapWidth;
 
         gummy = new Gummy(this, new BezierImpl());
+        gummy.setAutoInvalidateWhenAnim(false);
         float radius = mPicWidth / 2 + mGapWidth;
-        gummy.setLot(40);
+        gummy.setLot(lot);
         gummy.setCenterX(getWidth() / 2);
         gummy.setCenterY(getHeight() / 2);
         gummy.setRadius(radius);
@@ -125,8 +127,6 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
         mDrawThread.start();
 
         setSong(mCurrentSong);
-        if (isSpin)
-            startSpin();
 
     }
 
@@ -173,6 +173,18 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
 
         mCurrentPic = BitmapUtil.toRoundBitmap(getAlbumPic(song));
         ColorUtils.getColorFormBitmap(mCurrentPic, defaultColor, colors);
+
+        gummy.setColor(colors[0]);
+
+        if (colorAnim != null)
+            colorAnim = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            colorAnim = ObjectAnimator.ofArgb(gummy, "color", colors);
+            colorAnim.setRepeatCount(ValueAnimator.INFINITE);
+            colorAnim.setRepeatMode(ValueAnimator.REVERSE);
+            colorAnim.setDuration(60 * 1000 * 2);
+        }
+
         mDrawThread.repaint();
 
     }
@@ -193,6 +205,7 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
                     mDrawThread.repaint();
                 }
             });
+
         }
 
         @Override
@@ -204,6 +217,14 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
                             rotateAnim.resume();
                         }
                     } else rotateAnim.start();
+
+                    if (colorAnim != null) {
+                        if (colorAnim.isStarted()) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                colorAnim.resume();
+                            }
+                        } else colorAnim.start();
+                    }
                     break;
                 case STOP_SPIN:
                     if (rotateAnim.isRunning())
@@ -211,9 +232,18 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
                             rotateAnim.pause();
                         } else
                             rotateAnim.cancel();
+
+                    if (colorAnim != null) {
+                        if (colorAnim.isRunning()) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                colorAnim.pause();
+                            }
+                        } else colorAnim.cancel();
+                    }
+
                     break;
                 case VISUALIZER_UPDATE:
-
+                    gummy.setOutLineLength(0, lengths);
                     break;
             }
         }
@@ -223,11 +253,23 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
     @Override
     public void updateVisualizer(byte[] data, int rate) {
 
-        System.out.println("updateVisualizer: " + data + " rate=" + rate);
+        lengths = new float[lot / 2];
 
-        this.data = data;
-        this.rate = rate;
+//        lengths[0] = (byte) Math.abs(data[0]);
+        lengths[0] = 0;
+        for (int i = 2, j = 1; j < lengths.length; ) {
+            float a = data[i];
+            float b = data[i + 1];
+            //强转会直接为 0 ？？？？ (> x <)
+            double d = Math.sqrt(a * a + b * b);
+            lengths[j] = (float) d + 100;
+            i += 2;
+            j++;
+
+        }
+
         mDrawThread.getHandler().sendEmptyMessage(VISUALIZER_UPDATE);
+
     }
 
     private class DrawThread extends Thread {
@@ -265,7 +307,7 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
             float[][] points = gummy.calcuCoordinates();
 
             //计算出贝塞尔曲线上的点并绘制
-            gummy.setColor(colors[0]);
+            gummy.setColor(gummy.getColor());
             mPaint.setStyle(Paint.Style.FILL);
             float[][] pos = gummy.calcuBeziers(points, 200);
             gummy.drawBeziers(mCanvas, mPaint, pos);

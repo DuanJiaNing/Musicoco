@@ -40,7 +40,11 @@
 
 1 完成 LyricFragment 和 ListFragment 的显示和隐藏动画<br>
 
-- 2017-06-3
+- 2017-06-03
 
 1 添加 PlayPreference 类<br>
 2 完成 PlayActivity 从隐藏到显示时 VisualizerFragment 的状态恢复<br>
+
+- 2017-06-08
+
+1 将 AlbumVisualizer 应用到 AlbumVisualizerSurfaceView<br>

@@ -9,15 +9,19 @@ import com.duan.musicoco.aidl.Song;
 
 public interface ViewContract extends BaseView<PresenterContract> {
 
+    //开始更新图片展示台
     void startSpin();
 
+    //停止更新图片展示台
     void stopSpin();
 
+    //歌曲切换
     void songChanged(Song song);
 
-    /**
-     * activity 从暂停或停止状态恢复是恢复展台状态
-     */
-    void updateVisualizer(Song song,boolean spin);
+    //activity 从暂停或停止状态恢复是恢复展台状态
+    void updateSpinner();
+
+    //获得频谱监听者
+    AlbumVisualizer.OnUpdateVisualizerListener getVisualizerListener();
 
 }

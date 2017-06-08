@@ -100,7 +100,8 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     private void checkPermission() {
         String[] ps = new String[]{
                 Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.RECORD_AUDIO
         };
 
         if (!PermissionManager.checkPermission(this, ps)) {
@@ -141,11 +142,11 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
     @Override
     public void songChanged(Song song, int index) {
+        visualizerPresenter.songChanged(song);
+
         SongInfo info = MediaManager.getInstance().getSongInfo(song, this);
         int duration = (int) info.getDuration();
-        visualizerPresenter.songChanged(song);
         mDuration.setText(Util.getGenTime(duration));
-
         mPlayProgress.setText("00:00");
         mSeekBar.setMax(duration);
 
@@ -155,14 +156,18 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     public void startPlay(Song song, int index, int status) {
         startUpdateProgressTask();
 
+        visualizerPresenter.turnOnVisualizer();
+
     }
 
     @Override
     public void stopPlay(Song song, int index, int status) {
         cancelUpdateProgressTask();
+
+        visualizerPresenter.turnOffVisualizer();
     }
 
-    TimerTask progressUpdateTask;
+    private TimerTask progressUpdateTask;
 
     public void cancelUpdateProgressTask() {
         if (progressUpdateTask != null)
@@ -198,7 +203,10 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     @Override
     public void onConnected() {
         initSelfData();
+
         visualizerPresenter.initData(null);
+        listPresenter.initData(null);
+        lyricPresenter.initData(null);
 
     }
 
@@ -222,7 +230,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
             e.printStackTrace();
         }
 
-        visualizerPresenter = new VisualizerPresenter(this, visualizerFragment);
+        visualizerPresenter = new VisualizerPresenter(this, mServiceConnection.takeControl(), visualizerFragment);
         lyricPresenter = new LyricPresenter(this, lyricFragment, this);
         listPresenter = new ListPresenter(this, listFragment, this);
 
