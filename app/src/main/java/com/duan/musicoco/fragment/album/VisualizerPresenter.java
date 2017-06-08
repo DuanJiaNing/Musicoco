@@ -3,7 +3,6 @@ package com.duan.musicoco.fragment.album;
 import android.content.Context;
 
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.play.ActivityViewContract;
 
 /**
  * Created by DuanJiaNing on 2017/5/30.
@@ -37,7 +36,7 @@ public class VisualizerPresenter implements PresenterContract {
     }
 
     @Override
-    public void changeSong(Song song) {
-        fragmentView.changeSong(song);
+    public void songChanged(Song song) {
+        fragmentView.songChanged(song);
     }
 }

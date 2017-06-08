@@ -11,7 +11,6 @@ public class AlbumVisualizer {
 
     private Visualizer mVisualizer;
 
-
     public interface OnUpdateVisualizerListener {
         void updateVisualizer(byte[] data,int rate);
     }
@@ -25,11 +24,15 @@ public class AlbumVisualizer {
         this.mUpdateVisualizer = listener;
     }
 
-    public void setSessionID(int id, int rate) {
+    public void setSessionID(int id, int rate,int size) {
         if (mVisualizer != null)
             mVisualizer = null;
 
+        //采样周期
         mVisualizer = new Visualizer(id);
+        //采样时长
+        mVisualizer.setCaptureSize(size);
+        //获取波形信号
         mVisualizer.setDataCaptureListener(new Visualizer.OnDataCaptureListener() {
             @Override
             public void onWaveFormDataCapture(Visualizer visualizer, byte[] waveform, int samplingRate) {

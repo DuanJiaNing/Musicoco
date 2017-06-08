@@ -13,8 +13,11 @@ public interface ViewContract extends BaseView<PresenterContract> {
 
     void stopSpin();
 
-    void changeSong(Song song);
+    void songChanged(Song song);
 
+    /**
+     * activity 从暂停或停止状态恢复是恢复展台状态
+     */
     void updateVisualizer(Song song,boolean spin);
 
 }

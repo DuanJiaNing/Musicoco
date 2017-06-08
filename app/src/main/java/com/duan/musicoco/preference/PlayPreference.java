@@ -2,6 +2,7 @@ package com.duan.musicoco.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.support.annotation.NonNull;
 
 import com.duan.musicoco.aidl.Song;
@@ -22,7 +23,10 @@ public class PlayPreference {
 
     public PlayPreference(Context context) {
         //FIXME
-        preferences = context.getSharedPreferences(PLAY_PREFERENCE,Context.MODE_MULTI_PROCESS|MODE_WORLD_READABLE  );
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N)
+            preferences = context.getSharedPreferences(PLAY_PREFERENCE, Context.MODE_PRIVATE);
+        else
+            preferences = context.getSharedPreferences(PLAY_PREFERENCE, Context.MODE_MULTI_PROCESS | MODE_WORLD_READABLE);
     }
 
     //该方法在 PlayService 进程中调用，无法保证与 getCurrntSong 同步

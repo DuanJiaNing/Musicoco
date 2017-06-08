@@ -13,5 +13,5 @@ public interface PresenterContract extends BasePresenter{
 
     void stopPlay();
 
-    void changeSong(Song song);
+    void songChanged(Song song);
 }

@@ -135,11 +135,15 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         }
     }
 
+    public PlayServiceConnection getServiceConnection() {
+        return mServiceConnection;
+    }
+
     @Override
     public void songChanged(Song song, int index) {
         SongInfo info = MediaManager.getInstance().getSongInfo(song, this);
         int duration = (int) info.getDuration();
-        visualizerPresenter.changeSong(song);
+        visualizerPresenter.songChanged(song);
         mDuration.setText(Util.getGenTime(duration));
 
         mPlayProgress.setText("00:00");

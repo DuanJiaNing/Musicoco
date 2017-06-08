@@ -222,6 +222,9 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
     //确保在 surfaceCreated 和 surfaceDestroyed 之间调用
     @Override
     public void updateVisualizer(byte[] data, int rate) {
+
+        System.out.println("updateVisualizer: " + data + " rate=" + rate);
+
         this.data = data;
         this.rate = rate;
         mDrawThread.getHandler().sendEmptyMessage(VISUALIZER_UPDATE);
