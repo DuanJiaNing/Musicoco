@@ -48,3 +48,8 @@
 - 2017-06-08
 
 1 将 AlbumVisualizer 应用到 AlbumVisualizerSurfaceView<br>
+
+- 2017-06-09
+
+1 添加 BitmapCache 缓存类<br>
+2 添加 BitmapUtils 中的 jpgTopng<br>

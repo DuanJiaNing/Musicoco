@@ -2,10 +2,8 @@ package com.duan.musicoco.view;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -14,23 +12,22 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.util.StringBuilderPrinter;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.animation.LinearInterpolator;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.cache.BitmapCache;
 import com.duan.musicoco.fragment.album.AlbumVisualizer;
 import com.duan.musicoco.media.SongInfo;
 import com.duan.musicoco.util.BitmapUtil;
 import com.duan.musicoco.util.ColorUtils;
-import com.duan.musicoco.util.ToastUtil;
+import com.duan.musicoco.util.StringUtil;
 import com.duan.musicoco.view.bezier.BezierImpl;
 import com.duan.musicoco.view.bezier.Gummy;
+
+import java.io.IOException;
 
 /**
  * Created by DuanJiaNing on 2017/5/27.
@@ -40,6 +37,7 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
         AlbumVisualizer.OnUpdateVisualizerListener {
 
     private static final String TAG = "AlbumVisualizerSurfaceView";
+    private final String DEFAULT_PIC = "defalut_album_pic";
 
     private int mPicWidth;
     private int mPicStrokeWidth = 10;
@@ -64,15 +62,19 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
     private int defaultColor;
     private int[] colors;
 
+    private BitmapCache cache;
+
     private final int START_SPIN = 1;
 
     private final int STOP_SPIN = 2;
 
     private final int VISUALIZER_UPDATE = 3;
 
+    private final int INVALIDATE = 4;
+
     private int lot = 40;
 
-    //调用构造函数之后，应立即调用 createSurface 创建 Surface。
+    //调用构造函数之后，应及时调用 createSurface 创建 Surface。
     public AlbumVisualizerSurfaceView(Context context) {
         super(context);
         this.context = context;
@@ -86,6 +88,19 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
                 defaultColor,
                 defaultColor
         };
+
+        cache = new BitmapCache(context);
+        try {
+            cache.getCacheControl().delete();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        cache = new BitmapCache(context);
+
+        Bitmap defaultPic = BitmapUtil.bitmapResizeFromResource(context.getResources(), R.mipmap.default_album_pic, mPicWidth, mPicWidth);
+        Bitmap br = BitmapUtil.jpgTopng(defaultPic, context);
+        mCurrentPic = BitmapUtil.getCircleBitmap(br);
+        cache.add(StringUtil.stringToMd5(DEFAULT_PIC), mCurrentPic);
 
     }
 
@@ -123,7 +138,7 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
         gummy.setInnerLineLengthForAll(radius);
 
         mDrawThread = new DrawThread();
-        mCurrentPic = getAlbumPic(mCurrentSong);
+        updateAlbumPic(mCurrentSong);
         mDrawThread.start();
 
         setSong(mCurrentSong);
@@ -149,21 +164,31 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
         mDrawThread.getHandler().sendEmptyMessage(STOP_SPIN);
     }
 
-    private Bitmap getAlbumPic(SongInfo song) {
-        Bitmap defaultPic = BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_album_pic);
+    //缓存中有专辑图片则加载，没有则使用默认，同时压缩图片尺寸
+    private void updateAlbumPic(SongInfo song) {
+
         if (song != null && song.getAlbum_path() != null) {
-            mCurrentPic = BitmapFactory.decodeFile(mCurrentSong.getAlbum_path());
+
+            String key = StringUtil.stringToMd5(song.getAlbum_path());
+
+            Bitmap result = cache.get(key);
+
+            if (result == null) { //处理
+                Bitmap b = BitmapUtil.bitmapResizeFromFile(mCurrentSong.getAlbum_path(), mPicWidth, mPicWidth);
+                Bitmap bm = BitmapUtil.jpgTopng(b, context);
+                result = BitmapUtil.getCircleBitmap(bm);
+            } else {
+                mCurrentPic = result;
+                return;
+            }
+
+            if (result != null) {
+                cache.add(key, result);
+                mCurrentPic = result;
+            }
         } else {
-            mCurrentPic = defaultPic;
+            mCurrentPic = cache.get(StringUtil.stringToMd5(DEFAULT_PIC));
         }
-
-        //mCurrentSong.getAlbum_path() 可能解析失败
-        if (mCurrentPic == null) {
-            ToastUtil.showToast(context, "专辑图片解析失败");
-            mCurrentPic = Bitmap.createBitmap(defaultPic);
-        }
-
-        return mCurrentPic;
     }
 
     //确保在 surfaceCreated 和 surfaceDestroyed 之间调用
@@ -171,7 +196,8 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
         if (song != null)
             mCurrentSong = song;
 
-        mCurrentPic = BitmapUtil.toRoundBitmap(getAlbumPic(song));
+        updateAlbumPic(song);
+
         ColorUtils.getColorFormBitmap(mCurrentPic, defaultColor, colors);
 
         gummy.setColor(colors[0]);
@@ -182,10 +208,16 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
             colorAnim = ObjectAnimator.ofArgb(gummy, "color", colors);
             colorAnim.setRepeatCount(ValueAnimator.INFINITE);
             colorAnim.setRepeatMode(ValueAnimator.REVERSE);
-            colorAnim.setDuration(60 * 1000 * 2);
+            colorAnim.setDuration(60 * 1000 * 4); //4 分钟
+            colorAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    mDrawThread.getHandler().sendEmptyMessage(INVALIDATE);
+                }
+            });
         }
 
-        mDrawThread.repaint();
+        mDrawThread.getHandler().sendEmptyMessage(INVALIDATE);
 
     }
 
@@ -202,7 +234,7 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
             rotateAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
-                    mDrawThread.repaint();
+                    mDrawThread.getHandler().sendEmptyMessage(INVALIDATE);
                 }
             });
 
@@ -244,6 +276,10 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
                     break;
                 case VISUALIZER_UPDATE:
                     gummy.setOutLineLength(0, lengths);
+                    mDrawThread.repaint();
+                    break;
+                case INVALIDATE:
+                    mDrawThread.repaint();
                     break;
             }
         }
@@ -254,15 +290,15 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
     public void updateVisualizer(byte[] data, int rate) {
 
         lengths = new float[lot / 2];
+        int enlarge = 2;
 
-//        lengths[0] = (byte) Math.abs(data[0]);
         lengths[0] = 0;
         for (int i = 2, j = 1; j < lengths.length; ) {
             float a = data[i];
             float b = data[i + 1];
             //强转会直接为 0 ？？？？ (> x <)
             double d = Math.sqrt(a * a + b * b);
-            lengths[j] = (float) d + 100;
+            lengths[j] = (float) d * enlarge;
             i += 2;
             j++;
 
