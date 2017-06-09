@@ -90,12 +90,6 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
         };
 
         cache = new BitmapCache(context);
-        try {
-            cache.getCacheControl().delete();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        cache = new BitmapCache(context);
 
         Bitmap defaultPic = BitmapUtil.bitmapResizeFromResource(context.getResources(), R.mipmap.default_album_pic, mPicWidth, mPicWidth);
         Bitmap br = BitmapUtil.jpgTopng(defaultPic, context);
@@ -290,7 +284,8 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
     public void updateVisualizer(byte[] data, int rate) {
 
         lengths = new float[lot / 2];
-        int enlarge = 2;
+        //放大频谱
+        int enlarge = 4;
 
         lengths[0] = 0;
         for (int i = 2, j = 1; j < lengths.length; ) {
