@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.duan.musicoco.aidl.Song;
 
@@ -36,6 +37,7 @@ public class PlayPreference {
         editor.commit();
     }
 
+    @Nullable
     public Song getCurrntSong() {
         String pa = preferences.getString(KEY_CURRENT_SONG, null);
         Song song = new Song(pa);

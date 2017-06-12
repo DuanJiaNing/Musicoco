@@ -18,10 +18,4 @@ public interface PresenterContract extends BasePresenter {
     //歌曲切换
     void songChanged(Song song);
 
-    //打开 频谱监听器
-    void turnOnVisualizer();
-
-    //关闭 频谱监听器
-    void turnOffVisualizer();
-
 }

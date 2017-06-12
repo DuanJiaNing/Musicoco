@@ -20,8 +20,6 @@ public class VisualizerPresenter implements PresenterContract {
 
     private IPlayControl control;
 
-    private AlbumVisualizer mVisualizer;
-
     public VisualizerPresenter(Context context, IPlayControl control, ViewContract fragment) {
         this.context = context;
         this.fragmentView = fragment;
@@ -29,8 +27,6 @@ public class VisualizerPresenter implements PresenterContract {
 
         fragmentView.setPresenter(this);
 
-        mVisualizer = new AlbumVisualizer();
-        mVisualizer.setUpdateVisualizerListener(fragmentView.getVisualizerListener());
     }
 
     @Override
@@ -39,7 +35,6 @@ public class VisualizerPresenter implements PresenterContract {
 
             if (control.status() == PlayController.STATUS_PLAYING) {
                 startPlay();
-                turnOnVisualizer();
             }
 
         } catch (RemoteException e) {
@@ -52,42 +47,16 @@ public class VisualizerPresenter implements PresenterContract {
     public void startPlay() {
         fragmentView.startSpin();
         //FIXME Visualizer 导致 ANR
-        turnOnVisualizer();
     }
 
     @Override
     public void stopPlay() {
         fragmentView.stopSpin();
-        turnOffVisualizer();
     }
 
     @Override
     public void songChanged(Song song) {
         fragmentView.songChanged(song);
-    }
-
-    @Override
-    public void turnOnVisualizer() {
-        try {
-
-            final int sessionid = control.getAudioSessionId();
-
-            //采样周期 即隔多久采样一次
-            final int rate = Visualizer.getMaxCaptureRate() / 2;
-            final int size = 128;
-
-            mVisualizer.startListen(sessionid, rate,size);
-
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void turnOffVisualizer() {
-        mVisualizer.stopListen();
     }
 
 }

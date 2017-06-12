@@ -2,7 +2,6 @@ package com.duan.musicoco.service;
 
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.service.notification.NotificationListenerService;
 import android.util.Log;
 
 import com.duan.musicoco.aidl.Song;
@@ -20,9 +19,11 @@ import java.util.Random;
 
 public class PlayController {
 
+    private static final String TAG = "PlayController";
+
     private Context context;
 
-    private int mCurrentSong;
+    private int mCurrentSong = 0;
 
     private int mPlayState;
 
@@ -82,6 +83,10 @@ public class PlayController {
         this.mNotifyStatusChanged = sl;
         mPlayState = STATUS_STOP;
 
+        if (songs.size() == 0) {
+            Log.e(TAG, "PlayController: the play list is empty");
+        }
+
         mPlayer = new MediaPlayer();
         mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -128,7 +133,7 @@ public class PlayController {
 
     //当前正在播放曲目
     public Song getCurrentSong() {
-        return mPlayList.get(mCurrentSong);
+        return mPlayList.size() == 0 ? null : mPlayList.get(mCurrentSong);
     }
 
     public int getCurrentSongIndex() {

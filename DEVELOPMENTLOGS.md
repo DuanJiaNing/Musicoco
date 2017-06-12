@@ -53,3 +53,8 @@
 
 1 添加 BitmapCache 缓存类<br>
 2 添加 BitmapUtils 中的 jpgTopng<br>
+
+- 2017-06-12
+
+- 在 AlbumVisualizerSurfaceView 中移除 AlbumVisualizer 以及 Gummy 部分<br>
+- 处理设备中没有歌曲文件时的情况<br>

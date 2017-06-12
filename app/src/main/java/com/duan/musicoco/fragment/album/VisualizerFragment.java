@@ -88,8 +88,4 @@ public class VisualizerFragment extends Fragment implements ViewContract {
             albumView.startSpin();
     }
 
-    @Override
-    public AlbumVisualizer.OnUpdateVisualizerListener getVisualizerListener() {
-        return albumView;
-    }
 }

@@ -21,7 +21,4 @@ public interface ViewContract extends BaseView<PresenterContract> {
     //activity 从暂停或停止状态恢复是恢复展台状态
     void updateSpinner();
 
-    //获得频谱监听者
-    AlbumVisualizer.OnUpdateVisualizerListener getVisualizerListener();
-
 }

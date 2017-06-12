@@ -65,6 +65,8 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     private SeekBar mSeekBar;
 
     private ImageButton play;
+    private ImageButton pre;
+    private ImageButton next;
 
     private FragmentManager fragmentManager;
 
@@ -156,15 +158,12 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     public void startPlay(Song song, int index, int status) {
         startUpdateProgressTask();
 
-        visualizerPresenter.turnOnVisualizer();
-
     }
 
     @Override
     public void stopPlay(Song song, int index, int status) {
         cancelUpdateProgressTask();
 
-        visualizerPresenter.turnOffVisualizer();
     }
 
     private TimerTask progressUpdateTask;
@@ -217,7 +216,18 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
     private void initSelfData() {
 
-        SongInfo info = MediaManager.getInstance().getSongInfo(new PlayPreference(this).getCurrntSong(), this);
+        Song song = null;
+        try {
+            song = mServiceConnection.takeControl().currentSong();
+            if (song == null) {
+                mediaResIsEmpty();
+                return;
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+        SongInfo info = MediaManager.getInstance().getSongInfo(song, this);
         int duration = (int) info.getDuration();
         mDuration.setText(Util.getGenTime(duration));
         mPlayProgress.setText("00:00");
@@ -236,13 +246,30 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
     }
 
+    private void mediaResIsEmpty() {
+        mDuration.setText("00:00");
+        mPlayProgress.setText("00:00");
+        play.setImageResource(playOrPause[0]);
+        visualizerPresenter = new VisualizerPresenter(this, mServiceConnection.takeControl(), visualizerFragment);
+        lyricPresenter = new LyricPresenter(this, lyricFragment, this);
+        listPresenter = new ListPresenter(this, listFragment, this);
+
+        play.setEnabled(false);
+        pre.setEnabled(false);
+        next.setEnabled(false);
+        mSeekBar.setEnabled(false);
+
+    }
+
     @Override
     public void initViews(@Nullable View view, Object obj) {
         mPlayProgress = (TextView) findViewById(R.id.play_progress);
         mDuration = (TextView) findViewById(R.id.play_duration);
         mSeekBar = (SeekBar) findViewById(R.id.play_seekBar);
-        findViewById(R.id.play_pre_song).setOnClickListener(this);
-        findViewById(R.id.play_next_song).setOnClickListener(this);
+        pre = (ImageButton) findViewById(R.id.play_pre_song);
+        pre.setOnClickListener(this);
+        next = (ImageButton) findViewById(R.id.play_next_song);
+        next.setOnClickListener(this);
         findViewById(R.id.play_show_list).setOnClickListener(this);
         play = (ImageButton) findViewById(R.id.play_song);
         play.setOnClickListener(this);

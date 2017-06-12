@@ -32,7 +32,7 @@ public class PlayService extends Service {
         List<Song> songs = new ArrayList<>();
 
         //获得播放列表
-        //TODO 替换获取方式
+        //TODO 替换获取方式，从配置文件读取当前播放列表及当前播放曲目
         HashSet<SongInfo> infos = MediaManager.getInstance().refreshData(getApplicationContext());
         for (SongInfo i : infos) {
             Song s = new Song(i.getData());
