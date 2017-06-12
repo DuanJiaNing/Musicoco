@@ -186,19 +186,6 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
 
         public DrawHandler(Looper looper) {
             super(looper);
-            rotateAnim = ObjectAnimator.ofInt(0, 360);
-            rotateAnim.setInterpolator(new LinearInterpolator());
-            rotateAnim.setRepeatCount(ValueAnimator.INFINITE);
-            rotateAnim.setRepeatMode(ValueAnimator.RESTART);
-            rotateAnim.setDuration(40000);
-            rotateAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    rotateAngle = (int) animation.getAnimatedValue();
-                    mDrawThread.getHandler().sendEmptyMessage(INVALIDATE);
-                }
-            });
-
         }
 
         @Override
@@ -259,6 +246,20 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
 
         @Override
         public void run() {
+
+            rotateAnim = ObjectAnimator.ofInt(0, 360);
+            rotateAnim.setInterpolator(new LinearInterpolator());
+            rotateAnim.setRepeatCount(ValueAnimator.INFINITE);
+            rotateAnim.setRepeatMode(ValueAnimator.RESTART);
+            rotateAnim.setDuration(40000);
+            rotateAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    rotateAngle = (int) animation.getAnimatedValue();
+                    repaint();
+                }
+            });
+
             Looper.prepare();
             mLooper = Looper.myLooper();
             handler = new DrawHandler(Looper.myLooper());
@@ -272,8 +273,6 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
                 return;
 
             mCanvas.drawColor(Color.WHITE);
-
-            //计算出贝塞尔曲线上的点并绘制
 
             //绘制专辑图片
             drawAlbumPic();
