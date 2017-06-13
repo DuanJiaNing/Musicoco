@@ -1,6 +1,8 @@
 package com.duan.musicoco.fragment.album;
 
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,16 +10,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
+import android.widget.ImageSwitcher;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ViewSwitcher;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.media.MediaManager;
 import com.duan.musicoco.media.SongInfo;
 import com.duan.musicoco.play.AlbumPicture;
+import com.duan.musicoco.play.PictureBuilder;
 import com.duan.musicoco.preference.PlayPreference;
 
 /**
@@ -32,11 +37,11 @@ public class VisualizerFragment extends Fragment implements ViewContract {
 
     private View view;
 
-    private ImageView albumView;
+    private ImageSwitcher albumView;
+
+    private AlbumPicture albumPicture;
 
     private boolean isSpin = false;
-
-    private RotateAnimation rotateAnimation;
 
     @Nullable
     @Override
@@ -61,16 +66,17 @@ public class VisualizerFragment extends Fragment implements ViewContract {
     @Override
     public void initViews(@Nullable View view, Object obj) {
 
-        albumView = (ImageView) view.findViewById(R.id.play_album_image);
-        albumView.post(new Runnable() {
+        albumView = (ImageSwitcher) view.findViewById(R.id.play_album_is);
+        albumView.setInAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
+        albumView.setOutAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
+        albumPicture = new AlbumPicture(getActivity(), albumView);
+        albumView.setFactory(new ViewSwitcher.ViewFactory() {
             @Override
-            public void run() {
-                rotateAnimation = new RotateAnimation(0, 360, albumView.getMeasuredWidth() / 2, albumView.getMeasuredHeight() / 2);
-                rotateAnimation.setFillAfter(true);
-                rotateAnimation.setDuration(1000 * 40);
-                rotateAnimation.setInterpolator(new LinearInterpolator());
-                rotateAnimation.setRepeatCount(Animation.INFINITE);
-                rotateAnimation.setRepeatMode(Animation.RESTART);
+            public View makeView() {
+                ImageView imageView = new ImageView(getActivity());
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                imageView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                return imageView;
             }
         });
 
@@ -78,15 +84,15 @@ public class VisualizerFragment extends Fragment implements ViewContract {
 
     @Override
     public void startSpin() {
-        albumView.startAnimation(rotateAnimation);
         isSpin = true;
     }
 
     @Override
     public void stopSpin() {
-        rotateAnimation.cancel();
         isSpin = false;
     }
+
+    Bitmap def;
 
     @Override
     public void songChanged(Song song) {
@@ -96,11 +102,15 @@ public class VisualizerFragment extends Fragment implements ViewContract {
             return;
 
         int r = (Math.min(albumView.getMeasuredHeight(), albumView.getMeasuredWidth()) * 4) / 5;
-        new AlbumPicture.Builder(getActivity(), r, info.getAlbum_path())
+        if (def == null)
+            def = BitmapFactory.decodeResource(getActivity().getResources(), R.mipmap.default_album_pic);
+
+        PictureBuilder build = new PictureBuilder(getActivity(), r, info.getAlbum_path(), def)
                 .resize()
                 .jpg2png()
                 .toRoundBitmap()
-                .build(albumView);
+                .build();
+        albumPicture.next(build);
 
     }
 

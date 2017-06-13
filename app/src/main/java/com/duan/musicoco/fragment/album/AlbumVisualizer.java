@@ -16,7 +16,7 @@ public class AlbumVisualizer {
 
     public interface OnUpdateVisualizerListener {
         /**
-         * Visualizer 采用数据回调
+         * Album 采用数据回调
          *
          * @param data 数据
          * @param rate 采样速率

@@ -22,7 +22,7 @@ import android.view.animation.LinearInterpolator;
 import com.duan.musicoco.R;
 import com.duan.musicoco.cache.BitmapCache;
 import com.duan.musicoco.media.SongInfo;
-import com.duan.musicoco.util.BitmapUtil;
+import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.StringUtil;
 
@@ -30,9 +30,9 @@ import com.duan.musicoco.util.StringUtil;
  * Created by DuanJiaNing on 2017/5/27.
  */
 
-public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHolder.Callback,Visualizer {
+public class AlbumAlbumSurfaceView extends SurfaceView implements SurfaceHolder.Callback,Album {
 
-    private static final String TAG = "AlbumVisualizerSurfaceView";
+    private static final String TAG = "AlbumAlbumSurfaceView";
     private final String DEFAULT_PIC = "defalut_album_pic";
 
     private int mPicWidth;
@@ -67,7 +67,7 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
     private final int INVALIDATE = 4;
 
     //调用构造函数之后，应及时调用 createSurface 创建 Surface。
-    public AlbumVisualizerSurfaceView(Context context) {
+    public AlbumAlbumSurfaceView(Context context) {
         super(context);
         this.context = context;
 
@@ -81,18 +81,18 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
 
         cache = new BitmapCache(context);
 
-        Bitmap defaultPic = BitmapUtil.bitmapResizeFromResource(context.getResources(), R.mipmap.default_album_pic, mPicWidth, mPicWidth);
-        Bitmap br = BitmapUtil.jpgTopng(defaultPic, context);
-        mCurrentPic = BitmapUtil.getCircleBitmap(br);
+        Bitmap defaultPic = BitmapUtils.bitmapResizeFromResource(context.getResources(), R.mipmap.default_album_pic, mPicWidth, mPicWidth);
+        Bitmap br = BitmapUtils.jpgTopng(defaultPic, context);
+        mCurrentPic = BitmapUtils.getCircleBitmap(br);
         cache.add(StringUtil.stringToMd5(DEFAULT_PIC), mCurrentPic);
 
     }
 
-    public AlbumVisualizerSurfaceView(Context context, AttributeSet attrs) {
+    public AlbumAlbumSurfaceView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public AlbumVisualizerSurfaceView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public AlbumAlbumSurfaceView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
     }
@@ -155,9 +155,9 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
             Bitmap result = cache.get(key);
 
             if (result == null) { //处理
-                Bitmap b = BitmapUtil.bitmapResizeFromFile(mCurrentSong.getAlbum_path(), mPicWidth, mPicWidth);
-                Bitmap bm = BitmapUtil.jpgTopng(b, context);
-                result = BitmapUtil.getCircleBitmap(bm);
+                Bitmap b = BitmapUtils.bitmapResizeFromFile(mCurrentSong.getAlbum_path(), mPicWidth, mPicWidth);
+                Bitmap bm = BitmapUtils.jpgTopng(b, context);
+                result = BitmapUtils.getCircleBitmap(bm);
             } else {
                 mCurrentPic = result;
                 return;

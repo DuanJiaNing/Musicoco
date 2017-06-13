@@ -46,7 +46,7 @@ public class VisualizerPresenter implements PresenterContract {
     @Override
     public void startPlay() {
         fragmentView.startSpin();
-        //FIXME Visualizer 导致 ANR
+        //FIXME Album 导致 ANR
     }
 
     @Override

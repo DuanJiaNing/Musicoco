@@ -2,90 +2,74 @@ package com.duan.musicoco.play;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
-import android.view.View;
-import android.widget.ImageView;
+import android.support.annotation.NonNull;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
+import android.widget.ImageSwitcher;
 
-import com.duan.musicoco.util.BitmapUtil;
+import com.duan.musicoco.view.Album;
 
 /**
  * Created by DuanJiaNing on 2017/6/13.
  */
 
-public class AlbumPicture {
+public class AlbumPicture implements Album {
 
-    public static class Builder {
-        private int radius = 0;
-        private Bitmap bitmap;
-        private String path;
-        private Context context;
+    private ImageSwitcher view;
 
-        public Builder(Context context, int radius, String fillPath) {
-            this.radius = radius;
-            this.path = fillPath;
-            this.context = context;
-        }
+    private final Context context;
 
-        public Builder resize() {
-            bitmap = BitmapUtil.bitmapResizeFromFile(path, radius * 2, radius * 2);
-            return this;
-        }
+    private Animation rotateAnim;
 
-        /**
-         * 如果需要生成的图片拥有透明层（png），则确保在此之前调用 {@link #jpg2png()} 方法
-         */
-        public Builder toRoundBitmap() {
-            check();
-            bitmap = BitmapUtil.getCircleBitmap(bitmap);
-            return this;
-        }
+    public AlbumPicture(Context context, ImageSwitcher view) {
+        this.view = view;
+        this.context = context;
 
-        public Builder jpg2png() {
-            check();
-            bitmap = BitmapUtil.jpgTopng(bitmap, context);
-            return this;
-        }
+        rotateAnim = new RotateAnimation(0, 360, view.getWidth() / 2, view.getHeight() / 2);
+        rotateAnim.setFillAfter(true);
+        rotateAnim.setDuration(1000 * 40);
+        rotateAnim.setInterpolator(new LinearInterpolator());
+        rotateAnim.setRepeatCount(Animation.INFINITE);
+        rotateAnim.setRepeatMode(Animation.RESTART);
 
-        private void check() {
-            if (bitmap == null) {
-                bitmap = BitmapFactory.decodeFile(path);
-            }
-        }
+    }
 
-        //在外面画一个圈 FIXME
-        public Builder addOuterCircle(int strokeWidth, int color) {
-            check();
+    public void pre(@NonNull PictureBuilder pictureBuilder) {
+        Bitmap bitmap = pictureBuilder.getBitmap();
+        view.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
+    }
 
-            radius += strokeWidth;
+    public void pre(@NonNull Bitmap bitmap) {
+        view.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
+    }
 
-            Paint paint = new Paint();
-            paint.setColor(color);
-            paint.setAntiAlias(true);
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(strokeWidth);
+    public void next(@NonNull PictureBuilder pictureBuilder) {
+        Bitmap bitmap = pictureBuilder.getBitmap();
+        view.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
+    }
 
-            Canvas canvas = new Canvas(bitmap);
-            canvas.drawCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, radius, paint);
+    public void next(@NonNull Bitmap bitmap) {
+        view.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
+    }
 
-            return this;
-        }
+    public void setRotateAnim(Animation anim) {
+        if (anim == null)
+            return;
 
-        public void build(View view) {
-            check();
-            if (view instanceof ImageView) {
-                ((ImageView) view).setImageBitmap(bitmap);
-            } else
-                view.setBackground(new BitmapDrawable(context.getResources(), bitmap));
-        }
+        this.rotateAnim = anim;
+    }
 
-        public Bitmap build() {
-            check();
-            return bitmap;
-        }
+    @Override
+    public void startSpin() {
+        view.startAnimation(rotateAnim);
+    }
 
+    @Override
+    public void stopSpin() {
+        if (rotateAnim.hasStarted())
+            rotateAnim.cancel();
     }
 
 }

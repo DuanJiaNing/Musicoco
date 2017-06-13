@@ -21,7 +21,7 @@ import java.io.IOException;
  * Created by ai on 2016/11/27.
  */
 
-public class BitmapUtil {
+public class BitmapUtils {
     /**
      * 转换图片成圆形
      *
@@ -91,30 +91,36 @@ public class BitmapUtil {
             return null;
         }
         try {
-            Bitmap circleBitmap = Bitmap.createBitmap(bitmap.getWidth(),
-                    bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            Bitmap circleBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(circleBitmap);
+
             final Paint paint = new Paint();
-            final Rect rect = new Rect(0, 0, bitmap.getWidth(),
-                    bitmap.getHeight());
-            final RectF rectF = new RectF(new Rect(0, 0, bitmap.getWidth(),
-                    bitmap.getHeight()));
-            float roundPx = 0.0f;
-            // 以较短的边为标准
-            if (bitmap.getWidth() > bitmap.getHeight()) {
-                roundPx = bitmap.getHeight() / 2.0f;
-            } else {
-                roundPx = bitmap.getWidth() / 2.0f;
-            }
             paint.setAntiAlias(true);
+
+            float radius = Math.min(bitmap.getWidth(), bitmap.getHeight()) / 2.0f;
+
+            //绘制透明底
             canvas.drawARGB(0, 0, 0, 0);
+
+            //绘制背景圆
             paint.setColor(Color.WHITE);
-            canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+            canvas.drawCircle(bitmap.getWidth() / 2, bitmap.getHeight() / 2, radius, paint);
+
+            //取两层绘制交集。显示上层。
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-            final Rect src = new Rect(0, 0, bitmap.getWidth(),
-                    bitmap.getHeight());
-            canvas.drawBitmap(bitmap, src, rect, paint);
+
+            //绘制图片并取交集，显示上层
+            //取中间区域绘制
+            int left = (int) ((bitmap.getWidth() - radius) / 2);
+            int right = (int) (left + radius);
+            int top = (int) ((bitmap.getHeight() - radius) / 2);
+            int bottom = (int) (top + radius);
+            Rect rect = new Rect(left, top, right, bottom);
+            RectF rectf = new RectF(left, top, right, bottom);
+            canvas.drawBitmap(bitmap, rect, rectf, paint);
+
             return circleBitmap;
+
         } catch (Exception e) {
             return bitmap;
         }

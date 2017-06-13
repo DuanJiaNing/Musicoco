@@ -5,9 +5,8 @@
     android:gravity="center"
     android:id="@+id/play_album_visualizer_contain"
     >
-    <ImageView
-        android:scaleType="centerInside"
-        android:id="@+id/play_album_image"
+    <ImageSwitcher
+        android:id="@+id/play_album_is"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />

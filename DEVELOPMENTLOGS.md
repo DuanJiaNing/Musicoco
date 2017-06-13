@@ -58,3 +58,10 @@
 
 - 在 AlbumVisualizerSurfaceView 中移除 AlbumVisualizer 以及 Gummy 部分<br>
 - 处理设备中没有歌曲文件时的情况<br>
+
+- 2017-06-12
+
+1 修改播放界面整体 UI <br>
+2 添加 AlbumPicture 和 PictureBuilder 类<br>
+3 修改 BitmapUtils 中的 getCircleBitmap 方法 <br>
+**2 3 还没测试**
