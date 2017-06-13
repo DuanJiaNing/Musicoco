@@ -18,4 +18,6 @@
     <dimen name="text_default">16sp</dimen>
     <dimen name="text_large">24sp</dimen>
 
+    <dimen name="play_more_radius">15dp</dimen>
+
 </resources>

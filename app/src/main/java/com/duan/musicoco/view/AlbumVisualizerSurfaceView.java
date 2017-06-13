@@ -30,14 +30,14 @@ import com.duan.musicoco.util.StringUtil;
  * Created by DuanJiaNing on 2017/5/27.
  */
 
-public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
+public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHolder.Callback,Visualizer {
 
     private static final String TAG = "AlbumVisualizerSurfaceView";
     private final String DEFAULT_PIC = "defalut_album_pic";
 
     private int mPicWidth;
     private int mStrokeWidth = 13;
-    private int mStroke2Width = 2;
+    private int mStroke2Width = 10;
     private int colorGray;
 
     private int centerX;
@@ -100,11 +100,11 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
     //当 Surface 被 destory 之后或在第一次创建时，调用该方法创建 Surface
     public void createSurface(SongInfo info) {
         this.mCurrentSong = info;
-
         //获得持有者
         mHolder = this.getHolder();
         //注册功能
         mHolder.addCallback(this);
+
         setZOrderOnTop(true);//使surfaceview放到最顶层
         mHolder.setFormat(PixelFormat.TRANSLUCENT);//使窗口支持透明度
     }
@@ -134,11 +134,13 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
     }
 
     //确保在 surfaceCreated 和 surfaceDestroyed 之间调用
+    @Override
     public void startSpin() {
         mDrawThread.getHandler().sendEmptyMessage(START_SPIN);
     }
 
     //确保在 surfaceCreated 和 surfaceDestroyed 之间调用
+    @Override
     public void stopSpin() {
         mDrawThread.getHandler().sendEmptyMessage(STOP_SPIN);
     }

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/play_main_fl"
+    android:id="@+id/play_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -15,15 +15,17 @@
         android:gravity="center">
 
         <ImageButton
-            android:id="@+id/play_ib"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:src="@drawable/play_more"
+            android:id="@+id/play_more"
+            android:layout_width="47dp"
+            android:layout_height="46dp"
             android:layout_alignParentEnd="true"
-            android:layout_marginRight="@dimen/activity_default_margin"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.49" />
+            app:layout_constraintVertical_bias="0.485"
+            tools:layout_editor_absoluteX="321dp" />
 
         <TextSwitcher
             android:id="@+id/play_ts_song_name"

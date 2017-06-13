@@ -2,7 +2,9 @@ package com.duan.musicoco.play;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
@@ -35,6 +38,8 @@ import com.duan.musicoco.fragment.lyric.LyricFragment;
 import com.duan.musicoco.fragment.lyric.LyricPresenter;
 import com.duan.musicoco.media.MediaManager;
 import com.duan.musicoco.media.SongInfo;
+import com.duan.musicoco.preference.AppPreference;
+import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.util.StringUtil;
 import com.duan.musicoco.util.Util;
@@ -60,6 +65,8 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
     private FrameLayout mFragmentContainer;
 
+    private LinearLayout rootView;
+
     private TextView mPlayProgress;
     private TextView mDuration;
 
@@ -71,6 +78,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     private ImageButton play;
     private ImageButton pre;
     private ImageButton next;
+    private ImageButton more;
 
     private FragmentManager fragmentManager;
 
@@ -80,6 +88,10 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     };
 
     private boolean isFragmentAniming = false;
+
+    private int rootColor = Color.WHITE;
+    private int viceTextColor = Color.DKGRAY;
+    private int mainTextColor = Color.BLACK;
 
     public PlayActivity() {
         mServiceConnection = new PlayServiceConnection(this, this);
@@ -166,6 +178,34 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     public void stopPlay(Song song, int index, int status) {
         cancelUpdateProgressTask();
 
+    }
+
+    public void setThemeMode(Theme themeMode) {
+        switch (themeMode) {
+            case WHITE:
+                break;
+            case VARYING:
+                //TODO
+                break;
+            case DARKGOLD:
+            default:
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    rootColor = getColor(R.color.colorAccent);
+                    viceTextColor = getColor(R.color.colorPrimaryDark);
+                    mainTextColor = getColor(R.color.colorPrimary);
+                } else {
+                    rootColor = getResources().getColor(R.color.colorAccent);
+                    viceTextColor = getResources().getColor(R.color.colorPrimaryDark);
+                    mainTextColor = getResources().getColor(R.color.colorPrimary);
+                }
+
+                rootView.setBackgroundColor(rootColor);
+                mPlayProgress.setTextColor(viceTextColor);
+                mDuration.setTextColor(viceTextColor);
+
+                break;
+        }
     }
 
     private TimerTask progressUpdateTask;
@@ -269,17 +309,30 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
     @Override
     public void initViews(@Nullable View view, Object obj) {
+        //初始控件
+        rootView = (LinearLayout) findViewById(R.id.play_root);
         mPlayProgress = (TextView) findViewById(R.id.play_progress);
         mDuration = (TextView) findViewById(R.id.play_duration);
         mSeekBar = (SeekBar) findViewById(R.id.play_seekBar);
         songName = (TextSwitcher) findViewById(R.id.play_ts_song_name);
         songArts = (TextSwitcher) findViewById(R.id.play_ts_song_arts);
+        pre = (ImageButton) findViewById(R.id.play_pre_song);
+        next = (ImageButton) findViewById(R.id.play_next_song);
+        play = (ImageButton) findViewById(R.id.play_song);
+        more = (ImageButton) findViewById(R.id.play_more);
+        mFragmentContainer = (FrameLayout) findViewById(R.id.play_fragment_container);
+
+        //设置主题
+        setThemeMode(new AppPreference(this).getTheme());
+
+        //设置属性
         songName.setFactory(new ViewSwitcher.ViewFactory() {
             @Override
             public View makeView() {
                 TextView text = (TextView) getLayoutInflater().inflate(R.layout.play_name, null);
                 Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/name.TTF");
                 text.setTypeface(tf);
+                text.setTextColor(mainTextColor);
                 return text;
             }
         });
@@ -289,16 +342,14 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
                 TextView text = (TextView) getLayoutInflater().inflate(R.layout.play_arts, null);
                 Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/arts.TTF");
                 text.setTypeface(tf);
+                text.setTextColor(viceTextColor);
                 return text;
             }
         });
-        pre = (ImageButton) findViewById(R.id.play_pre_song);
         pre.setOnClickListener(this);
-        next = (ImageButton) findViewById(R.id.play_next_song);
         next.setOnClickListener(this);
-        play = (ImageButton) findViewById(R.id.play_song);
         play.setOnClickListener(this);
-        mFragmentContainer = (FrameLayout) findViewById(R.id.play_fragment_container);
+        more.setOnClickListener(this);
         mFragmentContainer.setOnTouchListener(new View.OnTouchListener() {
             private float y;
             private float dis = 70;
@@ -424,6 +475,11 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
+                break;
+            case R.id.play_more:
+                Toast.makeText(this, "click", Toast.LENGTH_SHORT).show();
+                break;
+            default:
                 break;
         }
     }
