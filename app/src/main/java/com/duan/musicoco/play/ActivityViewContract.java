@@ -20,10 +20,6 @@ public interface ActivityViewContract extends BaseView<BasePresenter> {
 
     void disConnected();
 
-    void hideListFragment();
-
-    void showListFragment();
-
     void showLyricFragment();
 
     void hideLyricFragment();

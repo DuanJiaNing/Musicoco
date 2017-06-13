@@ -1,4 +1,4 @@
-package com.duan.musicoco.fragment.list;
+package com.duan.musicoco.list;
 
 import com.duan.musicoco.BasePresenter;
 

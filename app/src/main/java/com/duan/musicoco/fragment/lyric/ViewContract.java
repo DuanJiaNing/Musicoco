@@ -10,8 +10,8 @@ import com.duan.musicoco.BaseView;
 
 public interface ViewContract extends BaseView<PresenterContract> {
 
-    void showFragment(Animation.AnimationListener f);
+    void showFragment();
 
-    void hideFragment(Animation.AnimationListener f);
+    void hideFragment();
 
 }

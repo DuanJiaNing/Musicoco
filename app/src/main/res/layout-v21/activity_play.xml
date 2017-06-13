@@ -1,39 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/play_main_fl"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <android.support.constraint.ConstraintLayout
+        android:layout_marginTop="@dimen/status_bar_height"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:gravity="center"
-        android:layout_weight="0.2">
+        android:layout_weight="0.15"
+        android:gravity="center">
 
         <ImageButton
-            android:layout_alignParentEnd="true"
+            android:id="@+id/play_ib"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="@dimen/activity_default_margin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.49" />
 
         <TextSwitcher
             android:id="@+id/play_ts_song_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="47dp"
             android:inAnimation="@android:anim/fade_in"
             android:minHeight="@dimen/play_song_name_minSize"
-            android:outAnimation="@android:anim/fade_out" />
+            android:outAnimation="@android:anim/fade_out"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
         <TextSwitcher
             android:id="@+id/play_ts_song_arts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/play_ts_song_name"
+            android:layout_alignStart="@+id/play_ts_song_name"
+            android:layout_below="@+id/play_ts_song_name"
+            android:layout_marginTop="8dp"
             android:inAnimation="@android:anim/fade_in"
             android:minHeight="@dimen/play_song_name_minSize"
             android:outAnimation="@android:anim/fade_out"
-            android:layout_below="@+id/play_ts_song_name"
-            android:layout_alignLeft="@+id/play_ts_song_name"
-            android:layout_alignStart="@+id/play_ts_song_name" />
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/play_ts_song_name" />
 
     </android.support.constraint.ConstraintLayout>
 
@@ -41,16 +58,14 @@
         android:id="@+id/play_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.6" />
+        android:layout_weight="0.55" />
 
     <LinearLayout
+        android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="@dimen/activity_default_margin"
-        android:layout_marginLeft="@dimen/activity_default_margin"
-        android:layout_marginRight="@dimen/activity_default_margin"
-        android:layout_weight="0.4"
-        android:gravity="center"
+        android:layout_weight="0.3"
+        android:gravity="center|top"
         android:orientation="vertical">
 
         <RelativeLayout

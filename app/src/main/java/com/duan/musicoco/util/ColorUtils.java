@@ -48,7 +48,7 @@ public class ColorUtils {
      * @param defaultColor 默认颜色
      * @return 大小为 6 的数组
      */
-    public static void getColorFormBitmap(@NonNull Bitmap bitmap, int defaultColor,int[] colors) {
+    public static void getColorFormBitmap(@NonNull Bitmap bitmap, int defaultColor, int[] colors) {
 
         if (colors.length != 6)
             return;
@@ -88,6 +88,80 @@ public class ColorUtils {
             color = swatch.getRgb();
         else color = defaultColor;
         colors[5] = color;
+
+    }
+
+    /**
+     * 获得图片中出现最多的颜色
+     * 0 亮的活力颜色
+     * 1 亮的柔和颜色
+     *
+     * @param bitmap       图片
+     * @param defaultColor 默认颜色
+     * @return 大小为 2 的数组
+     */
+    public static void get2ColorFormBitmap(@NonNull Bitmap bitmap, int defaultColor, int[] colors) {
+
+        if (colors.length != 2)
+            return;
+
+        Palette palette;
+        palette = new Palette.Builder(bitmap).generate();
+
+        Palette.Swatch swatch;
+        int color;
+
+        if ((swatch = palette.getLightVibrantSwatch()) != null)
+            color = swatch.getRgb();
+        else color = defaultColor;
+        colors[0] = color;
+
+        if ((swatch = palette.getLightMutedSwatch()) != null)
+            color = swatch.getRgb();
+        else color = defaultColor;
+        colors[1] = color;
+
+    }
+
+    /**
+     * 获得图片中出现最多的颜色
+     * 0 亮的活力颜色
+     * 1 亮的活力颜色 对应适合的字体颜色
+     * 2 亮的柔和颜色
+     * 3 亮的柔和颜色 对应适合的字体颜色
+     *
+     * @param bitmap       图片
+     * @param defaultColor 默认颜色
+     * @return 大小为 4 的数组
+     */
+    public static void get2ColorWithTextFormBitmap(@NonNull Bitmap bitmap, int defaultColor, int defaultTextColor, int[] colors) {
+
+        if (colors.length != 4)
+            return;
+
+        Palette palette;
+        palette = new Palette.Builder(bitmap).generate();
+
+        Palette.Swatch swatch;
+        int color = defaultColor;
+        int textColor = defaultTextColor;
+
+        if ((swatch = palette.getLightVibrantSwatch()) != null) {
+            color = swatch.getRgb();
+            textColor = swatch.getTitleTextColor();
+        }
+        colors[0] = color;
+        colors[1] = textColor;
+
+        color = defaultColor;
+        textColor = defaultTextColor;
+
+        if ((swatch = palette.getLightMutedSwatch()) != null) {
+            color = swatch.getRgb();
+            textColor = swatch.getTitleTextColor();
+        }
+        colors[2] = color;
+        colors[3] = textColor;
 
     }
 }

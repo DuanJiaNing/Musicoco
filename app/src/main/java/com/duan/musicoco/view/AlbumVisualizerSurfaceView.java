@@ -7,6 +7,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
@@ -34,11 +36,12 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
     private final String DEFAULT_PIC = "defalut_album_pic";
 
     private int mPicWidth;
-    private int mStrokeWidth = 10;
+    private int mStrokeWidth = 13;
+    private int mStroke2Width = 2;
+    private int colorGray;
 
     private int centerX;
     private int centerY;
-
 
     private SurfaceHolder mHolder;
 
@@ -48,7 +51,6 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
 
     private int rotateAngle;
     private ValueAnimator rotateAnim;
-    private ValueAnimator colorAnim;
 
     private SongInfo mCurrentSong;
     private Bitmap mCurrentPic;
@@ -71,13 +73,11 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
 
         defaultColor = context.getResources().getColor(R.color.colorPrimary);
         colors = new int[]{
-                defaultColor,
-                defaultColor,
-                defaultColor,
-                defaultColor,
-                defaultColor,
-                defaultColor
+                defaultColor, // 亮的活力颜色
+                defaultColor, // 亮的柔和颜色
         };
+
+        colorGray = Color.parseColor("#69e1e1e1");
 
         cache = new BitmapCache(context);
 
@@ -105,12 +105,14 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
         mHolder = this.getHolder();
         //注册功能
         mHolder.addCallback(this);
+        setZOrderOnTop(true);//使surfaceview放到最顶层
+        mHolder.setFormat(PixelFormat.TRANSLUCENT);//使窗口支持透明度
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
 
-        mPicWidth = (getWidth() * 3) / 5;
+        mPicWidth = (Math.min(getHeight(), getWidth()) * 4) / 5;
         centerX = getWidth() / 2;
         centerY = getHeight() / 2;
 
@@ -175,12 +177,11 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
 
         updateAlbumPic(song);
 
-        ColorUtils.getColorFormBitmap(mCurrentPic, defaultColor, colors);
+        ColorUtils.get2ColorFormBitmap(mCurrentPic, defaultColor, colors);
 
         mDrawThread.getHandler().sendEmptyMessage(INVALIDATE);
 
     }
-
 
     private class DrawHandler extends Handler {
 
@@ -198,13 +199,6 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
                         }
                     } else rotateAnim.start();
 
-                    if (colorAnim != null) {
-                        if (colorAnim.isStarted()) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                colorAnim.resume();
-                            }
-                        } else colorAnim.start();
-                    }
                     break;
                 case STOP_SPIN:
                     if (rotateAnim.isRunning())
@@ -212,14 +206,6 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
                             rotateAnim.pause();
                         } else
                             rotateAnim.cancel();
-
-                    if (colorAnim != null) {
-                        if (colorAnim.isRunning()) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                colorAnim.pause();
-                            }
-                        } else colorAnim.cancel();
-                    }
 
                     break;
                 case INVALIDATE:
@@ -272,7 +258,10 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
             if (mCanvas == null)
                 return;
 
-            mCanvas.drawColor(Color.WHITE);
+            mCanvas.save();
+            mCanvas.rotate(rotateAngle, centerX, centerY);
+
+            mCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
             //绘制专辑图片
             drawAlbumPic();
@@ -280,9 +269,22 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
             //绘制专辑图片四周的描边
             mPaint.setStyle(Paint.Style.STROKE);
             mPaint.setStrokeWidth(mStrokeWidth);
-            mPaint.setColor(colors[1]);
+            int color = defaultColor;
+            for (int c : colors) {
+                if (c != defaultColor) {
+                    color = c;
+                    break;
+                }
+            }
+            mPaint.setColor(color);
+            mCanvas.drawCircle(centerX, centerY, mPicWidth / 2, mPaint);
+
+            //绘制描边外围的灰边
+            mPaint.setStrokeWidth(mStroke2Width);
+            mPaint.setColor(colorGray);
             mCanvas.drawCircle(centerX, centerY, mPicWidth / 2 + mStrokeWidth, mPaint);
 
+            mCanvas.restore();
             mHolder.unlockCanvasAndPost(mCanvas);
         }
 
@@ -292,11 +294,8 @@ public class AlbumVisualizerSurfaceView extends SurfaceView implements SurfaceHo
             int right = left + mPicWidth;
             int bottom = top + mPicWidth;
             Rect des = new Rect(left, top, right, bottom);
-            mCanvas.save();
-            mCanvas.rotate(rotateAngle, centerX, centerY);
+            mPaint.setColor(Color.WHITE);
             mCanvas.drawBitmap(mCurrentPic, null, des, mPaint);
-            mCanvas.restore();
-
         }
 
         private DrawHandler getHandler() {

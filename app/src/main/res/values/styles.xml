@@ -18,6 +18,7 @@
     <style name="AppThemePlay" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:textAllCaps">false</item>
         <item name="colorControlHighlight">@color/white</item>
+        <item name="android:windowFullscreen">true</item>
 
     </style>
 

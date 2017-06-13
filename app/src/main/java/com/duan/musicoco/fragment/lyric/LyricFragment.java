@@ -44,17 +44,11 @@ public class LyricFragment extends Fragment implements ViewContract, View.OnClic
     }
 
     @Override
-    public void showFragment(Animation.AnimationListener f) {
-        Animation show = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_in_top);
-        show.setAnimationListener(f);
-        view.startAnimation(show);
+    public void showFragment() {
     }
 
     @Override
-    public void hideFragment(Animation.AnimationListener f) {
-        Animation hide = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_top);
-        hide.setAnimationListener(f);
-        view.startAnimation(hide);
+    public void hideFragment() {
     }
 
     @Override
