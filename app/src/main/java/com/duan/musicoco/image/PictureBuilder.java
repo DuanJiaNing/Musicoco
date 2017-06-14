@@ -1,4 +1,4 @@
-package com.duan.musicoco.play;
+package com.duan.musicoco.image;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -14,32 +14,49 @@ import com.duan.musicoco.util.BitmapUtils;
 
 public class PictureBuilder {
 
-    private int radius = 0;
-    private String path;
-    private Bitmap bitM;
-    private final Bitmap defaultBitmap;
-    private Context context;
+    private int radius = -1;
 
-    public PictureBuilder(Context context, int radius, String fillPath, Bitmap defaultBitmap) {
-        this.radius = radius;
-        this.path = fillPath;
+    private String path;
+
+    private Bitmap bitM;
+
+    private final Context context;
+
+    private final Bitmap defaultBitmap;
+
+    private final Paint paint;
+
+    public PictureBuilder(Context context, Bitmap defaultBitmap) {
         this.context = context;
         this.defaultBitmap = defaultBitmap;
+        this.paint = new Paint();
+        paint.setAntiAlias(true);
     }
 
-    public PictureBuilder resize() {
+    public PictureBuilder setPath(String fillPath) {
+        this.path = fillPath;
+        return this;
+    }
+
+    /**
+     * 等长等宽进行压缩
+     *
+     * @param size 长度
+     */
+    public PictureBuilder resize(int size) {
+        this.radius = size;
         bitM = BitmapUtils.bitmapResizeFromFile(path, radius * 2, radius * 2);
         return this;
     }
 
+    /**
+     * 长宽不等进行压缩
+     */
     public PictureBuilder resize(int reqWidth, int reqHeight) {
         bitM = BitmapUtils.bitmapResizeFromFile(path, reqWidth, reqHeight);
         return this;
     }
 
-    /**
-     * 如果需要生成的图片拥有透明层（png），则确保在此之前调用 {@link #jpg2png()} 方法
-     */
     public PictureBuilder toRoundBitmap() {
         bitM = BitmapUtils.getCircleBitmap(check());
         return this;
@@ -50,10 +67,6 @@ public class PictureBuilder {
         return this;
     }
 
-    private Bitmap check() {
-        return bitM == null ? defaultBitmap : bitM;
-    }
-
     /**
      * 在图片外面绘制圆圈，该方法不应该与{@link #resize(int, int)}一起使用
      *
@@ -62,24 +75,32 @@ public class PictureBuilder {
      * @param color       圆圈颜色
      */
     public PictureBuilder addOuterCircle(int space, int strokeWidth, int color) {
-        check();
-
-        radius += strokeWidth;
-
-        Paint paint = new Paint();
-        paint.setColor(color);
-        paint.setAntiAlias(true);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(strokeWidth);
 
         Bitmap b = check();
-        Canvas canvas = new Canvas(b);
-        canvas.drawCircle(b.getWidth() / 2, b.getHeight() / 2, radius, paint);
+
+        int radius = Math.max(b.getWidth(), b.getHeight()) / 2;
+
+        int newWidth = b.getWidth() + space * 2 + strokeWidth * 2;
+        int newHeight = b.getHeight() + space * 2 + strokeWidth * 2;
+
+        Bitmap temp = Bitmap.createBitmap(newWidth, newHeight, Bitmap.Config.ARGB_8888);
+        int cx = temp.getWidth() / 2;
+        int cy = temp.getHeight() / 2;
+
+        Canvas canvas = new Canvas(temp);
+        canvas.drawBitmap(b, cx - b.getWidth() / 2, cy - b.getHeight() / 2, paint);
+
+        paint.setColor(color);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(strokeWidth);
+        canvas.drawCircle(cx, cy, radius + space, paint);
+
+        bitM = temp;
 
         return this;
     }
 
-    public PictureBuilder build(){
+    public PictureBuilder build() {
         return this;
     }
 
@@ -87,4 +108,18 @@ public class PictureBuilder {
         return check();
     }
 
+    public Bitmap getDefaultBitmap() {
+        return defaultBitmap;
+    }
+
+    private Bitmap check() {
+        return bitM == null ? defaultBitmap : bitM;
+    }
+
+    public void reset() {
+
+        radius = -1;
+
+        setPath(null);
+    }
 }

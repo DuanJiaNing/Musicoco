@@ -19,5 +19,6 @@
     <dimen name="text_large">24sp</dimen>
 
     <dimen name="play_more_radius">15dp</dimen>
+    <dimen name="play_album_padding">25dp</dimen>
 
 </resources>

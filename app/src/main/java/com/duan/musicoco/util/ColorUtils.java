@@ -93,8 +93,8 @@ public class ColorUtils {
 
     /**
      * 获得图片中出现最多的颜色
-     * 0 亮的活力颜色
-     * 1 亮的柔和颜色
+     * 0 暗的活力颜色
+     * 1 暗的柔和颜色
      *
      * @param bitmap       图片
      * @param defaultColor 默认颜色
@@ -111,12 +111,12 @@ public class ColorUtils {
         Palette.Swatch swatch;
         int color;
 
-        if ((swatch = palette.getLightVibrantSwatch()) != null)
+        if ((swatch = palette.getDarkVibrantSwatch()) != null)
             color = swatch.getRgb();
         else color = defaultColor;
         colors[0] = color;
 
-        if ((swatch = palette.getLightMutedSwatch()) != null)
+        if ((swatch = palette.getDarkMutedSwatch()) != null)
             color = swatch.getRgb();
         else color = defaultColor;
         colors[1] = color;
