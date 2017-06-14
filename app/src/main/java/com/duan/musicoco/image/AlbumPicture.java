@@ -58,7 +58,7 @@ public final class AlbumPicture implements Album {
         builder = new PictureBuilder(context, def);
 
         rotateAnim = ObjectAnimator.ofFloat(view, "rotation", 0, 360);
-        rotateAnim.setDuration(40 * 1000);
+        rotateAnim.setDuration(45 * 1000);
         rotateAnim.setRepeatMode(ValueAnimator.RESTART);
         rotateAnim.setRepeatCount(ValueAnimator.INFINITE);
         rotateAnim.setInterpolator(new LinearInterpolator());
