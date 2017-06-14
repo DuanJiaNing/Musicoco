@@ -25,7 +25,7 @@
         <!--为 activity 开启硬件加速-->
         <activity
             android:name=".play.PlayActivity"
-            android:hardwareAccelerated="true"
+            android:hardwareAccelerated="false"
             android:theme="@style/AppThemePlay">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

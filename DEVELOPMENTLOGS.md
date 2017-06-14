@@ -68,3 +68,4 @@
 - 2017-06-14
 
 1 完善 AlbumPicture 和 PictureBuilder<br>
+2 添加 SkipView <br>

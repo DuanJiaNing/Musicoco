@@ -43,6 +43,7 @@ import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.util.StringUtil;
 import com.duan.musicoco.util.Util;
+import com.duan.musicoco.view.SkipView;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -76,7 +77,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     private SeekBar mSeekBar;
 
     private ImageButton play;
-    private ImageButton pre;
+    private SkipView pre;
     private ImageButton next;
     private ImageButton more;
 
@@ -316,7 +317,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         mSeekBar = (SeekBar) findViewById(R.id.play_seekBar);
         songName = (TextSwitcher) findViewById(R.id.play_ts_song_name);
         songArts = (TextSwitcher) findViewById(R.id.play_ts_song_arts);
-        pre = (ImageButton) findViewById(R.id.play_pre_song);
+        pre = (SkipView) findViewById(R.id.play_pre_song);
         next = (ImageButton) findViewById(R.id.play_next_song);
         play = (ImageButton) findViewById(R.id.play_song);
         more = (ImageButton) findViewById(R.id.play_more);

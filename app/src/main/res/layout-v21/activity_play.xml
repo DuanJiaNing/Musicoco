@@ -8,24 +8,24 @@
     android:orientation="vertical">
 
     <android.support.constraint.ConstraintLayout
-        android:layout_marginTop="@dimen/status_bar_height"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginTop="@dimen/status_bar_height"
         android:layout_weight="0.15"
         android:gravity="center">
 
         <ImageButton
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:src="@drawable/play_more"
             android:id="@+id/play_more"
             android:layout_width="47dp"
             android:layout_height="46dp"
             android:layout_alignParentEnd="true"
+            android:layout_marginRight="-1dp"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:src="@drawable/play_more"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.974"
-            android:layout_marginRight="-1dp" />
+            app:layout_constraintVertical_bias="0.974" />
 
         <TextSwitcher
             android:id="@+id/play_ts_song_name"
@@ -63,9 +63,9 @@
         android:layout_weight="0.55" />
 
     <LinearLayout
-        android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_gravity="center"
         android:layout_weight="0.3"
         android:gravity="center|top"
         android:orientation="vertical">
@@ -126,24 +126,18 @@
                 android:tint="@color/bt_tint"
                 app:srcCompat="@drawable/ic_play_arrow_white_48dp" />
 
-            <ImageButton
+            <com.duan.musicoco.view.SkipView
                 android:id="@+id/play_pre_song"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/activity_default_margin"
-                android:layout_toStartOf="@id/play_song"
-                android:backgroundTint="#00ffffff"
-                android:tint="@color/bt_tint"
-                app:srcCompat="@drawable/ic_skip_previous_black_24dp" />
-
+                android:layout_toStartOf="@id/play_song" />
 
             <ImageButton
                 android:id="@+id/play_next_song"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/activity_default_margin"
                 android:layout_toEndOf="@id/play_song"
                 android:backgroundTint="#00ffffff"
                 android:tint="@color/bt_tint"

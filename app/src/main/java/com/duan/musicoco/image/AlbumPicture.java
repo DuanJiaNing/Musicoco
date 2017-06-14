@@ -138,7 +138,8 @@ public final class AlbumPicture implements Album {
     }
 
     public Bitmap getBitmap(SongInfo info) {
-        if (info == null)
+        if (info == null || info.getAlbum_path() == null)
+            //FIXME 没有通过 build 构建
             return builder.getDefaultBitmap();
 
         String key = StringUtil.stringToMd5(info.getAlbum_path());

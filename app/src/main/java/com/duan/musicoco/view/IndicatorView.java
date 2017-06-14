@@ -491,15 +491,6 @@ public class IndicatorView extends View {
 
         }
 
-        //判断是否到达边界（速度慢）
-//        if (mIndicatorOrientation == INDICATOR_ORIENTATION_VERTICAL) {
-//            if (ey > mBorderBottom || ey < mBorderTop)
-//                return true;
-//        } else {
-//            if (ex > mBorderRight || ex < mBorderLeft)
-//                return true;
-//        }
-
         if (switchTo != switchToTemp && switchTo != mIndicatorPos) {
             if (mChangeListener != null)
                 mChangeListener.onIndicatorChange(switchTo, mIndicatorPos);
