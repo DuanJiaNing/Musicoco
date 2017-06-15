@@ -9,12 +9,10 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -32,8 +30,6 @@ import com.duan.musicoco.app.PlayServiceManager;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.fragment.album.VisualizerFragment;
 import com.duan.musicoco.fragment.album.VisualizerPresenter;
-import com.duan.musicoco.list.ListActivity;
-import com.duan.musicoco.list.ListPresenter;
 import com.duan.musicoco.fragment.lyric.LyricFragment;
 import com.duan.musicoco.fragment.lyric.LyricPresenter;
 import com.duan.musicoco.media.MediaManager;
@@ -41,9 +37,10 @@ import com.duan.musicoco.media.SongInfo;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
-import com.duan.musicoco.util.StringUtil;
 import com.duan.musicoco.util.Util;
-import com.duan.musicoco.view.SkipView;
+import com.duan.musicoco.view.media.MediaView;
+import com.duan.musicoco.view.media.PlayView;
+import com.duan.musicoco.view.media.SkipView;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -76,17 +73,12 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
     private SeekBar mSeekBar;
 
-    private ImageButton play;
+    private PlayView play;
     private SkipView pre;
-    private ImageButton next;
+    private SkipView next;
     private ImageButton more;
 
     private FragmentManager fragmentManager;
-
-    private int[] playOrPause = {
-            R.drawable.ic_play_arrow_white_48dp,
-            R.drawable.ic_pause_black_48dp
-    };
 
     private boolean isFragmentAniming = false;
 
@@ -278,8 +270,8 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         songArts.setText(info.getArtist());
 
         try {
-            int draw = mServiceConnection.takeControl().status() == PlayController.STATUS_PLAYING ? playOrPause[1] : playOrPause[0];
-            play.setImageResource(draw);
+            boolean st = mServiceConnection.takeControl().status() == PlayController.STATUS_PLAYING;
+            play.setPlayStatus(st);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -292,7 +284,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     private void mediaResIsEmpty() {
         mDuration.setText("00:00");
         mPlayProgress.setText("00:00");
-        play.setImageResource(playOrPause[0]);
+        play.setPlayStatus(false);
 
         //FIXME
         visualizerPresenter = new VisualizerPresenter(this, mServiceConnection.takeControl(), visualizerFragment);
@@ -318,8 +310,8 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         songName = (TextSwitcher) findViewById(R.id.play_ts_song_name);
         songArts = (TextSwitcher) findViewById(R.id.play_ts_song_arts);
         pre = (SkipView) findViewById(R.id.play_pre_song);
-        next = (ImageButton) findViewById(R.id.play_next_song);
-        play = (ImageButton) findViewById(R.id.play_song);
+        next = (SkipView) findViewById(R.id.play_next_song);
+        play = (PlayView) findViewById(R.id.play_song);
         more = (ImageButton) findViewById(R.id.play_more);
         mFragmentContainer = (FrameLayout) findViewById(R.id.play_fragment_container);
 
@@ -467,11 +459,11 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
                     if (stat == PlayController.STATUS_PLAYING) {
                         mServiceConnection.takeControl().pause();
                         visualizerPresenter.stopPlay();
-                        ((ImageButton) v).setImageResource(playOrPause[0]);
+                        ((PlayView) v).setPlayStatus(false);
                     } else {
                         mServiceConnection.takeControl().resume();
                         visualizerPresenter.startPlay();
-                        ((ImageButton) v).setImageResource(playOrPause[1]);
+                        ((PlayView) v).setPlayStatus(true);
                     }
                 } catch (RemoteException e) {
                     e.printStackTrace();

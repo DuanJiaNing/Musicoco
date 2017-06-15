@@ -116,33 +116,51 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <ImageButton
+            <com.duan.musicoco.view.media.PlayView
                 android:id="@+id/play_song"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:background="?android:selectableItemBackgroundBorderless"
-                android:padding="@dimen/activity_default_padding"
-                android:tint="@color/bt_tint"
-                app:srcCompat="@drawable/ic_play_arrow_white_48dp" />
+                android:rotation="180"
 
-            <com.duan.musicoco.view.SkipView
+                app:pauseLineDistance="10dp"
+                app:pauseLineHeight="40dp"
+                app:pauseLineWidth="10dp"
+                app:radius="40dp"
+                app:shadowRadius="15dp"
+                app:triangleHeight="40dp"
+                app:triangleHollow="false"
+                app:triangleRadius="5dp"
+                app:triangleStroke="5dp" />
+
+            <com.duan.musicoco.view.media.SkipView
                 android:id="@+id/play_pre_song"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_centerVertical="true"
-                android:layout_toStartOf="@id/play_song" />
+                android:layout_marginRight="20dp"
+                android:layout_toStartOf="@id/play_song"
 
-            <ImageButton
+                app:shadowRadius="10dp"
+                app:radius="30dp"
+                app:rectRadius="2dp"
+                app:strokeWidth="1px"
+                app:triangleRadius="3dp" />
+
+            <com.duan.musicoco.view.media.SkipView
                 android:id="@+id/play_next_song"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
                 android:layout_toEndOf="@id/play_song"
-                android:backgroundTint="#00ffffff"
-                android:tint="@color/bt_tint"
-                app:srcCompat="@drawable/ic_skip_next_black_24dp" />
+                android:rotation="180"
 
+                app:shadowRadius="10dp"
+                app:radius="30dp"
+                app:rectRadius="2dp"
+                app:strokeWidth="1px"
+                app:triangleRadius="3dp" />
 
         </RelativeLayout>
 
