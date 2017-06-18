@@ -14,19 +14,6 @@
         android:layout_weight="0.15"
         android:gravity="center">
 
-        <ImageButton
-            android:id="@+id/play_more"
-            android:layout_width="47dp"
-            android:layout_height="46dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginRight="-1dp"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:src="@drawable/play_more"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.974" />
-
         <TextSwitcher
             android:id="@+id/play_ts_song_name"
             android:layout_width="wrap_content"
@@ -60,7 +47,20 @@
         android:id="@+id/play_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.55" />
+        android:layout_weight="0.55" >
+        <ImageButton
+            android:layout_marginRight="@dimen/activity_default_margin"
+            android:layout_marginTop="@dimen/activity_default_margin"
+            android:layout_gravity="right"
+            android:id="@+id/play_more"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:src="@drawable/play_more"
+            />
+
+    </FrameLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -73,7 +73,6 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/activity_default_margin"
             android:layout_marginLeft="@dimen/activity_default_margin_2x"
             android:layout_marginRight="@dimen/activity_default_margin_2x">
 
@@ -119,48 +118,53 @@
             <com.duan.musicoco.view.media.PlayView
                 android:id="@+id/play_song"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_centerInParent="true"
                 android:rotation="180"
 
+                app:strokeWidth="1px"
                 app:pauseLineDistance="10dp"
-                app:pauseLineHeight="40dp"
                 app:pauseLineWidth="10dp"
                 app:radius="40dp"
-                app:shadowRadius="15dp"
-                app:triangleHeight="40dp"
-                app:triangleHollow="false"
+                app:shadowRadius="8dp"
+                app:triangleHeight="45dp"
                 app:triangleRadius="5dp"
-                app:triangleStroke="5dp" />
+                />
 
             <com.duan.musicoco.view.media.SkipView
                 android:id="@+id/play_pre_song"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="20dp"
                 android:layout_toStartOf="@id/play_song"
 
-                app:shadowRadius="10dp"
-                app:radius="30dp"
-                app:rectRadius="2dp"
-                app:strokeWidth="1px"
-                app:triangleRadius="3dp" />
+                app:distance="-5dp"
+                app:innerLineWidth="5dp"
+                app:innerLineRadius="5dp"
+                app:shadowRadius="8dp"
+                app:radius="35dp"
+                app:strokeWidth="0px"
+                app:triangleHeight="30dp"
+                app:triangleRadius="5dp"
+                />
 
             <com.duan.musicoco.view.media.SkipView
                 android:id="@+id/play_next_song"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="20dp"
                 android:layout_toEndOf="@id/play_song"
                 android:rotation="180"
 
-                app:shadowRadius="10dp"
-                app:radius="30dp"
-                app:rectRadius="2dp"
-                app:strokeWidth="1px"
-                app:triangleRadius="3dp" />
+                app:distance="-5dp"
+                app:innerLineWidth="5dp"
+                app:innerLineRadius="5dp"
+                app:shadowRadius="8dp"
+                app:radius="35dp"
+                app:strokeWidth="0px"
+                app:triangleHeight="30dp"
+                app:triangleRadius="5dp"
+                />
 
         </RelativeLayout>
 

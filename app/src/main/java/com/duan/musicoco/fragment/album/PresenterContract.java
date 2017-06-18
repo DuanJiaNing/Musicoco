@@ -16,6 +16,7 @@ public interface PresenterContract extends BasePresenter {
     void stopPlay();
 
     //歌曲切换
-    void songChanged(Song song);
+    //dir 为 0 为上一曲，为 1 为下一曲
+    void songChanged(Song song,int dir);
 
 }

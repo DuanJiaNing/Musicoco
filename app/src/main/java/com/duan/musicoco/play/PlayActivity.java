@@ -38,7 +38,6 @@ import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.util.Util;
-import com.duan.musicoco.view.media.MediaView;
 import com.duan.musicoco.view.media.PlayView;
 import com.duan.musicoco.view.media.SkipView;
 
@@ -52,7 +51,6 @@ import java.util.TimerTask;
 public class PlayActivity extends RootActivity implements ActivityViewContract, View.OnClickListener {
 
     private final PlayServiceConnection mServiceConnection;
-    private final PlayServiceManager mServiceManager;
     private final MediaManager mediaManager;
 
     private VisualizerFragment visualizerFragment;
@@ -65,30 +63,25 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
     private LinearLayout rootView;
 
-    private TextView mPlayProgress;
-    private TextView mDuration;
+    private TextView tvPlayProgress;
+    private TextView tvDuration;
 
-    private TextSwitcher songName;
-    private TextSwitcher songArts;
+    private TextSwitcher tsSongName;
+    private TextSwitcher tsSongArts;
 
-    private SeekBar mSeekBar;
+    private SeekBar sbSongProgress;
 
-    private PlayView play;
-    private SkipView pre;
-    private SkipView next;
-    private ImageButton more;
+    private PlayView btPlay;
+    private SkipView btPre;
+    private SkipView btNext;
+    private ImageButton btMore;
 
     private FragmentManager fragmentManager;
 
     private boolean isFragmentAniming = false;
 
-    private int rootColor = Color.WHITE;
-    private int viceTextColor = Color.DKGRAY;
-    private int mainTextColor = Color.BLACK;
-
     public PlayActivity() {
         mServiceConnection = new PlayServiceConnection(this, this);
-        mServiceManager = new PlayServiceManager(this, mServiceConnection);
         mediaManager = MediaManager.getInstance();
     }
 
@@ -148,23 +141,53 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
     @Override
     public void songChanged(Song song, int index) {
-        visualizerPresenter.songChanged(song);
+        visualizerPresenter.songChanged(song, index > tempIndex ? 1 : 0);
 
         SongInfo info = MediaManager.getInstance().getSongInfo(song, this);
         int duration = (int) info.getDuration();
-        mDuration.setText(Util.getGenTime(duration));
-        mPlayProgress.setText("00:00");
-        mSeekBar.setMax(duration);
+        tvDuration.setText(Util.getGenTime(duration));
+        tvPlayProgress.setText("00:00");
+        sbSongProgress.setMax(duration);
 
-        songName.setText(info.getTitle());
-        songArts.setText(info.getArtist());
+        tsSongName.setText(info.getTitle());
+        tsSongArts.setText(info.getArtist());
+
+        updateColors(visualizerFragment.getCurrColors());
+    }
+
+    /**
+     * 0 暗的活力颜色 主背景色<br>
+     * 1 暗的活力颜色 对应适合的字体颜色 主字体色<br>
+     * 2 暗的柔和颜色 辅背景色<br>
+     * 3 暗的柔和颜色 对应适合的字体颜色 辅字体色<br>
+     */
+    private void updateColors(int[] colors) {
+        if (colors.length != 4)
+            return;
+
+        ((TextView)(tsSongName.getCurrentView())).setTextColor(colors[1]);
+        ((TextView)(tsSongArts.getCurrentView())).setTextColor(colors[3]);
+
+        rootView.setBackgroundColor(colors[0]);
+
+        tvPlayProgress.setTextColor(colors[3]);
+        tvDuration.setTextColor(colors[3]);
+
+        btPre.setTriangleColor(colors[1]);
+        btNext.setTriangleColor(colors[1]);
+
+        btPlay.setTriangleColor(colors[1]);
+        btPlay.setStrokeColor(colors[1]);
+        btPlay.setPauseLineColor(colors[1]);
 
     }
+
+    private int tempIndex;
 
     @Override
     public void startPlay(Song song, int index, int status) {
         startUpdateProgressTask();
-
+        tempIndex = index;
     }
 
     @Override
@@ -173,7 +196,11 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
     }
 
+    //设置主题风格
     public void setThemeMode(Theme themeMode) {
+
+        int colors[] = new int[4];
+
         switch (themeMode) {
             case WHITE:
                 break;
@@ -182,23 +209,20 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
                 break;
             case DARKGOLD:
             default:
-
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    rootColor = getColor(R.color.colorAccent);
-                    viceTextColor = getColor(R.color.colorPrimaryDark);
-                    mainTextColor = getColor(R.color.colorPrimary);
+                    colors[0] = getColor(R.color.colorAccent); //主背景色
+                    colors[1] = getColor(R.color.colorPrimary); // 主字体色
+                    colors[2] = colors[0];
+                    colors[3] = getColor(R.color.colorPrimaryDark); // 辅字体色
                 } else {
-                    rootColor = getResources().getColor(R.color.colorAccent);
-                    viceTextColor = getResources().getColor(R.color.colorPrimaryDark);
-                    mainTextColor = getResources().getColor(R.color.colorPrimary);
+                    colors[0] = getResources().getColor(R.color.colorAccent);
+                    colors[1] = getResources().getColor(R.color.colorPrimary);
+                    colors[2] = colors[0];
+                    colors[3] = getResources().getColor(R.color.colorPrimaryDark);
                 }
-
-                rootView.setBackgroundColor(rootColor);
-                mPlayProgress.setTextColor(viceTextColor);
-                mDuration.setTextColor(viceTextColor);
-
                 break;
         }
+        updateColors(colors);
     }
 
     private TimerTask progressUpdateTask;
@@ -220,8 +244,8 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
                     public void run() {
                         try {
                             progress = mServiceConnection.takeControl().getProgress();
-                            mSeekBar.setProgress(progress);
-                            mPlayProgress.setText(Util.getGenTime(progress));
+                            sbSongProgress.setProgress(progress);
+                            tvPlayProgress.setText(Util.getGenTime(progress));
 
                         } catch (RemoteException e) {
                             e.printStackTrace();
@@ -263,15 +287,15 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
         SongInfo info = MediaManager.getInstance().getSongInfo(song, this);
         int duration = (int) info.getDuration();
-        mDuration.setText(Util.getGenTime(duration));
-        mPlayProgress.setText("00:00");
-        mSeekBar.setMax(duration);
-        songName.setText(info.getTitle());
-        songArts.setText(info.getArtist());
+        tvDuration.setText(Util.getGenTime(duration));
+        tvPlayProgress.setText("00:00");
+        sbSongProgress.setMax(duration);
+        tsSongName.setText(info.getTitle());
+        tsSongArts.setText(info.getArtist());
 
         try {
             boolean st = mServiceConnection.takeControl().status() == PlayController.STATUS_PLAYING;
-            play.setPlayStatus(st);
+            btPlay.setPlayStatus(st);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -282,67 +306,67 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     }
 
     private void mediaResIsEmpty() {
-        mDuration.setText("00:00");
-        mPlayProgress.setText("00:00");
-        play.setPlayStatus(false);
+        tvDuration.setText("00:00");
+        tvPlayProgress.setText("00:00");
+        btPlay.setPlayStatus(false);
 
         //FIXME
         visualizerPresenter = new VisualizerPresenter(this, mServiceConnection.takeControl(), visualizerFragment);
         lyricPresenter = new LyricPresenter(this, lyricFragment, this);
 
-        play.setEnabled(false);
-        pre.setEnabled(false);
-        next.setEnabled(false);
-        mSeekBar.setEnabled(false);
+        btPlay.setEnabled(false);
+        btPre.setEnabled(false);
+        btNext.setEnabled(false);
+        sbSongProgress.setEnabled(false);
 
-        songName.setText("");
-        songArts.setText("");
+        tsSongName.setText("");
+        tsSongArts.setText("");
 
     }
 
     @Override
     public void initViews(@Nullable View view, Object obj) {
+
         //初始控件
         rootView = (LinearLayout) findViewById(R.id.play_root);
-        mPlayProgress = (TextView) findViewById(R.id.play_progress);
-        mDuration = (TextView) findViewById(R.id.play_duration);
-        mSeekBar = (SeekBar) findViewById(R.id.play_seekBar);
-        songName = (TextSwitcher) findViewById(R.id.play_ts_song_name);
-        songArts = (TextSwitcher) findViewById(R.id.play_ts_song_arts);
-        pre = (SkipView) findViewById(R.id.play_pre_song);
-        next = (SkipView) findViewById(R.id.play_next_song);
-        play = (PlayView) findViewById(R.id.play_song);
-        more = (ImageButton) findViewById(R.id.play_more);
+        tvPlayProgress = (TextView) findViewById(R.id.play_progress);
+        tvDuration = (TextView) findViewById(R.id.play_duration);
+        sbSongProgress = (SeekBar) findViewById(R.id.play_seekBar);
+        tsSongName = (TextSwitcher) findViewById(R.id.play_ts_song_name);
+        tsSongArts = (TextSwitcher) findViewById(R.id.play_ts_song_arts);
+        btPre = (SkipView) findViewById(R.id.play_pre_song);
+        btNext = (SkipView) findViewById(R.id.play_next_song);
+        btPlay = (PlayView) findViewById(R.id.play_song);
+        btMore = (ImageButton) findViewById(R.id.play_more);
         mFragmentContainer = (FrameLayout) findViewById(R.id.play_fragment_container);
 
-        //设置主题
-        setThemeMode(new AppPreference(this).getTheme());
-
         //设置属性
-        songName.setFactory(new ViewSwitcher.ViewFactory() {
+        tsSongName.setFactory(new ViewSwitcher.ViewFactory() {
             @Override
             public View makeView() {
                 TextView text = (TextView) getLayoutInflater().inflate(R.layout.play_name, null);
                 Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/name.TTF");
                 text.setTypeface(tf);
-                text.setTextColor(mainTextColor);
                 return text;
             }
         });
-        songArts.setFactory(new ViewSwitcher.ViewFactory() {
+        tsSongArts.setFactory(new ViewSwitcher.ViewFactory() {
             @Override
             public View makeView() {
                 TextView text = (TextView) getLayoutInflater().inflate(R.layout.play_arts, null);
                 Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/arts.TTF");
                 text.setTypeface(tf);
-                text.setTextColor(viceTextColor);
                 return text;
             }
         });
-        pre.setOnClickListener(this);
-        next.setOnClickListener(this);
-        play.setOnClickListener(this);
-        more.setOnClickListener(this);
+
+        //设置主题
+        setThemeMode(new AppPreference(this).getTheme());
+
+        btPre.setOnClickListener(this);
+        btNext.setOnClickListener(this);
+        btPlay.setOnClickListener(this);
+        btMore.setOnClickListener(this);
         mFragmentContainer.setOnTouchListener(new View.OnTouchListener() {
             private float y;
             private float dis = 70;
@@ -378,14 +402,14 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
             }
         });
 
-        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        sbSongProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int pos;
             boolean change = false;
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 pos = progress;
-                mPlayProgress.setText(Util.getGenTime(progress));
+                tvPlayProgress.setText(Util.getGenTime(progress));
                 change = true;
 
             }

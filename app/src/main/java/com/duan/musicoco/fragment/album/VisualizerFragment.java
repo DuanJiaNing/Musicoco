@@ -36,6 +36,9 @@ public class VisualizerFragment extends Fragment implements ViewContract {
 
     private AlbumPicture albumPicture;
 
+    // PlayActivity 需要改颜色数组
+    private int[] currColors = new int[4];
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -79,7 +82,7 @@ public class VisualizerFragment extends Fragment implements ViewContract {
             public void run() {
                 albumPicture = new AlbumPicture(getActivity(), albumView);
                 Song song = new PlayPreference(getActivity()).getCurrntSong();
-                songChanged(song);
+                songChanged(song,1);
             }
         });
 
@@ -96,11 +99,15 @@ public class VisualizerFragment extends Fragment implements ViewContract {
     }
 
     @Override
-    public void songChanged(Song song) {
+    public void songChanged(Song song, int dir) {
         SongInfo info = song == null ? null : MediaManager.getInstance().getSongInfo(song, getActivity());
         if (info == null)
             return;
-        albumPicture.pre(info);
+
+        if (dir == 0)
+            currColors = albumPicture.pre(info);
+        else
+            currColors = albumPicture.next(info);
 
     }
 
@@ -110,4 +117,7 @@ public class VisualizerFragment extends Fragment implements ViewContract {
             startSpin();
     }
 
+    public int[] getCurrColors() {
+        return currColors;
+    }
 }

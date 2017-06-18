@@ -7,9 +7,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageSwitcher;
 
@@ -20,6 +24,7 @@ import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.StringUtil;
 import com.duan.musicoco.view.Album;
 
+import java.io.IOException;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -49,13 +54,43 @@ public final class AlbumPicture implements Album {
 
     private int ran = 0;
 
+    private int defaultColor = Color.DKGRAY;
+    private int defaultTextColor = Color.DKGRAY;
+    private int[] colors;
+
+    public final static String DEFAULT_PIC_KEY = "default_pic_key";
+
     public AlbumPicture(Context context, ImageSwitcher view) {
         this.view = view;
         this.context = context;
         this.cache = new BitmapCache(context);
 
-        Bitmap def = BitmapFactory.decodeResource(context.getResources(), R.mipmap.default_album_pic);
-        builder = new PictureBuilder(context, def);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            defaultColor = context.getColor(R.color.colorPrimaryLight);
+            defaultTextColor = context.getColor(R.color.colorAccent);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            defaultColor = context.getResources().getColor(R.color.colorPrimaryLight, null);
+            defaultTextColor = context.getResources().getColor(R.color.colorAccent, null);
+        } else {
+            defaultColor = context.getResources().getColor(R.color.colorPrimaryLight);
+            defaultTextColor = context.getResources().getColor(R.color.colorAccent);
+        }
+
+        colors = new int[]{
+                defaultColor,
+                defaultTextColor,
+                defaultColor,
+                defaultTextColor
+        };
+
+        builder = new PictureBuilder(context);
+        int r = Math.min(view.getWidth(), view.getHeight());
+        builder.resizeForDefault(r, r, R.mipmap.default_album_pic);
+        builder.toRoundBitmap();
+        ColorUtils.get2ColorWithTextFormBitmap(builder.getBitmap(), defaultColor, defaultTextColor, colors);
+        builder.addOuterCircle(0, 10, colors[0])
+                .addOuterCircle(7, 1, Color.WHITE);
+        cache.add(StringUtil.stringToMd5(DEFAULT_PIC_KEY), builder.getBitmap());
 
         rotateAnim = ObjectAnimator.ofFloat(view, "rotation", 0, 360);
         rotateAnim.setDuration(45 * 1000);
@@ -90,14 +125,32 @@ public final class AlbumPicture implements Album {
 
     }
 
-    public void pre(@NonNull SongInfo song) {
+    public int[] pre(@NonNull SongInfo song) {
+
+//        view.setInAnimation(AnimationUtils.loadAnimation(context,android.R.anim.slide_in_left));
+//        view.setOutAnimation(AnimationUtils.loadAnimation(context,android.R.anim.slide_out_right));
+
         Bitmap bitmap = getBitmap(song);
-        view.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
+        if (bitmap != null)
+            view.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
+        else
+            view.setImageResource(R.mipmap.default_pic);
+
+        return colors;
     }
 
-    public void next(@NonNull SongInfo song) {
+    public int[] next(@NonNull SongInfo song) {
+
+//        view.setInAnimation(AnimationUtils.loadAnimation(context,R.anim.slide_in_right));
+//        view.setOutAnimation(AnimationUtils.loadAnimation(context,R.anim.slide_out_left));
+
         Bitmap bitmap = getBitmap(song);
-        view.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
+        if (bitmap != null)
+            view.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
+        else
+            view.setImageResource(R.mipmap.default_pic);
+
+        return colors;
     }
 
     public void setRotateAnim(ValueAnimator anim) {
@@ -137,54 +190,54 @@ public final class AlbumPicture implements Album {
         return isSpin;
     }
 
+    @Nullable
     public Bitmap getBitmap(SongInfo info) {
+
+        Bitmap result;
+
         if (info == null || info.getAlbum_path() == null)
-            //FIXME 没有通过 build 构建
-            return builder.getDefaultBitmap();
+            result = cache.get(DEFAULT_PIC_KEY);
+        else {
 
-        String key = StringUtil.stringToMd5(info.getAlbum_path());
+            String key = StringUtil.stringToMd5(info.getAlbum_path());
 
-        Bitmap result = cache.get(key);
+            result = cache.get(key);
 
-        if (result == null) { //磁盘缓存中没有
+            if (result == null) { //磁盘缓存中没有
 
-            builder.reset();
+                builder.reset();
 
-            int r = Math.min(view.getWidth(), view.getHeight());
+                int r = Math.min(view.getWidth(), view.getHeight());
 
-            int dc = Color.BLACK;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                dc = context.getColor(R.color.colorPrimaryLight);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                dc = context.getResources().getColor(R.color.colorPrimaryLight, null);
-            } else
-                dc = context.getResources().getColor(R.color.colorPrimaryLight);
+                PictureBuilder build = builder.setPath(info.getAlbum_path())
+                        .resize(r)
+                        .toRoundBitmap()
+                        .build();
 
-            PictureBuilder build = builder.setPath(info.getAlbum_path())
-                    .resize(r)
-                    .toRoundBitmap()
-                    .build();
+                int[] colors = new int[2];
+                ColorUtils.get2ColorFormBitmap(build.getBitmap(), defaultColor, colors);
 
-            int[] colors = new int[2];
-            ColorUtils.get2ColorFormBitmap(build.getBitmap(), dc, colors);
+                int color = defaultColor;
+                for (int c : colors)
+                    if (c != defaultColor) {
+                        color = c;
+                        break;
+                    }
 
-            int color = dc;
-            for (int c : colors)
-                if (c != dc) {
-                    color = c;
-                    break;
-                }
+                Bitmap b = build.addOuterCircle(0, 10, color)
+                        .addOuterCircle(7, 1, Color.WHITE)
+                        .getBitmap();
 
-            Bitmap b = build.addOuterCircle(0, 10, color)
-                    .addOuterCircle(7, 1, Color.WHITE)
-                    .getBitmap();
-
-            if (b != null) { // 成功构建
-                cache.add(key, b);
-                result = b;
-            } else //构建失败
-                result = builder.getDefaultBitmap();
+                if (b != null) { // 成功构建
+                    cache.add(key, b);
+                    result = b;
+                } else //构建失败
+                    result = builder.getDefaultBitmap();
+            }
         }
+
+        if (result != null)
+            ColorUtils.get2ColorWithTextFormBitmap(result, defaultColor, defaultTextColor, this.colors);
 
         return result;
     }

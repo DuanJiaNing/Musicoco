@@ -93,8 +93,8 @@ public class ColorUtils {
 
     /**
      * 获得图片中出现最多的颜色
-     * 0 暗的活力颜色
-     * 1 暗的柔和颜色
+     * 0 亮的活力颜色
+     * 1 亮的柔和颜色
      *
      * @param bitmap       图片
      * @param defaultColor 默认颜色
@@ -111,12 +111,12 @@ public class ColorUtils {
         Palette.Swatch swatch;
         int color;
 
-        if ((swatch = palette.getDarkVibrantSwatch()) != null)
+        if ((swatch = palette.getLightVibrantSwatch()) != null)
             color = swatch.getRgb();
         else color = defaultColor;
         colors[0] = color;
 
-        if ((swatch = palette.getDarkMutedSwatch()) != null)
+        if ((swatch = palette.getLightMutedSwatch()) != null)
             color = swatch.getRgb();
         else color = defaultColor;
         colors[1] = color;
@@ -125,10 +125,10 @@ public class ColorUtils {
 
     /**
      * 获得图片中出现最多的颜色
-     * 0 亮的活力颜色
-     * 1 亮的活力颜色 对应适合的字体颜色
-     * 2 亮的柔和颜色
-     * 3 亮的柔和颜色 对应适合的字体颜色
+     * 0 暗的活力颜色
+     * 1 暗的活力颜色 对应适合的字体颜色
+     * 2 暗的柔和颜色
+     * 3 暗的柔和颜色 对应适合的字体颜色
      *
      * @param bitmap       图片
      * @param defaultColor 默认颜色
@@ -146,7 +146,7 @@ public class ColorUtils {
         int color = defaultColor;
         int textColor = defaultTextColor;
 
-        if ((swatch = palette.getLightVibrantSwatch()) != null) {
+        if ((swatch = palette.getDarkVibrantSwatch()) != null) {
             color = swatch.getRgb();
             textColor = swatch.getTitleTextColor();
         }
@@ -156,7 +156,7 @@ public class ColorUtils {
         color = defaultColor;
         textColor = defaultTextColor;
 
-        if ((swatch = palette.getLightMutedSwatch()) != null) {
+        if ((swatch = palette.getDarkMutedSwatch()) != null) {
             color = swatch.getRgb();
             textColor = swatch.getTitleTextColor();
         }

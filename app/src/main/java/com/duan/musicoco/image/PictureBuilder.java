@@ -22,13 +22,12 @@ public class PictureBuilder {
 
     private final Context context;
 
-    private final Bitmap defaultBitmap;
+    private Bitmap defaultBitmap;
 
     private final Paint paint;
 
-    public PictureBuilder(Context context, Bitmap defaultBitmap) {
+    public PictureBuilder(Context context) {
         this.context = context;
-        this.defaultBitmap = defaultBitmap;
         this.paint = new Paint();
         paint.setAntiAlias(true);
     }
@@ -47,6 +46,11 @@ public class PictureBuilder {
         this.radius = size;
         bitM = BitmapUtils.bitmapResizeFromFile(path, radius * 2, radius * 2);
         return this;
+    }
+
+    public void resizeForDefault(int reqWidth,int reqHeight,int resID){
+        defaultBitmap = BitmapUtils.bitmapResizeFromResource(context.getResources(),resID,reqWidth,reqHeight);
+        bitM = defaultBitmap;
     }
 
     /**

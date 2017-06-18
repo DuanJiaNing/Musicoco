@@ -55,7 +55,7 @@ public class PlayServiceConnection implements ServiceConnection {
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mView.startPlay(s, in,status);
+                        mView.startPlay(s, in, status);
                     }
                 });
             }
@@ -67,7 +67,7 @@ public class PlayServiceConnection implements ServiceConnection {
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mView.stopPlay(s, in,status);
+                        mView.stopPlay(s, in, status);
                     }
                 });
             }

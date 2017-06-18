@@ -50,7 +50,6 @@
         <attr name="indicatorDragEnable" />
         <attr name="touchEnable" />
     </declare-styleable>
-
     <!--圆的半径。长宽任一者指定具体长度时，该值失效，将自动计算出-->
     <attr name="radius" format="dimension" />
     <!-- 阴影的半径-->
@@ -66,6 +65,7 @@
         <attr name="strokeWidth" />
     </declare-styleable>
 
+
     <!-- 内三角的颜色-->
     <attr name="triangleColor" format="color" />
     <!-- 内部竖线的宽度-->
@@ -73,7 +73,7 @@
     <!--内部竖线的高度，不赋值或赋值为 0 让控件自己计算-->
     <attr name="innerLineHeight" format="dimension" />
     <!-- 内部竖线的圆角大小-->
-    <attr name="rectRadius" format="dimension" />
+    <attr name="innerLineRadius" format="dimension" />
     <!--竖线与三角形间距-->
     <attr name="distance" format="dimension" />
     <!--内部三角形的圆角大小-->
@@ -87,17 +87,18 @@
     <!-- 三角形与 x 轴平行过左边顶点的线段长度，不赋值或赋值为 0 让控件自己计算（以等边三角形计算）-->
     <attr name="triangleWidth" format="dimension" />
     <declare-styleable name="SkipView">
-        <attr name="triangleRadius" />
-        <attr name="rectRadius" />
         <attr name="distance" />
-        <attr name="triangleColor" />
-        <attr name="triangleHeight" />
+        <attr name="innerLineRadius" />
         <attr name="innerLineWidth" />
         <attr name="innerLineHeight" />
+        <attr name="triangleRadius" />
+        <attr name="triangleColor" />
+        <attr name="triangleHeight" />
         <attr name="triangleHollow" />
         <attr name="triangleStroke" />
         <attr name="triangleWidth" />
     </declare-styleable>
+
 
     <!--暂停时两条竖线的间距-->
     <attr name="pauseLineDistance" format="dimension" />
@@ -113,6 +114,8 @@
     <attr name="pauseLineHollow" format="boolean" />
     <!--暂停线空心时描边宽度-->
     <attr name="pauseLineStroke" format="dimension" />
+    <!--是否选中（播放状态）true为正在播放，此时显示可暂停状态-->
+    <attr name="checked" format="boolean" />
     <declare-styleable name="PlayView">
         <attr name="pauseLineDistance" />
         <attr name="pauseLineWidth" />
@@ -121,6 +124,7 @@
         <attr name="pauseLineColor" />
         <attr name="pauseLineHollow" />
         <attr name="pauseLineStroke" />
+        <attr name="checked" />
     </declare-styleable>
 
 </resources>
