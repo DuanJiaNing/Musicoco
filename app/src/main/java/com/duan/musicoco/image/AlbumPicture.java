@@ -87,9 +87,7 @@ public final class AlbumPicture implements Album {
         int r = Math.min(view.getWidth(), view.getHeight());
         builder.resizeForDefault(r, r, R.mipmap.default_album_pic);
         builder.toRoundBitmap();
-        ColorUtils.get2ColorWithTextFormBitmap(builder.getBitmap(), defaultColor, defaultTextColor, colors);
-        builder.addOuterCircle(0, 10, colors[0])
-                .addOuterCircle(7, 1, Color.WHITE);
+        addDefaultOuters(builder);
         cache.add(StringUtil.stringToMd5(DEFAULT_PIC_KEY), builder.getBitmap());
 
         rotateAnim = ObjectAnimator.ofFloat(view, "rotation", 0, 360);
@@ -125,10 +123,32 @@ public final class AlbumPicture implements Album {
 
     }
 
+    private void addDefaultOuters(PictureBuilder builder) {
+
+        if (builder == null || builder.getBitmap() == null)
+            return;
+
+        int[] colors = new int[2];
+        ColorUtils.get2ColorFormBitmap(builder.getBitmap(), defaultColor, colors);
+
+        int color = defaultColor;
+        for (int c : colors)
+            if (c != defaultColor) {
+                color = c;
+                break;
+            }
+
+        builder.addOuterCircle(0, 10, color)
+                .addOuterCircle(7, 1, Color.WHITE);
+    }
+
+    /**
+     * 切换歌曲的同时返回从歌曲专辑图片中提取出的四种颜色值{@link ColorUtils#get2ColorWithTextFormBitmap(Bitmap, int, int, int[])}
+     */
     public int[] pre(@NonNull SongInfo song) {
 
-//        view.setInAnimation(AnimationUtils.loadAnimation(context,android.R.anim.slide_in_left));
-//        view.setOutAnimation(AnimationUtils.loadAnimation(context,android.R.anim.slide_out_right));
+        view.setInAnimation(AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left));
+        view.setOutAnimation(AnimationUtils.loadAnimation(context, android.R.anim.slide_out_right));
 
         Bitmap bitmap = getBitmap(song);
         if (bitmap != null)
@@ -141,8 +161,8 @@ public final class AlbumPicture implements Album {
 
     public int[] next(@NonNull SongInfo song) {
 
-//        view.setInAnimation(AnimationUtils.loadAnimation(context,R.anim.slide_in_right));
-//        view.setOutAnimation(AnimationUtils.loadAnimation(context,R.anim.slide_out_left));
+        view.setInAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_in_right));
+        view.setOutAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_out_left));
 
         Bitmap bitmap = getBitmap(song);
         if (bitmap != null)
@@ -196,7 +216,7 @@ public final class AlbumPicture implements Album {
         Bitmap result;
 
         if (info == null || info.getAlbum_path() == null)
-            result = cache.get(DEFAULT_PIC_KEY);
+            result = cache.get(StringUtil.stringToMd5(DEFAULT_PIC_KEY));
         else {
 
             String key = StringUtil.stringToMd5(info.getAlbum_path());
@@ -207,32 +227,22 @@ public final class AlbumPicture implements Album {
 
                 builder.reset();
 
+                //使 宽 = 高 = r
                 int r = Math.min(view.getWidth(), view.getHeight());
 
-                PictureBuilder build = builder.setPath(info.getAlbum_path())
+                builder.setPath(info.getAlbum_path())
                         .resize(r)
                         .toRoundBitmap()
                         .build();
 
-                int[] colors = new int[2];
-                ColorUtils.get2ColorFormBitmap(build.getBitmap(), defaultColor, colors);
+                addDefaultOuters(builder);
 
-                int color = defaultColor;
-                for (int c : colors)
-                    if (c != defaultColor) {
-                        color = c;
-                        break;
-                    }
-
-                Bitmap b = build.addOuterCircle(0, 10, color)
-                        .addOuterCircle(7, 1, Color.WHITE)
-                        .getBitmap();
-
+                Bitmap b = builder.getBitmap();
                 if (b != null) { // 成功构建
                     cache.add(key, b);
                     result = b;
                 } else //构建失败
-                    result = builder.getDefaultBitmap();
+                    result = cache.get(StringUtil.stringToMd5(DEFAULT_PIC_KEY));
             }
         }
 

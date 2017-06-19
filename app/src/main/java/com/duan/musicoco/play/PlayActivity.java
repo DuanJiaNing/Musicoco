@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -35,6 +36,7 @@ import com.duan.musicoco.fragment.lyric.LyricPresenter;
 import com.duan.musicoco.media.MediaManager;
 import com.duan.musicoco.media.SongInfo;
 import com.duan.musicoco.preference.AppPreference;
+import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.util.Util;
@@ -59,8 +61,6 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     private VisualizerPresenter visualizerPresenter;
     private LyricPresenter lyricPresenter;
 
-    private FrameLayout mFragmentContainer;
-
     private LinearLayout rootView;
 
     private TextView tvPlayProgress;
@@ -82,7 +82,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
     public PlayActivity() {
         mServiceConnection = new PlayServiceConnection(this, this);
-        mediaManager = MediaManager.getInstance();
+        mediaManager = MediaManager.getInstance(getApplicationContext());
     }
 
     @Override
@@ -90,8 +90,13 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
 
-        //FIXME 耗时
-        mediaManager.refreshData(this);
+        new Thread() {
+            @Override
+            public void run() {
+                //FIXME 耗时
+                mediaManager.refreshData();
+            }
+        }.start();
 
         initViews(null, null);
 
@@ -122,7 +127,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PermissionManager.PerMap.CATEGORY_MEDIA_READ) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "获取权限成功", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "授限成功", Toast.LENGTH_SHORT).show();
                 PlayServiceManager.bindService(this, mServiceConnection);
             } else {
                 finish();
@@ -141,9 +146,8 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
     @Override
     public void songChanged(Song song, int index) {
-        visualizerPresenter.songChanged(song, index > tempIndex ? 1 : 0);
 
-        SongInfo info = MediaManager.getInstance().getSongInfo(song, this);
+        SongInfo info = mediaManager.getSongInfo(song);
         int duration = (int) info.getDuration();
         tvDuration.setText(Util.getGenTime(duration));
         tvPlayProgress.setText("00:00");
@@ -165,8 +169,8 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         if (colors.length != 4)
             return;
 
-        ((TextView)(tsSongName.getCurrentView())).setTextColor(colors[1]);
-        ((TextView)(tsSongArts.getCurrentView())).setTextColor(colors[3]);
+        ((TextView) (tsSongName.getCurrentView())).setTextColor(colors[1]);
+        ((TextView) (tsSongArts.getCurrentView())).setTextColor(colors[3]);
 
         rootView.setBackgroundColor(colors[0]);
 
@@ -182,12 +186,9 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
     }
 
-    private int tempIndex;
-
     @Override
     public void startPlay(Song song, int index, int status) {
         startUpdateProgressTask();
-        tempIndex = index;
     }
 
     @Override
@@ -260,6 +261,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     //服务成功连接之后才初始化数据
     @Override
     public void onConnected() {
+
         initSelfData();
 
         visualizerPresenter.initData(null);
@@ -275,17 +277,22 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     private void initSelfData() {
 
         Song song = null;
-        try {
-            song = mServiceConnection.takeControl().currentSong();
-            if (song == null) {
-                mediaResIsEmpty();
-                return;
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
+        PlayPreference.CurrentSong cur = new PlayPreference(this).getCurrentSong();
+        if (cur != null)
+            song = new Song(cur.path);
+
+        SongInfo info;
+
+        if (song == null) {
+            info = mediaManager.getSongInfoList().get(0);
+        } else
+            info = mediaManager.getSongInfo(song);
+
+        if (info == null) {
+            mediaResIsEmpty();
+            return;
         }
 
-        SongInfo info = MediaManager.getInstance().getSongInfo(song, this);
         int duration = (int) info.getDuration();
         tvDuration.setText(Util.getGenTime(duration));
         tvPlayProgress.setText("00:00");
@@ -338,8 +345,6 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         btNext = (SkipView) findViewById(R.id.play_next_song);
         btPlay = (PlayView) findViewById(R.id.play_song);
         btMore = (ImageButton) findViewById(R.id.play_more);
-        mFragmentContainer = (FrameLayout) findViewById(R.id.play_fragment_container);
-
         //设置属性
         tsSongName.setFactory(new ViewSwitcher.ViewFactory() {
             @Override
@@ -367,40 +372,6 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         btNext.setOnClickListener(this);
         btPlay.setOnClickListener(this);
         btMore.setOnClickListener(this);
-        mFragmentContainer.setOnTouchListener(new View.OnTouchListener() {
-            private float y;
-            private float dis = 70;
-            private int touchTime = 0;
-
-            //FIXME
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-
-                        y = event.getY();
-                        touchTime = 1;
-                        return true;
-                    case MotionEvent.ACTION_MOVE:
-                        if (event.getY() - y - dis > 0.0001) {
-                            if (visualizerFragment.isVisible()) {
-                                showLyricFragment();
-                                return false;
-                            }
-                        }
-
-                        touchTime++;
-                        return false;
-                    case MotionEvent.ACTION_UP:
-
-                        //用户的点击会触发多个中间事件
-                        if (touchTime < 6)
-                            onClick(v);
-                        break;
-                }
-                return false;
-            }
-        });
 
         sbSongProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             int pos;
@@ -428,7 +399,6 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
                         e.printStackTrace();
                     }
                 }
-
                 startUpdateProgressTask();
             }
         });
@@ -456,7 +426,6 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
             hideLyricFragment();
         else
             super.onBackPressed();
-
     }
 
     @Override
@@ -500,7 +469,6 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
                 break;
         }
     }
-
 
     //最上面的一定是 VisualizerFragment
     @Override

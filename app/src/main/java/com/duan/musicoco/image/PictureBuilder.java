@@ -22,8 +22,6 @@ public class PictureBuilder {
 
     private final Context context;
 
-    private Bitmap defaultBitmap;
-
     private final Paint paint;
 
     public PictureBuilder(Context context) {
@@ -43,14 +41,16 @@ public class PictureBuilder {
      * @param size 长度
      */
     public PictureBuilder resize(int size) {
+        if (path == null)
+            return this;
+
         this.radius = size;
         bitM = BitmapUtils.bitmapResizeFromFile(path, radius * 2, radius * 2);
         return this;
     }
 
     public void resizeForDefault(int reqWidth,int reqHeight,int resID){
-        defaultBitmap = BitmapUtils.bitmapResizeFromResource(context.getResources(),resID,reqWidth,reqHeight);
-        bitM = defaultBitmap;
+        bitM = BitmapUtils.bitmapResizeFromResource(context.getResources(),resID,reqWidth,reqHeight);
     }
 
     /**
@@ -62,12 +62,23 @@ public class PictureBuilder {
     }
 
     public PictureBuilder toRoundBitmap() {
-        bitM = BitmapUtils.getCircleBitmap(check());
+        if (bitM == null)
+            return this;
+
+        bitM = BitmapUtils.getCircleBitmap(bitM);
+        return this;
+    }
+
+    public PictureBuilder toRoundBitmap(Bitmap bitmap) {
+        if (bitmap == null)
+            return this;
+
+        bitM = BitmapUtils.getCircleBitmap(bitmap);
         return this;
     }
 
     public PictureBuilder jpg2png() {
-        bitM = BitmapUtils.jpgTopng(check(), context);
+        bitM = BitmapUtils.jpgTopng(bitM, context);
         return this;
     }
 
@@ -80,7 +91,7 @@ public class PictureBuilder {
      */
     public PictureBuilder addOuterCircle(int space, int strokeWidth, int color) {
 
-        Bitmap b = check();
+        Bitmap b = bitM;
 
         int radius = Math.max(b.getWidth(), b.getHeight()) / 2;
 
@@ -109,15 +120,7 @@ public class PictureBuilder {
     }
 
     public Bitmap getBitmap() {
-        return check();
-    }
-
-    public Bitmap getDefaultBitmap() {
-        return defaultBitmap;
-    }
-
-    private Bitmap check() {
-        return bitM == null ? defaultBitmap : bitM;
+        return bitM;
     }
 
     public void reset() {

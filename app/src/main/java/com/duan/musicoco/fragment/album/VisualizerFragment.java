@@ -81,8 +81,11 @@ public class VisualizerFragment extends Fragment implements ViewContract {
             @Override
             public void run() {
                 albumPicture = new AlbumPicture(getActivity(), albumView);
-                Song song = new PlayPreference(getActivity()).getCurrntSong();
-                songChanged(song,1);
+                PlayPreference.CurrentSong cur = new PlayPreference(getActivity()).getCurrentSong();
+                if (cur != null) {
+                    Song song = new Song(cur.path);
+                    songChanged(song, 1);
+                }
             }
         });
 

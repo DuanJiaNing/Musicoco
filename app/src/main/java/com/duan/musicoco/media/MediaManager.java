@@ -1,5 +1,6 @@
 package com.duan.musicoco.media;
 
+import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -8,8 +9,10 @@ import android.support.annotation.NonNull;
 
 import com.duan.musicoco.aidl.Song;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by DuanJiaNing on 2017/5/24.
@@ -20,18 +23,27 @@ public class MediaManager {
 
     private HashSet<SongInfo> songs;
 
-    private MediaManager() {
+    private Context context;
+
+    private MediaManager(Context context) {
+        this.context = context;
     }
 
     private static class SingletonHolder {
-        private static final MediaManager INSTANCE = new MediaManager();
+        private static Context context;
+        private static final MediaManager INSTANCE = new MediaManager(context);
     }
 
-    public static final MediaManager getInstance() {
+    //传入 Application Context
+    public static final MediaManager getInstance(Context context) {
+        if (!(context instanceof Application))
+            return null;
+
+        SingletonHolder.context = context;
         return SingletonHolder.INSTANCE;
     }
 
-    public HashSet<SongInfo> refreshData( Context context) {
+    public HashSet<SongInfo> refreshData() {
         if (songs == null)
             songs = new HashSet<>();
         else
@@ -42,7 +54,7 @@ public class MediaManager {
         while (cursor.moveToNext()) {
             SongInfo song = new SongInfo();
             song.setAlbum_id(cursor.getString(cursor.getColumnIndex(SongInfo.ALBUM_ID)));
-            song.setAlbum_path(getAlbumArtPicPath(song.getAlbum_id(), context));
+            song.setAlbum_path(getAlbumArtPicPath(song.getAlbum_id()));
             song.setTitle_key(cursor.getString(cursor.getColumnIndex(SongInfo.TITLE_KEY)));
             song.setArtist_key(cursor.getString(cursor.getColumnIndex(SongInfo.ARTIST_KEY)));
             song.setAlbum_key(cursor.getString(cursor.getColumnIndex(SongInfo.ALBUM_KEY)));
@@ -65,7 +77,7 @@ public class MediaManager {
     }
 
     //根据专辑 id 获得专辑图片保存路径
-    private String getAlbumArtPicPath(String albumId, Context context) {
+    private String getAlbumArtPicPath(String albumId) {
         String[] projection = {MediaStore.Audio.Albums.ALBUM_ART};
         String imagePath = null;
         Cursor cur = context.getContentResolver().query(Uri.parse("content://media" +
@@ -79,18 +91,39 @@ public class MediaManager {
         return imagePath;
     }
 
-    public SongInfo getSongInfo(@NonNull Song song, Context context) {
+    public SongInfo getSongInfo(@NonNull Song song) {
         SongInfo info = null;
         if (songs == null)
-            refreshData(context);
+            refreshData();
 
-        Iterator<SongInfo> iterator = songs.iterator();
-        while (iterator.hasNext()) {
-            info = iterator.next();
+        for (SongInfo song1 : songs) {
+            info = song1;
             if (info.getData().equals(song.path))
                 break;
         }
         return info;
+    }
+
+    public List<Song> getSongList() {
+        List<Song> songInfos = new ArrayList<>();
+        for (SongInfo song : songs) {
+            songInfos.add(new Song(song.getData()));
+        }
+        return songInfos;
+    }
+
+    public List<SongInfo> getSongInfoList() {
+        List<SongInfo> songInfos = new ArrayList<>();
+        for (SongInfo song : songs) {
+            songInfos.add(song);
+        }
+        return songInfos;
+
+    }
+
+    private void check() {
+        if (songs == null)
+            refreshData();
     }
 
 }

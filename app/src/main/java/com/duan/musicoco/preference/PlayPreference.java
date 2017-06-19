@@ -17,8 +17,6 @@ import static android.content.Context.MODE_WORLD_READABLE;
 public class PlayPreference {
 
     public static final String PLAY_PREFERENCE = "play_preference";
-    public static final String KEY_CURRENT_SONG = "key_current_song";
-
     private SharedPreferences.Editor editor;
     private SharedPreferences preferences;
 
@@ -30,18 +28,44 @@ public class PlayPreference {
             preferences = context.getSharedPreferences(PLAY_PREFERENCE, Context.MODE_MULTI_PROCESS | MODE_WORLD_READABLE);
     }
 
-    //该方法在 PlayService 进程中调用，无法保证与 getCurrntSong 同步
-    public void updateCurrentSong(@NonNull String fillPath) {
+    //注意在多进程下的修改不可见问题
+    public void updateCurrentSong(CurrentSong song) {
+        if (song == null)
+            return;
+
         editor = preferences.edit();
-        editor.putString(KEY_CURRENT_SONG, fillPath);
-        editor.commit();
+        editor.putString(CurrentSong.KEY_CURRENT_SONG_PATH, song.path);
+        editor.putInt(CurrentSong.KEY_CURRENT_SONG_INDEX, song.index);
+        editor.putInt(CurrentSong.KEY_CURRENT_SONG_PLAY_PROGRESS, song.progress);
+
+        editor.apply();
     }
 
     @Nullable
-    public Song getCurrntSong() {
-        String pa = preferences.getString(KEY_CURRENT_SONG, null);
-        Song song = new Song(pa);
-        return song;
+    public CurrentSong getCurrentSong() {
+
+        String p = preferences.getString(CurrentSong.KEY_CURRENT_SONG_PATH, null);
+        int in = preferences.getInt(CurrentSong.KEY_CURRENT_SONG_INDEX, 0);
+        int pro = preferences.getInt(CurrentSong.KEY_CURRENT_SONG_PLAY_PROGRESS, 0);
+
+        return new CurrentSong(p, pro, in);
+    }
+
+    public static class CurrentSong {
+
+        public static final String KEY_CURRENT_SONG_PATH = "key_current_song";
+        public static final String KEY_CURRENT_SONG_PLAY_PROGRESS = "key_current_song";
+        public static final String KEY_CURRENT_SONG_INDEX = "key_current_song";
+
+        public String path;
+        public int progress;
+        public int index;
+
+        public CurrentSong(String path, int progress, int index) {
+            this.path = path;
+            this.progress = progress;
+            this.index = index;
+        }
     }
 
 }

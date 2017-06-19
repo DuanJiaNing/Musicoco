@@ -5,7 +5,6 @@ import android.media.MediaPlayer;
 import android.util.Log;
 
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.preference.PlayPreference;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -288,9 +287,6 @@ public class PlayController {
         try {
             mPlayer.setDataSource(next);
             mPlayer.prepare();
-
-            //保存当前播放歌曲到配置文件
-            new PlayPreference(context).updateCurrentSong(next);
 
         } catch (IOException e) {
             e.printStackTrace();

@@ -29,17 +29,22 @@ public class PlayService extends Service {
 
     @Override
     public void onCreate() {
-        List<Song> songs = new ArrayList<>();
+        final List<Song> songs = new ArrayList<>();
 
-        //获得播放列表
-        //TODO 替换获取方式，从配置文件读取当前播放列表及当前播放曲目
-        HashSet<SongInfo> infos = MediaManager.getInstance().refreshData(getApplicationContext());
-        for (SongInfo i : infos) {
-            Song s = new Song(i.getData());
-            songs.add(s);
-        }
+        new Thread() {
+            @Override
+            public void run() {
+                //获得播放列表
+                //TODO 替换获取方式，从配置文件读取当前播放列表及当前播放曲目
+                HashSet<SongInfo> infos = MediaManager.getInstance().refreshData(getApplicationContext());
+                for (SongInfo i : infos) {
+                    Song s = new Song(i.getData());
+                    songs.add(s);
+                }
 
-        iBinder = new PlayServiceIBinder(getApplicationContext(), songs);
+                iBinder = new PlayServiceIBinder(getApplicationContext(), songs);
+            }
+        }.start();
 
     }
 
