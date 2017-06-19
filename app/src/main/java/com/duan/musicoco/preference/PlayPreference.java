@@ -54,8 +54,8 @@ public class PlayPreference {
     public static class CurrentSong {
 
         public static final String KEY_CURRENT_SONG_PATH = "key_current_song";
-        public static final String KEY_CURRENT_SONG_PLAY_PROGRESS = "key_current_song";
-        public static final String KEY_CURRENT_SONG_INDEX = "key_current_song";
+        public static final String KEY_CURRENT_SONG_PLAY_PROGRESS = "key_current_song_play_progress";
+        public static final String KEY_CURRENT_SONG_INDEX = "key_current_song_index";
 
         public String path;
         public int progress;

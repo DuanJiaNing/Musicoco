@@ -16,8 +16,8 @@ import android.widget.ViewSwitcher;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.image.AlbumPicture;
-import com.duan.musicoco.media.MediaManager;
-import com.duan.musicoco.media.SongInfo;
+import com.duan.musicoco.app.MediaManager;
+import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.preference.PlayPreference;
 
 /**
@@ -39,11 +39,19 @@ public class VisualizerFragment extends Fragment implements ViewContract {
     // PlayActivity 需要改颜色数组
     private int[] currColors = new int[4];
 
+    private MediaManager mediaManager;
+
+    private PlayPreference playPreference;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //不要让 presenter 控制初始化 View ，此时 view 可能还没执行完 inflate
         view = inflater.inflate(R.layout.fragment_play_visualizer, null);
+
+        mediaManager = MediaManager.getInstance(getActivity().getApplicationContext());
+        playPreference = new PlayPreference(getActivity());
+
         initViews(view, null);
         return view;
     }
@@ -81,7 +89,7 @@ public class VisualizerFragment extends Fragment implements ViewContract {
             @Override
             public void run() {
                 albumPicture = new AlbumPicture(getActivity(), albumView);
-                PlayPreference.CurrentSong cur = new PlayPreference(getActivity()).getCurrentSong();
+                PlayPreference.CurrentSong cur = playPreference.getCurrentSong();
                 if (cur != null) {
                     Song song = new Song(cur.path);
                     songChanged(song, 1);
@@ -103,7 +111,7 @@ public class VisualizerFragment extends Fragment implements ViewContract {
 
     @Override
     public void songChanged(Song song, int dir) {
-        SongInfo info = song == null ? null : MediaManager.getInstance().getSongInfo(song, getActivity());
+        SongInfo info = song == null ? null : mediaManager.getSongInfo(song);
         if (info == null)
             return;
 

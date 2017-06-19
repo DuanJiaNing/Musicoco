@@ -1,4 +1,4 @@
-package com.duan.musicoco.media;
+package com.duan.musicoco.app;
 
 import android.provider.MediaStore;
 

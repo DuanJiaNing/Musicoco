@@ -138,7 +138,6 @@
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@id/play_song"
 
-                app:distance="-5dp"
                 app:innerLineWidth="5dp"
                 app:innerLineRadius="5dp"
                 app:shadowRadius="8dp"
@@ -156,7 +155,6 @@
                 android:layout_toEndOf="@id/play_song"
                 android:rotation="180"
 
-                app:distance="-5dp"
                 app:innerLineWidth="5dp"
                 app:innerLineRadius="5dp"
                 app:shadowRadius="8dp"

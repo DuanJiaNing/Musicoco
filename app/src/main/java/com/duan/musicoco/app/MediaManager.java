@@ -1,6 +1,5 @@
-package com.duan.musicoco.media;
+package com.duan.musicoco.app;
 
-import android.app.Application;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -11,7 +10,6 @@ import com.duan.musicoco.aidl.Song;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -23,24 +21,23 @@ public class MediaManager {
 
     private HashSet<SongInfo> songs;
 
+    private static volatile MediaManager MEDIAMANAGER;
+
     private Context context;
 
     private MediaManager(Context context) {
         this.context = context;
     }
 
-    private static class SingletonHolder {
-        private static Context context;
-        private static final MediaManager INSTANCE = new MediaManager(context);
-    }
-
     //传入 Application Context
-    public static final MediaManager getInstance(Context context) {
-        if (!(context instanceof Application))
-            return null;
-
-        SingletonHolder.context = context;
-        return SingletonHolder.INSTANCE;
+    public static MediaManager getInstance(Context context) {
+        if (MEDIAMANAGER == null) {
+            synchronized (MediaManager.class) {
+                if (MEDIAMANAGER == null)
+                    MEDIAMANAGER = new MediaManager(context);
+            }
+        }
+        return MEDIAMANAGER;
     }
 
     public HashSet<SongInfo> refreshData() {
@@ -92,9 +89,8 @@ public class MediaManager {
     }
 
     public SongInfo getSongInfo(@NonNull Song song) {
+        check();
         SongInfo info = null;
-        if (songs == null)
-            refreshData();
 
         for (SongInfo song1 : songs) {
             info = song1;
@@ -105,6 +101,7 @@ public class MediaManager {
     }
 
     public List<Song> getSongList() {
+        check();
         List<Song> songInfos = new ArrayList<>();
         for (SongInfo song : songs) {
             songInfos.add(new Song(song.getData()));
@@ -113,6 +110,7 @@ public class MediaManager {
     }
 
     public List<SongInfo> getSongInfoList() {
+        check();
         List<SongInfo> songInfos = new ArrayList<>();
         for (SongInfo song : songs) {
             songInfos.add(song);

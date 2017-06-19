@@ -69,3 +69,10 @@
 
 1 完善 AlbumPicture 和 PictureBuilder<br>
 2 添加 SkipView <br>
+
+- 2017-06-19
+
+1 添加 PlayPreference <br>
+2 完善 AlbumPicture<br>
+3 添加 MediaView PlayView SkipView 到项目<br>
+4 实现 Theme default mode 随歌曲切换变换颜色（控件颜色，字体颜色）<br>

@@ -21,7 +21,7 @@ import android.view.animation.LinearInterpolator;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.cache.BitmapCache;
-import com.duan.musicoco.media.SongInfo;
+import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.StringUtil;

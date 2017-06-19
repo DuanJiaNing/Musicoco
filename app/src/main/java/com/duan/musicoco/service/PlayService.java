@@ -4,15 +4,11 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.util.Log;
 
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.media.MediaManager;
-import com.duan.musicoco.media.SongInfo;
+import com.duan.musicoco.app.MediaManager;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -27,24 +23,17 @@ public class PlayService extends Service {
 
     private PlayServiceIBinder iBinder;
 
+    private MediaManager mediaManager;
+
     @Override
     public void onCreate() {
-        final List<Song> songs = new ArrayList<>();
 
-        new Thread() {
-            @Override
-            public void run() {
-                //获得播放列表
-                //TODO 替换获取方式，从配置文件读取当前播放列表及当前播放曲目
-                HashSet<SongInfo> infos = MediaManager.getInstance().refreshData(getApplicationContext());
-                for (SongInfo i : infos) {
-                    Song s = new Song(i.getData());
-                    songs.add(s);
-                }
+        mediaManager = MediaManager.getInstance(getApplicationContext());
 
-                iBinder = new PlayServiceIBinder(getApplicationContext(), songs);
-            }
-        }.start();
+        //获得播放列表
+        //TODO 替换获取方式，从配置文件读取当前播放列表及当前播放曲目
+        List<Song> songs = mediaManager.getSongList();
+        iBinder = new PlayServiceIBinder(getApplicationContext(), songs);
 
     }
 
