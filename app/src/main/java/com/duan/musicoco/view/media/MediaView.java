@@ -18,6 +18,7 @@ import android.view.View;
 
 import com.duan.musicoco.R;
 
+
 /**
  * Created by DuanJiaNing on 2017/6/14.
  * 媒体控件抽象基类

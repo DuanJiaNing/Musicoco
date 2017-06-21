@@ -13,7 +13,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +35,7 @@ import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.util.Util;
+import com.duan.musicoco.view.discreteseekbar.DiscreteSeekBar;
 import com.duan.musicoco.view.media.PlayView;
 import com.duan.musicoco.view.media.SkipView;
 
@@ -65,7 +65,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     private TextSwitcher tsSongName;
     private TextSwitcher tsSongArts;
 
-    private SeekBar sbSongProgress;
+    private DiscreteSeekBar sbSongProgress;
 
     private PlayView btPlay;
     private SkipView btPre;
@@ -204,9 +204,14 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         btPlay.setStrokeColor(colors[1]);
         btPlay.setPauseLineColor(colors[1]);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            btMore.getDrawable().setTint(colors[1]);
-        }
+        sbSongProgress.setRippleColor(colors[3]);
+        sbSongProgress.setScrubberColor(colors[1]);
+        sbSongProgress.setThumbColor(colors[3], colors[1]);
+        sbSongProgress.setTrackColor(colors[3]);
+
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            btMore.getDrawable().setTint(colors[1]);
+//        }
 
     }
 
@@ -366,7 +371,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         rootView = (LinearLayout) findViewById(R.id.play_root);
         tvPlayProgress = (TextView) findViewById(R.id.play_progress);
         tvDuration = (TextView) findViewById(R.id.play_duration);
-        sbSongProgress = (SeekBar) findViewById(R.id.play_seekBar);
+        sbSongProgress = (DiscreteSeekBar) findViewById(R.id.play_seekBar);
         tsSongName = (TextSwitcher) findViewById(R.id.play_ts_song_name);
         tsSongArts = (TextSwitcher) findViewById(R.id.play_ts_song_arts);
         btPre = (SkipView) findViewById(R.id.play_pre_song);
@@ -400,26 +405,36 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         btNext.setOnClickListener(this);
         btPlay.setOnClickListener(this);
         btMore.setOnClickListener(this);
+        btMore.setEnabled(false);
+        btMore.setVisibility(View.INVISIBLE);
 
-        sbSongProgress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        sbSongProgress.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
+            @Override
+            public int transform(int value) {
+                return value / 1000;
+            }
+        });
+        sbSongProgress.setOnProgressChangeListener(new DiscreteSeekBar.OnProgressChangeListener() {
             int pos;
             boolean change = false;
 
             @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                pos = progress;
-                tvPlayProgress.setText(Util.getGenTime(progress));
+            public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
+
+                pos = value;
+                tvPlayProgress.setText(Util.getGenTime(value));
                 change = true;
 
             }
 
             @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
+            public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
                 cancelUpdateProgressTask();
+
             }
 
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
+            public void onStopTrackingTouch(DiscreteSeekBar seekBar) {
                 if (change) {
                     try {
                         mServiceConnection.takeControl().seekTo(pos);

@@ -47,18 +47,18 @@
         android:id="@+id/play_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.55" >
+        android:layout_weight="0.55">
+
         <ImageButton
-            android:layout_marginRight="@dimen/activity_default_margin"
-            android:layout_marginTop="@dimen/activity_default_margin"
-            android:layout_gravity="right"
             android:id="@+id/play_more"
-            android:padding="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="@dimen/activity_default_margin"
+            android:layout_marginTop="@dimen/activity_default_margin"
             android:background="?android:selectableItemBackgroundBorderless"
-            android:src="@drawable/play_more"
-            />
+            android:padding="10dp"
+            android:src="@drawable/play_more" />
 
     </FrameLayout>
 
@@ -76,13 +76,20 @@
             android:layout_marginLeft="@dimen/activity_default_margin_2x"
             android:layout_marginRight="@dimen/activity_default_margin_2x">
 
+            <com.duan.musicoco.view.discreteseekbar.DiscreteSeekBar
+                android:id="@+id/play_seekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true" />
+
             <TextView
                 android:id="@+id/play_progress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_below="@+id/play_seekBar"
+                android:layout_below="@id/play_seekBar"
+                android:layout_marginLeft="10dp"
                 android:layout_marginTop="20dp"
                 android:lines="1"
                 android:text="00:00"
@@ -90,25 +97,19 @@
                 android:textSize="@dimen/text_small" />
 
             <TextView
+                android:layout_marginRight="10dp"
                 android:id="@+id/play_duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_below="@+id/play_seekBar"
+                android:layout_below="@id/play_seekBar"
                 android:layout_marginTop="20dp"
                 android:lines="1"
                 android:text="00:00"
                 android:textColor="@color/text_gray"
                 android:textSize="@dimen/text_small" />
 
-            <android.support.v7.widget.AppCompatSeekBar
-                android:id="@+id/play_seekBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:paddingLeft="@dimen/play_seek_bar_padding"
-                android:paddingRight="@dimen/play_seek_bar_padding" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -122,14 +123,13 @@
                 android:layout_centerInParent="true"
                 android:rotation="180"
 
-                app:strokeWidth="1px"
                 app:pauseLineDistance="10dp"
                 app:pauseLineWidth="10dp"
                 app:radius="40dp"
                 app:shadowRadius="8dp"
+                app:strokeWidth="1px"
                 app:triangleHeight="45dp"
-                app:triangleRadius="5dp"
-                />
+                app:triangleRadius="5dp" />
 
             <com.duan.musicoco.view.media.SkipView
                 android:id="@+id/play_pre_song"
@@ -138,14 +138,13 @@
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@id/play_song"
 
-                app:innerLineWidth="5dp"
                 app:innerLineRadius="5dp"
-                app:shadowRadius="8dp"
+                app:innerLineWidth="5dp"
                 app:radius="35dp"
+                app:shadowRadius="8dp"
                 app:strokeWidth="0px"
                 app:triangleHeight="30dp"
-                app:triangleRadius="5dp"
-                />
+                app:triangleRadius="5dp" />
 
             <com.duan.musicoco.view.media.SkipView
                 android:id="@+id/play_next_song"
@@ -155,14 +154,13 @@
                 android:layout_toEndOf="@id/play_song"
                 android:rotation="180"
 
-                app:innerLineWidth="5dp"
                 app:innerLineRadius="5dp"
-                app:shadowRadius="8dp"
+                app:innerLineWidth="5dp"
                 app:radius="35dp"
+                app:shadowRadius="8dp"
                 app:strokeWidth="0px"
                 app:triangleHeight="30dp"
-                app:triangleRadius="5dp"
-                />
+                app:triangleRadius="5dp" />
 
         </RelativeLayout>
 
