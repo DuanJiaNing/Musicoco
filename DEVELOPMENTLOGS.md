@@ -76,3 +76,7 @@
 2 完善 AlbumPicture<br>
 3 添加 MediaView PlayView SkipView 到项目<br>
 4 实现 Theme default mode 随歌曲切换变换颜色（控件颜色，字体颜色）<br>
+
+- 2017-06-21
+
+1 添加 DiscreteSeekBar 替换 SeekBar<br>
