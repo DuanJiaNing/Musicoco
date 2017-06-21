@@ -2,11 +2,13 @@ package com.duan.musicoco.app;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.service.PlayController;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -40,6 +42,12 @@ public class MediaManager {
         return MEDIAMANAGER;
     }
 
+//    /**
+//     * 服务端获取存储中歌曲信息的主要方法
+//     * 客户端想获取时在确保服务启动的前提下应优先选择通过 aidl 获取 {@link PlayController#getSongsList()}
+//     * 而不是此方法
+//     * @hide
+//     */
     public HashSet<SongInfo> refreshData() {
         if (songs == null)
             songs = new HashSet<>();
@@ -116,7 +124,6 @@ public class MediaManager {
             songInfos.add(song);
         }
         return songInfos;
-
     }
 
     private void check() {

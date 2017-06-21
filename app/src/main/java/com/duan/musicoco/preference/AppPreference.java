@@ -17,7 +17,10 @@ public class AppPreference {
     private SharedPreferences.Editor editor;
     private SharedPreferences preferences;
 
+    private Context context;
+
     public AppPreference(Context context) {
+        this.context = context;
         preferences = context.getSharedPreferences(APP_PREFERENCE, Context.MODE_PRIVATE);
     }
 

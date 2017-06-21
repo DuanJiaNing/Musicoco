@@ -31,7 +31,9 @@ public class PlayService extends Service {
         mediaManager = MediaManager.getInstance(getApplicationContext());
 
         //获得播放列表
-        //TODO 替换获取方式，从配置文件读取当前播放列表及当前播放曲目
+        //替换获取方式，从配置文件读取当前播放列表及当前播放曲目
+        // 配置文件无法跨进程共享，同步工作由客户端负责
+        // getSongList 耗时方法
         List<Song> songs = mediaManager.getSongList();
         iBinder = new PlayServiceIBinder(getApplicationContext(), songs);
 

@@ -20,12 +20,11 @@ public class PlayPreference {
     private SharedPreferences.Editor editor;
     private SharedPreferences preferences;
 
+    private Context context;
+
     public PlayPreference(Context context) {
-        //FIXME
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N)
-            preferences = context.getSharedPreferences(PLAY_PREFERENCE, Context.MODE_PRIVATE);
-        else
-            preferences = context.getSharedPreferences(PLAY_PREFERENCE, Context.MODE_MULTI_PROCESS | MODE_WORLD_READABLE);
+        this.context = context;
+        preferences = context.getSharedPreferences(PLAY_PREFERENCE, Context.MODE_PRIVATE);
     }
 
     //注意在多进程下的修改不可见问题
@@ -37,8 +36,8 @@ public class PlayPreference {
         editor.putString(CurrentSong.KEY_CURRENT_SONG_PATH, song.path);
         editor.putInt(CurrentSong.KEY_CURRENT_SONG_INDEX, song.index);
         editor.putInt(CurrentSong.KEY_CURRENT_SONG_PLAY_PROGRESS, song.progress);
-
         editor.apply();
+
     }
 
     @Nullable

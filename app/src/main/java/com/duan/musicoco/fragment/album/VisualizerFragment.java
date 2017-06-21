@@ -41,8 +41,6 @@ public class VisualizerFragment extends Fragment implements ViewContract {
 
     private MediaManager mediaManager;
 
-    private PlayPreference playPreference;
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,7 +48,6 @@ public class VisualizerFragment extends Fragment implements ViewContract {
         view = inflater.inflate(R.layout.fragment_play_visualizer, null);
 
         mediaManager = MediaManager.getInstance(getActivity().getApplicationContext());
-        playPreference = new PlayPreference(getActivity());
 
         initViews(view, null);
         return view;
@@ -71,8 +68,6 @@ public class VisualizerFragment extends Fragment implements ViewContract {
     public void initViews(@Nullable View view, Object obj) {
 
         albumView = (ImageSwitcher) view.findViewById(R.id.play_album_is);
-        albumView.setInAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
-        albumView.setOutAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
         albumView.setFactory(new ViewSwitcher.ViewFactory() {
             @Override
             public View makeView() {
@@ -84,16 +79,12 @@ public class VisualizerFragment extends Fragment implements ViewContract {
                 return imageView;
             }
         });
+
         //防止 getWidth == 0
         albumView.post(new Runnable() {
             @Override
             public void run() {
                 albumPicture = new AlbumPicture(getActivity(), albumView);
-                PlayPreference.CurrentSong cur = playPreference.getCurrentSong();
-                if (cur != null) {
-                    Song song = new Song(cur.path);
-                    songChanged(song, 1);
-                }
             }
         });
 

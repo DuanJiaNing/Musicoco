@@ -15,6 +15,9 @@ interface IPlayControl {
        //获得会话 ID，以获取频谱
        int getAudioSessionId();
 
+       //设置当前歌曲
+       int setCurrentSong(in Song song);
+
        //上一首
        Song pre();
 

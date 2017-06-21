@@ -24,5 +24,7 @@ public interface ActivityViewContract extends BaseView<BasePresenter> {
 
     void hideLyricFragment();
 
+    void noSongsInDisk();
+
 
 }

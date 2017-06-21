@@ -85,6 +85,7 @@ public final class AlbumPicture implements Album {
         randomAnim.setInterpolator(new AccelerateDecelerateInterpolator());
         randomAnim.setDuration(1000);
 
+        //FIXME 移除
         new Timer().schedule(new TimerTask() {
             Random rand = new Random();
 
@@ -104,7 +105,7 @@ public final class AlbumPicture implements Album {
                     }
                 });
             }
-        }, 2000, 6000);
+        }, 2000, 60 * 1000);
 
         rotateAnim = ObjectAnimator.ofFloat(0, 360);
         rotateAnim.setDuration(45 * 1000);

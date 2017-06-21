@@ -40,6 +40,7 @@ import com.duan.musicoco.view.discreteseekbar.DiscreteSeekBar;
 import com.duan.musicoco.view.media.PlayView;
 import com.duan.musicoco.view.media.SkipView;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -81,7 +82,6 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
     private Song currentSong;
     private int currentIndex;
-    private int switchTo = 1; // 1 为下一曲，0 为上一曲
 
     public PlayActivity() {
         mServiceConnection = new PlayServiceConnection(this, this);
@@ -164,22 +164,33 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     public void songChanged(Song song, int index) {
 
         currentSong = song;
+        int switchTo = index > currentIndex ? 1 : 0;
         currentIndex = index;
 
-        SongInfo info = mediaManager.getSongInfo(song);
-        int duration = (int) info.getDuration();
-        tvDuration.setText(Util.getGenTime(duration));
-        tvPlayProgress.setText("00:00");
-
-        sbSongProgress.setProgress(0);
-        sbSongProgress.setMax(duration);
-
-        tsSongName.setText(info.getTitle());
-        tsSongArts.setText(info.getArtist());
-
+        //更换专辑图片，计算出颜色值
         visualizerPresenter.songChanged(song, switchTo);
 
+        //FIXME 既使用 visualizerPresenter 控制 fragment，又通过 visualizerFragment 直接控制（那干嘛要用 MVP）
+
+        SongInfo info = mediaManager.getSongInfo(song);
+        updateData((int) info.getDuration(), 0, info.getTitle(), info.getArtist());
         updateColors(visualizerFragment.getCurrColors());
+    }
+
+    @Override
+    public void startPlay(Song song, int index, int status) {
+        startUpdateProgressTask();
+
+        visualizerPresenter.startPlay();
+        btPlay.setPlayStatus(true);
+    }
+
+    @Override
+    public void stopPlay(Song song, int index, int status) {
+        cancelUpdateProgressTask();
+
+        visualizerPresenter.stopPlay();
+        btPlay.setPlayStatus(false);
     }
 
     /**
@@ -212,21 +223,16 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         sbSongProgress.setThumbColor(colors[3], colors[1]);
         sbSongProgress.setTrackColor(colors[3]);
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            btMore.getDrawable().setTint(colors[1]);
-//        }
-
     }
 
-    @Override
-    public void startPlay(Song song, int index, int status) {
-        startUpdateProgressTask();
-    }
+    private void updateData(int duration, int progress, String title, String arts) {
 
-    @Override
-    public void stopPlay(Song song, int index, int status) {
-        cancelUpdateProgressTask();
-
+        tvDuration.setText(Util.getGenTime(duration));
+        tvPlayProgress.setText(Util.getGenTime(progress));
+        sbSongProgress.setProgress(progress);
+        sbSongProgress.setMax(duration);
+        tsSongName.setText(title);
+        tsSongArts.setText(arts);
     }
 
     //设置主题风格
@@ -308,52 +314,46 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
     private void initSelfData() {
 
+        visualizerPresenter = new VisualizerPresenter(this, mServiceConnection.takeControl(), visualizerFragment);
+        lyricPresenter = new LyricPresenter(this, lyricFragment, this);
+
         Song song = null;
+
         PlayPreference.CurrentSong cur = playPreference.getCurrentSong();
         if (cur != null && cur.path != null)
             song = new Song(cur.path);
 
-        SongInfo info = null;
+        List<Song> songs = null;
 
-        if (song == null) {
-            info = mediaManager.getSongInfoList().get(0);
-        } else
-            info = mediaManager.getSongInfo(song);
-
-        int duration;
-        int progress;
-        String title;
-        String arts;
-        //不是第一次访问配置文件
-        if (info != null) {
-
-            duration = (int) info.getDuration();
-            title = info.getTitle();
-            arts = info.getArtist();
-            progress = cur.progress;
-
-        } else { // 没有歌曲
-
-            duration = 0;
-            progress = 0;
-            title = arts = "";
-
-            btPlay.setEnabled(false);
-            btPre.setEnabled(false);
-            btNext.setEnabled(false);
-            sbSongProgress.setEnabled(false);
+        try {
+            songs = mServiceConnection.takeControl().getPlayList();
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
 
-        tvDuration.setText(Util.getGenTime(duration));
-        tvPlayProgress.setText(Util.getGenTime(progress));
-        sbSongProgress.setMax(duration);
-        tsSongName.setText(title);
-        tsSongArts.setText(arts);
+        if (songs == null) {
+            noSongsInDisk();
+            updateData(0, 0, "", "");
+            return;
+        }
+
+        if (song == null) { //配置文件没有保存【最后播放曲目】信息（通常为第一次打开应用）
+            song = songs.get(0);
+        } else { //配置文件有保存
+            if (!songs.contains(song)) { //确认服务端有此歌曲
+                song = songs.get(0);
+            }
+        }
 
         try {
 
-            if (progress != 0)
-                mServiceConnection.takeControl().seekTo(progress);
+            mServiceConnection.takeControl().setCurrentSong(song);
+
+            int pro = cur.progress;
+            if (pro >= 0) {
+                mServiceConnection.takeControl().seekTo(pro);
+                sbSongProgress.setProgress(pro);
+            }
 
             boolean st = mServiceConnection.takeControl().status() == PlayController.STATUS_PLAYING;
             btPlay.setPlayStatus(st);
@@ -361,9 +361,6 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-
-        visualizerPresenter = new VisualizerPresenter(this, mServiceConnection.takeControl(), visualizerFragment);
-        lyricPresenter = new LyricPresenter(this, lyricFragment, this);
 
     }
 
@@ -409,6 +406,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         btNext.setOnClickListener(this);
         btPlay.setOnClickListener(this);
         btMore.setOnClickListener(this);
+
         btMore.setEnabled(false);
         btMore.setVisibility(View.INVISIBLE);
 
@@ -457,6 +455,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         //顺序 依次叠放
         transaction.add(R.id.play_fragment_container, visualizerFragment, VisualizerFragment.TAG);
+        //TODO lyricFragment
         transaction.add(R.id.play_fragment_container, lyricFragment, LyricFragment.TAG);
         transaction.hide(lyricFragment);
         transaction.commit();
@@ -480,7 +479,6 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         switch (v.getId()) {
             case R.id.play_pre_song:
                 try {
-                    switchTo = 0;
                     mServiceConnection.takeControl().pre();
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -488,7 +486,6 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
                 break;
             case R.id.play_next_song:
                 try {
-                    switchTo = 1;
                     mServiceConnection.takeControl().next();
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -500,12 +497,8 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
                     int stat = mServiceConnection.takeControl().status();
                     if (stat == PlayController.STATUS_PLAYING) {
                         mServiceConnection.takeControl().pause();
-                        visualizerPresenter.stopPlay();
-                        ((PlayView) v).setPlayStatus(false);
                     } else {
                         mServiceConnection.takeControl().resume();
-                        visualizerPresenter.startPlay();
-                        ((PlayView) v).setPlayStatus(true);
                     }
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -542,6 +535,14 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         transaction.show(visualizerFragment); // 显示但被 LyricFragment 遮挡
         transaction.commit();
 
+    }
+
+    @Override
+    public void noSongsInDisk() {
+        btPlay.setEnabled(false);
+        btPre.setEnabled(false);
+        btNext.setEnabled(false);
+        sbSongProgress.setEnabled(false);
     }
 
 }

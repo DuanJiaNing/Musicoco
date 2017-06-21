@@ -34,6 +34,7 @@ public class BitmapCache {
     private Context mContext;
 
     private static volatile BitmapCache BITMAPCACHE;
+    private final static String CACHE = "bitmap";
 
     public final static String DEFAULT_PIC_KEY = "default_pic_key";
 
@@ -54,7 +55,7 @@ public class BitmapCache {
 
     private void initDiskCacheControl(Context context) {
         try {
-            File cacheDir = FileUtils.getDiskCacheDirFile(context, "bitmap");
+            File cacheDir = FileUtils.getDiskCacheDirFile(context, CACHE);
             if (!cacheDir.exists()) {
                 cacheDir.mkdirs();
             }
@@ -182,9 +183,9 @@ public class BitmapCache {
         int r = metrics.widthPixels * 2 / 3;
 
         PictureBuilder builder = new PictureBuilder(mContext);
-        builder.resizeForDefault(r, r, R.mipmap.default_pic);
+        builder.resizeForDefault(r, r, R.mipmap.default_pic_01);
         builder.toRoundBitmap();
-        builder.addOuterCircle(0, 10, Color.GREEN)
+        builder.addOuterCircle(0, 10, Color.parseColor("#a63e43"))
                 .addOuterCircle(7, 1, Color.WHITE);
         add(StringUtil.stringToMd5(DEFAULT_PIC_KEY), builder.getBitmap());
     }

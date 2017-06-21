@@ -2,6 +2,7 @@ package com.duan.musicoco.service;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.duan.musicoco.aidl.Song;
@@ -36,6 +37,11 @@ public class PlayController {
         void notify(Song song, int index, int status);
     }
 
+    public interface NotifySongChanged {
+        void notify(Song song, int index);
+    }
+
+    private NotifySongChanged mNotifySongChanged;
     private NotifyStatusChanged mNotifyStatusChanged;
 
     //未知错误
@@ -45,6 +51,9 @@ public class PlayController {
 
     //歌曲文件解码错误
     public static final int ERROR_DECODE = -3;
+
+    //没有指定歌曲
+    public static final int ERROR_NO_RESOURCE = -4;
 
     //正在播放
     public static final int STATUS_PLAYING = 10;
@@ -75,11 +84,12 @@ public class PlayController {
 
     private int mPlayMode = MODE_DEFAULT;
 
-    private PlayController(Context context, List<Song> songs, NotifyStatusChanged sl) {
+    private PlayController(Context context, List<Song> songs, NotifyStatusChanged sl, NotifySongChanged sc) {
 
         this.context = context;
         this.mPlayList = songs;
         this.mNotifyStatusChanged = sl;
+        this.mNotifySongChanged = sc;
         mPlayState = STATUS_STOP;
 
         if (songs.size() == 0) {
@@ -96,11 +106,11 @@ public class PlayController {
 
     }
 
-    public static PlayController getMediaController(Context context, List<Song> songs, NotifyStatusChanged sl) {
+    public static PlayController getMediaController(Context context, List<Song> songs, NotifyStatusChanged sl, NotifySongChanged sc) {
         if (MANAGER == null) {
             synchronized (PlayController.class) {
                 if (MANAGER == null)
-                    MANAGER = new PlayController(context, songs, sl);
+                    MANAGER = new PlayController(context, songs, sl, sc);
             }
         }
         return MANAGER;
@@ -140,7 +150,7 @@ public class PlayController {
     }
 
     //播放指定曲目
-    public int play(Song song) {
+    public int play(@NonNull Song song) {
         return play(mPlayList.indexOf(song));
     }
 
@@ -151,12 +161,27 @@ public class PlayController {
                 mCurrentSong = index;
                 mPlayState = STATUS_PLAYING; //切换并播放
                 result = changeSong();
+                mNotifyStatusChanged.notify(getCurrentSong(), mCurrentSong, STATUS_START);
             } else if (mPlayState != STATUS_PLAYING) { // 是但没在播放
-                mPlayState = STATUS_PLAYING; //播放
-                result = changeSong();
+                mPlayState = STATUS_PAUSE;
+                resume();//播放
             } else  // 是且已经在播放
                 return 1;
-        }
+        } else return ERROR_NO_RESOURCE;
+        return result;
+    }
+
+    public int prepare(@NonNull Song song) {
+        int result = ERROR_INVALID;
+        int index = mPlayList.indexOf(song);
+        if (index != -1) { //列表中有该歌曲
+            if (mCurrentSong != index) { //不是当前歌曲
+                mCurrentSong = index;
+                if (mPlayState == STATUS_PLAYING)
+                    pause();
+                result = changeSong();
+            }
+        } else return ERROR_NO_RESOURCE;
         return result;
     }
 
@@ -176,18 +201,20 @@ public class PlayController {
     //上一曲
     public Song preSong() {
         switch (mPlayMode) {
-            case MODE_SINGLE_LOOP:
+            case MODE_SINGLE_LOOP: {
                 changeSong();
                 break;
-
-            case MODE_RANDOM:
+            }
+            case MODE_RANDOM: {
                 int pre = new Random().nextInt(mPlayList.size());
-                mCurrentSong = pre;
-                changeSong();
+                if (pre != mCurrentSong) {
+                    mCurrentSong = pre;
+                    changeSong();
+                }
                 break;
-
+            }
             case MODE_LIST_LOOP:
-            default:
+            default: {
                 if (mCurrentSong == 0) {
                     mCurrentSong = mPlayList.size() - 1;
                 } else {
@@ -196,6 +223,7 @@ public class PlayController {
                 changeSong();
 
                 break;
+            }
         }
 
         return mPlayList.get(mCurrentSong);
@@ -204,11 +232,11 @@ public class PlayController {
     //下一曲
     public Song nextSong() {
         switch (mPlayMode) {
-            case MODE_SINGLE_LOOP:
+            case MODE_SINGLE_LOOP: {
                 changeSong();
                 break;
-
-            case MODE_LIST_LOOP:
+            }
+            case MODE_LIST_LOOP: {
                 if (mCurrentSong == mPlayList.size() - 1) {
                     mCurrentSong = 0;
                 } else {
@@ -216,23 +244,26 @@ public class PlayController {
                 }
                 changeSong();
                 break;
-
-            case MODE_RANDOM:
+            }
+            case MODE_RANDOM: {
                 int next = new Random().nextInt(mPlayList.size());
-                mCurrentSong = next;
-                changeSong();
-                break;
-
-            default:
-                if (mCurrentSong == mPlayList.size() - 1) {
-                    mCurrentSong = 0;
-                    mPlayState = STATUS_PAUSE; //使暂停播放
+                if (next != mCurrentSong) {
+                    mCurrentSong = next;
                     changeSong();
+                }
+                break;
+            }
+            default: {
+                if (mCurrentSong == mPlayList.size() - 1) { // 最后一首
+                    mCurrentSong = 0;
+                    changeSong();
+                    pause();//使暂停播放
                 } else {
                     mCurrentSong++;
                     changeSong();
                 }
                 break;
+            }
         }
 
         return mPlayList.get(mCurrentSong);
@@ -278,7 +309,6 @@ public class PlayController {
 
         if (mPlayState == STATUS_PLAYING || mPlayState == STATUS_PAUSE) {
             mPlayer.stop();
-            mNotifyStatusChanged.notify(getCurrentSong(), mCurrentSong, STATUS_STOP);
         }
 
         mPlayer.reset();
@@ -295,9 +325,9 @@ public class PlayController {
 
         if (mPlayState == STATUS_PLAYING) {
             mPlayer.start();
-            mNotifyStatusChanged.notify(getCurrentSong(), mCurrentSong, STATUS_START);
         }
 
+        mNotifySongChanged.notify(getCurrentSong(), mCurrentSong);
         return 1;
     }
 
