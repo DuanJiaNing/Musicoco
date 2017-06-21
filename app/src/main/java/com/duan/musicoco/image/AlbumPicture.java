@@ -22,10 +22,11 @@ import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.StringUtil;
 import com.duan.musicoco.view.Album;
 
-import java.io.IOException;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import static com.duan.musicoco.cache.BitmapCache.DEFAULT_PIC_KEY;
 
 /**
  * Created by DuanJiaNing on 2017/6/13.
@@ -40,9 +41,9 @@ public final class AlbumPicture implements Album {
 
     private final Context context;
 
-    private ValueAnimator rotateAnim;
+    private final ValueAnimator rotateAnim;
 
-    private ValueAnimator randomAnim;
+    private final ValueAnimator randomAnim;
 
     private boolean isSpin = false;
 
@@ -56,12 +57,11 @@ public final class AlbumPicture implements Album {
     private int defaultTextColor = Color.DKGRAY;
     private int[] colors;
 
-    public final static String DEFAULT_PIC_KEY = "default_pic_key";
-
-    public AlbumPicture(Context context, ImageSwitcher view) {
+    public AlbumPicture(Context context, final ImageSwitcher view) {
         this.view = view;
         this.context = context;
-        this.cache = new BitmapCache(context);
+        this.cache = BitmapCache.getInstance(context);
+        this.builder = new PictureBuilder(context);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             defaultColor = context.getColor(R.color.colorPrimaryLight);
@@ -80,13 +80,6 @@ public final class AlbumPicture implements Album {
                 defaultColor,
                 defaultTextColor
         };
-
-        builder = new PictureBuilder(context);
-        int r = Math.min(view.getWidth(), view.getHeight());
-        builder.resizeForDefault(r, r, R.mipmap.default_album_pic);
-        builder.toRoundBitmap();
-        addDefaultOuters(builder);
-        cache.add(StringUtil.stringToMd5(DEFAULT_PIC_KEY), builder.getBitmap());
 
         randomAnim = ObjectAnimator.ofFloat(view, "rotationY", 0, 0);
         randomAnim.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -113,7 +106,22 @@ public final class AlbumPicture implements Album {
             }
         }, 2000, 6000);
 
+        rotateAnim = ObjectAnimator.ofFloat(0, 360);
+        rotateAnim.setDuration(45 * 1000);
+        rotateAnim.setRepeatMode(ValueAnimator.RESTART);
+        rotateAnim.setRepeatCount(ValueAnimator.INFINITE);
+        rotateAnim.setInterpolator(new LinearInterpolator());
+        rotateAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = (float) animation.getAnimatedValue();
+                view.getCurrentView().setRotation(value);
+            }
+        });
+
+
     }
+
 
     private void addDefaultOuters(PictureBuilder builder) {
 
@@ -142,28 +150,19 @@ public final class AlbumPicture implements Album {
         view.setInAnimation(AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left));
         view.setOutAnimation(AnimationUtils.loadAnimation(context, android.R.anim.slide_out_right));
 
-        resetRotateAnim();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (rotateAnim.isPaused())
+                rotateAnim.cancel();
+        }
+        view.getNextView().setRotation(0.0f);
 
         Bitmap bitmap = getBitmap(song);
-        if (bitmap != null)
+        if (bitmap != null) {
             view.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
-        else
-            view.setImageResource(R.mipmap.default_pic);
-
+        } else {
+            view.setImageDrawable(new BitmapDrawable(context.getResources(), cache.getDefaultBitmap()));
+        }
         return colors;
-    }
-
-    private void resetRotateAnim() {
-
-        view.getCurrentView().clearAnimation();
-        View animView = view.getNextView();
-        rotateAnim = null;
-        rotateAnim = ObjectAnimator.ofFloat(animView, "rotation", 0, 360);
-        rotateAnim.setDuration(45 * 1000);
-        rotateAnim.setRepeatMode(ValueAnimator.RESTART);
-        rotateAnim.setRepeatCount(ValueAnimator.INFINITE);
-        rotateAnim.setInterpolator(new LinearInterpolator());
-
     }
 
     public int[] next(@NonNull SongInfo song) {
@@ -171,21 +170,19 @@ public final class AlbumPicture implements Album {
         view.setInAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_in_right));
         view.setOutAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_out_left));
 
-        resetRotateAnim();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (rotateAnim.isPaused())
+                rotateAnim.cancel();
+        }
+        view.getNextView().setRotation(0.0f);
 
         Bitmap bitmap = getBitmap(song);
-        if (bitmap != null)
+        if (bitmap != null) {
             view.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
-        else
-            view.setImageResource(R.mipmap.default_pic);
-
+        } else {
+            view.setImageDrawable(new BitmapDrawable(context.getResources(), cache.getDefaultBitmap()));
+        }
         return colors;
-    }
-
-    public void setRotateAnim(ValueAnimator anim) {
-        if (anim == null)
-            return;
-        this.rotateAnim = anim;
     }
 
     @Override

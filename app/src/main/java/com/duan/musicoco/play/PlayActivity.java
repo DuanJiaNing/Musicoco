@@ -21,6 +21,7 @@ import android.widget.ViewSwitcher;
 import com.duan.musicoco.BasePresenter;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.Init;
 import com.duan.musicoco.app.MediaManager;
 import com.duan.musicoco.app.PermissionManager;
 import com.duan.musicoco.app.PlayServiceManager;
@@ -97,8 +98,8 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         new Thread() {
             @Override
             public void run() {
-                //FIXME 耗时
                 mediaManager.refreshData();
+                new Init().initImageCache(PlayActivity.this);
             }
         }.start();
 
@@ -169,6 +170,8 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         int duration = (int) info.getDuration();
         tvDuration.setText(Util.getGenTime(duration));
         tvPlayProgress.setText("00:00");
+
+        sbSongProgress.setProgress(0);
         sbSongProgress.setMax(duration);
 
         tsSongName.setText(info.getTitle());
@@ -378,6 +381,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         btNext = (SkipView) findViewById(R.id.play_next_song);
         btPlay = (PlayView) findViewById(R.id.play_song);
         btMore = (ImageButton) findViewById(R.id.play_more);
+
         //设置属性
         tsSongName.setFactory(new ViewSwitcher.ViewFactory() {
             @Override

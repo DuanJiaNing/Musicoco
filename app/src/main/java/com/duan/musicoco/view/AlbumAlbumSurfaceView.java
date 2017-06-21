@@ -30,7 +30,7 @@ import com.duan.musicoco.util.StringUtil;
  * Created by DuanJiaNing on 2017/5/27.
  */
 
-public class AlbumAlbumSurfaceView extends SurfaceView implements SurfaceHolder.Callback,Album {
+public class AlbumAlbumSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Album {
 
     private static final String TAG = "AlbumAlbumSurfaceView";
     private final String DEFAULT_PIC = "defalut_album_pic";
@@ -79,12 +79,12 @@ public class AlbumAlbumSurfaceView extends SurfaceView implements SurfaceHolder.
 
         colorGray = Color.parseColor("#69e1e1e1");
 
-        cache = new BitmapCache(context);
+//        cache = new BitmapCache(context);
 
-        Bitmap defaultPic = BitmapUtils.bitmapResizeFromResource(context.getResources(), R.mipmap.default_album_pic, mPicWidth, mPicWidth);
-        Bitmap br = BitmapUtils.jpgTopng(defaultPic, context);
-        mCurrentPic = BitmapUtils.getCircleBitmap(br);
-        cache.add(StringUtil.stringToMd5(DEFAULT_PIC), mCurrentPic);
+//        Bitmap defaultPic = BitmapUtils.bitmapResizeFromResource(context.getResources(), R.mipmap.default_album_pic, mPicWidth, mPicWidth);
+//        Bitmap br = BitmapUtils.jpgTopng(defaultPic, context);
+//        mCurrentPic = BitmapUtils.getCircleBitmap(br);
+//        cache.add(StringUtil.stringToMd5(DEFAULT_PIC), mCurrentPic);
 
     }
 

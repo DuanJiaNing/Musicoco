@@ -5,9 +5,16 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.support.annotation.Nullable;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.WindowManager;
 
+import com.duan.musicoco.R;
+import com.duan.musicoco.image.PictureBuilder;
 import com.duan.musicoco.util.FileUtils;
+import com.duan.musicoco.util.StringUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,12 +33,26 @@ public class BitmapCache {
 
     private Context mContext;
 
-    public BitmapCache(Context context) {
+    private static volatile BitmapCache BITMAPCACHE;
+
+    public final static String DEFAULT_PIC_KEY = "default_pic_key";
+
+    private BitmapCache(Context context) {
         this.mContext = context;
         initDiskCacheControl(context);
     }
 
-    public void initDiskCacheControl(Context context) {
+    public static BitmapCache getInstance(Context context) {
+        if (BITMAPCACHE == null) {
+            synchronized (BitmapCache.class) {
+                if (BITMAPCACHE == null)
+                    BITMAPCACHE = new BitmapCache(context);
+            }
+        }
+        return BITMAPCACHE;
+    }
+
+    private void initDiskCacheControl(Context context) {
         try {
             File cacheDir = FileUtils.getDiskCacheDirFile(context, "bitmap");
             if (!cacheDir.exists()) {
@@ -135,14 +156,13 @@ public class BitmapCache {
      * 并不是每次写入缓存都要调用一次flush()方法
      * 在Activity的onPause()方法中去调用flush()方法就可以了。
      */
-    public void flush(){
+    public void flush() {
         try {
             mDiskLruCache.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 
     private int getAppVersion(Context context) {
         try {
@@ -152,5 +172,27 @@ public class BitmapCache {
             e.printStackTrace();
         }
         return 1;
+    }
+
+    //初始化默认的专辑图片，第一次启动应用时完成
+    public void initDefaultBitmap() {
+        Display display = ((WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+        DisplayMetrics metrics = new DisplayMetrics();
+        display.getMetrics(metrics);
+        int r = metrics.widthPixels * 2 / 3;
+
+        PictureBuilder builder = new PictureBuilder(mContext);
+        builder.resizeForDefault(r, r, R.mipmap.default_pic);
+        builder.toRoundBitmap();
+        builder.addOuterCircle(0, 10, Color.GREEN)
+                .addOuterCircle(7, 1, Color.WHITE);
+        add(StringUtil.stringToMd5(DEFAULT_PIC_KEY), builder.getBitmap());
+    }
+
+    public Bitmap getDefaultBitmap() {
+        Bitmap b = get(StringUtil.stringToMd5(DEFAULT_PIC_KEY));
+        if (b == null)
+            initDefaultBitmap();
+        return get(StringUtil.stringToMd5(DEFAULT_PIC_KEY));
     }
 }

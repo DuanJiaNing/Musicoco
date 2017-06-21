@@ -32,7 +32,7 @@ public interface BaseView<T> {
     void setPresenter(T presenter);
 
     /**
-     * init the views of fragment or activity
+     * initDefaultBitmap the views of fragment or activity
      * @param view
      * @param obj
      */
