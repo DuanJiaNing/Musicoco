@@ -9,7 +9,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -19,7 +18,7 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.cache.BitmapCache;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.util.ColorUtils;
-import com.duan.musicoco.util.StringUtil;
+import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.view.Album;
 
 import java.util.Random;
@@ -223,10 +222,10 @@ public final class AlbumPicture implements Album {
         Bitmap result;
 
         if (info == null || info.getAlbum_path() == null)
-            result = cache.get(StringUtil.stringToMd5(DEFAULT_PIC_KEY));
+            result = cache.get(StringUtils.stringToMd5(DEFAULT_PIC_KEY));
         else {
 
-            String key = StringUtil.stringToMd5(info.getAlbum_path());
+            String key = StringUtils.stringToMd5(info.getAlbum_path());
 
             result = cache.get(key);
 
@@ -249,7 +248,7 @@ public final class AlbumPicture implements Album {
                     cache.add(key, b);
                     result = b;
                 } else //构建失败
-                    result = cache.get(StringUtil.stringToMd5(DEFAULT_PIC_KEY));
+                    result = cache.get(StringUtils.stringToMd5(DEFAULT_PIC_KEY));
             }
         }
 

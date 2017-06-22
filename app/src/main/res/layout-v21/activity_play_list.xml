@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/play_list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.github.mmin18.widget.RealtimeBlurView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:realtimeBlurRadius="50dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/action_bar_default_height">
+
+            <View
+                android:id="@+id/view_01"
+                android:layout_width="match_parent"
+                android:layout_height="2px"
+                android:layout_alignParentTop="true"
+                android:background="@color/white_d" />
+
+            <View
+                android:id="@+id/view_02"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_alignParentBottom="true"
+                android:background="@color/white_d" />
+
+            <TextView
+                android:id="@+id/play_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_above="@id/view_02"
+                android:layout_below="@id/view_01"
+                android:background="?android:selectableItemBackground"
+                android:clickable="true"
+                android:drawableLeft="@drawable/list_loop"
+                android:drawablePadding="5dp"
+                android:drawableTint="@color/white_d_d"
+                android:gravity="center"
+                android:paddingLeft="@dimen/activity_default_margin"
+                android:paddingRight="@dimen/activity_default_margin"
+                android:text="单曲循环"
+                android:textColor="@color/white_d_d"
+                android:textSize="@dimen/text_default" />
+
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/play_play_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+</FrameLayout>

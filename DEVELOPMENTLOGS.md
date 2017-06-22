@@ -89,3 +89,6 @@
 
 1 修改 logo ，修改默认专辑图片<br>
 2 添加闪屏图片<br>
+3 添加 RealtimeBlurView 到 activity <br>
+4 实现播放列表的显示和隐藏<br>
+5 播放模式的切换<br>

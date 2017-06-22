@@ -1,169 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/play_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="@dimen/status_bar_height"
-        android:layout_weight="0.15"
-        android:gravity="center">
-
-        <TextSwitcher
-            android:id="@+id/play_ts_song_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="47dp"
-            android:inAnimation="@android:anim/fade_in"
-            android:minHeight="@dimen/play_song_name_minSize"
-            android:outAnimation="@android:anim/fade_out"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
-
-        <TextSwitcher
-            android:id="@+id/play_ts_song_arts"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/play_ts_song_name"
-            android:layout_alignStart="@+id/play_ts_song_name"
-            android:layout_below="@+id/play_ts_song_name"
-            android:layout_marginTop="8dp"
-            android:inAnimation="@android:anim/fade_in"
-            android:minHeight="@dimen/play_song_name_minSize"
-            android:outAnimation="@android:anim/fade_out"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/play_ts_song_name" />
-
-    </android.support.constraint.ConstraintLayout>
-
-    <FrameLayout
-        android:id="@+id/play_fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.55">
-
-        <ImageButton
-            android:id="@+id/play_more"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_marginRight="@dimen/activity_default_margin"
-            android:layout_marginTop="@dimen/activity_default_margin"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:padding="10dp"
-            android:src="@drawable/play_more" />
-
-    </FrameLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_gravity="center"
-        android:layout_weight="0.3"
-        android:gravity="center|top"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/play_name"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/activity_default_margin_2x"
-            android:layout_marginRight="@dimen/activity_default_margin_2x">
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/status_bar_height"
+            android:layout_weight="0.15"
+            android:background="?android:selectableItemBackground"
+            android:clickable="true"
+            android:gravity="center">
 
-            <com.duan.musicoco.view.discreteseekbar.DiscreteSeekBar
-                android:id="@+id/play_seekBar"
+            <TextSwitcher
+                android:id="@+id/play_ts_song_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="47dp"
+                android:inAnimation="@android:anim/fade_in"
+                android:minHeight="@dimen/play_song_name_minSize"
+                android:outAnimation="@android:anim/fade_out"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent" />
+
+            <TextSwitcher
+                android:id="@+id/play_ts_song_arts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/play_ts_song_name"
+                android:layout_alignStart="@+id/play_ts_song_name"
+                android:layout_below="@+id/play_ts_song_name"
+                android:layout_marginTop="8dp"
+                android:inAnimation="@android:anim/fade_in"
+                android:minHeight="@dimen/play_song_name_minSize"
+                android:outAnimation="@android:anim/fade_out"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/play_ts_song_name" />
+
+        </android.support.constraint.ConstraintLayout>
+
+        <FrameLayout
+            android:id="@+id/play_fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.55">
+
+            <ImageButton
+                android:id="@+id/play_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginRight="@dimen/activity_default_margin"
+                android:layout_marginTop="@dimen/activity_default_margin"
+                android:background="?android:selectableItemBackgroundBorderless"
+                android:padding="10dp"
+                android:src="@drawable/play_more" />
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center"
+            android:layout_weight="0.3"
+            android:gravity="center|top"
+            android:orientation="vertical">
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true" />
+                android:layout_marginLeft="@dimen/activity_default_margin_2x"
+                android:layout_marginRight="@dimen/activity_default_margin_2x">
 
-            <TextView
-                android:id="@+id/play_progress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_below="@id/play_seekBar"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="20dp"
-                android:lines="1"
-                android:text="00:00"
-                android:textColor="@color/text_gray"
-                android:textSize="@dimen/text_small" />
+                <com.duan.musicoco.view.discreteseekbar.DiscreteSeekBar
+                    android:id="@+id/play_seekBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true" />
 
-            <TextView
-                android:layout_marginRight="10dp"
-                android:id="@+id/play_duration"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_below="@id/play_seekBar"
-                android:layout_marginTop="20dp"
-                android:lines="1"
-                android:text="00:00"
-                android:textColor="@color/text_gray"
-                android:textSize="@dimen/text_small" />
+                <TextView
+                    android:id="@+id/play_progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@id/play_seekBar"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="20dp"
+                    android:lines="1"
+                    android:text="00:00"
+                    android:textColor="@color/text_gray"
+                    android:textSize="@dimen/text_small" />
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/play_duration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/play_seekBar"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="20dp"
+                    android:lines="1"
+                    android:text="00:00"
+                    android:textColor="@color/text_gray"
+                    android:textSize="@dimen/text_small" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            </RelativeLayout>
 
-            <com.duan.musicoco.view.media.PlayView
-                android:id="@+id/play_song"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                android:rotation="180"
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-                app:pauseLineDistance="10dp"
-                app:pauseLineWidth="10dp"
-                app:radius="40dp"
-                app:shadowRadius="8dp"
-                app:strokeWidth="1px"
-                app:triangleHeight="45dp"
-                app:triangleRadius="5dp" />
+                <com.duan.musicoco.view.media.PlayView
+                    android:id="@+id/play_song"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:rotation="180"
 
-            <com.duan.musicoco.view.media.SkipView
-                android:id="@+id/play_pre_song"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_centerVertical="true"
-                android:layout_toStartOf="@id/play_song"
+                    app:pauseLineDistance="10dp"
+                    app:pauseLineWidth="10dp"
+                    app:radius="40dp"
+                    app:shadowRadius="8dp"
+                    app:strokeWidth="1px"
+                    app:triangleHeight="45dp"
+                    app:triangleRadius="5dp" />
 
-                app:innerLineRadius="5dp"
-                app:innerLineWidth="5dp"
-                app:radius="35dp"
-                app:shadowRadius="8dp"
-                app:strokeWidth="0px"
-                app:triangleHeight="30dp"
-                app:triangleRadius="5dp" />
+                <com.duan.musicoco.view.media.SkipView
+                    android:id="@+id/play_pre_song"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_toStartOf="@id/play_song"
 
-            <com.duan.musicoco.view.media.SkipView
-                android:id="@+id/play_next_song"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@id/play_song"
-                android:rotation="180"
+                    app:innerLineRadius="5dp"
+                    app:innerLineWidth="5dp"
+                    app:radius="35dp"
+                    app:shadowRadius="8dp"
+                    app:strokeWidth="0px"
+                    app:triangleHeight="30dp"
+                    app:triangleRadius="5dp" />
 
-                app:innerLineRadius="5dp"
-                app:innerLineWidth="5dp"
-                app:radius="35dp"
-                app:shadowRadius="8dp"
-                app:strokeWidth="0px"
-                app:triangleHeight="30dp"
-                app:triangleRadius="5dp" />
+                <com.duan.musicoco.view.media.SkipView
+                    android:id="@+id/play_next_song"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@id/play_song"
+                    android:rotation="180"
 
-        </RelativeLayout>
+                    app:innerLineRadius="5dp"
+                    app:innerLineWidth="5dp"
+                    app:radius="35dp"
+                    app:shadowRadius="8dp"
+                    app:strokeWidth="0px"
+                    app:triangleHeight="30dp"
+                    app:triangleRadius="5dp" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+    <include layout="@layout/activity_play_list" />
+
+</FrameLayout>

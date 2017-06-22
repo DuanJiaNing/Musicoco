@@ -24,7 +24,7 @@ import com.duan.musicoco.cache.BitmapCache;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
-import com.duan.musicoco.util.StringUtil;
+import com.duan.musicoco.util.StringUtils;
 
 /**
  * Created by DuanJiaNing on 2017/5/27.
@@ -84,7 +84,7 @@ public class AlbumAlbumSurfaceView extends SurfaceView implements SurfaceHolder.
 //        Bitmap defaultPic = BitmapUtils.bitmapResizeFromResource(context.getResources(), R.mipmap.default_album_pic, mPicWidth, mPicWidth);
 //        Bitmap br = BitmapUtils.jpgTopng(defaultPic, context);
 //        mCurrentPic = BitmapUtils.getCircleBitmap(br);
-//        cache.add(StringUtil.stringToMd5(DEFAULT_PIC), mCurrentPic);
+//        cache.add(StringUtils.stringToMd5(DEFAULT_PIC), mCurrentPic);
 
     }
 
@@ -150,7 +150,7 @@ public class AlbumAlbumSurfaceView extends SurfaceView implements SurfaceHolder.
 
         if (song != null && song.getAlbum_path() != null) {
 
-            String key = StringUtil.stringToMd5(song.getAlbum_path());
+            String key = StringUtils.stringToMd5(song.getAlbum_path());
 
             Bitmap result = cache.get(key);
 
@@ -168,7 +168,7 @@ public class AlbumAlbumSurfaceView extends SurfaceView implements SurfaceHolder.
                 mCurrentPic = result;
             }
         } else {
-            mCurrentPic = cache.get(StringUtil.stringToMd5(DEFAULT_PIC));
+            mCurrentPic = cache.get(StringUtils.stringToMd5(DEFAULT_PIC));
         }
     }
 

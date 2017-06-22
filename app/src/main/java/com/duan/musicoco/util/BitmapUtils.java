@@ -9,8 +9,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -70,7 +68,7 @@ public class BitmapUtils {
         FileOutputStream fos = null;
         File file = null;
         try {
-            String fileP = "temp" + File.separator + StringUtil.stringToMd5(source.toString());
+            String fileP = "temp" + File.separator + StringUtils.stringToMd5(source.toString());
             file = FileUtils.getDiskCacheDirFile(context, fileP);
             fos = new FileOutputStream(file);
             source.compress(Bitmap.CompressFormat.PNG, 100, fos);

@@ -4,16 +4,24 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,7 +45,7 @@ import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.util.AnimationUtils;
-import com.duan.musicoco.util.Util;
+import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.discreteseekbar.DiscreteSeekBar;
 import com.duan.musicoco.view.media.PlayView;
 import com.duan.musicoco.view.media.SkipView;
@@ -61,24 +69,31 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     private VisualizerPresenter visualizerPresenter;
     private LyricPresenter lyricPresenter;
 
-    private LinearLayout rootView;
-
     private TextView tvPlayProgress;
     private TextView tvDuration;
-
     private TextSwitcher tsSongName;
     private TextSwitcher tsSongArts;
-
     private DiscreteSeekBar sbSongProgress;
+
+    private TextView tvPlayMode;
+    private int currentPlayMode;
+
+    private FrameLayout flFragmentContainer;
+    private FrameLayout flRootView;
+    private FrameLayout flList;
+    private ConstraintLayout clName;
 
     private PlayView btPlay;
     private SkipView btPre;
     private SkipView btNext;
     private ImageButton btMore;
 
+    private ListView lvPlayList;
+
     private FragmentManager fragmentManager;
 
     private boolean isFragmentAniming = false;
+    private boolean isListShowing = false;
 
     private PlayPreference playPreference;
 
@@ -160,6 +175,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
             int index = currentIndex;
             int pro = sbSongProgress.getProgress();
             playPreference.updateCurrentSong(new PlayPreference.CurrentSong(path, pro, index));
+            playPreference.updateCurrentPlayMode(currentPlayMode);
         }
     }
 
@@ -209,14 +225,14 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         ((TextView) (tsSongName.getCurrentView())).setTextColor(colors[1]);
         ((TextView) (tsSongArts.getCurrentView())).setTextColor(colors[3]);
 
-        ColorDrawable cd = (ColorDrawable) rootView.getBackground();
+        ColorDrawable cd = (ColorDrawable) flRootView.getBackground();
         if (cd != null) {
             if (cd.getColor() != colors[0]) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    AnimationUtils.startColorGradientAnim(1000, rootView, cd.getColor(), colors[0]);
-                } else rootView.setBackgroundColor(colors[0]);
+                    AnimationUtils.startColorGradientAnim(1000, flRootView, cd.getColor(), colors[0]);
+                } else flRootView.setBackgroundColor(colors[0]);
             }
-        } else rootView.setBackgroundColor(colors[0]);
+        } else flRootView.setBackgroundColor(colors[0]);
 
         tvPlayProgress.setTextColor(colors[3]);
         tvDuration.setTextColor(colors[3]);
@@ -237,12 +253,55 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
     private void updateData(int duration, int progress, String title, String arts) {
 
-        tvDuration.setText(Util.getGenTime(duration));
-        tvPlayProgress.setText(Util.getGenTime(progress));
+        tvDuration.setText(Utils.getGenTime(duration));
+        tvPlayProgress.setText(Utils.getGenTime(progress));
         sbSongProgress.setProgress(progress);
         sbSongProgress.setMax(duration);
         tsSongName.setText(title);
         tsSongArts.setText(arts);
+    }
+
+    private void updatePlayMode() {
+        Drawable drawable = null;
+        StringBuilder builder = new StringBuilder();
+        int num = 0;
+        switch (currentPlayMode) {
+            case PlayController.MODE_LIST_LOOP:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    drawable = getDrawable(R.drawable.list_loop);
+                } else drawable = getResources().getDrawable(R.drawable.list_loop);
+                builder.append(getString(R.string.play_mode_list_loop));
+                break;
+
+            case PlayController.MODE_SINGLE_LOOP:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    drawable = getDrawable(R.drawable.single_loop);
+                } else drawable = getResources().getDrawable(R.drawable.single_loop);
+                builder.append(getString(R.string.play_mode_single_loop));
+                break;
+
+            case PlayController.MODE_RANDOM:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    drawable = getDrawable(R.drawable.random);
+                } else drawable = getResources().getDrawable(R.drawable.random);
+                builder.append(getString(R.string.play_mode_random));
+                break;
+        }
+
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        tvPlayMode.setCompoundDrawables(drawable, null, null, null);
+
+        try {
+            num = mServiceConnection.takeControl().getPlayList().size();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+        if (num != 0)
+            builder.append(' ').append('(').append(num).append(')');
+
+        tvPlayMode.setText(builder.toString());
+
     }
 
     //设置主题风格
@@ -294,7 +353,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
                         try {
                             progress = mServiceConnection.takeControl().getProgress();
                             sbSongProgress.setProgress(progress);
-                            tvPlayProgress.setText(Util.getGenTime(progress));
+                            tvPlayProgress.setText(Utils.getGenTime(progress));
 
                         } catch (RemoteException e) {
                             e.printStackTrace();
@@ -328,6 +387,9 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         lyricPresenter = new LyricPresenter(this, lyricFragment, this);
 
         Song song = null;
+
+        currentPlayMode = playPreference.getCurrentPlayMode();
+        updatePlayMode();
 
         PlayPreference.CurrentSong cur = playPreference.getCurrentSong();
         if (cur != null && cur.path != null)
@@ -372,13 +434,15 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
             e.printStackTrace();
         }
 
+        //TODO 添加播放列表适配器
+
     }
 
     @Override
     public void initViews(@Nullable View view, Object obj) {
 
         //初始控件
-        rootView = (LinearLayout) findViewById(R.id.play_root);
+        flRootView = (FrameLayout) findViewById(R.id.play_root);
         tvPlayProgress = (TextView) findViewById(R.id.play_progress);
         tvDuration = (TextView) findViewById(R.id.play_duration);
         sbSongProgress = (DiscreteSeekBar) findViewById(R.id.play_seekBar);
@@ -388,6 +452,11 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         btNext = (SkipView) findViewById(R.id.play_next_song);
         btPlay = (PlayView) findViewById(R.id.play_song);
         btMore = (ImageButton) findViewById(R.id.play_more);
+        flFragmentContainer = (FrameLayout) findViewById(R.id.play_fragment_container);
+        flList = (FrameLayout) findViewById(R.id.play_list);
+        clName = (ConstraintLayout) findViewById(R.id.play_name);
+        tvPlayMode = (TextView) findViewById(R.id.play_mode);
+        lvPlayList = (ListView) findViewById(R.id.play_play_list);
 
         //设置属性
         tsSongName.setFactory(new ViewSwitcher.ViewFactory() {
@@ -412,11 +481,20 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         //设置主题
         setThemeMode(new AppPreference(this).getTheme());
 
+        tvPlayMode.setOnClickListener(this);
+        clName.setOnClickListener(this);
+        flFragmentContainer.setOnClickListener(this);
         btPre.setOnClickListener(this);
         btNext.setOnClickListener(this);
         btPlay.setOnClickListener(this);
         btMore.setOnClickListener(this);
 
+        tvPlayMode.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return false;
+            }
+        });
         btMore.setEnabled(false);
         btMore.setVisibility(View.INVISIBLE);
 
@@ -434,7 +512,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
 
                 pos = value;
-                tvPlayProgress.setText(Util.getGenTime(value));
+                tvPlayProgress.setText(Utils.getGenTime(value));
                 change = true;
 
             }
@@ -458,6 +536,14 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
             }
         });
 
+        ViewGroup.LayoutParams params = flList.getLayoutParams();
+        DisplayMetrics metrics = Utils.getMetrics(this);
+        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        params.height = metrics.heightPixels / 2;
+        flList.setX(0);
+        flList.setY(metrics.heightPixels);
+        flList.setLayoutParams(params);
+
         lyricFragment = new LyricFragment();
         visualizerFragment = new VisualizerFragment();
 
@@ -478,6 +564,11 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
     @Override
     public void onBackPressed() {
+        if (isListShowing) {
+            hidePlayList();
+            return;
+        }
+
         if (fragmentManager.findFragmentByTag(LyricFragment.TAG).isVisible())
             hideLyricFragment();
         else
@@ -517,6 +608,24 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
             case R.id.play_more:
                 Toast.makeText(this, "click", Toast.LENGTH_SHORT).show();
                 break;
+            case R.id.play_fragment_container:
+                if (isListShowing)
+                    hidePlayList();
+                else showPlayList();
+                break;
+            case R.id.play_name:
+                if (isListShowing)
+                    hidePlayList();
+                break;
+            case R.id.play_mode:
+                currentPlayMode = ((currentPlayMode - 21) + 1) % 3 + 21;
+                updatePlayMode();
+                try {
+                    mServiceConnection.takeControl().setPlayMode(currentPlayMode);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                break;
             default:
                 break;
         }
@@ -553,6 +662,32 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         btPre.setEnabled(false);
         btNext.setEnabled(false);
         sbSongProgress.setEnabled(false);
+    }
+
+    @Override
+    public void showPlayList() {
+        isListShowing = true;
+        DisplayMetrics metrics = Utils.getMetrics(this);
+        AnimationUtils.startTranslateYAnim(
+                metrics.heightPixels,
+                metrics.heightPixels / 2,
+                500,
+                flList,
+                new AccelerateInterpolator()
+        );
+    }
+
+    @Override
+    public void hidePlayList() {
+        isListShowing = false;
+        DisplayMetrics metrics = Utils.getMetrics(this);
+        AnimationUtils.startTranslateYAnim(
+                metrics.heightPixels / 2,
+                metrics.heightPixels,
+                500,
+                flList,
+                new DecelerateInterpolator()
+        );
     }
 
 }

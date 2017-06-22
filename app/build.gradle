@@ -10,6 +10,8 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        renderscriptTargetApi 19
+        renderscriptSupportModeEnabled true    // Enable RS support
     }
     buildTypes {
         release {
@@ -28,4 +30,5 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
     compile 'com.android.support:palette-v7:23.4.0'
     testCompile 'junit:junit:4.12'
+    compile 'com.github.mmin18:realtimeblurview:1.0.3'
 }

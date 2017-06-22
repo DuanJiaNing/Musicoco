@@ -1,8 +1,10 @@
 package com.duan.musicoco.util;
 
 import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.view.View;
 
@@ -26,4 +28,18 @@ public class AnimationUtils {
         anim.start();
     }
 
+    public static void startTranslateYAnim(float from, float to, int duration, final View view, @Nullable TimeInterpolator interpolator) {
+        final ValueAnimator anim = ObjectAnimator.ofFloat(from, to);
+        anim.setDuration(duration);
+        if (interpolator != null)
+            anim.setInterpolator(interpolator);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float va = (float) animation.getAnimatedValue();
+                view.setY(va);
+            }
+        });
+        anim.start();
+    }
 }

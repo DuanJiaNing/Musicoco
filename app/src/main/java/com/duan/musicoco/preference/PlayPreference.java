@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.service.PlayController;
 
 import static android.content.Context.MODE_WORLD_READABLE;
 
@@ -17,6 +18,7 @@ import static android.content.Context.MODE_WORLD_READABLE;
 public class PlayPreference {
 
     public static final String PLAY_PREFERENCE = "play_preference";
+    public static final String KEY_PLAY_MODE = "key_play_mode";
     private SharedPreferences.Editor editor;
     private SharedPreferences preferences;
 
@@ -25,6 +27,23 @@ public class PlayPreference {
     public PlayPreference(Context context) {
         this.context = context;
         preferences = context.getSharedPreferences(PLAY_PREFERENCE, Context.MODE_PRIVATE);
+    }
+
+    public int updateCurrentPlayMode(int mode) {
+        //不考虑默认模式
+        // 21 列表循环
+        // 22 单曲循环
+        // 23 随机播放
+        if (mode < 21 || mode > 23)
+            mode = 21;
+        editor = preferences.edit();
+        editor.putInt(KEY_PLAY_MODE, mode);
+        editor.apply();
+        return mode;
+    }
+
+    public int getCurrentPlayMode() {
+        return preferences.getInt(KEY_PLAY_MODE, PlayController.MODE_LIST_LOOP);
     }
 
     //注意在多进程下的修改不可见问题

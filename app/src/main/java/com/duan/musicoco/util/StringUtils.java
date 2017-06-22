@@ -7,7 +7,7 @@ import java.security.NoSuchAlgorithmException;
  * Created by DuanJiaNing on 2017/6/9.
  */
 
-public class StringUtil {
+public class StringUtils {
 
     public static String stringToMd5(String key) {
         String cacheKey;

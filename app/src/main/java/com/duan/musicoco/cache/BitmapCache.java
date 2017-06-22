@@ -14,7 +14,7 @@ import android.view.WindowManager;
 import com.duan.musicoco.R;
 import com.duan.musicoco.image.PictureBuilder;
 import com.duan.musicoco.util.FileUtils;
-import com.duan.musicoco.util.StringUtil;
+import com.duan.musicoco.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -83,7 +83,7 @@ public class BitmapCache {
     /**
      * 从缓存中获得图片
      *
-     * @param key key，应使用{@link com.duan.musicoco.util.StringUtil#stringToMd5(String)}方法转换为 MD5
+     * @param key key，应使用{@link StringUtils#stringToMd5(String)}方法转换为 MD5
      * @return 位图，获取失败返回 null
      */
     @Nullable
@@ -115,7 +115,7 @@ public class BitmapCache {
     /**
      * 添加图片到缓存中
      *
-     * @param key    key，应使用{@link com.duan.musicoco.util.StringUtil#stringToMd5(String)}方法转换为 MD5
+     * @param key    key，应使用{@link StringUtils#stringToMd5(String)}方法转换为 MD5
      * @param bitmap 位图
      * @return 添加成功返回 true
      */
@@ -187,13 +187,13 @@ public class BitmapCache {
         builder.toRoundBitmap();
         builder.addOuterCircle(0, 10, Color.parseColor("#df3b43"))
                 .addOuterCircle(7, 1, Color.WHITE);
-        add(StringUtil.stringToMd5(DEFAULT_PIC_KEY), builder.getBitmap());
+        add(StringUtils.stringToMd5(DEFAULT_PIC_KEY), builder.getBitmap());
     }
 
     public Bitmap getDefaultBitmap() {
-        Bitmap b = get(StringUtil.stringToMd5(DEFAULT_PIC_KEY));
+        Bitmap b = get(StringUtils.stringToMd5(DEFAULT_PIC_KEY));
         if (b == null)
             initDefaultBitmap();
-        return get(StringUtil.stringToMd5(DEFAULT_PIC_KEY));
+        return get(StringUtils.stringToMd5(DEFAULT_PIC_KEY));
     }
 }
