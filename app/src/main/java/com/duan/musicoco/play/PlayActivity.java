@@ -3,6 +3,7 @@ package com.duan.musicoco.play;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -35,6 +36,7 @@ import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
+import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.util.Util;
 import com.duan.musicoco.view.discreteseekbar.DiscreteSeekBar;
 import com.duan.musicoco.view.media.PlayView;
@@ -106,6 +108,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         initViews(null, null);
 
         //检查权限
+        //FIXME 没有作用  mediaManager.refreshData(); 进行之前就需要获得权限
         checkPermission();
 
     }
@@ -206,7 +209,14 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         ((TextView) (tsSongName.getCurrentView())).setTextColor(colors[1]);
         ((TextView) (tsSongArts.getCurrentView())).setTextColor(colors[3]);
 
-        rootView.setBackgroundColor(colors[0]);
+        ColorDrawable cd = (ColorDrawable) rootView.getBackground();
+        if (cd != null) {
+            if (cd.getColor() != colors[0]) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    AnimationUtils.startColorGradientAnim(1000, rootView, cd.getColor(), colors[0]);
+                } else rootView.setBackgroundColor(colors[0]);
+            }
+        } else rootView.setBackgroundColor(colors[0]);
 
         tvPlayProgress.setTextColor(colors[3]);
         tvDuration.setTextColor(colors[3]);

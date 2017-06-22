@@ -183,9 +183,9 @@ public class BitmapCache {
         int r = metrics.widthPixels * 2 / 3;
 
         PictureBuilder builder = new PictureBuilder(mContext);
-        builder.resizeForDefault(r, r, R.mipmap.default_pic_01);
+        builder.resizeForDefault(r, r, R.mipmap.default_album);
         builder.toRoundBitmap();
-        builder.addOuterCircle(0, 10, Color.parseColor("#a63e43"))
+        builder.addOuterCircle(0, 10, Color.parseColor("#df3b43"))
                 .addOuterCircle(7, 1, Color.WHITE);
         add(StringUtil.stringToMd5(DEFAULT_PIC_KEY), builder.getBitmap());
     }
