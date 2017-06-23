@@ -7,8 +7,9 @@
     <color name="colorPrimaryLight">#dfbd6e</color>
     <color name="text_gray">#ababab</color>
     <color name="white">#ffffff</color>
-    <color name="white_d">#9c9c9c</color>
-    <color name="white_d_d">#7b7b7b</color>
+    <color name="white_d">#b6b6b6</color>
+    <color name="white_d_d">#696969</color>
+    <color name="white_d_d_d">#4d4d4d</color>
 
     <color name="dsb_progress_color">#ff009688</color>
     <color name="dsb_track_color">#ff939393</color>

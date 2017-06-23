@@ -61,5 +61,8 @@ interface IPlayControl {
        //定位到指定位置
        int seekTo(int pos);
 
+       //移除播放列表中的歌曲（如果播放列表中有该歌曲的话）
+       void remove(in Song song);
+
 }
 

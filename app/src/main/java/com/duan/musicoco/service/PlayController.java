@@ -159,9 +159,11 @@ public class PlayController {
         if (index != -1) { //列表中有该歌曲
             if (mCurrentSong != index) { //不是当前歌曲
                 mCurrentSong = index;
-                mPlayState = STATUS_PLAYING; //切换并播放
+                if (mPlayState != STATUS_PLAYING) {
+                    mNotifyStatusChanged.notify(getCurrentSong(), mCurrentSong, STATUS_START);
+                    mPlayState = STATUS_PLAYING; //切换并播放
+                }
                 result = changeSong();
-                mNotifyStatusChanged.notify(getCurrentSong(), mCurrentSong, STATUS_START);
             } else if (mPlayState != STATUS_PLAYING) { // 是但没在播放
                 mPlayState = STATUS_PAUSE;
                 resume();//播放
@@ -334,6 +336,28 @@ public class PlayController {
     //用于提取频谱
     public int getAudioSessionId() {
         return mPlayer.getAudioSessionId();
+    }
+
+    public void remove(Song song) {
+        if (song == null)
+            return;
+
+        int index = mPlayList.indexOf(song);
+        if (index != -1) {
+            if (mCurrentSong == index) {
+                int tempS = mPlayMode;
+                mPlayMode = MODE_LIST_LOOP;
+                mPlayList.remove(index);
+                mCurrentSong--;
+                nextSong();
+                mPlayMode = tempS;
+            } else {
+                mPlayList.remove(index);
+                if (index < mCurrentSong) {
+                    mCurrentSong--;
+                }
+            }
+        }
     }
 
 }

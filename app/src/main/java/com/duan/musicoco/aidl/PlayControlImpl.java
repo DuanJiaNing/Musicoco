@@ -152,6 +152,11 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
     }
 
     @Override
+    public void remove(Song song) throws RemoteException {
+        manager.remove(song);
+    }
+
+    @Override
     public void registerOnSongChangedListener(IOnSongChangedListener li) {
         mSongChangeListeners.register(li);
     }

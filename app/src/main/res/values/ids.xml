@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="play_list_item_remove_position" type="id">0</item>
+    <item name="play_list_item_remove_path" type="id">1</item>
+    <item name="play_list_item_position" type="id">3</item>
+</resources>

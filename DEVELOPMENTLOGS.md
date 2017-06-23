@@ -92,3 +92,8 @@
 3 添加 RealtimeBlurView 到 activity <br>
 4 实现播放列表的显示和隐藏<br>
 5 播放模式的切换<br>
+
+- 2017-06-23
+
+1 播放列表添加 adapter<br>
+2 aidl IPlayControl 添加 remove 方法<br>

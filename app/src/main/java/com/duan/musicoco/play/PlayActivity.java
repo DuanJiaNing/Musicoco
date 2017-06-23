@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -45,6 +46,7 @@ import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.util.AnimationUtils;
+import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.discreteseekbar.DiscreteSeekBar;
 import com.duan.musicoco.view.media.PlayView;
@@ -87,6 +89,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     private SkipView btPre;
     private SkipView btNext;
     private ImageButton btMore;
+    private ImageButton btLocation;
 
     private ListView lvPlayList;
 
@@ -98,7 +101,12 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     private PlayPreference playPreference;
 
     private Song currentSong;
-    private int currentIndex;
+
+    int currentIndex;
+    //只有手动切换上一曲时才需要让 AlbumPicture 执行'上一曲'的切换动画
+    boolean isPre = false;
+
+    private PlayListAdapter playListadapter;
 
     public PlayActivity() {
         mServiceConnection = new PlayServiceConnection(this, this);
@@ -183,8 +191,10 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     public void songChanged(Song song, int index) {
 
         currentSong = song;
-        int switchTo = index > currentIndex ? 1 : 0;
         currentIndex = index;
+
+        int switchTo = isPre ? 0 : 1;
+        isPre = false;
 
         //更换专辑图片，计算出颜色值
         visualizerPresenter.songChanged(song, switchTo);
@@ -194,6 +204,10 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         SongInfo info = mediaManager.getSongInfo(song);
         updateData((int) info.getDuration(), 0, info.getTitle(), info.getArtist());
         updateColors(visualizerFragment.getCurrColors());
+
+        if (playListadapter != null)
+            playListadapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -435,6 +449,9 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         }
 
         //TODO 添加播放列表适配器
+        if (playListadapter == null)
+            playListadapter = new PlayListAdapter(this, mServiceConnection.takeControl());
+        lvPlayList.setAdapter(playListadapter);
 
     }
 
@@ -452,11 +469,13 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         btNext = (SkipView) findViewById(R.id.play_next_song);
         btPlay = (PlayView) findViewById(R.id.play_song);
         btMore = (ImageButton) findViewById(R.id.play_more);
+        btLocation = (ImageButton) findViewById(R.id.play_location);
         flFragmentContainer = (FrameLayout) findViewById(R.id.play_fragment_container);
         flList = (FrameLayout) findViewById(R.id.play_list);
         clName = (ConstraintLayout) findViewById(R.id.play_name);
         tvPlayMode = (TextView) findViewById(R.id.play_mode);
         lvPlayList = (ListView) findViewById(R.id.play_play_list);
+
 
         //设置属性
         tsSongName.setFactory(new ViewSwitcher.ViewFactory() {
@@ -481,6 +500,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         //设置主题
         setThemeMode(new AppPreference(this).getTheme());
 
+        btLocation.setOnClickListener(this);
         tvPlayMode.setOnClickListener(this);
         clName.setOnClickListener(this);
         flFragmentContainer.setOnClickListener(this);
@@ -579,6 +599,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.play_pre_song:
+                isPre = true;
                 try {
                     mServiceConnection.takeControl().pre();
                 } catch (RemoteException e) {
@@ -625,6 +646,9 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
+                break;
+            case R.id.play_location:
+                lvPlayList.smoothScrollToPosition(currentIndex);
                 break;
             default:
                 break;

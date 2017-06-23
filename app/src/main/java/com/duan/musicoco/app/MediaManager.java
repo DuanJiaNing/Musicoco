@@ -43,10 +43,11 @@ public class MediaManager {
     }
 
 //    /**
+//     * 获得存储上的所有歌曲信息
 //     * 服务端获取存储中歌曲信息的主要方法
 //     * 客户端想获取时在确保服务启动的前提下应优先选择通过 aidl 获取 {@link PlayController#getSongsList()}
 //     * 而不是此方法
-//     * @hide
+//     *
 //     */
     public HashSet<SongInfo> refreshData() {
         if (songs == null)

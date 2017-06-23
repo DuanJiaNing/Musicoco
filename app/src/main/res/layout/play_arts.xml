@@ -6,7 +6,7 @@
     android:layout_marginRight="@dimen/activity_default_margin_2x"
     android:gravity="center"
     android:lines="1"
-    android:textSize="@dimen/text_default"
+    android:textSize="@dimen/text_middle"
     >
 
 </TextView>

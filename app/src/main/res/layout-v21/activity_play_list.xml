@@ -8,37 +8,30 @@
     <com.github.mmin18.widget.RealtimeBlurView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:realtimeBlurRadius="50dp" />
+        app:realtimeBlurRadius="50dp"
+        app:realtimeOverlayColor="#b9ffffff" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="@color/white_d" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/action_bar_default_height">
-
-            <View
-                android:id="@+id/view_01"
-                android:layout_width="match_parent"
-                android:layout_height="2px"
-                android:layout_alignParentTop="true"
-                android:background="@color/white_d" />
-
-            <View
-                android:id="@+id/view_02"
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_alignParentBottom="true"
-                android:background="@color/white_d" />
 
             <TextView
                 android:id="@+id/play_mode"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_above="@id/view_02"
-                android:layout_below="@id/view_01"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
                 android:background="?android:selectableItemBackground"
                 android:clickable="true"
                 android:drawableLeft="@drawable/list_loop"
@@ -49,14 +42,34 @@
                 android:paddingRight="@dimen/activity_default_margin"
                 android:text="单曲循环"
                 android:textColor="@color/white_d_d"
-                android:textSize="@dimen/text_default" />
+                android:textSize="@dimen/text_middle" />
 
+            <ImageButton
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                android:id="@+id/play_location"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="?android:selectableItemBackground"
+                android:paddingLeft="@dimen/activity_default_margin"
+                android:paddingRight="@dimen/activity_default_margin"
+                android:src="@drawable/ic_location_searching_black_24dp"
+                android:tint="@color/white_d_d" />
         </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2px"
+            android:background="@color/white_d" />
 
         <ListView
             android:id="@+id/play_play_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:dividerHeight="1px" />
 
     </LinearLayout>
 
