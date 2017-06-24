@@ -97,3 +97,7 @@
 
 1 播放列表添加 adapter<br>
 2 aidl IPlayControl 添加 remove 方法<br>
+
+- 2017-06-24
+
+1 添加对 白色 和 黑金 主题的支持<br>

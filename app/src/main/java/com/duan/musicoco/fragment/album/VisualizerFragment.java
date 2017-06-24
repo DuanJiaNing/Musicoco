@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
@@ -18,7 +17,6 @@ import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.image.AlbumPicture;
 import com.duan.musicoco.app.MediaManager;
 import com.duan.musicoco.app.SongInfo;
-import com.duan.musicoco.preference.PlayPreference;
 
 /**
  * Created by DuanJiaNing on 2017/5/30.
@@ -101,15 +99,16 @@ public class VisualizerFragment extends Fragment implements ViewContract {
     }
 
     @Override
-    public void songChanged(Song song, int dir) {
+    public void songChanged(Song song, int dir, boolean updateColors) {
         SongInfo info = song == null ? null : mediaManager.getSongInfo(song);
         if (info == null)
             return;
 
-        if (dir == 0)
-            currColors = albumPicture.pre(info);
-        else
-            currColors = albumPicture.next(info);
+        if (dir == 0) {
+            currColors = albumPicture.pre(info, updateColors);
+        } else {
+            currColors = albumPicture.next(info, updateColors);
+        }
 
     }
 

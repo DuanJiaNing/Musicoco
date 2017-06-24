@@ -29,7 +29,6 @@ public class LyricFragment extends Fragment implements ViewContract, View.OnClic
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_play_lyric, null);
         initViews(view, null);
-
         return view;
     }
 

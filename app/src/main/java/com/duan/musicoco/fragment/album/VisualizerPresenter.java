@@ -54,8 +54,8 @@ public class VisualizerPresenter implements PresenterContract {
     }
 
     @Override
-    public void songChanged(Song song,int dir) {
-        fragmentView.songChanged(song,dir);
+    public void songChanged(Song song,int dir,boolean updateColors) {
+        fragmentView.songChanged(song,dir,updateColors);
     }
 
 }

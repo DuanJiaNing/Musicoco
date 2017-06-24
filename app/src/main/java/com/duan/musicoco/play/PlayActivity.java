@@ -1,7 +1,12 @@
 package com.duan.musicoco.play;
 
 import android.Manifest;
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.app.AlertDialog;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -19,7 +24,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -46,7 +50,6 @@ import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.util.AnimationUtils;
-import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.discreteseekbar.DiscreteSeekBar;
 import com.duan.musicoco.view.media.PlayView;
@@ -55,12 +58,13 @@ import com.duan.musicoco.view.media.SkipView;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ForkJoinPool;
 
 /**
  * Created by DuanJiaNing on 2017/5/23.
  */
 
-public class PlayActivity extends RootActivity implements ActivityViewContract, View.OnClickListener {
+public class PlayActivity extends RootActivity implements ActivityViewContract, View.OnClickListener, View.OnLongClickListener {
 
     private final PlayServiceConnection mServiceConnection;
     private MediaManager mediaManager;
@@ -108,6 +112,8 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
     private PlayListAdapter playListadapter;
 
+    private boolean changeColorFollowAlbum = true;
+
     public PlayActivity() {
         mServiceConnection = new PlayServiceConnection(this, this);
     }
@@ -117,41 +123,10 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
 
-        mediaManager = MediaManager.getInstance(getApplicationContext());
         playPreference = new PlayPreference(getApplicationContext());
-
-        new Thread() {
-            @Override
-            public void run() {
-                mediaManager.refreshData();
-                new Init().initImageCache(PlayActivity.this);
-            }
-        }.start();
 
         initViews(null, null);
 
-        //检查权限
-        //FIXME 没有作用  mediaManager.refreshData(); 进行之前就需要获得权限
-        checkPermission();
-
-    }
-
-    private void checkPermission() {
-        String[] ps = new String[]{
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.RECORD_AUDIO
-        };
-
-        if (!PermissionManager.checkPermission(this, ps)) {
-            PermissionManager.PerMap perMap = new PermissionManager.PerMap("存储读取权限",
-                    getResources().getString(R.string.per_rw_storage),
-                    PermissionManager.PerMap.CATEGORY_MEDIA_READ, ps
-            );
-            PermissionManager.requestPermission(perMap, this);
-        } else {
-            PlayServiceManager.bindService(this, mServiceConnection);
-        }
     }
 
     @Override
@@ -159,7 +134,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         if (requestCode == PermissionManager.PerMap.CATEGORY_MEDIA_READ) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "授权成功", Toast.LENGTH_SHORT).show();
-                PlayServiceManager.bindService(this, mServiceConnection);
+                permissionGranted();
             } else {
                 finish();
             }
@@ -173,6 +148,21 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
             mServiceConnection.unregisterListener();
             unbindService(mServiceConnection);
         }
+    }
+
+    @Override
+    public void permissionGranted() {
+        PlayServiceManager.bindService(this, mServiceConnection);
+        mediaManager = MediaManager.getInstance(getApplicationContext());
+
+        new Thread() {
+            @Override
+            public void run() {
+                mediaManager.refreshData();
+                new Init().initImageCache(PlayActivity.this);
+            }
+        }.start();
+
     }
 
     @Override
@@ -197,13 +187,14 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         isPre = false;
 
         //更换专辑图片，计算出颜色值
-        visualizerPresenter.songChanged(song, switchTo);
+        visualizerPresenter.songChanged(song, switchTo, changeColorFollowAlbum);
 
-        //FIXME 既使用 visualizerPresenter 控制 fragment，又通过 visualizerFragment 直接控制（那干嘛要用 MVP）
+        if (changeColorFollowAlbum)
+            //FIXME 既使用 visualizerPresenter 控制 fragment，又通过 visualizerFragment 直接控制（那干嘛要用 MVP）
+            updateColors(visualizerFragment.getCurrColors());
 
         SongInfo info = mediaManager.getSongInfo(song);
         updateData((int) info.getDuration(), 0, info.getTitle(), info.getArtist());
-        updateColors(visualizerFragment.getCurrColors());
 
         if (playListadapter != null)
             playListadapter.notifyDataSetChanged();
@@ -262,6 +253,8 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         sbSongProgress.setScrubberColor(colors[1]);
         sbSongProgress.setThumbColor(colors[3], colors[1]);
         sbSongProgress.setTrackColor(colors[3]);
+
+        flFragmentContainer.setBackgroundColor(Color.TRANSPARENT);
 
     }
 
@@ -325,22 +318,35 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
         switch (themeMode) {
             case WHITE:
+                changeColorFollowAlbum = false;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    colors[0] = getColor(R.color.theme_white_main_bg); //主背景色
+                    colors[1] = getColor(R.color.theme_white_main_text); // 主字体色
+                    colors[2] = getColor(R.color.theme_white_vic_bg); // 辅背景色
+                    colors[3] = getColor(R.color.theme_white_vic_text); // 辅字体色
+                } else {
+                    colors[0] = getResources().getColor(R.color.theme_white_main_bg); //主背景色
+                    colors[1] = getResources().getColor(R.color.theme_white_main_text); // 主字体色
+                    colors[2] = getResources().getColor(R.color.theme_white_vic_bg); // 辅背景色
+                    colors[3] = getResources().getColor(R.color.theme_white_vic_text); // 辅字体色
+                }
                 break;
             case VARYING:
-                //TODO
+                changeColorFollowAlbum = true;
                 break;
             case DARKGOLD:
             default:
+                changeColorFollowAlbum = false;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    colors[0] = getColor(R.color.colorAccent); //主背景色
-                    colors[1] = getColor(R.color.colorPrimary); // 主字体色
-                    colors[2] = colors[0];
-                    colors[3] = getColor(R.color.colorPrimaryDark); // 辅字体色
+                    colors[0] = getColor(R.color.theme_dark_gold_main_bg); //主背景色
+                    colors[1] = getColor(R.color.theme_dark_gold_main_text); // 主字体色
+                    colors[2] = getColor(R.color.theme_dark_gold_vic_bg); // 辅背景色
+                    colors[3] = getColor(R.color.theme_dark_gold_vic_text); // 辅字体色
                 } else {
-                    colors[0] = getResources().getColor(R.color.colorAccent);
-                    colors[1] = getResources().getColor(R.color.colorPrimary);
-                    colors[2] = colors[0];
-                    colors[3] = getResources().getColor(R.color.colorPrimaryDark);
+                    colors[0] = getResources().getColor(R.color.theme_dark_gold_main_bg); //主背景色
+                    colors[1] = getResources().getColor(R.color.theme_dark_gold_main_text); // 主字体色
+                    colors[2] = getResources().getColor(R.color.theme_dark_gold_vic_bg); // 辅背景色
+                    colors[3] = getResources().getColor(R.color.theme_dark_gold_vic_text); // 辅字体色
                 }
                 break;
         }
@@ -448,7 +454,6 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
             e.printStackTrace();
         }
 
-        //TODO 添加播放列表适配器
         if (playListadapter == null)
             playListadapter = new PlayListAdapter(this, mServiceConnection.takeControl());
         lvPlayList.setAdapter(playListadapter);
@@ -476,34 +481,49 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         tvPlayMode = (TextView) findViewById(R.id.play_mode);
         lvPlayList = (ListView) findViewById(R.id.play_play_list);
 
-
+        Theme theme = new AppPreference(this).getTheme();
+        theme = Theme.WHITE;
+        int mainTextColor = Color.DKGRAY;
+        int vicTextColor = Color.GRAY;
+        if (theme == Theme.DARKGOLD) {
+            mainTextColor = getResources().getColor(R.color.theme_dark_gold_main_text);
+            vicTextColor = getResources().getColor(R.color.theme_dark_gold_vic_text);
+        } else if (theme == Theme.WHITE) {
+            mainTextColor = getResources().getColor(R.color.theme_white_main_text);
+            vicTextColor = getResources().getColor(R.color.theme_white_vic_text);
+        }
         //设置属性
+        final int finalMainTextColor = mainTextColor;
         tsSongName.setFactory(new ViewSwitcher.ViewFactory() {
             @Override
             public View makeView() {
                 TextView text = (TextView) getLayoutInflater().inflate(R.layout.play_name, null);
                 Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/name.TTF");
                 text.setTypeface(tf);
+                text.setTextColor(finalMainTextColor);
                 return text;
             }
         });
+        final int finalVicTextColor = vicTextColor;
         tsSongArts.setFactory(new ViewSwitcher.ViewFactory() {
             @Override
             public View makeView() {
                 TextView text = (TextView) getLayoutInflater().inflate(R.layout.play_arts, null);
                 Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/arts.TTF");
                 text.setTypeface(tf);
+                text.setTextColor(finalVicTextColor);
                 return text;
             }
         });
 
         //设置主题
-        setThemeMode(new AppPreference(this).getTheme());
+        setThemeMode(theme);
 
         btLocation.setOnClickListener(this);
         tvPlayMode.setOnClickListener(this);
         clName.setOnClickListener(this);
         flFragmentContainer.setOnClickListener(this);
+        flFragmentContainer.setOnLongClickListener(this);
         btPre.setOnClickListener(this);
         btNext.setOnClickListener(this);
         btPlay.setOnClickListener(this);
@@ -695,7 +715,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         AnimationUtils.startTranslateYAnim(
                 metrics.heightPixels,
                 metrics.heightPixels / 2,
-                500,
+                getResources().getInteger(R.integer.play_list_anim_duration),
                 flList,
                 new AccelerateInterpolator()
         );
@@ -708,10 +728,66 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         AnimationUtils.startTranslateYAnim(
                 metrics.heightPixels / 2,
                 metrics.heightPixels,
-                500,
+                getResources().getInteger(R.integer.play_list_anim_duration),
                 flList,
                 new DecelerateInterpolator()
         );
     }
 
+    @Override
+    public boolean onLongClick(View v) {
+        switch (v.getId()) {
+            case R.id.play_fragment_container:
+                showDetailDialog();
+                return true;
+        }
+        return false;
+    }
+
+    private void showDetailDialog() {
+        int startColor = ((ColorDrawable) (flRootView.getBackground())).getColor();
+        int endColor = btPlay.getTriangleColor();
+        ValueAnimator anim = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            anim = ObjectAnimator.ofArgb(startColor, endColor);
+        }
+        if (anim == null)
+            return;
+
+        anim.setTarget(flFragmentContainer);
+        anim.setDuration(300);
+        anim.setRepeatCount(1);
+        anim.setRepeatMode(ValueAnimator.REVERSE);
+        anim.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+                Toast.makeText(PlayActivity.this, "time to show dialog", Toast.LENGTH_SHORT).show();
+            }
+        });
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                int co = (int) animation.getAnimatedValue();
+                flFragmentContainer.setBackgroundColor(co);
+            }
+        });
+
+        anim.start();
+
+    }
 }

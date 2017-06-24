@@ -145,7 +145,7 @@ public final class AlbumPicture implements Album {
     /**
      * 切换歌曲的同时返回从歌曲专辑图片中提取出的四种颜色值{@link ColorUtils#get2ColorWithTextFormBitmap(Bitmap, int, int, int[])}
      */
-    public int[] pre(@NonNull SongInfo song) {
+    public int[] pre(@NonNull SongInfo song, boolean updateColors) {
 
         view.setInAnimation(AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left));
         view.setOutAnimation(AnimationUtils.loadAnimation(context, android.R.anim.slide_out_right));
@@ -158,14 +158,18 @@ public final class AlbumPicture implements Album {
 
         Bitmap bitmap = getBitmap(song);
         if (bitmap != null) {
+            if (updateColors)
+                ColorUtils.get2ColorWithTextFormBitmap(bitmap, defaultColor, defaultTextColor, this.colors);
+
             view.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
         } else {
             view.setImageDrawable(new BitmapDrawable(context.getResources(), cache.getDefaultBitmap()));
         }
+
         return colors;
     }
 
-    public int[] next(@NonNull SongInfo song) {
+    public int[] next(@NonNull SongInfo song, boolean updateColors) {
 
         view.setInAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_in_right));
         view.setOutAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_out_left));
@@ -178,6 +182,9 @@ public final class AlbumPicture implements Album {
 
         Bitmap bitmap = getBitmap(song);
         if (bitmap != null) {
+            if (updateColors)
+                ColorUtils.get2ColorWithTextFormBitmap(bitmap, defaultColor, defaultTextColor, this.colors);
+
             view.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
         } else {
             view.setImageDrawable(new BitmapDrawable(context.getResources(), cache.getDefaultBitmap()));
@@ -251,10 +258,6 @@ public final class AlbumPicture implements Album {
                     result = cache.get(StringUtils.stringToMd5(DEFAULT_PIC_KEY));
             }
         }
-
-        if (result != null)
-            ColorUtils.get2ColorWithTextFormBitmap(result, defaultColor, defaultTextColor, this.colors);
-
         return result;
     }
 }

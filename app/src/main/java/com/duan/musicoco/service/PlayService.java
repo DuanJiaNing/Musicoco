@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.MediaManager;
+import com.duan.musicoco.app.RootServce;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
  * 只负责对播放列表中的歌曲进行播放
  */
 
-public class PlayService extends Service {
+public class PlayService extends RootServce {
 
     private static final String TAG = "PlayService";
 
@@ -27,6 +28,7 @@ public class PlayService extends Service {
 
     @Override
     public void onCreate() {
+        super.onCreate();
 
         mediaManager = MediaManager.getInstance(getApplicationContext());
 

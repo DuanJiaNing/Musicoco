@@ -19,7 +19,7 @@ public interface ViewContract extends BaseView<PresenterContract> {
      * 歌曲切换
      * dir 为 0 为上一曲，为 1 为下一曲
      */
-    void songChanged(Song song, int dir);
+    void songChanged(Song song, int dir, boolean updateColors);
 
     //activity 从暂停或停止状态恢复是恢复展台状态
     void updateSpinner();
