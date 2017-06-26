@@ -175,6 +175,14 @@
 
     </LinearLayout>
 
+    <View
+        android:id="@+id/play_dark_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="start|top"
+        android:background="#000"
+        android:visibility="gone" />
+
     <include layout="@layout/activity_play_list" />
 
 </FrameLayout>

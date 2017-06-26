@@ -1,10 +1,9 @@
 package com.duan.musicoco.play;
 
-import android.Manifest;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
-import android.app.AlertDialog;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -23,6 +22,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -58,7 +58,6 @@ import com.duan.musicoco.view.media.SkipView;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ForkJoinPool;
 
 /**
  * Created by DuanJiaNing on 2017/5/23.
@@ -105,6 +104,8 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     private PlayPreference playPreference;
 
     private Song currentSong;
+
+    private View vDarkBg;
 
     int currentIndex;
     //只有手动切换上一曲时才需要让 AlbumPicture 执行'上一曲'的切换动画
@@ -480,9 +481,11 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         clName = (ConstraintLayout) findViewById(R.id.play_name);
         tvPlayMode = (TextView) findViewById(R.id.play_mode);
         lvPlayList = (ListView) findViewById(R.id.play_play_list);
+        vDarkBg = findViewById(R.id.play_dark_bg);
+
 
         Theme theme = new AppPreference(this).getTheme();
-        theme = Theme.WHITE;
+        theme = Theme.VARYING;
         int mainTextColor = Color.DKGRAY;
         int vicTextColor = Color.GRAY;
         if (theme == Theme.DARKGOLD) {
@@ -519,6 +522,7 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         //设置主题
         setThemeMode(theme);
 
+        vDarkBg.setOnClickListener(this);
         btLocation.setOnClickListener(this);
         tvPlayMode.setOnClickListener(this);
         clName.setOnClickListener(this);
@@ -650,13 +654,10 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
                 Toast.makeText(this, "click", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.play_fragment_container:
-                if (isListShowing)
-                    hidePlayList();
-                else showPlayList();
+                if (!isListShowing)
+                    showPlayList();
                 break;
             case R.id.play_name:
-                if (isListShowing)
-                    hidePlayList();
                 break;
             case R.id.play_mode:
                 currentPlayMode = ((currentPlayMode - 21) + 1) % 3 + 21;
@@ -669,6 +670,10 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
                 break;
             case R.id.play_location:
                 lvPlayList.smoothScrollToPosition(currentIndex);
+                break;
+            case R.id.play_dark_bg:
+                if (isListShowing)
+                    hidePlayList();
                 break;
             default:
                 break;
@@ -708,30 +713,100 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         sbSongProgress.setEnabled(false);
     }
 
+    private void startTranslateYAnim(float from, float to, int duration, final View view, @Nullable TimeInterpolator interpolator, @Nullable Animator.AnimatorListener listener) {
+        final ValueAnimator anim = ObjectAnimator.ofFloat(from, to);
+        anim.setDuration(duration);
+        if (interpolator != null)
+            anim.setInterpolator(interpolator);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float va = (float) animation.getAnimatedValue();
+                view.setY(va);
+                ViewGroup.LayoutParams params = vDarkBg.getLayoutParams();
+                params.height = (int) va;
+                vDarkBg.setLayoutParams(params);
+//                vDarkBg.setBottom((int) va);
+            }
+        });
+        if (listener != null)
+            anim.addListener(listener);
+        anim.start();
+    }
+
+    private void startAlphaAnim(int duration, @Nullable Animator.AnimatorListener listener, float... values) {
+        ValueAnimator alphaAnim = ObjectAnimator.ofFloat(values);
+        alphaAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float alpha = (float) animation.getAnimatedValue();
+                vDarkBg.setAlpha(alpha);
+            }
+        });
+        if (listener != null)
+            alphaAnim.addListener(listener);
+
+        alphaAnim.setDuration(duration);
+        alphaAnim.start();
+    }
+
     @Override
     public void showPlayList() {
         isListShowing = true;
+        int duration = getResources().getInteger(R.integer.play_list_anim_duration);
+
         DisplayMetrics metrics = Utils.getMetrics(this);
-        AnimationUtils.startTranslateYAnim(
+        startTranslateYAnim(
                 metrics.heightPixels,
                 metrics.heightPixels / 2,
-                getResources().getInteger(R.integer.play_list_anim_duration),
+                duration,
                 flList,
-                new AccelerateInterpolator()
+                new AccelerateInterpolator(), null
         );
+
+        vDarkBg.setVisibility(View.VISIBLE);
+        vDarkBg.setClickable(true);
+        startAlphaAnim(duration, null, 0.0f, 0.7f);
+
     }
 
     @Override
     public void hidePlayList() {
         isListShowing = false;
+        int duration = getResources().getInteger(R.integer.play_list_anim_duration);
+
         DisplayMetrics metrics = Utils.getMetrics(this);
-        AnimationUtils.startTranslateYAnim(
+        startTranslateYAnim(
                 metrics.heightPixels / 2,
                 metrics.heightPixels,
-                getResources().getInteger(R.integer.play_list_anim_duration),
+                duration,
                 flList,
-                new DecelerateInterpolator()
+                new DecelerateInterpolator(), null
         );
+
+        vDarkBg.setClickable(false);
+        startAlphaAnim(duration, new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                vDarkBg.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        }, 0.7f, 0.0f);
+
     }
 
     @Override
