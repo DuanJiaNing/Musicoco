@@ -2,24 +2,43 @@ package com.duan.musicoco.app;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.res.Configuration;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.preference.PlayPreference;
+import com.duan.musicoco.service.PlayServiceCallback;
+import com.duan.musicoco.play.PlayServiceConnection;
 
 /**
  * Created by DuanJiaNing on 2017/3/21.
+ * 检查权限和绑定服务
  */
 
-public abstract class RootActivity extends AppCompatActivity implements OnPermissionGranted {
+public abstract class RootActivity extends AppCompatActivity implements PermissionRequestCallback, PlayServiceCallback {
 
-    protected final static String TAG = "musicoco";
+    protected final static String TAG = "RootActivity";
+
+    protected MediaManager mediaManager;
+
+    protected final PlayServiceConnection mServiceConnection;
+
+    protected final PlayPreference playPreference;
+
+    public RootActivity() {
+        mServiceConnection = new PlayServiceConnection(this, this);
+        playPreference = new PlayPreference(this);
+    }
 
     @Override
     @CallSuper
@@ -28,9 +47,11 @@ public abstract class RootActivity extends AppCompatActivity implements OnPermis
 
         //状态栏透明
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            Window window = getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.TRANSPARENT);
         }
 
         //检查权限
@@ -52,7 +73,19 @@ public abstract class RootActivity extends AppCompatActivity implements OnPermis
             );
             PermissionManager.requestPermission(perMap, this);
         } else {
-            permissionGranted();
+            permissionGranted(PermissionManager.PerMap.CATEGORY_MEDIA_READ);
+        }
+    }
+
+    @Override
+    public final void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PermissionManager.PerMap.CATEGORY_MEDIA_READ) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d(TAG, "onRequestPermissionsResult: 权限获取成功");
+                permissionGranted(requestCode);
+            } else {
+                permissionDenied(requestCode);
+            }
         }
     }
 
@@ -65,15 +98,18 @@ public abstract class RootActivity extends AppCompatActivity implements OnPermis
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    @CallSuper
+    public void permissionGranted(int requestCode) {
+        PlayServiceManager.bindService(this, mServiceConnection);
+        mediaManager = MediaManager.getInstance(getApplicationContext());
+
+        new Thread() {
+            @Override
+            public void run() {
+                mediaManager.refreshData();
+                new Init().initAlbumVisualizerImageCache(RootActivity.this);
+            }
+        }.start();
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    abstract public void permissionGranted();
 }

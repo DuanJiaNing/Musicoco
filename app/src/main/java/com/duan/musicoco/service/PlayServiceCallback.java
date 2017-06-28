@@ -1,14 +1,12 @@
-package com.duan.musicoco.play;
+package com.duan.musicoco.service;
 
-import com.duan.musicoco.BasePresenter;
-import com.duan.musicoco.BaseView;
 import com.duan.musicoco.aidl.Song;
 
 /**
  * Created by DuanJiaNing on 2017/5/25.
  */
 
-public interface ActivityViewContract extends BaseView<BasePresenter> {
+public interface PlayServiceCallback {
 
     /**
      * 当当前歌曲改变时回调
@@ -35,30 +33,5 @@ public interface ActivityViewContract extends BaseView<BasePresenter> {
      * 连接断开时调用
      */
     void disConnected();
-
-    /**
-     * 显示歌词
-     */
-    void showLyricFragment();
-
-    /**
-     * 隐藏歌词面板
-     */
-    void hideLyricFragment();
-
-    /**
-     * 存储中没有歌曲
-     */
-    void noSongsInDisk();
-
-    /**
-     * 显示播放列表面板
-     */
-    void showPlayList();
-
-    /**
-     * 隐藏播放列表面板
-     */
-    void hidePlayList();
 
 }

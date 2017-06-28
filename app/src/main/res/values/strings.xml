@@ -9,4 +9,13 @@
     <string name="play_mode_list_loop">列表循环</string>
     <string name="play_mode_single_loop">单曲循环</string>
     <string name="play_mode_random">随机播放</string>
+    <string name="title_activity_main">MainActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="cache_bitmap_album_visualizer">album_visualizer</string>
+
 </resources>

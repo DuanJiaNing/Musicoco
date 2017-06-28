@@ -4,6 +4,8 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="activity_default_margin">16dp</dimen>
+    <dimen name="activity_default_margin_s">10dp</dimen>
+    <dimen name="activity_default_margin_s_s">5dp</dimen>
     <dimen name="activity_default_margin_2x">32dp</dimen>
     <dimen name="activity_default_padding">6dp</dimen>
 
@@ -25,5 +27,12 @@
 
     <dimen name="play_more_radius">15dp</dimen>
     <dimen name="play_album_padding">25dp</dimen>
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="nav_header_height">160dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="list_top_height">300dp</dimen>
+    <dimen name="list_top_nav_height">70dp</dimen>
+    <dimen name="list_bottom_nav_height">60dp</dimen>
 
 </resources>

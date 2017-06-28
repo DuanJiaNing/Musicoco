@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_top_height"
+        android:layout_alignParentTop="true">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/default_album" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:gravity="top">
+
+            <View
+                android:id="@+id/v001"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/status_bar_height"
+                android:background="#32620e6b" />
+
+            <RelativeLayout
+                android:id="@+id/list_action_bar_l"
+                android:layout_width="match_parent"
+                android:layout_height="?android:actionBarSize"
+                android:layout_below="@id/v001"
+                android:background="#82ff08de"></RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/list_nav"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/list_top_nav_height"
+                android:layout_alignParentBottom="true"
+                android:background="#7eff0000"
+                android:orientation="horizontal">
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/list_nav"
+                android:layout_below="@id/list_action_bar_l"
+                android:background="#870000ff">
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/list_bottom_nav_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/action_bar_default_height"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="200dp"
+            android:layout_height="1dp"
+            android:background="#ab2929" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/activity_default_margin_s_s">
+
+            <ImageView
+                android:id="@+id/list_album"
+                android:layout_width="@dimen/action_bar_default_height"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:src="@mipmap/default_album" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:layout_toEndOf="@+id/list_album"
+                android:layout_toLeftOf="@+id/ll002"
+                android:layout_toRightOf="@+id/list_album"
+                android:layout_toStartOf="@id/ll002"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/list_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Belong with me"
+                    android:textSize="@dimen/text_middle" />
+
+                <TextView
+                    android:id="@+id/list_arts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="with me" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll002"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:orientation="horizontal">
+
+                <com.duan.musicoco.view.media.PlayView
+                    android:id="@+id/list_play"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="10dp"
+                    android:rotation="180"
+                    app:radius="40dp"
+                    app:strokeColor="@color/colorPrimaryDark"
+                    app:strokeWidth="1px"
+                    app:triangleColor="@color/colorPrimaryDark" />
+
+                <ImageButton
+                    android:id="@+id/list_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="?android:selectableItemBackgroundBorderless"
+                    android:rotation="180"
+                    android:src="@drawable/ic_playlist_play_black_24dp"
+                    android:tint="@color/colorPrimaryDark" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

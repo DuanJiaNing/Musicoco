@@ -21,8 +21,12 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="AppThemeList" parent="Theme.AppCompat.Light.NoActionBar">
+    </style>
+
     <style name="Widget.DiscreteSeekBar" parent="android:Widget">
-        <item name="dsb_indicatorTextAppearance">@style/Widget.DiscreteIndicatorTextAppearance</item>
+        <item name="dsb_indicatorTextAppearance">@style/Widget.DiscreteIndicatorTextAppearance
+        </item>
         <item name="dsb_progressColor">@color/dsb_progress_color_list</item>
         <item name="dsb_trackColor">@color/dsb_track_color_list</item>
         <item name="dsb_rippleColor">@color/dsb_ripple_color_list</item>
@@ -35,5 +39,14 @@
         <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
         <item name="android:padding">6dp</item>
     </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.duan.musicoco">
 
-    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!--屏幕常亮-->
+    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 屏幕常亮 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.duan.musicoco.permission.ACCESS_PLAY_SERVICE" />
@@ -20,17 +20,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".app.RootActivity" />
-
-        <!--为 activity 开启硬件加速-->
+        <!-- 需要为 PlayActivity 开启硬件加速，Android 4.1 以上默认开启 -->
         <activity
             android:name=".play.PlayActivity"
-            android:theme="@style/AppThemePlay">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:hardwareAccelerated="true"
+            android:theme="@style/AppThemePlay"></activity>
 
         <service
             android:name=".service.PlayService"
@@ -42,6 +36,16 @@
             </intent-filter>
         </service>
 
+        <activity
+            android:name=".main.MainActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppThemeList">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -1,31 +1,33 @@
-package com.duan.musicoco.image;
+package com.duan.musicoco.fragment.album;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageSwitcher;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.cache.BitmapCache;
+import com.duan.musicoco.app.Init;
 import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.cache.BitmapCache;
+import com.duan.musicoco.image.AlbumBitmapProducer;
 import com.duan.musicoco.util.ColorUtils;
-import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.view.Album;
 
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.duan.musicoco.cache.BitmapCache.DEFAULT_PIC_KEY;
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by DuanJiaNing on 2017/6/13.
@@ -46,9 +48,9 @@ public final class AlbumPicture implements Album {
 
     private boolean isSpin = false;
 
-    private final PictureBuilder builder;
-
     private final BitmapCache cache;
+
+    private final AlbumBitmapProducer bitmapProducer;
 
     private int ran = 0;
 
@@ -59,8 +61,7 @@ public final class AlbumPicture implements Album {
     public AlbumPicture(Context context, final ImageSwitcher view) {
         this.view = view;
         this.context = context;
-        this.cache = BitmapCache.getInstance(context);
-        this.builder = new PictureBuilder(context);
+        this.cache = new BitmapCache(context, context.getString(R.string.cache_bitmap_album_visualizer));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             defaultColor = context.getColor(R.color.colorPrimaryLight);
@@ -72,6 +73,8 @@ public final class AlbumPicture implements Album {
             defaultColor = context.getResources().getColor(R.color.colorPrimaryLight);
             defaultTextColor = context.getResources().getColor(R.color.colorAccent);
         }
+
+        this.bitmapProducer = new AlbumBitmapProducer(context, cache, defaultColor);
 
         colors = new int[]{
                 defaultColor,
@@ -122,26 +125,6 @@ public final class AlbumPicture implements Album {
 
     }
 
-
-    private void addDefaultOuters(PictureBuilder builder) {
-
-        if (builder == null || builder.getBitmap() == null)
-            return;
-
-        int[] colors = new int[2];
-        ColorUtils.get2ColorFormBitmap(builder.getBitmap(), defaultColor, colors);
-
-        int color = defaultColor;
-        for (int c : colors)
-            if (c != defaultColor) {
-                color = c;
-                break;
-            }
-
-        builder.addOuterCircle(0, 10, color)
-                .addOuterCircle(7, 1, Color.WHITE);
-    }
-
     /**
      * 切换歌曲的同时返回从歌曲专辑图片中提取出的四种颜色值{@link ColorUtils#get2ColorWithTextFormBitmap(Bitmap, int, int, int[])}
      */
@@ -156,14 +139,20 @@ public final class AlbumPicture implements Album {
         }
         view.getNextView().setRotation(0.0f);
 
-        Bitmap bitmap = getBitmap(song);
+        Bitmap bitmap = bitmapProducer.get(song, Math.min(view.getHeight(), view.getWidth()));
         if (bitmap != null) {
             if (updateColors)
                 ColorUtils.get2ColorWithTextFormBitmap(bitmap, defaultColor, defaultTextColor, this.colors);
 
             view.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
         } else {
-            view.setImageDrawable(new BitmapDrawable(context.getResources(), cache.getDefaultBitmap()));
+            try {
+                view.setImageDrawable(new BitmapDrawable(context.getResources(), cache.getDefaultBitmap()));
+            } catch (Exception e) {
+                Log.d(TAG, "pre: create default bitmap for BitmapCache");
+                Bitmap b = new Init().initAlbumVisualizerImageCache((Activity) context);
+                view.setImageDrawable(new BitmapDrawable(context.getResources(), b));
+            }
         }
 
         return colors;
@@ -180,14 +169,20 @@ public final class AlbumPicture implements Album {
         }
         view.getNextView().setRotation(0.0f);
 
-        Bitmap bitmap = getBitmap(song);
+        Bitmap bitmap = bitmapProducer.get(song, Math.min(view.getHeight(), view.getWidth()));
         if (bitmap != null) {
             if (updateColors)
                 ColorUtils.get2ColorWithTextFormBitmap(bitmap, defaultColor, defaultTextColor, this.colors);
 
             view.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
         } else {
-            view.setImageDrawable(new BitmapDrawable(context.getResources(), cache.getDefaultBitmap()));
+            try {
+                view.setImageDrawable(new BitmapDrawable(context.getResources(), cache.getDefaultBitmap()));
+            } catch (Exception e) {
+                Log.d(TAG, "pre: create default bitmap for BitmapCache");
+                Bitmap b = new Init().initAlbumVisualizerImageCache((Activity) context);
+                view.setImageDrawable(new BitmapDrawable(context.getResources(), b));
+            }
         }
         return colors;
     }
@@ -223,41 +218,4 @@ public final class AlbumPicture implements Album {
         return isSpin;
     }
 
-    @Nullable
-    public Bitmap getBitmap(SongInfo info) {
-
-        Bitmap result;
-
-        if (info == null || info.getAlbum_path() == null)
-            result = cache.get(StringUtils.stringToMd5(DEFAULT_PIC_KEY));
-        else {
-
-            String key = StringUtils.stringToMd5(info.getAlbum_path());
-
-            result = cache.get(key);
-
-            if (result == null) { //磁盘缓存中没有
-
-                builder.reset();
-
-                //使 宽 = 高 = r
-                int r = Math.min(view.getWidth(), view.getHeight());
-
-                builder.setPath(info.getAlbum_path())
-                        .resize(r)
-                        .toRoundBitmap()
-                        .build();
-
-                addDefaultOuters(builder);
-
-                Bitmap b = builder.getBitmap();
-                if (b != null) { // 成功构建
-                    cache.add(key, b);
-                    result = b;
-                } else //构建失败
-                    result = cache.get(StringUtils.stringToMd5(DEFAULT_PIC_KEY));
-            }
-        }
-        return result;
-    }
 }

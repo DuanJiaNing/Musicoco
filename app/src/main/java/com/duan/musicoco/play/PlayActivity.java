@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -12,7 +11,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentManager;
@@ -22,7 +20,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
-import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -37,7 +34,6 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.Init;
 import com.duan.musicoco.app.MediaManager;
-import com.duan.musicoco.app.PermissionManager;
 import com.duan.musicoco.app.PlayServiceManager;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.SongInfo;
@@ -45,6 +41,7 @@ import com.duan.musicoco.fragment.album.VisualizerFragment;
 import com.duan.musicoco.fragment.album.VisualizerPresenter;
 import com.duan.musicoco.fragment.lyric.LyricFragment;
 import com.duan.musicoco.fragment.lyric.LyricPresenter;
+import com.duan.musicoco.main.PresenterContract;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.Theme;
@@ -63,10 +60,7 @@ import java.util.TimerTask;
  * Created by DuanJiaNing on 2017/5/23.
  */
 
-public class PlayActivity extends RootActivity implements ActivityViewContract, View.OnClickListener, View.OnLongClickListener {
-
-    private final PlayServiceConnection mServiceConnection;
-    private MediaManager mediaManager;
+public class PlayActivity extends RootActivity implements View.OnClickListener, View.OnLongClickListener,ViewContract {
 
     private VisualizerFragment visualizerFragment;
     private LyricFragment lyricFragment;
@@ -101,8 +95,6 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     private boolean isFragmentAniming = false;
     private boolean isListShowing = false;
 
-    private PlayPreference playPreference;
-
     private Song currentSong;
 
     private View vDarkBg;
@@ -115,32 +107,15 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
 
     private boolean changeColorFollowAlbum = true;
 
-    public PlayActivity() {
-        mServiceConnection = new PlayServiceConnection(this, this);
-    }
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
 
-        playPreference = new PlayPreference(getApplicationContext());
-
         initViews(null, null);
 
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == PermissionManager.PerMap.CATEGORY_MEDIA_READ) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "授权成功", Toast.LENGTH_SHORT).show();
-                permissionGranted();
-            } else {
-                finish();
-            }
-        }
-    }
 
     @Override
     protected void onDestroy() {
@@ -152,18 +127,8 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     }
 
     @Override
-    public void permissionGranted() {
-        PlayServiceManager.bindService(this, mServiceConnection);
-        mediaManager = MediaManager.getInstance(getApplicationContext());
-
-        new Thread() {
-            @Override
-            public void run() {
-                mediaManager.refreshData();
-                new Init().initImageCache(PlayActivity.this);
-            }
-        }.start();
-
+    public void permissionDenied(int requestCode) {
+        finish();
     }
 
     @Override
@@ -462,6 +427,11 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
     }
 
     @Override
+    public void setPresenter(PresenterContract presenter) {
+
+    }
+
+    @Override
     public void initViews(@Nullable View view, Object obj) {
 
         //初始控件
@@ -600,10 +570,6 @@ public class PlayActivity extends RootActivity implements ActivityViewContract, 
         transaction.hide(lyricFragment);
         transaction.commit();
 
-    }
-
-    @Override
-    public void setPresenter(BasePresenter presenter) {
     }
 
     @Override

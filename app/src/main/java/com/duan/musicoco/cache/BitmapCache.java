@@ -5,14 +5,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.support.annotation.Nullable;
-import android.util.DisplayMetrics;
-import android.view.Display;
-import android.view.WindowManager;
 
-import com.duan.musicoco.R;
-import com.duan.musicoco.image.PictureBuilder;
 import com.duan.musicoco.util.FileUtils;
 import com.duan.musicoco.util.StringUtils;
 
@@ -34,28 +28,24 @@ public class BitmapCache {
     private Context mContext;
 
     private static volatile BitmapCache BITMAPCACHE;
-    private final static String CACHE = "bitmap";
 
-    public final static String DEFAULT_PIC_KEY = "default_pic_key";
+    public final static String DEFAULT_PIC_KEY = "default_key";
 
-    private BitmapCache(Context context) {
+    private final String name;
+
+    public BitmapCache(Context context, String name) {
         this.mContext = context;
-        initDiskCacheControl(context);
+        this.name = name;
+        initDiskCacheControl(context, name);
     }
 
-    public static BitmapCache getInstance(Context context) {
-        if (BITMAPCACHE == null) {
-            synchronized (BitmapCache.class) {
-                if (BITMAPCACHE == null)
-                    BITMAPCACHE = new BitmapCache(context);
-            }
-        }
-        return BITMAPCACHE;
+    public String getName() {
+        return name;
     }
 
-    private void initDiskCacheControl(Context context) {
+    private void initDiskCacheControl(Context context, String name) {
         try {
-            File cacheDir = FileUtils.getDiskCacheDirFile(context, CACHE);
+            File cacheDir = FileUtils.getDiskCacheDirFile(context, name);
             if (!cacheDir.exists()) {
                 cacheDir.mkdirs();
             }
@@ -176,24 +166,15 @@ public class BitmapCache {
     }
 
     //初始化默认的专辑图片，第一次启动应用时完成
-    public void initDefaultBitmap() {
-        Display display = ((WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        DisplayMetrics metrics = new DisplayMetrics();
-        display.getMetrics(metrics);
-        int r = metrics.widthPixels * 2 / 3;
-
-        PictureBuilder builder = new PictureBuilder(mContext);
-        builder.resizeForDefault(r, r, R.mipmap.default_album);
-        builder.toRoundBitmap();
-        builder.addOuterCircle(0, 10, Color.parseColor("#df3b43"))
-                .addOuterCircle(7, 1, Color.WHITE);
-        add(StringUtils.stringToMd5(DEFAULT_PIC_KEY), builder.getBitmap());
+    public void initDefaultBitmap(Bitmap bitmap) {
+        add(StringUtils.stringToMd5(DEFAULT_PIC_KEY), bitmap);
     }
 
-    public Bitmap getDefaultBitmap() {
+    public Bitmap getDefaultBitmap() throws Exception {
         Bitmap b = get(StringUtils.stringToMd5(DEFAULT_PIC_KEY));
-        if (b == null)
-            initDefaultBitmap();
+        if (b == null) {
+            throw new Exception("you need call com.duan.musicoco.cache.BitmapCache#initDefaultBitmap(Bitmap b) first");
+        }
         return get(StringUtils.stringToMd5(DEFAULT_PIC_KEY));
     }
 }

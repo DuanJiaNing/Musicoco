@@ -14,7 +14,6 @@ import android.widget.ViewSwitcher;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.image.AlbumPicture;
 import com.duan.musicoco.app.MediaManager;
 import com.duan.musicoco.app.SongInfo;
 

@@ -1,6 +1,4 @@
-package com.duan.musicoco.list;
-
-import android.view.animation.Animation;
+package com.duan.musicoco.main;
 
 import com.duan.musicoco.BaseView;
 
@@ -10,4 +8,7 @@ import com.duan.musicoco.BaseView;
 
 public interface ViewContract extends BaseView<PresenterContract> {
 
+    void showPlayList();
+
+    void hidePlayList();
 }

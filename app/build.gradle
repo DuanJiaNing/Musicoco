@@ -29,6 +29,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
     compile 'com.android.support:palette-v7:23.4.0'
-    testCompile 'junit:junit:4.12'
     compile 'com.github.mmin18:realtimeblurview:1.0.3'
+    compile 'com.android.support:design:25.3.1'
+    testCompile 'junit:junit:4.12'
 }

@@ -11,10 +11,10 @@ import com.duan.musicoco.aidl.OnPlayStatusChangedListener;
 import com.duan.musicoco.aidl.OnSongChangedListener;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.PlayServiceManager;
+import com.duan.musicoco.service.PlayServiceCallback;
 
 /**
  * Created by DuanJiaNing on 2017/5/25.
- * 充当控制类
  */
 
 public class PlayServiceConnection implements ServiceConnection {
@@ -25,12 +25,12 @@ public class PlayServiceConnection implements ServiceConnection {
 
     private Activity mActivity;
 
-    private ActivityViewContract mView;
+    private PlayServiceCallback mView;
 
     private OnPlayStatusChangedListener mPlayStatusChangedListener;
     private OnSongChangedListener mSongChangedListener;
 
-    public PlayServiceConnection(ActivityViewContract view, Activity activity) {
+    public PlayServiceConnection(PlayServiceCallback view, Activity activity) {
         this.mActivity = activity;
         this.mView = view;
         this.mSongChangedListener = new OnSongChangedListener() {
