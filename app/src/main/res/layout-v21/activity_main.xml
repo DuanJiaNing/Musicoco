@@ -6,58 +6,38 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <FrameLayout
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/id_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/list_top_height"
-        android:layout_alignParentTop="true">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-        <ImageView
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:gravity="top">
+
+        <LinearLayout
+            android:id="@+id/list_nav"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/default_album" />
+            android:layout_height="@dimen/list_top_nav_height"
+            android:layout_alignParentBottom="true"
+            android:background="#7eff0000"
+            android:orientation="horizontal">
+
+        </LinearLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            android:gravity="top">
-
-            <View
-                android:id="@+id/v001"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/status_bar_height"
-                android:background="#32620e6b" />
-
-            <RelativeLayout
-                android:id="@+id/list_action_bar_l"
-                android:layout_width="match_parent"
-                android:layout_height="?android:actionBarSize"
-                android:layout_below="@id/v001"
-                android:background="#82ff08de"></RelativeLayout>
-
-            <LinearLayout
-                android:id="@+id/list_nav"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/list_top_nav_height"
-                android:layout_alignParentBottom="true"
-                android:background="#7eff0000"
-                android:orientation="horizontal">
-
-            </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/list_nav"
-                android:layout_below="@id/list_action_bar_l"
-                android:background="#870000ff">
-
-            </RelativeLayout>
+            android:layout_above="@id/list_nav"
+            android:background="#870000ff">
 
         </RelativeLayout>
 
-    </FrameLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/list_bottom_nav_container"

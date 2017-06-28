@@ -16,7 +16,9 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.PlayPreference;
+import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayServiceCallback;
 import com.duan.musicoco.play.PlayServiceConnection;
 
@@ -34,10 +36,12 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
     protected final PlayServiceConnection mServiceConnection;
 
     protected final PlayPreference playPreference;
+    protected final AppPreference appPreference;
 
     public RootActivity() {
         mServiceConnection = new PlayServiceConnection(this, this);
         playPreference = new PlayPreference(this);
+        appPreference = new AppPreference(this);
     }
 
     @Override
@@ -100,6 +104,10 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
     @Override
     @CallSuper
     public void permissionGranted(int requestCode) {
+
+        //FIXME 添加主题切换功能
+        appPreference.modifyTheme(Theme.VARYING);
+
         PlayServiceManager.bindService(this, mServiceConnection);
         mediaManager = MediaManager.getInstance(getApplicationContext());
 

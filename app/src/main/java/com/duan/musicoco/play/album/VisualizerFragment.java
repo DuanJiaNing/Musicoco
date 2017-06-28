@@ -1,4 +1,4 @@
-package com.duan.musicoco.fragment.album;
+package com.duan.musicoco.play.album;
 
 
 import android.os.Bundle;
@@ -31,7 +31,7 @@ public class VisualizerFragment extends Fragment implements ViewContract {
 
     private ImageSwitcher albumView;
 
-    private AlbumPicture albumPicture;
+    private AlbumPictureController albumPictureController;
 
     // PlayActivity 需要改颜色数组
     private int[] currColors = new int[4];
@@ -41,12 +41,12 @@ public class VisualizerFragment extends Fragment implements ViewContract {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //不要让 presenter 控制初始化 View ，此时 view 可能还没执行完 inflate
         view = inflater.inflate(R.layout.fragment_play_visualizer, null);
 
         mediaManager = MediaManager.getInstance(getActivity().getApplicationContext());
 
         initViews(view, null);
+
         return view;
     }
 
@@ -81,7 +81,7 @@ public class VisualizerFragment extends Fragment implements ViewContract {
         albumView.post(new Runnable() {
             @Override
             public void run() {
-                albumPicture = new AlbumPicture(getActivity(), albumView);
+                albumPictureController = new AlbumPictureController(getActivity(), albumView);
             }
         });
 
@@ -89,12 +89,12 @@ public class VisualizerFragment extends Fragment implements ViewContract {
 
     @Override
     public void startSpin() {
-        albumPicture.startSpin();
+        albumPictureController.startSpin();
     }
 
     @Override
     public void stopSpin() {
-        albumPicture.stopSpin();
+        albumPictureController.stopSpin();
     }
 
     @Override
@@ -104,16 +104,16 @@ public class VisualizerFragment extends Fragment implements ViewContract {
             return;
 
         if (dir == 0) {
-            currColors = albumPicture.pre(info, updateColors);
+            currColors = albumPictureController.pre(info, updateColors);
         } else {
-            currColors = albumPicture.next(info, updateColors);
+            currColors = albumPictureController.next(info, updateColors);
         }
 
     }
 
     @Override
     public void updateSpinner() {
-        if (albumPicture != null && albumPicture.isSpin())
+        if (albumPictureController != null && albumPictureController.isSpin())
             startSpin();
     }
 

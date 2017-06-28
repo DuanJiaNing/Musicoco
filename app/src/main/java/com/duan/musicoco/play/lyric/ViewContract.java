@@ -1,6 +1,4 @@
-package com.duan.musicoco.fragment.lyric;
-
-import android.view.animation.Animation;
+package com.duan.musicoco.play.lyric;
 
 import com.duan.musicoco.BaseView;
 

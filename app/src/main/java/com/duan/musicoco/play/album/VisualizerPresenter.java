@@ -1,7 +1,6 @@
-package com.duan.musicoco.fragment.album;
+package com.duan.musicoco.play.album;
 
 import android.content.Context;
-import android.media.audiofx.Visualizer;
 import android.os.RemoteException;
 
 import com.duan.musicoco.aidl.IPlayControl;

@@ -164,4 +164,5 @@ public class ColorUtils {
         colors[3] = textColor;
 
     }
+
 }

@@ -11,6 +11,12 @@
     <color name="white_d_d">#696969</color>
     <color name="white_d_d_d">#4d4d4d</color>
 
+    <color name="dark">#000000</color>
+    <color name="dark_l">#101010</color>
+    <color name="dark_l_l">#252525</color>
+    <color name="dark_l_l_l">#2d2d2d</color>
+    <color name="dark_l_l_l_l">#434343</color>
+
     <color name="dsb_progress_color">#ff009688</color>
     <color name="dsb_track_color">#ff939393</color>
     <color name="dsb_disabled_color">#66939393</color>
@@ -19,8 +25,8 @@
 
     <color name="theme_white_main_bg">#ececec</color>
     <color name="theme_white_vic_bg">#ececec</color>
-    <color name="theme_white_main_text">@color/colorAccent</color>
-    <color name="theme_white_vic_text">@color/colorPrimaryDark</color>
+    <color name="theme_white_main_text">@color/dark_l_l_l</color>
+    <color name="theme_white_vic_text">@color/dark_l_l_l_l</color>
 
     <color name="theme_dark_gold_main_bg">@color/colorAccent</color>
     <color name="theme_dark_gold_vic_bg">@color/colorAccent</color>

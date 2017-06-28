@@ -9,6 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/action_bar_default_height"
         android:orientation="vertical">
 
         <android.support.constraint.ConstraintLayout
@@ -183,6 +184,7 @@
         android:background="#000"
         android:visibility="gone" />
 
-    <include layout="@layout/activity_play_list" />
+    <include
+        layout="@layout/activity_play_list" />
 
 </FrameLayout>

@@ -1,4 +1,4 @@
-package com.duan.musicoco.fragment.album;
+package com.duan.musicoco.play.album;
 
 import android.media.audiofx.Visualizer;
 
@@ -16,7 +16,7 @@ public class AlbumVisualizer {
 
     public interface OnUpdateVisualizerListener {
         /**
-         * Album 采用数据回调
+         * IAlbum 采用数据回调
          *
          * @param data 数据
          * @param rate 采样速率

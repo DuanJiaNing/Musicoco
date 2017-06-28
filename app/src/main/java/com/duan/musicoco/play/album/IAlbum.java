@@ -1,10 +1,10 @@
-package com.duan.musicoco.view;
+package com.duan.musicoco.play.album;
 
 /**
  * Created by DuanJiaNing on 2017/6/13.
  */
 
-public interface Album {
+public interface IAlbum {
 
     void startSpin();
 

@@ -1,4 +1,4 @@
-package com.duan.musicoco.fragment.album;
+package com.duan.musicoco.play.album;
 
 import com.duan.musicoco.BasePresenter;
 import com.duan.musicoco.aidl.Song;

@@ -22,6 +22,7 @@ import android.view.animation.LinearInterpolator;
 import com.duan.musicoco.R;
 import com.duan.musicoco.cache.BitmapCache;
 import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.play.album.IAlbum;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.StringUtils;
@@ -30,7 +31,7 @@ import com.duan.musicoco.util.StringUtils;
  * Created by DuanJiaNing on 2017/5/27.
  */
 
-public class AlbumAlbumSurfaceView extends SurfaceView implements SurfaceHolder.Callback, Album {
+public class AlbumSurfaceView extends SurfaceView implements SurfaceHolder.Callback, IAlbum {
 
     private static final String TAG = "AlbumAlbumSurfaceView";
     private final String DEFAULT_PIC = "defalut_album_pic";
@@ -67,7 +68,7 @@ public class AlbumAlbumSurfaceView extends SurfaceView implements SurfaceHolder.
     private final int INVALIDATE = 4;
 
     //调用构造函数之后，应及时调用 createSurface 创建 Surface。
-    public AlbumAlbumSurfaceView(Context context) {
+    public AlbumSurfaceView(Context context) {
         super(context);
         this.context = context;
 
@@ -88,11 +89,11 @@ public class AlbumAlbumSurfaceView extends SurfaceView implements SurfaceHolder.
 
     }
 
-    public AlbumAlbumSurfaceView(Context context, AttributeSet attrs) {
+    public AlbumSurfaceView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public AlbumAlbumSurfaceView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public AlbumSurfaceView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         this.context = context;
     }

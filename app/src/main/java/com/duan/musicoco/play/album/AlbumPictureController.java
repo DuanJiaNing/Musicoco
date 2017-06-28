@@ -1,4 +1,4 @@
-package com.duan.musicoco.fragment.album;
+package com.duan.musicoco.play.album;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -21,7 +21,6 @@ import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.cache.BitmapCache;
 import com.duan.musicoco.image.AlbumBitmapProducer;
 import com.duan.musicoco.util.ColorUtils;
-import com.duan.musicoco.view.Album;
 
 import java.util.Random;
 import java.util.Timer;
@@ -36,7 +35,7 @@ import static android.content.ContentValues.TAG;
  * 播放动画
  */
 
-public final class AlbumPicture implements Album {
+public final class AlbumPictureController implements IAlbum {
 
     private final ImageSwitcher view;
 
@@ -58,7 +57,7 @@ public final class AlbumPicture implements Album {
     private int defaultTextColor = Color.DKGRAY;
     private int[] colors;
 
-    public AlbumPicture(Context context, final ImageSwitcher view) {
+    public AlbumPictureController(Context context, final ImageSwitcher view) {
         this.view = view;
         this.context = context;
         this.cache = new BitmapCache(context, context.getString(R.string.cache_bitmap_album_visualizer));
@@ -93,7 +92,7 @@ public final class AlbumPicture implements Album {
 
             @Override
             public void run() {
-                AlbumPicture.this.view.post(new Runnable() {
+                AlbumPictureController.this.view.post(new Runnable() {
                     @Override
                     public void run() {
                         if (ran == 0)

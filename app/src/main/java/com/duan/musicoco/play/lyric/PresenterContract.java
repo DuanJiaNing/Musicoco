@@ -1,4 +1,4 @@
-package com.duan.musicoco.fragment.lyric;
+package com.duan.musicoco.play.lyric;
 
 import com.duan.musicoco.BasePresenter;
 

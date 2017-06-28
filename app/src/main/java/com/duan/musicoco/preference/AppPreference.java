@@ -21,17 +21,23 @@ public class AppPreference {
 
     public AppPreference(Context context) {
         this.context = context;
-        preferences = context.getSharedPreferences(APP_PREFERENCE, Context.MODE_PRIVATE);
     }
 
     public void modifyTheme(Theme theme) {
+        check();
         editor = preferences.edit();
         editor.putString(KEY_THEME, theme.name());
-        editor.commit();
+        editor.apply();
     }
 
-    @Nullable
+    private void check() {
+        if (preferences == null)
+            preferences = context.getSharedPreferences(APP_PREFERENCE, Context.MODE_PRIVATE);
+
+    }
+
     public Theme getTheme() {
+        check();
         String pa = preferences.getString(KEY_THEME, Theme.DARKGOLD.name());
         return Theme.valueOf(pa);
     }

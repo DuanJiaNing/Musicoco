@@ -1,6 +1,5 @@
 package com.duan.musicoco.play;
 
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.RemoteException;
@@ -33,16 +32,26 @@ public class PlayListAdapter extends BaseAdapter {
     private final IPlayControl control;
     private final PlayActivity activity;
 
-    private final View.OnClickListener removeClicklistener;
+    private final View.OnClickListener removeClickListener;
     private final View.OnClickListener itemClickListener;
 
     private final MediaManager mediaManager;
 
+    private int colorMain;
+    private int colorVic;
+
+    private TextView tvPlayMode;
+    private ImageButton ibLocation;
+    private View vLine;
+
     public PlayListAdapter(final PlayActivity activity, final IPlayControl control) {
         this.activity = activity;
         this.control = control;
+        this.tvPlayMode = (TextView) activity.findViewById(R.id.play_mode);
+        this.ibLocation = (ImageButton) activity.findViewById(R.id.play_location);
+        this.vLine = activity.findViewById(R.id.play_line);
         this.mediaManager = MediaManager.getInstance(activity);
-        this.removeClicklistener = new View.OnClickListener() {
+        this.removeClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position = (int) v.getTag(R.id.play_list_item_remove_position);
@@ -144,39 +153,54 @@ public class PlayListAdapter extends BaseAdapter {
 
         holder.remove.setTag(R.id.play_list_item_remove_position, position);
         holder.remove.setTag(R.id.play_list_item_remove_path, info.getData());
-        holder.remove.setOnClickListener(removeClicklistener);
+        holder.remove.setOnClickListener(removeClickListener);
 
         Drawable drawable = null;
-        int colorN = activity.getResources().getColor(R.color.white_d_d_d);
-        int colorA = activity.getResources().getColor(R.color.white_d_d);
 
         if (position == activity.currentIndex) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 drawable = activity.getDrawable(R.drawable.ic_volume_up_black_24dp);
             } else
                 drawable = activity.getResources().getDrawable(R.drawable.ic_volume_up_black_24dp);
-            colorN = colorA = Color.BLACK;
+            holder.name.setShadowLayer(5, 0, 0, colorMain);
+        } else {
+            holder.name.setShadowLayer(0, 0, 0, colorMain);
         }
 
         if (drawable != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    drawable.setTint(activity.getColor(R.color.colorPrimary));
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    drawable.setTint(Color.RED);
-                }
+                drawable.setTint(colorMain);
             }
             drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
         }
         holder.name.setCompoundDrawables(drawable, null, null, null);
 
-        holder.name.setTextColor(colorN);
-        holder.arts.setTextColor(colorA);
+        holder.name.setTextColor(colorMain);
+        holder.arts.setTextColor(colorVic);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            holder.remove.getDrawable().setTint(colorA);
+            holder.remove.getDrawable().setTint(colorVic);
         }
 
         return convertView;
+    }
+
+    public void setMode(int i) {
+        if (i == 0) { // 字体暗色
+            colorMain = activity.getResources().getColor(R.color.dark_l_l);
+            colorVic = activity.getResources().getColor(R.color.dark_l_l_l);
+        } else if (i == 1) { //字体亮色
+            colorMain = activity.getResources().getColor(R.color.white);
+            colorVic = activity.getResources().getColor(R.color.white_d);
+        }
+
+        tvPlayMode.setTextColor(colorVic);
+        vLine.setBackgroundColor(colorVic);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            tvPlayMode.getCompoundDrawables()[0].setTint(colorVic);
+            ibLocation.getDrawable().setTint(colorVic);
+        }
+        notifyDataSetChanged();
+
     }
 
     public final class ViewHolder {

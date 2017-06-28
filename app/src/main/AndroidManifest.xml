@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.duan.musicoco">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 屏幕常亮 -->
@@ -24,7 +25,13 @@
         <activity
             android:name=".play.PlayActivity"
             android:hardwareAccelerated="true"
-            android:theme="@style/AppThemePlay"></activity>
+            android:theme="@style/AppThemePlay">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".service.PlayService"
@@ -40,11 +47,7 @@
             android:name=".main.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppThemeList">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
     </application>
 
