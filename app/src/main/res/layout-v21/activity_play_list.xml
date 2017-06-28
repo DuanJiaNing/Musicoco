@@ -4,10 +4,11 @@
     android:id="@+id/play_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="@dimen/activity_default_margin_s_s"
+    android:layout_marginLeft="@dimen/activity_default_margin_s_s"
+    android:layout_marginRight="@dimen/activity_default_margin_s_s"
     app:cardBackgroundColor="#51ffffff"
-    app:cardCornerRadius="10dp"
-    app:cardElevation="10dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="12dp"
     app:contentPaddingBottom="@dimen/activity_default_margin">
 
     <com.duan.musicoco.view.RealtimeBlurView
@@ -22,50 +23,70 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/play_list_bar"
+        <FrameLayout
+            android:id="@+id/play_list_bar_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/action_bar_default_height">
 
-            <TextView
-                android:id="@+id/play_mode"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/play_list_show_bar"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:background="?android:selectableItemBackground"
-                android:clickable="true"
-                android:drawableLeft="@drawable/list_loop"
-                android:drawablePadding="5dp"
-                android:drawableTint="@color/white"
-                android:gravity="center"
-                android:paddingLeft="@dimen/activity_default_margin"
-                android:paddingRight="@dimen/activity_default_margin"
-                android:text="单曲循环"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_middle" />
+                android:visibility="invisible">
 
-            <ImageButton
-                android:id="@+id/play_location"
-                android:layout_width="wrap_content"
+                <ImageButton
+                    android:id="@+id/play_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="?android:selectableItemBackground"
+                    android:paddingLeft="@dimen/activity_default_margin"
+                    android:paddingRight="@dimen/activity_default_margin"
+                    android:src="@drawable/ic_location_searching_black_24dp"
+                    android:tint="@color/white" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/play_list_hide_bar"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/play_mode"
-                android:background="?android:selectableItemBackground"
-                android:paddingLeft="@dimen/activity_default_margin"
-                android:paddingRight="@dimen/activity_default_margin"
-                android:scaleX="0.8"
-                android:scaleY="0.8"
-                android:src="@drawable/ic_location_searching_black_24dp"
-                android:tint="@color/white" />
-        </RelativeLayout>
+                android:visibility="invisible">
 
-        <View
-            android:id="@+id/play_line"
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/white_d" />
+                <TextView
+                    android:id="@+id/play_mode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:background="?android:selectableItemBackground"
+                    android:clickable="true"
+                    android:drawableLeft="@drawable/list_loop"
+                    android:drawablePadding="5dp"
+                    android:drawableTint="@color/white"
+                    android:gravity="center"
+                    android:paddingLeft="@dimen/activity_default_margin"
+                    android:paddingRight="@dimen/activity_default_margin"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_middle" />
+
+                <ImageButton
+                    android:id="@+id/play_list_hide"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="?android:selectableItemBackground"
+                    android:padding="@dimen/activity_default_padding_2x"
+                    android:src="@drawable/ic_compress"
+                    android:tint="@color/white" />
+            </RelativeLayout>
+
+        </FrameLayout>
 
         <ListView
             android:id="@+id/play_play_list"

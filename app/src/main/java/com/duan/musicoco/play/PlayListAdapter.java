@@ -40,16 +40,16 @@ public class PlayListAdapter extends BaseAdapter {
     private int colorMain;
     private int colorVic;
 
-    private TextView tvPlayMode;
-    private ImageButton ibLocation;
-    private View vLine;
+    private final TextView tvPlayMode;
+    private final ImageButton btLocation;
+    private final ImageButton btHideListBar;
 
     public PlayListAdapter(final PlayActivity activity, final IPlayControl control) {
         this.activity = activity;
         this.control = control;
         this.tvPlayMode = (TextView) activity.findViewById(R.id.play_mode);
-        this.ibLocation = (ImageButton) activity.findViewById(R.id.play_location);
-        this.vLine = activity.findViewById(R.id.play_line);
+        this.btLocation = (ImageButton) activity.findViewById(R.id.play_location);
+        this.btHideListBar = (ImageButton) activity.findViewById(R.id.play_list_hide);
         this.mediaManager = MediaManager.getInstance(activity);
         this.removeClickListener = new View.OnClickListener() {
             @Override
@@ -194,10 +194,10 @@ public class PlayListAdapter extends BaseAdapter {
         }
 
         tvPlayMode.setTextColor(colorVic);
-        vLine.setBackgroundColor(colorVic);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             tvPlayMode.getCompoundDrawables()[0].setTint(colorVic);
-            ibLocation.getDrawable().setTint(colorVic);
+            btLocation.getDrawable().setTint(colorVic);
+            btHideListBar.getDrawable().setTint(colorVic);
         }
         notifyDataSetChanged();
 

@@ -7,9 +7,10 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:layout_marginBottom="@dimen/action_bar_default_height"
+        android:id="@+id/play_root_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/action_bar_default_height"
         android:orientation="vertical">
 
         <android.support.constraint.ConstraintLayout

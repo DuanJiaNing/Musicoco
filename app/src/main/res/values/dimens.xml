@@ -8,6 +8,7 @@
     <dimen name="activity_default_margin_s_s">5dp</dimen>
     <dimen name="activity_default_margin_2x">32dp</dimen>
     <dimen name="activity_default_padding">6dp</dimen>
+    <dimen name="activity_default_padding_2x">12dp</dimen>
 
     <dimen name="play_seek_bar_padding">5dp</dimen>
     <dimen name="play_song_name_minSize">20dp</dimen>
