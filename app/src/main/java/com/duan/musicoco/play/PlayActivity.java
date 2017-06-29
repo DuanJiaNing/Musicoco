@@ -212,7 +212,7 @@ public class PlayActivity extends RootActivity implements View.OnClickListener, 
         btNext.setTriangleColor(colors[1]);
 
         btPlay.setTriangleColor(colors[1]);
-        btPlay.setStrokeColor(colors[1]);
+        btPlay.setSolidColor(colors[1]);
         btPlay.setPauseLineColor(colors[1]);
 
         sbSongProgress.setRippleColor(colors[3]);

@@ -26,9 +26,9 @@
             android:name=".play.PlayActivity"
             android:hardwareAccelerated="true"
             android:theme="@style/AppThemePlay">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -47,7 +47,6 @@
             android:name=".main.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppThemeList">
-
         </activity>
     </application>
 

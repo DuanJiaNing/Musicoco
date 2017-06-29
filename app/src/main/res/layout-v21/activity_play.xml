@@ -7,10 +7,10 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:layout_marginBottom="@dimen/action_bar_default_height"
         android:id="@+id/play_root_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/action_bar_default_height"
         android:orientation="vertical">
 
         <android.support.constraint.ConstraintLayout
@@ -72,6 +72,7 @@
         </FrameLayout>
 
         <LinearLayout
+            android:layout_marginBottom="@dimen/activity_default_margin"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center"
@@ -121,57 +122,61 @@
 
             </RelativeLayout>
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/activity_default_margin_2x"
+                android:layout_marginRight="@dimen/activity_default_margin_2x"
+                android:orientation="horizontal">
 
-                <com.duan.musicoco.view.media.PlayView
-                    android:id="@+id/play_song"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
-                    android:rotation="180"
-
-                    app:pauseLineDistance="10dp"
-                    app:pauseLineWidth="10dp"
-                    app:radius="40dp"
-                    app:shadowRadius="8dp"
-                    app:strokeWidth="1px"
-                    app:triangleHeight="45dp"
-                    app:triangleRadius="5dp" />
 
                 <com.duan.musicoco.view.media.SkipView
                     android:id="@+id/play_pre_song"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_centerVertical="true"
-                    android:layout_toStartOf="@id/play_song"
+                    android:layout_weight="0.3"
 
+                    android:paddingLeft="30dp"
                     app:innerLineRadius="5dp"
                     app:innerLineWidth="5dp"
-                    app:radius="35dp"
                     app:shadowRadius="8dp"
                     app:strokeWidth="0px"
                     app:triangleHeight="30dp"
                     app:triangleRadius="5dp" />
+
+                <com.duan.musicoco.view.media.PlayView
+                    android:id="@+id/play_song"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.4"
+                    android:rotation="180"
+
+                    app:pauseLineDistance="12dp"
+                    app:pauseLineHeight="35dp"
+                    app:pauseLineWidth="7dp"
+
+                    app:strokeWidth="1px"
+                    app:triangleHeight="40dp"
+                    app:triangleRadius="5dp"
+
+                    />
 
                 <com.duan.musicoco.view.media.SkipView
                     android:id="@+id/play_next_song"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_centerVertical="true"
-                    android:layout_toEndOf="@id/play_song"
-                    android:rotation="180"
+                    android:layout_weight="0.3"
+                    android:paddingLeft="30dp"
 
+                    android:rotation="180"
                     app:innerLineRadius="5dp"
                     app:innerLineWidth="5dp"
-                    app:radius="35dp"
                     app:shadowRadius="8dp"
                     app:strokeWidth="0px"
                     app:triangleHeight="30dp"
                     app:triangleRadius="5dp" />
 
-            </RelativeLayout>
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -186,6 +191,7 @@
         android:visibility="gone" />
 
     <include
-        layout="@layout/activity_play_list" />
+        layout="@layout/activity_play_list"
+        android:visibility="visible" />
 
 </FrameLayout>

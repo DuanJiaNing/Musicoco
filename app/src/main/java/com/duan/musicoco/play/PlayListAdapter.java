@@ -162,9 +162,6 @@ public class PlayListAdapter extends BaseAdapter {
                 drawable = activity.getDrawable(R.drawable.ic_volume_up_black_24dp);
             } else
                 drawable = activity.getResources().getDrawable(R.drawable.ic_volume_up_black_24dp);
-            holder.name.setShadowLayer(5, 0, 0, colorMain);
-        } else {
-            holder.name.setShadowLayer(0, 0, 0, colorMain);
         }
 
         if (drawable != null) {

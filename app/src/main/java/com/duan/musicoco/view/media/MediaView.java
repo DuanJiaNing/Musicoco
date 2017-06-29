@@ -37,8 +37,9 @@ public abstract class MediaView extends View implements ValueAnimator.AnimatorUp
     protected int shadowRadius;
     protected int tempShadowRadius = 1;
 
+    private boolean hollow;
     //圆圈颜色
-    protected int strokeColor;
+    protected int solidColor;
 
     private ValueAnimator preAnim;
     private ValueAnimator releaseAnim;
@@ -51,8 +52,6 @@ public abstract class MediaView extends View implements ValueAnimator.AnimatorUp
     protected Paint paint;
 
     protected Context context;
-
-    private boolean isCreate = true;
 
     //单击时开始 preAnim 动画结束后自动开始 releaseAnim 动画
     private boolean autoRelease = false;
@@ -78,8 +77,9 @@ public abstract class MediaView extends View implements ValueAnimator.AnimatorUp
 
         radius = array.getDimensionPixelSize(R.styleable.MediaView_radius, radius);
         shadowRadius = array.getDimensionPixelSize(R.styleable.MediaView_shadowRadius, shadowRadius);
-        strokeColor = array.getColor(R.styleable.MediaView_strokeColor, strokeColor);
         strokeWidth = array.getDimensionPixelSize(R.styleable.MediaView_strokeWidth, strokeWidth);
+        hollow = array.getBoolean(R.styleable.MediaView_hollow, true);
+        solidColor = array.getColor(R.styleable.MediaView_solidColor, solidColor);
 
         array.recycle();
 
@@ -173,7 +173,7 @@ public abstract class MediaView extends View implements ValueAnimator.AnimatorUp
         strokeWidth = 1;
         radius = 30;
 
-        strokeColor = defaultColor;
+        solidColor = defaultColor;
         shadowRadius = 5;
 
         paint = new Paint();
@@ -242,14 +242,18 @@ public abstract class MediaView extends View implements ValueAnimator.AnimatorUp
     }
 
     //绘制外面的圆圈
-    protected void drawOuter(Canvas canvas) {
+    protected void drawBackground(Canvas canvas) {
 
         if (strokeWidth <= 0)
             return;
 
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(strokeWidth);
-        paint.setColor(strokeColor);
+        if (hollow) {
+            paint.setStyle(Paint.Style.STROKE);
+            paint.setStrokeWidth(strokeWidth);
+        } else {
+            paint.setStyle(Paint.Style.FILL);
+        }
+        paint.setColor(solidColor);
 
         canvas.drawCircle(centerX, centerY, radius, paint);
     }
@@ -267,7 +271,7 @@ public abstract class MediaView extends View implements ValueAnimator.AnimatorUp
         //只绘制外阴影和图形内容本身，不绘制内阴影
         paint.setMaskFilter(new BlurMaskFilter(tempShadowRadius, BlurMaskFilter.Blur.SOLID));
 
-        drawOuter(canvas);
+        drawBackground(canvas);
 
         drawInside(canvas);
 
@@ -278,16 +282,30 @@ public abstract class MediaView extends View implements ValueAnimator.AnimatorUp
         invalidate();
     }
 
+    public boolean isHollow() {
+        return hollow;
+    }
+
+    public void setHollow(boolean hollow) {
+        this.hollow = hollow;
+        invalidate();
+    }
+
+    @Override
+    public int getSolidColor() {
+        return solidColor;
+    }
+
+    public void setSolidColor(int solidColor) {
+        this.solidColor = solidColor;
+        invalidate();
+    }
+
     public void setShadowRadius(int shadowRadius) {
         if (shadowRadius <= 1)
             shadowRadius = 1;
         this.shadowRadius = shadowRadius;
         updateAnim();
-    }
-
-    public void setStrokeColor(int strokeColor) {
-        this.strokeColor = strokeColor;
-        invalidate();
     }
 
     public void setStrokeWidth(int strokeWidth) {
@@ -302,10 +320,6 @@ public abstract class MediaView extends View implements ValueAnimator.AnimatorUp
 
     public int getShadowRadius() {
         return shadowRadius;
-    }
-
-    public int getStrokeColor() {
-        return strokeColor;
     }
 
     public int getStrokeWidth() {

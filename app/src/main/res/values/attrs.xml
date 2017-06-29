@@ -50,19 +50,24 @@
         <attr name="indicatorDragEnable" />
         <attr name="touchEnable" />
     </declare-styleable>
+
+
     <!--圆的半径。长宽任一者指定具体长度时，该值失效，将自动计算出-->
     <attr name="radius" format="dimension" />
     <!-- 阴影的半径-->
     <attr name="shadowRadius" format="dimension" />
-    <!--描边（外圆）的颜色-->
-    <attr name="strokeColor" format="color" />
-    <!-- 描边的宽度-->
+    <!-- 空心时描边的宽度-->
     <attr name="strokeWidth" format="dimension" />
+    <!--填充颜色-->
+    <attr name="solidColor" format="color" />
+    <!--背景圆是否空心-->
+    <attr name="hollow" format="boolean" />
     <declare-styleable name="MediaView">
         <attr name="radius" />
         <attr name="shadowRadius" />
-        <attr name="strokeColor" />
         <attr name="strokeWidth" />
+        <attr name="solidColor" />
+        <attr name="hollow" />
     </declare-styleable>
 
 

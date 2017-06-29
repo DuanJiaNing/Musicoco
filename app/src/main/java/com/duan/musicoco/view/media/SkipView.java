@@ -110,7 +110,7 @@ public class SkipView extends MediaView {
         triangleStroke = array.getDimensionPixelSize(R.styleable.SkipView_triangleStroke, 2);
 
         innerLineWidth = array.getDimensionPixelSize(R.styleable.SkipView_innerLineWidth, 2);
-        innerLineHeight = array.getDimensionPixelSize(R.styleable.SkipView_innerLineHeight, radius * 2 / 3);
+        innerLineHeight = array.getDimensionPixelSize(R.styleable.SkipView_innerLineHeight, 951228);
 
         triangleHeight = array.getDimensionPixelSize(R.styleable.SkipView_triangleHeight, 0);
         triangleWidth = array.getDimensionPixelSize(R.styleable.SkipView_triangleWidth, 0);
@@ -130,6 +130,9 @@ public class SkipView extends MediaView {
 
         if (triangleHeight <= 0)
             triangleHeight = radius * 2 / 3;
+
+        if (innerLineHeight == 951228)
+            innerLineHeight = triangleHeight * 3 / 4;
 
         if (triangleWidth <= 0) {
             //将三角形绘制成等边三角形
