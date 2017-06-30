@@ -5,12 +5,14 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
+import android.content.ComponentName;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -35,6 +37,10 @@ import android.widget.ViewSwitcher;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.Init;
+import com.duan.musicoco.app.MediaManager;
+import com.duan.musicoco.app.OnServiceConnect;
+import com.duan.musicoco.app.PlayServiceManager;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.play.album.VisualizerFragment;
@@ -44,6 +50,7 @@ import com.duan.musicoco.play.lyric.LyricPresenter;
 import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
+import com.duan.musicoco.service.PlayServiceCallback;
 import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.RealtimeBlurView;
@@ -61,7 +68,7 @@ import static com.duan.musicoco.preference.Theme.WHITE;
  * Created by DuanJiaNing on 2017/5/23.
  */
 
-public class PlayActivity extends RootActivity implements View.OnClickListener, View.OnLongClickListener, IPlayActivity {
+public class PlayActivity extends RootActivity implements PlayServiceCallback, OnServiceConnect, View.OnClickListener, View.OnLongClickListener, IPlayActivity {
 
     private VisualizerFragment visualizerFragment;
     private LyricFragment lyricFragment;
@@ -101,6 +108,8 @@ public class PlayActivity extends RootActivity implements View.OnClickListener, 
     private boolean changeColorFollowAlbum = true;
 
     private Song currentSong;
+
+    private PlayServiceConnection mServiceConnection;
 
     private PlayListAdapter playListAdapter;
 
@@ -388,20 +397,15 @@ public class PlayActivity extends RootActivity implements View.OnClickListener, 
         timer.schedule(progressUpdateTask, 0, 800);
     }
 
-    //服务成功连接之后才初始化数据
     @Override
-    public void onConnected() {
+    public void permissionGranted(int requestCode) {
+        super.permissionGranted(requestCode);
 
-        initSelfData();
+        //FIXME 添加主题切换功能
+        appPreference.modifyTheme(Theme.VARYING);
 
-        visualizerPresenter.initData(null);
-        lyricPresenter.initData(null);
-
-    }
-
-    @Override
-    public void disConnected() {
-
+        mServiceConnection = new PlayServiceConnection(this, this, this);
+        PlayServiceManager.bindService(this, mServiceConnection);
     }
 
     private void initSelfData() {
@@ -971,5 +975,22 @@ public class PlayActivity extends RootActivity implements View.OnClickListener, 
         }
 
         return false;
+    }
+
+    @Override
+    public void onConnected(ComponentName name, IBinder service) {
+
+        initSelfData();
+
+        visualizerPresenter.initData(null);
+        lyricPresenter.initData(null);
+
+    }
+
+    @Override
+    public void disConnected(ComponentName name) {
+        mServiceConnection = null;
+        mServiceConnection = new PlayServiceConnection(this, this, this);
+        PlayServiceManager.bindService(this, mServiceConnection);
     }
 }

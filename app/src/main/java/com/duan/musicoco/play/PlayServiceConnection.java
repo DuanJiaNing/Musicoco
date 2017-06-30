@@ -10,6 +10,7 @@ import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.OnPlayStatusChangedListener;
 import com.duan.musicoco.aidl.OnSongChangedListener;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.OnServiceConnect;
 import com.duan.musicoco.app.PlayServiceManager;
 import com.duan.musicoco.service.PlayServiceCallback;
 
@@ -25,14 +26,17 @@ public class PlayServiceConnection implements ServiceConnection {
 
     private Activity mActivity;
 
-    private PlayServiceCallback mView;
+    private PlayServiceCallback serviceCallback;
+
+    private OnServiceConnect serviceConnect;
 
     private OnPlayStatusChangedListener mPlayStatusChangedListener;
     private OnSongChangedListener mSongChangedListener;
 
-    public PlayServiceConnection(PlayServiceCallback view, Activity activity) {
+    public PlayServiceConnection(PlayServiceCallback callback, OnServiceConnect serviceConnect, Activity activity) {
         this.mActivity = activity;
-        this.mView = view;
+        this.serviceCallback = callback;
+        this.serviceConnect = serviceConnect;
         this.mSongChangedListener = new OnSongChangedListener() {
             @Override
             public void onSongChange(Song which, int index) {
@@ -41,7 +45,7 @@ public class PlayServiceConnection implements ServiceConnection {
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mView.songChanged(s, in);
+                        serviceCallback.songChanged(s, in);
                     }
                 });
             }
@@ -55,7 +59,7 @@ public class PlayServiceConnection implements ServiceConnection {
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mView.startPlay(s, in, status);
+                        serviceCallback.startPlay(s, in, status);
                     }
                 });
             }
@@ -67,7 +71,7 @@ public class PlayServiceConnection implements ServiceConnection {
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mView.stopPlay(s, in, status);
+                        serviceCallback.stopPlay(s, in, status);
                     }
                 });
             }
@@ -88,14 +92,14 @@ public class PlayServiceConnection implements ServiceConnection {
             e.printStackTrace();
         }
 
-        mView.onConnected();
+        serviceConnect.onConnected(name, service);
     }
 
     @Override
     public void onServiceDisconnected(ComponentName name) {
         hasConnected = false;
 
-        PlayServiceManager.bindService(mActivity, this);
+        serviceConnect.disConnected(name);
 
     }
 

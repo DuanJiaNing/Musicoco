@@ -33,4 +33,9 @@
     <color name="theme_dark_gold_main_text">@color/colorPrimary</color>
     <color name="theme_dark_gold_vic_text">@color/colorPrimaryDark</color>
 
+    <color name="list_blue">#19E4F2</color>
+    <color name="list_white">#ffffff</color>
+    <color name="list_white_d">#f5f5f5</color>
+    <color name="list_white_d_d">#e7e7e7</color>
+
 </resources>

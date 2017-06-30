@@ -16,6 +16,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.play.PlayActivity;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.Theme;
@@ -24,22 +25,18 @@ import com.duan.musicoco.play.PlayServiceConnection;
 
 /**
  * Created by DuanJiaNing on 2017/3/21.
- * 检查权限和绑定服务
+ * 检查权限
  */
 
-public abstract class RootActivity extends AppCompatActivity implements PermissionRequestCallback, PlayServiceCallback {
+public abstract class RootActivity extends AppCompatActivity implements PermissionRequestCallback {
 
     protected final static String TAG = "RootActivity";
 
     protected MediaManager mediaManager;
-
-    protected final PlayServiceConnection mServiceConnection;
-
     protected final PlayPreference playPreference;
     protected final AppPreference appPreference;
 
     public RootActivity() {
-        mServiceConnection = new PlayServiceConnection(this, this);
         playPreference = new PlayPreference(this);
         appPreference = new AppPreference(this);
     }
@@ -48,14 +45,13 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
     @CallSuper
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mediaManager = MediaManager.getInstance(getApplicationContext());
 
         //状态栏透明
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.TRANSPARENT);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
 
         //检查权限
@@ -104,13 +100,6 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
     @Override
     @CallSuper
     public void permissionGranted(int requestCode) {
-
-        //FIXME 添加主题切换功能
-        appPreference.modifyTheme(Theme.VARYING);
-
-        PlayServiceManager.bindService(this, mServiceConnection);
-        mediaManager = MediaManager.getInstance(getApplicationContext());
-
         new Thread() {
             @Override
             public void run() {
@@ -119,5 +108,4 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
             }
         }.start();
     }
-
 }

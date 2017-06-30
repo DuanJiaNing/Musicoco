@@ -24,14 +24,4 @@ public interface PlayServiceCallback {
      */
     void stopPlay(Song song, int index, int status);
 
-    /**
-     * 连接到服务端后调用
-     */
-    void onConnected();
-
-    /**
-     * 连接断开时调用
-     */
-    void disConnected();
-
 }

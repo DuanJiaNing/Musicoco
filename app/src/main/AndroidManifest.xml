@@ -20,18 +20,11 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <!-- 需要为 PlayActivity 开启硬件加速，Android 4.1 以上默认开启 -->
         <activity
             android:name=".play.PlayActivity"
             android:hardwareAccelerated="true"
-            android:theme="@style/AppThemePlay">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/AppThemePlay" />
 
         <service
             android:name=".service.PlayService"
@@ -39,14 +32,19 @@
             android:process=":playService">
             <intent-filter>
                 <action android:name="com.duan.musicoco.action.PLAY_SERVICE" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </service>
 
         <activity
             android:name=".main.MainActivity"
-            android:label="@string/title_activity_main"
-            android:theme="@style/AppThemeList">
+            android:theme="@style/AppThemeList"
+            android:label="@string/title_activity_list">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

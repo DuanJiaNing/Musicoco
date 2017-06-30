@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/list_bottom_nav_height"
+    android:background="@color/list_white_d"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <View
+        android:id="@+id/list_progress"
+        android:layout_width="200dp"
+        android:layout_height="1dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/colorAccent" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/list_progress"
+        android:layout_marginBottom="@dimen/activity_default_margin_s_s"
+        android:layout_marginLeft="@dimen/activity_default_margin_s_s"
+        android:layout_marginRight="@dimen/activity_default_margin"
+        android:layout_marginTop="@dimen/activity_default_margin_s_s">
+
+        <ImageView
+            android:id="@+id/list_album"
+            android:layout_width="@dimen/list_bottom_nav_height"
+            android:layout_height="match_parent"
+            android:src="@mipmap/default_album" />
+
+        <ImageButton
+            android:id="@+id/list_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:padding="@dimen/activity_default_padding"
+            android:src="@drawable/ic_playlist_play_black_24dp" />
+
+        <com.duan.musicoco.view.media.PlayView
+            android:layout_marginRight="10dp"
+            app:radius="20dp"
+            android:id="@+id/list_play"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/list_list" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/activity_default_margin_s"
+            android:layout_toLeftOf="@id/list_play"
+            android:layout_toRightOf="@id/list_album"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/list_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:text="name" />
+
+            <TextView
+                android:id="@+id/list_arts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:text="arts" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</RelativeLayout>
