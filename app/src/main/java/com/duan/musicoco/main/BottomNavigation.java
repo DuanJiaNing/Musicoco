@@ -1,19 +1,26 @@
 package com.duan.musicoco.main;
 
 import android.app.Activity;
-import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.RemoteException;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.MediaManager;
+import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.image.BitmapBuilder;
+import com.duan.musicoco.play.PlayActivity;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.service.PlayServiceCallback;
+import com.duan.musicoco.util.PeriodicTask;
+import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.media.PlayView;
 
 /**
@@ -22,39 +29,55 @@ import com.duan.musicoco.view.media.PlayView;
 
 public class BottomNavigation implements IBottomNavigation, View.OnClickListener, PlayServiceCallback {
 
-    private final Context context;
+    private final Activity activity;
 
-    private View container;
-    private ImageView album;
-    private TextView name;
-    private TextView arts;
-    private PlayView play;
-    private ImageButton showList;
+    private View mContainer;
+    private View mProgress;
+    private ImageView mAlbum;
+    private TextView mName;
+    private TextView mArts;
+    private PlayView mPlay;
+    private ImageButton mShowList;
 
     private boolean isListShow = false;
     private IPlayControl controller;
+    private final PeriodicTask task;
 
-    BottomNavigation(Context context) {
-        this.context = context;
+    private long mDuration;
+
+    private final MediaManager mediaManager;
+    private BitmapBuilder builder;
+
+    BottomNavigation(Activity activity, MediaManager mediaManager) {
+        this.activity = activity;
+        this.mediaManager = mediaManager;
+        this.builder = new BitmapBuilder(activity);
+
+        task = new PeriodicTask(new PeriodicTask.Task() {
+            @Override
+            public void execute() {
+                mContainer.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateProgress();
+                    }
+                });
+            }
+        }, 800);
     }
 
     public void initView() {
-        View rootView = LayoutInflater.from(context).inflate(R.layout.activity_list_bottom_navigation, null);
+        mAlbum = (ImageView) activity.findViewById(R.id.list_album);
+        mName = (TextView) activity.findViewById(R.id.list_name);
+        mArts = (TextView) activity.findViewById(R.id.list_arts);
+        mPlay = (PlayView) activity.findViewById(R.id.list_play);
+        mShowList = (ImageButton) activity.findViewById(R.id.list_list);
+        mContainer = activity.findViewById(R.id.list_bottom_nav_container);
+        mProgress = activity.findViewById(R.id.list_progress);
 
-        album = (ImageView) rootView.findViewById(R.id.list_album);
-        name = (TextView) rootView.findViewById(R.id.list_name);
-        arts = (TextView) rootView.findViewById(R.id.list_arts);
-        play = (PlayView) rootView.findViewById(R.id.list_play);
-        showList = (ImageButton) rootView.findViewById(R.id.list_list);
-        container = rootView.findViewById(R.id.list_bottom_nav_container);
-
-        container.setOnClickListener(this);
-        showList.setOnClickListener(this);
-        play.setOnClickListener(this);
-    }
-
-    @Override
-    public void changeSong(Song song, int index) {
+        mContainer.setOnClickListener(this);
+        mShowList.setOnClickListener(this);
+        mPlay.setOnClickListener(this);
 
     }
 
@@ -71,36 +94,110 @@ public class BottomNavigation implements IBottomNavigation, View.OnClickListener
     }
 
     @Override
+    public void songChanged(Song song, int index) {
+        SongInfo info = mediaManager.getSongInfo(song);
+        mDuration = (int) info.getDuration();
+
+        update();
+    }
+
+    @Override
+    public void startPlay(Song song, int index, int status) {
+        SongInfo info = mediaManager.getSongInfo(song);
+        mDuration = (int) info.getDuration();
+
+        task.start();
+
+    }
+
+    private void updateProgress() {
+        int progress;
+        final float phoneWidth = Utils.getMetrics(activity).widthPixels;
+
+        try {
+            progress = controller.getProgress();
+            int width = (int) (phoneWidth * (progress / (float) mDuration));
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mProgress.getLayoutParams();
+            params.width = width;
+            mProgress.setLayoutParams(params);
+            mProgress.invalidate();
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void updateSong(SongInfo info) {
+        String name = info.getTitle();
+        String arts = info.getArtist();
+        Bitmap b = builder.setPath(info.getAlbum_path()).resize(mAlbum.getHeight()).build().getBitmap();
+
+        mName.setText(name);
+        mArts.setText(arts);
+        mAlbum.setImageBitmap(b);
+
+    }
+
+    public void update() {
+        if (checkNull())
+            return;
+
+        try {
+
+            if (controller.status() == PlayController.STATUS_PLAYING)
+                mPlay.setPlayStatus(true);
+            else mPlay.setPlayStatus(false);
+
+            Song song = controller.currentSong();
+            SongInfo info = mediaManager.getSongInfo(song);
+
+            mDuration = (int) info.getDuration();
+            updateProgress();
+            updateSong(info);
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean checkNull() {
+        if (controller == null)
+            return true;
+
+        return false;
+    }
+
+    @Override
+    public void stopPlay(Song song, int index, int status) {
+        task.stop();
+    }
+
+    public void setController(IPlayControl controller) {
+        this.controller = controller;
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.list_bottom_nav_container:
+                activity.startActivity(new Intent(activity, PlayActivity.class));
                 break;
-            case R.id.list_play:
+            case R.id.list_play: {
+                boolean play = mPlay.isChecked();
+                try {
+                    if (play) {
+                        controller.resume();
+                    } else controller.pause();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 break;
+            }
             case R.id.list_list:
                 if (isListShow)
                     hidePlayList();
                 else showPlayList();
                 break;
         }
-    }
-
-    @Override
-    public void songChanged(Song song, int index) {
-
-    }
-
-    @Override
-    public void startPlay(Song song, int index, int status) {
-
-    }
-
-    @Override
-    public void stopPlay(Song song, int index, int status) {
-
-    }
-
-    public void setController(IPlayControl controller) {
-        this.controller = controller;
     }
 }

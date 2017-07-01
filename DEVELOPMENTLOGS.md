@@ -109,3 +109,8 @@
 - 2017-06-26
 
 1 使播放列表可以隐藏和只显示头部<br>
+
+- 2017-07-01
+
+1 添加 DBHelper DBMusicocoController <br>
+2 完善 BottomNavigation<br>

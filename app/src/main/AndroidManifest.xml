@@ -22,6 +22,7 @@
         android:theme="@style/AppTheme">
         <!-- 需要为 PlayActivity 开启硬件加速，Android 4.1 以上默认开启 -->
         <activity
+            android:launchMode="singleInstance"
             android:name=".play.PlayActivity"
             android:hardwareAccelerated="true"
             android:theme="@style/AppThemePlay" />
@@ -38,6 +39,8 @@
         </service>
 
         <activity
+            android:alwaysRetainTaskState="true"
+            android:launchMode="singleInstance"
             android:name=".main.MainActivity"
             android:theme="@style/AppThemeList"
             android:label="@string/title_activity_list">

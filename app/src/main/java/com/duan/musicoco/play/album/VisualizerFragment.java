@@ -16,6 +16,7 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.MediaManager;
 import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.play.PlayActivity;
 
 /**
  * Created by DuanJiaNing on 2017/5/30.
@@ -98,15 +99,30 @@ public class VisualizerFragment extends Fragment implements ViewContract {
     }
 
     @Override
-    public void songChanged(Song song, int dir, boolean updateColors) {
-        SongInfo info = song == null ? null : mediaManager.getSongInfo(song);
+    public void songChanged(final Song song, final int dir, final boolean updateColors) {
+        final SongInfo info = song == null ? null : mediaManager.getSongInfo(song);
         if (info == null)
             return;
 
-        if (dir == 0) {
-            currColors = albumPictureController.pre(info, updateColors);
+        if (albumPictureController == null) {
+            // albumPictureController 的 new 也是使用 handler 处理的，第一次回调时可能为 null
+            albumView.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (dir == 0) {
+                        currColors = albumPictureController.pre(info, updateColors);
+                    } else {
+                        currColors = albumPictureController.next(info, updateColors);
+                    }
+                    ((PlayActivity) getActivity()).update(song);
+                }
+            });
         } else {
-            currColors = albumPictureController.next(info, updateColors);
+            if (dir == 0) {
+                currColors = albumPictureController.pre(info, updateColors);
+            } else {
+                currColors = albumPictureController.next(info, updateColors);
+            }
         }
 
     }

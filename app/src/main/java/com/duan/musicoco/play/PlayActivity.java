@@ -37,8 +37,6 @@ import android.widget.ViewSwitcher;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.Init;
-import com.duan.musicoco.app.MediaManager;
 import com.duan.musicoco.app.OnServiceConnect;
 import com.duan.musicoco.app.PlayServiceManager;
 import com.duan.musicoco.app.RootActivity;
@@ -52,6 +50,7 @@ import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.service.PlayServiceCallback;
 import com.duan.musicoco.util.AnimationUtils;
+import com.duan.musicoco.util.PeriodicTask;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.RealtimeBlurView;
 import com.duan.musicoco.view.discreteseekbar.DiscreteSeekBar;
@@ -59,8 +58,6 @@ import com.duan.musicoco.view.media.PlayView;
 import com.duan.musicoco.view.media.SkipView;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static com.duan.musicoco.preference.Theme.WHITE;
 
@@ -111,6 +108,8 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
 
     private PlayServiceConnection mServiceConnection;
 
+    private PeriodicTask periodicTask;
+
     private PlayListAdapter playListAdapter;
 
     int currentIndex;
@@ -121,8 +120,6 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
-
-        initViews();
 
     }
 
@@ -164,11 +161,20 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
         //更换专辑图片，计算出颜色值
         visualizerPresenter.songChanged(song, switchTo, changeColorFollowAlbum);
 
+        update(song);
+    }
+
+    public void update(Song song) {
         SongInfo info = mediaManager.getSongInfo(song);
-        updateData((int) info.getDuration(), 0, info.getTitle(), info.getArtist());
+        int pro = 0;
+        try {
+            pro = mServiceConnection.takeControl().getProgress();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        updateData((int) info.getDuration(), pro, info.getTitle(), info.getArtist());
 
         if (changeColorFollowAlbum) {
-            //FIXME 既使用 visualizerPresenter 控制 fragment，又通过 visualizerFragment 直接控制（那干嘛要用 MVP）
             updateColors(visualizerFragment.getCurrColors());
 
             if (playListAdapter != null)
@@ -178,7 +184,7 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
 
     @Override
     public void startPlay(Song song, int index, int status) {
-        startUpdateProgressTask();
+        periodicTask.start();
 
         visualizerPresenter.startPlay();
         btPlay.setPlayStatus(true);
@@ -186,7 +192,7 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
 
     @Override
     public void stopPlay(Song song, int index, int status) {
-        cancelUpdateProgressTask();
+        periodicTask.stop();
 
         visualizerPresenter.stopPlay();
         btPlay.setPlayStatus(false);
@@ -365,38 +371,6 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
         }
     }
 
-    private TimerTask progressUpdateTask;
-
-    public void cancelUpdateProgressTask() {
-        if (progressUpdateTask != null)
-            progressUpdateTask.cancel();
-    }
-
-    public void startUpdateProgressTask() {
-        Timer timer = new Timer();
-        progressUpdateTask = new TimerTask() {
-            int progress;
-
-            @Override
-            public void run() {
-                PlayActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            progress = mServiceConnection.takeControl().getProgress();
-                            sbSongProgress.setProgress(progress);
-                            tvPlayProgress.setText(Utils.getGenTime(progress));
-
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            }
-        };
-        timer.schedule(progressUpdateTask, 0, 800);
-    }
-
     @Override
     public void permissionGranted(int requestCode) {
         super.permissionGranted(requestCode);
@@ -488,7 +462,8 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
 
     }
 
-    public void initViews() {
+    @Override
+    protected void initViews() {
 
         //初始控件
         flRootView = (FrameLayout) findViewById(R.id.play_root);
@@ -602,7 +577,7 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
 
             @Override
             public void onStartTrackingTouch(DiscreteSeekBar seekBar) {
-                cancelUpdateProgressTask();
+                periodicTask.stop();
 
             }
 
@@ -615,7 +590,7 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
                         e.printStackTrace();
                     }
                 }
-                startUpdateProgressTask();
+                periodicTask.start();
             }
         });
 
@@ -646,11 +621,6 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
     public void onBackPressed() {
         if (isListShowing) {
             hidePlayList();
-            return;
-        }
-
-        if (!isListBarHide) {
-            hidePlayListBar();
             return;
         }
 
@@ -981,6 +951,27 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
     public void onConnected(ComponentName name, IBinder service) {
 
         initSelfData();
+
+        periodicTask = new PeriodicTask(new PeriodicTask.Task() {
+            int progress;
+
+            @Override
+            public void execute() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            progress = mServiceConnection.takeControl().getProgress();
+                            sbSongProgress.setProgress(progress);
+                            tvPlayProgress.setText(Utils.getGenTime(progress));
+
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        }, 800);
 
         visualizerPresenter.initData(null);
         lyricPresenter.initData(null);

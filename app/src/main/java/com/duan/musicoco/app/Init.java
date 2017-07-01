@@ -7,7 +7,7 @@ import android.util.DisplayMetrics;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.cache.BitmapCache;
-import com.duan.musicoco.image.RoundBitmapBuilder;
+import com.duan.musicoco.image.BitmapBuilder;
 import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.util.Utils;
 
@@ -31,7 +31,7 @@ public class Init {
             DisplayMetrics metrics = Utils.getMetrics(activity);
             int r = metrics.widthPixels * 2 / 3;
 
-            RoundBitmapBuilder builder = new RoundBitmapBuilder(activity);
+            BitmapBuilder builder = new BitmapBuilder(activity);
             builder.resizeForDefault(r, r, R.mipmap.default_album);
             builder.toRoundBitmap();
             builder.addOuterCircle(0, 10, Color.parseColor("#df3b43"))

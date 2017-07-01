@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,6 +21,7 @@ import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.OnServiceConnect;
 import com.duan.musicoco.app.PlayServiceManager;
 import com.duan.musicoco.app.RootActivity;
+import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.play.PlayServiceConnection;
 
 public class MainActivity extends RootActivity
@@ -31,15 +33,13 @@ public class MainActivity extends RootActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        navigation = new BottomNavigation(this, mediaManager);
         setContentView(R.layout.activity_main);
-
-        initViews();
 
     }
 
-    private void initViews() {
-        if (navigation == null)
-            navigation = new BottomNavigation(this);
+    @Override
+    protected void initViews() {
         navigation.initView();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -63,6 +63,13 @@ public class MainActivity extends RootActivity
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (navigation != null)
+            navigation.update();
     }
 
     @Override
@@ -110,9 +117,6 @@ public class MainActivity extends RootActivity
     public void permissionGranted(int requestCode) {
         super.permissionGranted(requestCode);
 
-        if (navigation == null)
-            navigation = new BottomNavigation(this);
-
         mServiceConnection = new PlayServiceConnection(navigation, this, this);
         PlayServiceManager.bindService(this, mServiceConnection);
 
@@ -126,6 +130,7 @@ public class MainActivity extends RootActivity
     @Override
     public void onConnected(ComponentName name, IBinder service) {
         navigation.setController(mServiceConnection.takeControl());
+        navigation.update();
 
     }
 

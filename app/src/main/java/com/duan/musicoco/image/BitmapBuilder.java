@@ -12,7 +12,7 @@ import com.duan.musicoco.util.BitmapUtils;
  * <p>
  */
 
-public class RoundBitmapBuilder {
+public class BitmapBuilder {
 
     private int radius = -1;
 
@@ -24,13 +24,13 @@ public class RoundBitmapBuilder {
 
     private final Paint paint;
 
-    public RoundBitmapBuilder(Context context) {
+    public BitmapBuilder(Context context) {
         this.context = context;
         this.paint = new Paint();
         paint.setAntiAlias(true);
     }
 
-    public RoundBitmapBuilder setPath(String fillPath) {
+    public BitmapBuilder setPath(String fillPath) {
         this.path = fillPath;
         return this;
     }
@@ -40,7 +40,7 @@ public class RoundBitmapBuilder {
      *
      * @param size 长度
      */
-    public RoundBitmapBuilder resize(int size) {
+    public BitmapBuilder resize(int size) {
         if (path == null)
             return this;
 
@@ -56,12 +56,12 @@ public class RoundBitmapBuilder {
     /**
      * 长宽不等进行压缩
      */
-    public RoundBitmapBuilder resize(int reqWidth, int reqHeight) {
+    public BitmapBuilder resize(int reqWidth, int reqHeight) {
         bitM = BitmapUtils.bitmapResizeFromFile(path, reqWidth, reqHeight);
         return this;
     }
 
-    public RoundBitmapBuilder toRoundBitmap() {
+    public BitmapBuilder toRoundBitmap() {
         if (bitM == null)
             return this;
 
@@ -69,7 +69,7 @@ public class RoundBitmapBuilder {
         return this;
     }
 
-    public RoundBitmapBuilder toRoundBitmap(Bitmap bitmap) {
+    public BitmapBuilder toRoundBitmap(Bitmap bitmap) {
         if (bitmap == null)
             return this;
 
@@ -77,7 +77,7 @@ public class RoundBitmapBuilder {
         return this;
     }
 
-    public RoundBitmapBuilder jpg2png() {
+    public BitmapBuilder jpg2png() {
         bitM = BitmapUtils.jpgTopng(bitM, context);
         return this;
     }
@@ -89,7 +89,7 @@ public class RoundBitmapBuilder {
      * @param strokeWidth 圆圈宽度
      * @param color       圆圈颜色
      */
-    public RoundBitmapBuilder addOuterCircle(int space, int strokeWidth, int color) {
+    public BitmapBuilder addOuterCircle(int space, int strokeWidth, int color) {
 
         Bitmap b = bitM;
 
@@ -115,7 +115,7 @@ public class RoundBitmapBuilder {
         return this;
     }
 
-    public RoundBitmapBuilder build() {
+    public BitmapBuilder build() {
         return this;
     }
 

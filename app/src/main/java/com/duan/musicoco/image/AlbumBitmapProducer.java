@@ -23,14 +23,14 @@ public class AlbumBitmapProducer {
 
     private final BitmapCache cache;
 
-    private final RoundBitmapBuilder builder;
+    private final BitmapBuilder builder;
 
     private final int defaultColor;
 
     private final Context context;
 
     public AlbumBitmapProducer(Context context, BitmapCache cache, int defaultColor) {
-        this.builder = new RoundBitmapBuilder(context);
+        this.builder = new BitmapBuilder(context);
         this.defaultColor = defaultColor;
         this.context = context;
 
@@ -84,7 +84,7 @@ public class AlbumBitmapProducer {
     }
 
 
-    private void addDefaultOuters(RoundBitmapBuilder builder) {
+    private void addDefaultOuters(BitmapBuilder builder) {
 
         if (builder == null || builder.getBitmap() == null)
             return;

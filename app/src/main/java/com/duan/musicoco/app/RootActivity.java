@@ -36,6 +36,8 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
     protected final PlayPreference playPreference;
     protected final AppPreference appPreference;
 
+    private boolean isGranted = false;
+
     public RootActivity() {
         playPreference = new PlayPreference(this);
         appPreference = new AppPreference(this);
@@ -59,7 +61,17 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
 
     }
 
-    private void checkPermission() {
+    // setContentView 后回调
+    @Override
+    public void onContentChanged() {
+        super.onContentChanged();
+
+        if (isGranted) {
+            permissionGranted(PermissionManager.PerMap.CATEGORY_MEDIA_READ);
+        }
+    }
+
+    protected void checkPermission() {
         String[] ps = new String[]{
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -73,7 +85,7 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
             );
             PermissionManager.requestPermission(perMap, this);
         } else {
-            permissionGranted(PermissionManager.PerMap.CATEGORY_MEDIA_READ);
+            isGranted = true;
         }
     }
 
@@ -91,21 +103,19 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
 
     @Override
     public void onBackPressed() {
-        Intent home = new Intent(Intent.ACTION_MAIN);
-        home.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        home.addCategory(Intent.CATEGORY_HOME);
-        startActivity(home);
+        moveTaskToBack(true);
     }
 
+    //控件的初始化在获得权限后开始
+    //绑定服务应在 initView 完成之后绑定
     @Override
     @CallSuper
     public void permissionGranted(int requestCode) {
-        new Thread() {
-            @Override
-            public void run() {
-                mediaManager.refreshData();
-                new Init().initAlbumVisualizerImageCache(RootActivity.this);
-            }
-        }.start();
+        //FIXME 耗时
+        mediaManager.refreshData();
+        new Init().initAlbumVisualizerImageCache(RootActivity.this);
+        initViews();
     }
+
+    protected abstract void initViews();
 }
