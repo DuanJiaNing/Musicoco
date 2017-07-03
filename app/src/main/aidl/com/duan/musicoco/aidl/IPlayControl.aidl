@@ -64,5 +64,7 @@ interface IPlayControl {
        //移除播放列表中的歌曲（如果播放列表中有该歌曲的话）
        void remove(in Song song);
 
+       //获得循环模式
+       int getPlayMode();
 }
 

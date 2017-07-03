@@ -114,3 +114,8 @@
 
 1 添加 DBHelper DBMusicocoController <br>
 2 完善 BottomNavigation<br>
+
+- 2017-07-03
+
+1 aidl IPlayControl 中添加 getPlayMode 方法<br>
+2 修改 AlbumPictureController 的构造方法，传入图片直径，避免 getWidth 方法获取到 0 的一系列麻烦。<br>

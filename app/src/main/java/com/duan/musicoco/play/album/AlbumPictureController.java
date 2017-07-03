@@ -56,9 +56,11 @@ public final class AlbumPictureController implements IAlbum {
     private int defaultColor = Color.DKGRAY;
     private int defaultTextColor = Color.DKGRAY;
     private int[] colors;
+    private final int size;
 
-    public AlbumPictureController(Context context, final ImageSwitcher view) {
+    public AlbumPictureController(Context context, final ImageSwitcher view, int size) {
         this.view = view;
+        this.size = size;
         this.context = context;
         this.cache = new BitmapCache(context, context.getString(R.string.cache_bitmap_album_visualizer));
 
@@ -138,7 +140,7 @@ public final class AlbumPictureController implements IAlbum {
         }
         view.getNextView().setRotation(0.0f);
 
-        Bitmap bitmap = bitmapProducer.get(song, Math.min(view.getHeight(), view.getWidth()));
+        Bitmap bitmap = bitmapProducer.get(song, size);
         if (bitmap != null) {
             if (updateColors)
                 ColorUtils.get2ColorWithTextFormBitmap(bitmap, defaultColor, defaultTextColor, this.colors);
@@ -168,7 +170,7 @@ public final class AlbumPictureController implements IAlbum {
         }
         view.getNextView().setRotation(0.0f);
 
-        Bitmap bitmap = bitmapProducer.get(song, Math.min(view.getHeight(), view.getWidth()));
+        Bitmap bitmap = bitmapProducer.get(song, size);
         if (bitmap != null) {
             if (updateColors)
                 ColorUtils.get2ColorWithTextFormBitmap(bitmap, defaultColor, defaultTextColor, this.colors);

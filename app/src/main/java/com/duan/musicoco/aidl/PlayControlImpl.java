@@ -157,6 +157,11 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
     }
 
     @Override
+    public int getPlayMode() throws RemoteException {
+        return manager.getPlayMode();
+    }
+
+    @Override
     public void registerOnSongChangedListener(IOnSongChangedListener li) {
         mSongChangeListeners.register(li);
     }

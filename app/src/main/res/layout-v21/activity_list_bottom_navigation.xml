@@ -9,7 +9,7 @@
 
     <View
         android:id="@+id/list_progress"
-        android:layout_width="200dp"
+        android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignParentTop="true"
         android:background="@color/colorAccent" />
@@ -64,15 +64,13 @@
                 android:id="@+id/list_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:lines="1"
-                android:text="name" />
+                android:lines="1" />
 
             <TextView
                 android:id="@+id/list_arts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:lines="1"
-                android:text="arts" />
+                android:lines="1" />
 
         </LinearLayout>
 

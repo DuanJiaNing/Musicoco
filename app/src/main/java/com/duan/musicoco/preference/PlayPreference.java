@@ -33,7 +33,7 @@ public class PlayPreference {
             preferences = context.getSharedPreferences(PLAY_PREFERENCE, Context.MODE_PRIVATE);
     }
 
-    public int updateCurrentPlayMode(int mode) {
+    public int updatePlayMode(int mode) {
         check();
         //不考虑默认模式
         // 21 列表循环
@@ -47,13 +47,13 @@ public class PlayPreference {
         return mode;
     }
 
-    public int getCurrentPlayMode() {
+    public int getPlayMode() {
         check();
         return preferences.getInt(KEY_PLAY_MODE, PlayController.MODE_LIST_LOOP);
     }
 
     //注意在多进程下的修改不可见问题
-    public void updateCurrentSong(CurrentSong song) {
+    public void updateSong(CurrentSong song) {
         check();
 
         if (song == null)
@@ -68,7 +68,7 @@ public class PlayPreference {
     }
 
     @Nullable
-    public CurrentSong getCurrentSong() {
+    public CurrentSong getSong() {
         check();
 
         String p = preferences.getString(CurrentSong.KEY_CURRENT_SONG_PATH, null);

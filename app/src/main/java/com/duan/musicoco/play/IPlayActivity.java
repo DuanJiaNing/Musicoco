@@ -14,6 +14,6 @@ public interface IPlayActivity {
 
     void hidePlayList();
 
-    void showDetailDialog(Song song);
+    void showDetail(Song song);
 
 }

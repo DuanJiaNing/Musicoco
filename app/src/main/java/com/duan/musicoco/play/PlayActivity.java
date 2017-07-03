@@ -99,7 +99,7 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
     private TextView tvPlayMode;
 
     private FragmentManager fragmentManager;
-    private int currentPlayMode;
+    private int currentPlayMode = PlayController.MODE_LIST_LOOP;
     private boolean isListShowing = false;
     private boolean isListBarHide = false;
     private boolean changeColorFollowAlbum = true;
@@ -133,21 +133,31 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
     }
 
     @Override
-    public void permissionDenied(int requestCode) {
-        finish();
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
         if (currentSong != null) {
             String path = currentSong.path;
             int index = currentIndex;
             int pro = sbSongProgress.getProgress();
-            playPreference.updateCurrentSong(new PlayPreference.CurrentSong(path, pro, index));
-            playPreference.updateCurrentPlayMode(currentPlayMode);
+            playPreference.updateSong(new PlayPreference.CurrentSong(path, pro, index));
+            playPreference.updatePlayMode(currentPlayMode);
         }
+
+        //FIXME 添加主题切换功能
+        appPreference.modifyTheme(Theme.VARYING);
     }
+
+    @Override
+    public void onBackPressed() {
+        if (isListShowing) {
+            hidePlayList();
+            return;
+        }
+
+        super.onBackPressed();
+    }
+
+
 
     @Override
     public void songChanged(Song song, int index) {
@@ -161,25 +171,41 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
         //更换专辑图片，计算出颜色值
         visualizerPresenter.songChanged(song, switchTo, changeColorFollowAlbum);
 
-        update(song);
+        synchronize(song);
     }
 
-    public void update(Song song) {
-        SongInfo info = mediaManager.getSongInfo(song);
+    /**
+     * 同步当前播放歌曲
+     */
+    public void synchronize(@Nullable Song song) {
+
+        if (song == null) {
+            try {
+                song = mServiceConnection.takeControl().currentSong();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+
+        if (song == null)
+            return;
+
         int pro = 0;
         try {
             pro = mServiceConnection.takeControl().getProgress();
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+
+        SongInfo info = mediaManager.getSongInfo(song);
+
         updateData((int) info.getDuration(), pro, info.getTitle(), info.getArtist());
 
         if (changeColorFollowAlbum) {
             updateColors(visualizerFragment.getCurrColors());
-
-            if (playListAdapter != null)
-                playListAdapter.notifyDataSetChanged();
         }
+
     }
 
     @Override
@@ -198,7 +224,16 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
         btPlay.setPlayStatus(false);
     }
 
+
     /**
+     * 更新颜色（当主题为 随专辑变化 时）<br>
+     * 1 背景颜色<br>
+     * 2 歌曲名字，艺术家字体颜色<br>
+     * 3 进度条颜色，进度条下文字颜色<br>
+     * 4 上、下曲，暂停按钮颜色<br>
+     * 5 播放列表头颜色，背景色<br>
+     * 6 调用方法更新播放列表颜色模式（亮，暗）<br>
+     * <p>
      * 0 暗的活力颜色 主背景色<br>
      * 1 暗的活力颜色 对应适合的字体颜色 主字体色<br>
      * 2 暗的柔和颜色 辅背景色<br>
@@ -265,13 +300,20 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
 
     }
 
-
+    /**
+     * 更新数值和文字<br>
+     * 1 进度条当前进度和最大值<br>
+     * 2 进度条左右文字（进度，总时长）<br>
+     * 3 歌曲名，艺术家<br>
+     */
     private void updateData(int duration, int progress, String title, String arts) {
 
         tvDuration.setText(Utils.getGenTime(duration));
         tvPlayProgress.setText(Utils.getGenTime(progress));
-        sbSongProgress.setProgress(progress);
+
         sbSongProgress.setMax(duration);
+        sbSongProgress.setProgress(progress);
+
         tsSongName.setText(title);
         tsSongArts.setText(arts);
     }
@@ -361,105 +403,19 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
         updateColors(colors);
     }
 
-    /**
-     * 更新播放列表在显示和只显示头部时的显示内容等
-     */
-    private void updatePlayListBar(boolean show) {
-        //TODO
-        if (show) {
-        } else {
-        }
-    }
+
 
     @Override
     public void permissionGranted(int requestCode) {
         super.permissionGranted(requestCode);
 
-        //FIXME 添加主题切换功能
-        appPreference.modifyTheme(Theme.VARYING);
-
         mServiceConnection = new PlayServiceConnection(this, this, this);
         PlayServiceManager.bindService(this, mServiceConnection);
     }
 
-    private void initSelfData() {
-
-        visualizerPresenter = new VisualizerPresenter(this, mServiceConnection.takeControl(), visualizerFragment);
-        lyricPresenter = new LyricPresenter(this, lyricFragment, this);
-
-        currentPlayMode = playPreference.getCurrentPlayMode();
-        updatePlayMode();
-
-
-        //预先设置播放列表外观
-        if (playListAdapter == null)
-            playListAdapter = new PlayListAdapter(this, mServiceConnection.takeControl());
-        lvPlayList.setAdapter(playListAdapter);
-
-        Theme theme = appPreference.getTheme();
-        int alpha = getResources().getInteger(R.integer.play_list_bg_alpha);
-        int color;
-        switch (theme) {
-            case DARKGOLD: {
-                color = getResources().getColor(R.color.theme_dark_gold_vic_text);
-                break;
-            }
-            case VARYING:
-            case WHITE:
-            default:
-                color = getResources().getColor(R.color.theme_white_main_text);
-                break;
-        }
-        color = ColorUtils.setAlphaComponent(color, alpha);
-        rtbPlayList.setOverlayColor(color);
-        rlListBarContainer.setBackgroundColor(ColorUtils.setAlphaComponent(rtbPlayList.getOverlayColor(), 255));
-        updatePlayListColorMode();
-
-
-        //恢复上次播放状态
-        Song song = null;
-        PlayPreference.CurrentSong cur = playPreference.getCurrentSong();
-        if (cur != null && cur.path != null)
-            song = new Song(cur.path);
-
-        List<Song> songs = null;
-
-        try {
-            songs = mServiceConnection.takeControl().getPlayList();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-
-        if (songs == null) {
-            noSongsInDisk();
-            updateData(0, 0, "", "");
-            return;
-        }
-
-        if (song == null) { //配置文件没有保存【最后播放曲目】信息（通常为第一次打开应用）
-            song = songs.get(0);
-        } else { //配置文件有保存
-            if (!songs.contains(song)) { //确认服务端有此歌曲
-                song = songs.get(0);
-            }
-        }
-        try {
-            // songChanged 将被回调
-            mServiceConnection.takeControl().setCurrentSong(song);
-
-            int pro = cur.progress;
-            if (pro >= 0) {
-                mServiceConnection.takeControl().seekTo(pro);
-                sbSongProgress.setProgress(pro);
-            }
-
-            boolean st = mServiceConnection.takeControl().status() == PlayController.STATUS_PLAYING;
-            btPlay.setPlayStatus(st);
-
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-
+    @Override
+    public void permissionDenied(int requestCode) {
+        finish();
     }
 
     @Override
@@ -617,87 +573,7 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
 
     }
 
-    @Override
-    public void onBackPressed() {
-        if (isListShowing) {
-            hidePlayList();
-            return;
-        }
 
-        super.onBackPressed();
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.play_pre_song:
-                isPre = true;
-                try {
-                    mServiceConnection.takeControl().pre();
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case R.id.play_next_song:
-                try {
-                    mServiceConnection.takeControl().next();
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case R.id.play_song:
-
-                try {
-                    int stat = mServiceConnection.takeControl().status();
-                    if (stat == PlayController.STATUS_PLAYING) {
-                        mServiceConnection.takeControl().pause();
-                    } else {
-                        mServiceConnection.takeControl().resume();
-                    }
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case R.id.play_more:
-                Toast.makeText(this, "click", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.play_fragment_container:
-                if (!isListShowing)
-                    showPlayList();
-                break;
-            case R.id.play_name:
-                showDetailDialog(currentSong);
-                break;
-            case R.id.play_mode:
-                currentPlayMode = ((currentPlayMode - 21) + 1) % 3 + 21;
-                updatePlayMode();
-                try {
-                    mServiceConnection.takeControl().setPlayMode(currentPlayMode);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case R.id.play_location:
-                lvPlayList.smoothScrollToPosition(currentIndex);
-                break;
-            case R.id.play_dark_bg:
-                if (isListShowing)
-                    hidePlayList();
-                break;
-            case R.id.play_list_hide_bar:
-            case R.id.play_list_show_bar:
-                if (isListShowing)
-                    hidePlayList();
-                else showPlayList();
-                break;
-            case R.id.play_list_hide:
-                if (!isListBarHide)
-                    hidePlayListBar();
-                break;
-            default:
-                break;
-        }
-    }
 
     private void hidePlayListBar() {
         isListBarHide = true;
@@ -789,6 +665,7 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
         alphaAnim.start();
     }
 
+
     @Override
     public void noSongsInDisk() {
         btPlay.setEnabled(false);
@@ -801,8 +678,8 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
     public void showPlayList() {
         isListShowing = true;
 
-        vgListHideBar.setVisibility(View.GONE);
-        vgListShowBar.setVisibility(View.VISIBLE);
+        //更新列表数据（当前播放歌曲）
+        playListAdapter.notifyDataSetChanged();
 
         final int duration = getResources().getInteger(R.integer.play_list_anim_duration);
 
@@ -833,9 +710,6 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
     @Override
     public void hidePlayList() {
         isListShowing = false;
-        vgListHideBar.setVisibility(View.VISIBLE);
-        vgListShowBar.setVisibility(View.GONE);
-
         final int duration = getResources().getInteger(R.integer.play_list_anim_duration);
 
         int marginB = (int) getResources().getDimension(R.dimen.action_bar_default_height);
@@ -877,60 +751,27 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
             }, 0.6f, 0.0f);
         } else
             vDarkBg.setVisibility(View.GONE);
+    }
 
-
+    /**
+     * 更新播放列表在显示和只显示头部时的显示内容等
+     */
+    private void updatePlayListBar(boolean show) {
+        if (show) {
+            vgListHideBar.setVisibility(View.GONE);
+            vgListShowBar.setVisibility(View.VISIBLE);
+        } else {
+            vgListHideBar.setVisibility(View.VISIBLE);
+            vgListShowBar.setVisibility(View.GONE);
+        }
     }
 
     @Override
-    public void showDetailDialog(Song song) {
+    public void showDetail(Song song) {
         //TODO
         Toast.makeText(this, "show detail dialog " + song.path, Toast.LENGTH_SHORT).show();
-
-        int startColor = ((ColorDrawable) (flRootView.getBackground())).getColor();
-        int endColor = btPlay.getTriangleColor();
-        ValueAnimator anim = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            anim = ObjectAnimator.ofArgb(startColor, endColor);
-        }
-        if (anim == null)
-            return;
-
-        anim.setTarget(flFragmentContainer);
-        anim.setDuration(300);
-        anim.setRepeatCount(1);
-        anim.setRepeatMode(ValueAnimator.REVERSE);
-        anim.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-                Toast.makeText(PlayActivity.this, "time to show dialog", Toast.LENGTH_SHORT).show();
-            }
-        });
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                int co = (int) animation.getAnimatedValue();
-                flFragmentContainer.setBackgroundColor(co);
-            }
-        });
-
-        anim.start();
-
     }
+
 
     @Override
     public boolean onLongClick(View v) {
@@ -946,6 +787,80 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
 
         return false;
     }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.play_pre_song:
+                isPre = true;
+                try {
+                    mServiceConnection.takeControl().pre();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.play_next_song:
+                try {
+                    mServiceConnection.takeControl().next();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.play_song:
+
+                try {
+                    int stat = mServiceConnection.takeControl().status();
+                    if (stat == PlayController.STATUS_PLAYING) {
+                        mServiceConnection.takeControl().pause();
+                    } else {
+                        mServiceConnection.takeControl().resume();
+                    }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.play_more:
+                Toast.makeText(this, "click", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.play_fragment_container:
+                if (!isListShowing)
+                    showPlayList();
+                break;
+            case R.id.play_name:
+                showDetail(currentSong);
+                break;
+            case R.id.play_mode:
+                currentPlayMode = ((currentPlayMode - 21) + 1) % 3 + 21;
+                updatePlayMode();
+                try {
+                    mServiceConnection.takeControl().setPlayMode(currentPlayMode);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.play_location:
+                lvPlayList.smoothScrollToPosition(currentIndex);
+                break;
+            case R.id.play_dark_bg:
+                if (isListShowing)
+                    hidePlayList();
+                break;
+            case R.id.play_list_hide_bar:
+            case R.id.play_list_show_bar:
+                if (isListShowing)
+                    hidePlayList();
+                else showPlayList();
+                break;
+            case R.id.play_list_hide:
+                if (!isListBarHide)
+                    hidePlayListBar();
+                break;
+            default:
+                break;
+        }
+    }
+
+
 
     @Override
     public void onConnected(ComponentName name, IBinder service) {
@@ -976,6 +891,70 @@ public class PlayActivity extends RootActivity implements PlayServiceCallback, O
         visualizerPresenter.initData(null);
         lyricPresenter.initData(null);
 
+    }
+
+    private void initSelfData() {
+
+        visualizerPresenter = new VisualizerPresenter(this, mServiceConnection.takeControl(), visualizerFragment);
+        lyricPresenter = new LyricPresenter(this, lyricFragment, this);
+
+        //更新播放模式
+        try {
+            currentPlayMode = mServiceConnection.takeControl().getPlayMode();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        if (currentPlayMode != playPreference.getPlayMode())
+            playPreference.updatePlayMode(currentPlayMode);
+        updatePlayMode();
+
+        //预先设置播放列表外观
+        if (playListAdapter == null)
+            playListAdapter = new PlayListAdapter(this, mServiceConnection.takeControl());
+        lvPlayList.setAdapter(playListAdapter);
+
+        //更新播放列表字体颜色模式（亮 暗）
+        Theme theme = appPreference.getTheme();
+        int alpha = getResources().getInteger(R.integer.play_list_bg_alpha);
+        int color;
+        switch (theme) {
+            case DARKGOLD: {
+                color = getResources().getColor(R.color.theme_dark_gold_vic_text);
+                break;
+            }
+            case VARYING:
+            case WHITE:
+            default:
+                color = getResources().getColor(R.color.theme_white_main_text);
+                break;
+        }
+        color = ColorUtils.setAlphaComponent(color, alpha);
+        rtbPlayList.setOverlayColor(color);
+        rlListBarContainer.setBackgroundColor(ColorUtils.setAlphaComponent(rtbPlayList.getOverlayColor(), 255));
+        updatePlayListColorMode();
+
+        //检查播放列表是否为空
+        List<Song> songs = null;
+        try {
+            songs = mServiceConnection.takeControl().getPlayList();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        if (songs == null) {
+            noSongsInDisk();
+            updateData(0, 0, "", "");
+        } else { //服务端在 onCreate 时会回调 songChanged ，PlayActivity 第一次绑定可能接收不到此次回调
+            try {
+
+                Song song = mServiceConnection.takeControl().currentSong();
+                int index = songs.indexOf(song);
+                songChanged(song, index);
+
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
     @Override

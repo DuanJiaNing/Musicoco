@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.Init;
@@ -20,6 +21,8 @@ import static com.duan.musicoco.cache.BitmapCache.DEFAULT_PIC_KEY;
  */
 
 public class AlbumBitmapProducer {
+
+    private static final String TAG = "AlbumBitmapProducer";
 
     private final BitmapCache cache;
 
@@ -67,10 +70,13 @@ public class AlbumBitmapProducer {
 
                 Bitmap b = builder.getBitmap();
                 if (b != null) { // 成功构建
+                    Log.d(TAG, "get: create album picture for 【" + info.getTitle() + "】 successfully.");
                     cache.add(key, b);
                     result = b;
-                } else //构建失败
+                } else {//构建失败
+                    Log.d(TAG, "get: create album picture for 【" + info.getTitle() + "】 fail.");
                     result = cache.get(StringUtils.stringToMd5(DEFAULT_PIC_KEY));
+                }
             }
         }
 

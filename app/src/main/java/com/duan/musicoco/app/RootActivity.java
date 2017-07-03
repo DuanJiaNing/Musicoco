@@ -113,7 +113,7 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
     public void permissionGranted(int requestCode) {
         //FIXME 耗时
         mediaManager.refreshData();
-        new Init().initAlbumVisualizerImageCache(RootActivity.this);
+        new Init().initAlbumVisualizerImageCache(this);
         initViews();
     }
 

@@ -4,6 +4,7 @@ package com.duan.musicoco.play.album;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.MediaManager;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.play.PlayActivity;
+import com.duan.musicoco.util.Utils;
 
 /**
  * Created by DuanJiaNing on 2017/5/30.
@@ -78,13 +80,10 @@ public class VisualizerFragment extends Fragment implements ViewContract {
             }
         });
 
-        //防止 getWidth == 0
-        albumView.post(new Runnable() {
-            @Override
-            public void run() {
-                albumPictureController = new AlbumPictureController(getActivity(), albumView);
-            }
-        });
+        DisplayMetrics metrics = Utils.getMetrics(getActivity());
+        //专辑图片直径
+        int size = metrics.widthPixels * 2 / 3;
+        albumPictureController = new AlbumPictureController(getActivity(), albumView, size);
 
     }
 
@@ -104,25 +103,10 @@ public class VisualizerFragment extends Fragment implements ViewContract {
         if (info == null)
             return;
 
-        if (albumPictureController == null) {
-            // albumPictureController 的 new 也是使用 handler 处理的，第一次回调时可能为 null
-            albumView.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (dir == 0) {
-                        currColors = albumPictureController.pre(info, updateColors);
-                    } else {
-                        currColors = albumPictureController.next(info, updateColors);
-                    }
-                    ((PlayActivity) getActivity()).update(song);
-                }
-            });
+        if (dir == 0) {
+            currColors = albumPictureController.pre(info, updateColors);
         } else {
-            if (dir == 0) {
-                currColors = albumPictureController.pre(info, updateColors);
-            } else {
-                currColors = albumPictureController.next(info, updateColors);
-            }
+            currColors = albumPictureController.next(info, updateColors);
         }
 
     }
