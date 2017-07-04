@@ -25,7 +25,7 @@ import com.duan.musicoco.play.PlayServiceConnection;
 
 /**
  * Created by DuanJiaNing on 2017/3/21.
- * 检查权限
+ * 检查权限，初始化 app 数据（缓存，数据库...）
  */
 
 public abstract class RootActivity extends AppCompatActivity implements PermissionRequestCallback {
@@ -33,13 +33,11 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
     protected final static String TAG = "RootActivity";
 
     protected MediaManager mediaManager;
-    protected final PlayPreference playPreference;
     protected final AppPreference appPreference;
 
     private boolean isGranted = false;
 
     public RootActivity() {
-        playPreference = new PlayPreference(this);
         appPreference = new AppPreference(this);
     }
 
@@ -47,31 +45,26 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
     @CallSuper
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mediaManager = MediaManager.getInstance(getApplicationContext());
 
-        //状态栏透明
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
+        mediaManager = MediaManager.getInstance(getApplicationContext());
 
         //检查权限
         checkPermission();
 
     }
 
-    // setContentView 后回调
     @Override
     public void onContentChanged() {
         super.onContentChanged();
 
         if (isGranted) {
+            // setContentView 后回调
             permissionGranted(PermissionManager.PerMap.CATEGORY_MEDIA_READ);
         }
     }
 
     protected void checkPermission() {
+
         String[] ps = new String[]{
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -79,10 +72,11 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
         };
 
         if (!PermissionManager.checkPermission(this, ps)) {
-            PermissionManager.PerMap perMap = new PermissionManager.PerMap("存储读取权限",
+            PermissionManager.PerMap perMap = new PermissionManager.PerMap(
+                    "存储读取权限",
                     getResources().getString(R.string.per_rw_storage),
-                    PermissionManager.PerMap.CATEGORY_MEDIA_READ, ps
-            );
+                    PermissionManager.PerMap.CATEGORY_MEDIA_READ,
+                    ps);
             PermissionManager.requestPermission(perMap, this);
         } else {
             isGranted = true;
@@ -111,8 +105,16 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
     @Override
     @CallSuper
     public void permissionGranted(int requestCode) {
-        mediaManager.refreshData();
+        prepareData();
         initAppDataIfNeed();
+        initChildViews();
+    }
+
+    private void prepareData() {
+        mediaManager.refreshData();
+    }
+
+    private void initChildViews() {
         initViews();
     }
 

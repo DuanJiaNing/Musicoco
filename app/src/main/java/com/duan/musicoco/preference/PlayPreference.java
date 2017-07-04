@@ -19,6 +19,7 @@ public class PlayPreference {
 
     public static final String PLAY_PREFERENCE = "play_preference";
     public static final String KEY_PLAY_MODE = "key_play_mode";
+    public static final String KEY_THEME = "KEY_THEME";
     private SharedPreferences.Editor editor;
     private SharedPreferences preferences;
 
@@ -32,6 +33,21 @@ public class PlayPreference {
         if (preferences == null)
             preferences = context.getSharedPreferences(PLAY_PREFERENCE, Context.MODE_PRIVATE);
     }
+
+    public void modifyTheme(Theme theme) {
+        check();
+        editor = preferences.edit();
+        editor.putString(KEY_THEME, theme.name());
+        editor.apply();
+    }
+
+
+    public Theme getTheme() {
+        check();
+        String pa = preferences.getString(KEY_THEME, Theme.VARYING.name());
+        return Theme.valueOf(pa);
+    }
+
 
     public int updatePlayMode(int mode) {
         check();

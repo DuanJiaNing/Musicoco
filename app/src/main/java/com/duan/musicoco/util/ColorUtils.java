@@ -1,9 +1,13 @@
 package com.duan.musicoco.util;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.graphics.Palette;
+
+import com.duan.musicoco.R;
 
 /**
  * Created by DuanJiaNing on 2017/4/2.
@@ -163,6 +167,55 @@ public class ColorUtils {
         colors[2] = color;
         colors[3] = textColor;
 
+    }
+
+    /**
+     * 0 主背景色
+     * 1 主字体色
+     * 2 辅背景色
+     * 3 辅字体色
+     */
+    public static int[] getThemeWhiteColors(Context context) {
+
+        int[] colors = new int[4];
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            colors[0] = context.getColor(R.color.theme_white_main_bg); //主背景色
+            colors[1] = context.getColor(R.color.theme_white_main_text); // 主字体色
+            colors[2] = context.getColor(R.color.theme_white_vic_bg); // 辅背景色
+            colors[3] = context.getColor(R.color.theme_white_vic_text); // 辅字体色
+        } else {
+            colors[0] = context.getResources().getColor(R.color.theme_white_main_bg); //主背景色
+            colors[1] = context.getResources().getColor(R.color.theme_white_main_text); // 主字体色
+            colors[2] = context.getResources().getColor(R.color.theme_white_vic_bg); // 辅背景色
+            colors[3] = context.getResources().getColor(R.color.theme_white_vic_text); // 辅字体色
+        }
+
+        return colors;
+    }
+
+
+    /**
+     * 0 主背景色
+     * 1 主字体色
+     * 2 辅背景色
+     * 3 辅字体色
+     */
+    public static int[] getThemeDarkColors(Context context) {
+
+        int[] colors = new int[4];
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            colors[0] = context.getColor(R.color.theme_dark_main_bg); //主背景色
+            colors[1] = context.getColor(R.color.theme_dark_main_text); // 主字体色
+            colors[2] = context.getColor(R.color.theme_dark_vic_bg); // 辅背景色
+            colors[3] = context.getColor(R.color.theme_dark_vic_text); // 辅字体色
+        } else {
+            colors[0] = context.getResources().getColor(R.color.theme_dark_main_bg); //主背景色
+            colors[1] = context.getResources().getColor(R.color.theme_dark_main_text); // 主字体色
+            colors[2] = context.getResources().getColor(R.color.theme_dark_vic_bg); // 辅背景色
+            colors[3] = context.getResources().getColor(R.color.theme_dark_vic_text); // 辅字体色
+        }
+
+        return colors;
     }
 
 }

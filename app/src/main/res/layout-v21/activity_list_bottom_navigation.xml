@@ -39,7 +39,7 @@
             android:background="?android:selectableItemBackgroundBorderless"
             android:padding="@dimen/activity_default_padding"
             android:rotation="180"
-            android:src="@drawable/ic_playlist_play_black_24dp"
+            android:src="@drawable/ic_playlist_play_black_36dp"
             android:tint="@color/white_d_d" />
 
         <com.duan.musicoco.view.media.PlayView

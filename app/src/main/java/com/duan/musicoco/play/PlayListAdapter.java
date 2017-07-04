@@ -1,9 +1,11 @@
 package com.duan.musicoco.play;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.RemoteException;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -13,9 +15,14 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.ExceptionHandler;
 import com.duan.musicoco.app.MediaManager;
+import com.duan.musicoco.app.OnThemeChange;
+import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
+import com.duan.musicoco.util.ColorUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,47 +31,43 @@ import java.util.List;
  * Created by DuanJiaNing on 2017/6/22.
  */
 
-public class PlayListAdapter extends BaseAdapter {
+public class PlayListAdapter extends BaseAdapter implements OnThemeChange {
 
     private static final String TAG = "PlayListAdapter";
+
     private final List<SongInfo> songs;
 
     private final IPlayControl control;
-    private final PlayActivity activity;
+    private final Context context;
 
-    private final View.OnClickListener removeClickListener;
-    private final View.OnClickListener itemClickListener;
+    private View.OnClickListener removeClickListener;
+    private View.OnClickListener itemClickListener;
 
     private final MediaManager mediaManager;
 
     private int colorMain;
     private int colorVic;
 
-    private final TextView tvPlayMode;
-    private final ImageButton btLocation;
-    private final ImageButton btHideListBar;
-
-    public PlayListAdapter(final PlayActivity activity, final IPlayControl control) {
-        this.activity = activity;
+    public PlayListAdapter(final Context context, final IPlayControl control) {
+        this.context = context;
         this.control = control;
-        this.tvPlayMode = (TextView) activity.findViewById(R.id.play_mode);
-        this.btLocation = (ImageButton) activity.findViewById(R.id.play_location);
-        this.btHideListBar = (ImageButton) activity.findViewById(R.id.play_list_hide);
-        this.mediaManager = MediaManager.getInstance(activity);
+        this.mediaManager = MediaManager.getInstance(context);
+
         this.removeClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int position = (int) v.getTag(R.id.play_list_item_remove_position);
                 Song s = new Song((String) v.getTag(R.id.play_list_item_remove_path));
+
                 try {
                     //如果移除当前正在播放曲目服务端会自动跳到下一首
                     control.remove(s);
-                    if (position < activity.currentIndex)
-                        activity.currentIndex--;
                     updateData();
                     notifyDataSetChanged();
                 } catch (RemoteException e) {
                     e.printStackTrace();
+                    new ExceptionHandler().handleRemoteException(context,
+                            context.getString(R.string.exception_remote), null
+                    );
                 }
             }
         };
@@ -72,28 +75,27 @@ public class PlayListAdapter extends BaseAdapter {
         this.itemClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int pos = (int) v.getTag(R.id.play_list_item_position);
-                if (pos == activity.currentIndex) {
-                    Log.d(TAG, "onClick: same song");
-                    try {
+                try {
+
+                    int pos = (int) v.getTag(R.id.play_list_item_position);
+
+                    int index = control.currentSongIndex();
+                    if (pos == index) {
+                        Log.d(TAG, "onClick: the song is playing");
                         if (control.status() != PlayController.STATUS_PLAYING)
                             control.resume();
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
+                        return;
                     }
 
-                    return;
-                }
-
-                if (pos < activity.currentIndex)
-                    activity.isPre = true;
-
-                SongInfo in = (SongInfo) getItem(pos);
-                try {
+                    SongInfo in = (SongInfo) getItem(pos);
                     control.play(new Song(in.getData()));
                     notifyDataSetChanged();
+
                 } catch (RemoteException e) {
                     e.printStackTrace();
+                    new ExceptionHandler().handleRemoteException(context,
+                            context.getString(R.string.exception_remote), null
+                    );
                 }
             }
         };
@@ -104,14 +106,18 @@ public class PlayListAdapter extends BaseAdapter {
 
     private void updateData() {
         try {
-            //获得播放列表，注意要从服务器获取播放列表
+
             List<Song> ss = control.getPlayList();
             songs.clear();
-            for (Song s : ss)
-                //从客户端保存的数据中得到信息，有必要的话要刷新客户端的数据
+            for (Song s : ss) {
                 songs.add(mediaManager.getSongInfo(s));
+            }
+
         } catch (RemoteException e) {
             e.printStackTrace();
+            new ExceptionHandler().handleRemoteException(context,
+                    context.getString(R.string.exception_remote), null
+            );
         }
     }
 
@@ -134,7 +140,7 @@ public class PlayListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = activity.getLayoutInflater().inflate(R.layout.activity_play_list_item, null);
+            convertView = LayoutInflater.from(context).inflate(R.layout.activity_play_list_item, null);
             holder = new ViewHolder();
             holder.name = (TextView) convertView.findViewById(R.id.play_list_item_name);
             holder.arts = (TextView) convertView.findViewById(R.id.play_list_item_arts);
@@ -157,11 +163,23 @@ public class PlayListAdapter extends BaseAdapter {
 
         Drawable drawable = null;
 
-        if (position == activity.currentIndex) {
+        int index = 0;
+        try {
+
+            index = control.currentSongIndex();
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            new ExceptionHandler().handleRemoteException(context,
+                    context.getString(R.string.exception_remote), null
+            );
+        }
+
+        if (position == index) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                drawable = activity.getDrawable(R.drawable.ic_volume_up_black_24dp);
+                drawable = context.getDrawable(R.drawable.ic_volume_up_black_24dp);
             } else
-                drawable = activity.getResources().getDrawable(R.drawable.ic_volume_up_black_24dp);
+                drawable = context.getResources().getDrawable(R.drawable.ic_volume_up_black_24dp);
         }
 
         if (drawable != null) {
@@ -181,29 +199,39 @@ public class PlayListAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void setMode(int i) {
-        if (i == 0) { // 字体暗色
-            colorMain = activity.getResources().getColor(R.color.dark_l_l);
-            colorVic = activity.getResources().getColor(R.color.dark_l_l_l);
-        } else if (i == 1) { //字体亮色
-            colorMain = activity.getResources().getColor(R.color.white);
-            colorVic = activity.getResources().getColor(R.color.white_d);
+
+    @Override
+    public void themeChange(Theme theme) {
+        int[] colors;
+        switch (theme) {
+            case DARK:
+                colors = ColorUtils.getThemeDarkColors(context);
+                break;
+            case WHITE:
+            default:
+                colors = ColorUtils.getThemeWhiteColors(context);
+                break;
         }
 
-        tvPlayMode.setTextColor(colorVic);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            tvPlayMode.getCompoundDrawables()[0].setTint(colorVic);
-            btLocation.getDrawable().setTint(colorVic);
-            btHideListBar.getDrawable().setTint(colorVic);
-        }
+        colorMain = colors[1];
+        colorVic = colors[3];
+
         notifyDataSetChanged();
-
     }
 
-    public final class ViewHolder {
+    private final class ViewHolder {
         TextView name;
         TextView arts;
         ImageButton remove;
+    }
+
+
+    public void setOnRemoveClickListener(View.OnClickListener removeClickListener) {
+        this.removeClickListener = removeClickListener;
+    }
+
+    public void setOnItemClickListener(View.OnClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
     }
 
 }

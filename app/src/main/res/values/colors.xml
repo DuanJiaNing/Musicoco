@@ -24,14 +24,14 @@
     <color name="dsb_ripple_color_focused">#99999999</color>
 
     <color name="theme_white_main_bg">#ececec</color>
-    <color name="theme_white_vic_bg">#ececec</color>
+    <color name="theme_white_vic_bg">#dfdfdf</color>
     <color name="theme_white_main_text">@color/dark_l_l_l</color>
     <color name="theme_white_vic_text">@color/dark_l_l_l_l</color>
 
-    <color name="theme_dark_gold_main_bg">@color/colorAccent</color>
-    <color name="theme_dark_gold_vic_bg">@color/colorAccent</color>
-    <color name="theme_dark_gold_main_text">@color/colorPrimary</color>
-    <color name="theme_dark_gold_vic_text">@color/colorPrimaryDark</color>
+    <color name="theme_dark_main_bg">#2d2729</color>
+    <color name="theme_dark_vic_bg">#332c2f</color>
+    <color name="theme_dark_main_text">@color/colorPrimary</color>
+    <color name="theme_dark_vic_text">@color/colorPrimaryDark</color>
 
     <color name="list_blue">#19E4F2</color>
     <color name="list_white">#ffffff</color>

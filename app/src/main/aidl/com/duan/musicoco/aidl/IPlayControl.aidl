@@ -33,6 +33,8 @@ interface IPlayControl {
        //当前播放歌曲
        Song currentSong();
 
+       int currentSongIndex();
+
        //播放状态
        int status();
 

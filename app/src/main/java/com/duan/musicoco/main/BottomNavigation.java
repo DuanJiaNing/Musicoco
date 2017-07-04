@@ -3,6 +3,7 @@ package com.duan.musicoco.main;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.RemoteException;
 import android.view.View;
 import android.widget.ImageButton;
@@ -14,11 +15,14 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.MediaManager;
+import com.duan.musicoco.app.OnThemeChange;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.image.BitmapBuilder;
 import com.duan.musicoco.play.PlayActivity;
+import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.service.PlayServiceCallback;
+import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.PeriodicTask;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.media.PlayView;
@@ -27,7 +31,11 @@ import com.duan.musicoco.view.media.PlayView;
  * Created by DuanJiaNing on 2017/6/27.
  */
 
-public class BottomNavigation implements IBottomNavigation, View.OnClickListener, PlayServiceCallback {
+public class BottomNavigation implements
+        IBottomNavigation,
+        View.OnClickListener,
+        PlayServiceCallback,
+        OnThemeChange {
 
     private final Activity activity;
 
@@ -198,6 +206,48 @@ public class BottomNavigation implements IBottomNavigation, View.OnClickListener
                     hidePlayList();
                 else showPlayList();
                 break;
+        }
+    }
+
+    @Override
+    public void themeChange(Theme theme) {
+        switch (theme) {
+            case DARK: {
+                setTheme(theme);
+                break;
+            }
+            case WHITE:
+            default: {
+                setTheme(theme);
+                break;
+            }
+        }
+    }
+
+    public void setTheme(Theme theme) {
+        int[] colors = new int[4];
+        if (theme == Theme.DARK) {
+            colors = ColorUtils.getThemeDarkColors(activity);
+        } else if (theme == Theme.WHITE) {
+            ColorUtils.getThemeWhiteColors(activity);
+        } else return;
+
+        int mainBC = colors[0];
+        int mainTC = colors[1];
+        int vicTC = colors[3];
+
+        mContainer.setBackgroundColor(mainBC);
+        mName.setTextColor(mainTC);
+        mArts.setTextColor(vicTC);
+
+        mPlay.setPauseLineColor(mainTC);
+        mPlay.setSolidColor(mainTC);
+        mPlay.setTriangleColor(mainTC);
+
+        mProgress.setBackgroundColor(mainTC);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mShowList.getDrawable().setTint(mainTC);
         }
     }
 }

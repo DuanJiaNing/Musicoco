@@ -39,7 +39,7 @@ public class AppPreference {
 
     public Theme getTheme() {
         check();
-        String pa = preferences.getString(KEY_THEME, Theme.DARKGOLD.name());
+        String pa = preferences.getString(KEY_THEME, Theme.WHITE.name());
         return Theme.valueOf(pa);
     }
 

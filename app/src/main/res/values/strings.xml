@@ -22,7 +22,9 @@
     <string name="sheet_favorite">我的收藏</string>
     <string name="sheet_desc_favorite">收藏的歌曲都会被加入到这个歌单里哦</string>
     <string name="sheet_recent">最近播放</string>
-    <string name="sheet_desc_recent">最近播放次数最多的50首歌曲</string>
+    <string name="sheet_desc_recent">播放次数最多的50首歌曲</string>
     <string name="sheet_all">全部歌曲</string>
+
+    <string name="exception_remote">与播放服务连接断开啦:)，可以尝试完全关闭应用，并重新打开。 </string>
 
 </resources>

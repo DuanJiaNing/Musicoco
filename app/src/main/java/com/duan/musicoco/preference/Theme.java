@@ -8,8 +8,8 @@ public enum Theme {
     //白色
     WHITE,
 
-    //黑金色
-    DARKGOLD,
+    //黑色
+    DARK,
 
     //随专辑图片变化
     VARYING;
