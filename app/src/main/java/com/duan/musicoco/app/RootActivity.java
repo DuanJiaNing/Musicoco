@@ -111,10 +111,17 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
     @Override
     @CallSuper
     public void permissionGranted(int requestCode) {
-        //FIXME 耗时
         mediaManager.refreshData();
-        new Init().initAlbumVisualizerImageCache(this);
+        initAppDataIfNeed();
         initViews();
+    }
+
+    private void initAppDataIfNeed() {
+        if (appPreference.appOpenTimes() == 0) {
+            Init init = new Init();
+            init.initAlbumVisualizerImageCache(this);
+            init.initMusicocoDB(this, mediaManager);
+        }
     }
 
     protected abstract void initViews();

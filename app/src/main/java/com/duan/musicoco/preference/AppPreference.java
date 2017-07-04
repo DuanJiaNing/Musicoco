@@ -11,8 +11,9 @@ import android.support.annotation.Nullable;
 public class AppPreference {
 
     public static final String APP_PREFERENCE = "app_preference";
-
     public static final String KEY_THEME = "key_theme";
+    public static final String KEY_OPEN_TIMES = "key_open_times";
+
 
     private SharedPreferences.Editor editor;
     private SharedPreferences preferences;
@@ -40,6 +41,17 @@ public class AppPreference {
         check();
         String pa = preferences.getString(KEY_THEME, Theme.DARKGOLD.name());
         return Theme.valueOf(pa);
+    }
+
+    public int appOpenTimes() {
+        check();
+        int times = preferences.getInt(KEY_OPEN_TIMES, 0);
+
+        editor = preferences.edit();
+        editor.putInt(KEY_OPEN_TIMES, times + 1);
+        editor.apply();
+
+        return times;
     }
 
 }

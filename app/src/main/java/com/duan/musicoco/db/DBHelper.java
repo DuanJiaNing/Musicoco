@@ -8,26 +8,27 @@ import java.io.File;
 
 /**
  * Created by DuanJiaNing on 2017/6/30.
+ * 数据库将创建于 data/com.duan.musicoco/databases/ 下
  */
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static DBHelper DB_HELPER;
+    private volatile static DBHelper DB_HELPER;
 
-    public static DBHelper getInstance(Context context, String dbName) {
+    static DBHelper getInstance(Context context, String dbName) {
         if (DB_HELPER == null) {
             synchronized (DBHelper.class) {
                 if (DB_HELPER == null) {
-                    String path = context.getFilesDir().getAbsolutePath() + File.separator + dbName;
-                    DB_HELPER = new DBHelper(context, path);
+                    //String path = context.getFilesDir().getAbsolutePath() + File.separator + dbName;
+                    DB_HELPER = new DBHelper(context, dbName);
                 }
             }
         }
         return DB_HELPER;
     }
 
-    private DBHelper(Context context, String databasePath) {
-        super(context, databasePath, null, 1);
+    private DBHelper(Context context, String name) {
+        super(context, name, null, 1);
     }
 
     @Override

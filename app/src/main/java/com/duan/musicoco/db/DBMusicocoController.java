@@ -6,9 +6,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.duan.musicoco.aidl.Song;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -22,6 +24,8 @@ public class DBMusicocoController {
 
     private final Context context;
     private final SQLiteDatabase database;
+
+    private static final String TAG = "DBMusicocoController";
 
     public static final String DATABASE = "musicoco.db";
 
@@ -40,7 +44,7 @@ public class DBMusicocoController {
     public static final String SHEET_REMARK = "remarks"; //歌单备注
     public static final String SHEET_CREATE = "create_time"; //创建时间
 
-    public static void createSongTable(SQLiteDatabase db) {
+    static void createSongTable(SQLiteDatabase db) {
         String sql = "create table " + DBMusicocoController.TABLE_SONG + "(" +
                 DBMusicocoController.SONG_ID + " integer primary key autoincrement," +
                 DBMusicocoController.SONG_PATH + " text unique," +
@@ -52,7 +56,7 @@ public class DBMusicocoController {
         db.execSQL(sql);
     }
 
-    public static void createSheetTable(SQLiteDatabase db) {
+    static void createSheetTable(SQLiteDatabase db) {
 
         String sql = "create table " + DBMusicocoController.TABLE_SHEET + "(" +
                 DBMusicocoController.SHEET_ID + " integer primary key autoincrement," +
@@ -155,8 +159,16 @@ public class DBMusicocoController {
         }
     }
 
-    public DBMusicocoController(Context context) {
-        this.database = DBHelper.getInstance(context, DATABASE).getWritableDatabase();
+    /**
+     * 在使用结束时应调用{@link #close()}关闭数据库连接
+     */
+    public DBMusicocoController(Context context, boolean writable) {
+        DBHelper helper = DBHelper.getInstance(context, DATABASE);
+        if (writable) {
+            this.database = helper.getWritableDatabase();
+        } else {
+            this.database = helper.getReadableDatabase();
+        }
         this.context = context;
     }
 
@@ -167,7 +179,7 @@ public class DBMusicocoController {
 
     @Nullable
     public Sheet getSheet(int sheetId) {
-        String sql = "select * from " + TABLE_SHEET + " where id = " + sheetId;
+        String sql = "select * from " + TABLE_SHEET + " where " + SHEET_ID + " = " + sheetId;
         Cursor cursor = database.rawQuery(sql, null);
 
         Sheet sheet = new Sheet();
@@ -204,7 +216,7 @@ public class DBMusicocoController {
 
     @Nullable
     public SongInfo getSongInfo(int songId) {
-        String sql = "select * from " + TABLE_SONG + " where id = " + songId;
+        String sql = "select * from " + TABLE_SONG + " where " + SONG_ID + " = " + songId;
         Cursor cursor = database.rawQuery(sql, null);
 
         SongInfo info = new SongInfo();
@@ -301,40 +313,54 @@ public class DBMusicocoController {
         return infos;
     }
 
-    public void addSheet(@NonNull Sheet sheet) {
-        String name = sheet.name;
-        String remark = sheet.remark;
+    public void addSheet(String name, String remark) {
         String create = System.currentTimeMillis() + "";
         if (remark == null)
             remark = "";
+
         String sql = String.format(Locale.CHINESE, "insert into %s values(null,'%s','%s','%s')",
                 TABLE_SHEET, name, remark, create);
         database.execSQL(sql);
+        Log.d(TAG, "addSheet: insert " + name);
+
+
     }
 
-    public void addSongInfo(Song song, int playTimes, @Nullable String remark, @Nullable int[] sheets) {
-        // _id path lastlayTime playTimes remark sheets
+    public void addSongInfo(@NonNull Song song, int playTimes, @Nullable String remark, @Nullable int[] sheets) {
+
+        if (remark == null) {
+            remark = " ";
+        }
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("0 "); //任何一首歌都在 全部歌曲 歌单中
+        if (sheets != null && sheets.length > 0) {
+            for (int i : sheets) {
+                builder.append(i).append(" ");
+            }
+        }
+
         String path = song.path;
         String lpt = String.valueOf(System.currentTimeMillis()) + "";
-        if (remark == null)
-            remark = "";
-        String ss = "-1"; //未在任何歌单中
-        if (sheets != null && sheets.length > 0) {
-            StringBuilder builder = new StringBuilder();
-            for (int i : sheets)
-                builder.append(i).append(" ");
-            ss = builder.toString();
-        }
-        String sql = String.format(Locale.CHINESE, "insert into %s values(null,'%s','%s',%d,'%s','%s','%s')",
-                TABLE_SONG, path, lpt, playTimes, remark, ss, lpt);
-        database.execSQL(sql);
+        ContentValues values = new ContentValues();
+        values.put(SONG_CREATE, lpt);
+        values.put(SONG_LASTPLAYTIME, lpt);
+        values.put(SONG_PATH, path);
+        values.put(SONG_PLAYTIMES, playTimes);
+        values.put(SONG_REMARK, remark);
+        values.put(SONG_SHEETS, builder.toString());
+
+        database.insert(TABLE_SONG, null, values);
+        Log.d(TAG, "addSongInfo: insert " + path);
 
     }
 
     public void addSongInfo(List<Song> songs) {
-        if (songs != null && songs.size() > 0)
-            for (Song song : songs)
+        if (songs != null && songs.size() > 0) {
+            for (Song song : songs) {
                 addSongInfo(song, 0, null, null);
+            }
+        }
     }
 
     /**

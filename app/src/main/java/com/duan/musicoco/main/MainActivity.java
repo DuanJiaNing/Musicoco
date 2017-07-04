@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
@@ -120,6 +121,8 @@ public class MainActivity extends RootActivity
         mServiceConnection = new PlayServiceConnection(navigation, this, this);
         PlayServiceManager.bindService(this, mServiceConnection);
 
+        DBMusicocoController c = new DBMusicocoController(getApplicationContext(), false);
+        Toast.makeText(this, c.getSheet(1).remark + " " + c.getSongInfo(1), Toast.LENGTH_SHORT).show();
     }
 
     @Override
