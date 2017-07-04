@@ -555,7 +555,6 @@ public class PlayListController implements
                 builder.append(' ').append('(').append(num).append(')');
 
             playMode.setText(builder.toString());
-
         }
     }
 
