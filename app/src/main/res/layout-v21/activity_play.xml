@@ -58,17 +58,6 @@
             android:layout_height="0dp"
             android:layout_weight="0.55">
 
-            <ImageButton
-                android:id="@+id/play_more"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginRight="@dimen/activity_default_margin"
-                android:layout_marginTop="@dimen/activity_default_margin"
-                android:background="?android:selectableItemBackgroundBorderless"
-                android:padding="10dp"
-                android:src="@drawable/play_more" />
-
         </FrameLayout>
 
         <LinearLayout

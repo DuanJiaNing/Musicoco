@@ -1,15 +1,9 @@
 package com.duan.musicoco.play;
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.animation.TimeInterpolator;
-import android.animation.ValueAnimator;
 import android.content.ComponentName;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -18,18 +12,8 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.graphics.ColorUtils;
-import android.support.v7.widget.CardView;
-import android.util.DisplayMetrics;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,14 +39,12 @@ import com.duan.musicoco.service.PlayServiceCallback;
 import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.util.PeriodicTask;
 import com.duan.musicoco.util.Utils;
-import com.duan.musicoco.view.RealtimeBlurView;
 import com.duan.musicoco.view.discreteseekbar.DiscreteSeekBar;
 import com.duan.musicoco.view.media.PlayView;
 import com.duan.musicoco.view.media.SkipView;
 
 import java.util.List;
 
-import static com.duan.musicoco.preference.Theme.DARK;
 import static com.duan.musicoco.preference.Theme.WHITE;
 
 /**
@@ -74,7 +56,6 @@ public class PlayActivity extends RootActivity implements
         OnServiceConnect,
         View.OnClickListener,
         View.OnLongClickListener,
-        IPlayActivity,
         OnThemeChange {
 
     private VisualizerFragment visualizerFragment;
@@ -89,34 +70,14 @@ public class PlayActivity extends RootActivity implements
     private DiscreteSeekBar sbSongProgress;
     private FrameLayout flFragmentContainer;
     private FrameLayout flRootView;
-    private CardView cvList;
-    private ConstraintLayout clName;
     private PlayView btPlay;
     private SkipView btPre;
     private SkipView btNext;
-    private ImageButton btMore;
-    private ListView lvPlayList;
-    private RealtimeBlurView rtbPlayList;
-    private View rlListBarContainer;
-    private View vDarkBg;
-    private LinearLayout llRootMain;
-
-    private ViewGroup vgListShowBar;
-    private ImageButton btLocation;
-
-    private ViewGroup vgListHideBar;
-    private ImageButton btHideListBar;
-    private TextView tvPlayMode;
-
-    private FragmentManager fragmentManager;
-    private boolean isListShowing = false;
-    private boolean isListBarHide = false;
-    private boolean changeColorFollowAlbum = true;
 
     private PlayServiceConnection mServiceConnection;
     private PeriodicTask periodicTask;
-    private PlayListAdapter playListAdapter;
-    protected final PlayPreference playPreference;
+    private final PlayPreference playPreference;
+    private PlayListController playListController;
 
     public PlayActivity() {
         playPreference = new PlayPreference(this);
@@ -167,21 +128,21 @@ public class PlayActivity extends RootActivity implements
 
     @Override
     public void onBackPressed() {
-        if (isListShowing) {
-            hidePlayList();
+        if (playListController.isListShowing()) {
+            playListController.hide();
             return;
         }
 
         super.onBackPressed();
     }
 
-
     @Override
     public void songChanged(Song song, int index) {
 
-        //FIXME
+        //FIXME 上下曲判断
         //更换专辑图片，计算出颜色值
-        visualizerPresenter.songChanged(song, 1, changeColorFollowAlbum);
+        boolean updateColor = playPreference.getTheme().equals(Theme.VARYING);
+        visualizerPresenter.songChanged(song, 1, updateColor);
 
         synchronize(song);
     }
@@ -217,10 +178,15 @@ public class PlayActivity extends RootActivity implements
         }
 
         SongInfo info = mediaManager.getSongInfo(song);
+        int duration = (int) info.getDuration();
+        int progress = pro;
+        String name = info.getTitle();
+        String arts = info.getArtist();
+        updateData(duration, progress, name, arts);
 
-        updateData((int) info.getDuration(), pro, info.getTitle(), info.getArtist());
 
-        if (changeColorFollowAlbum) {
+        boolean updateColor = playPreference.getTheme().equals(Theme.VARYING);
+        if (updateColor) {
             updateColors(visualizerFragment.getCurrColors());
         }
 
@@ -241,7 +207,6 @@ public class PlayActivity extends RootActivity implements
         visualizerPresenter.stopPlay();
         btPlay.setPlayStatus(false);
     }
-
 
     /**
      * 更新颜色（当主题为 随专辑变化 时）<br>
@@ -290,33 +255,11 @@ public class PlayActivity extends RootActivity implements
 
         flFragmentContainer.setBackgroundColor(Color.TRANSPARENT);
 
-        int alpha = getResources().getInteger(R.integer.play_list_bg_alpha);
-        int color = ColorUtils.setAlphaComponent(colors[2], alpha);
-        rtbPlayList.setOverlayColor(color);
-        rlListBarContainer.setBackgroundColor(colors[2]);
-
-        updatePlayListColorMode();
+        playListController.updateBackgroundColors(colors[2]);
+        playListController.themeChange(null);
 
     }
 
-    // 0 字体颜色为暗色
-    // 1 字体颜色为亮色
-    private void updatePlayListColorMode() {
-
-        if (playListAdapter == null)
-            return;
-
-        int color = rtbPlayList.getOverlayColor();
-        double d = ColorUtils.calculateLuminance(color);
-        Theme theme;
-        if (d - 0.400 > 0.000001)
-            theme = WHITE;
-        else
-            theme = DARK;
-
-        playListAdapter.themeChange(theme);
-
-    }
 
     /**
      * 更新数值和文字<br>
@@ -334,60 +277,6 @@ public class PlayActivity extends RootActivity implements
 
         tsSongName.setText(title);
         tsSongArts.setText(arts);
-    }
-
-    private void updatePlayMode() {
-        Drawable drawable = null;
-        StringBuilder builder = new StringBuilder();
-        int num = 0;
-        int mode = PlayController.MODE_LIST_LOOP;
-
-        try {
-            mode = mServiceConnection.takeControl().getPlayMode();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-
-        switch (mode) {
-            case PlayController.MODE_LIST_LOOP:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    drawable = getDrawable(R.drawable.list_loop);
-                } else drawable = getResources().getDrawable(R.drawable.list_loop);
-                builder.append(getString(R.string.play_mode_list_loop));
-                break;
-
-            case PlayController.MODE_SINGLE_LOOP:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    drawable = getDrawable(R.drawable.single_loop);
-                } else drawable = getResources().getDrawable(R.drawable.single_loop);
-                builder.append(getString(R.string.play_mode_single_loop));
-                break;
-
-            case PlayController.MODE_RANDOM:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    drawable = getDrawable(R.drawable.random);
-                } else drawable = getResources().getDrawable(R.drawable.random);
-                builder.append(getString(R.string.play_mode_random));
-                break;
-        }
-
-        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-        tvPlayMode.setCompoundDrawables(drawable, null, null, null);
-
-        try {
-            num = mServiceConnection.takeControl().getPlayList().size();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            new ExceptionHandler().handleRemoteException(this,
-                    this.getString(R.string.exception_remote), null
-            );
-        }
-
-        if (num != 0)
-            builder.append(' ').append('(').append(num).append(')');
-
-        tvPlayMode.setText(builder.toString());
-
     }
 
     @Override
@@ -416,25 +305,7 @@ public class PlayActivity extends RootActivity implements
         btPre = (SkipView) findViewById(R.id.play_pre_song);
         btNext = (SkipView) findViewById(R.id.play_next_song);
         btPlay = (PlayView) findViewById(R.id.play_song);
-        btMore = (ImageButton) findViewById(R.id.play_more);
         flFragmentContainer = (FrameLayout) findViewById(R.id.play_fragment_container);
-        cvList = (CardView) findViewById(R.id.play_list);
-        clName = (ConstraintLayout) findViewById(R.id.play_name);
-        lvPlayList = (ListView) findViewById(R.id.play_play_list);
-        vDarkBg = findViewById(R.id.play_dark_bg);
-        rtbPlayList = (RealtimeBlurView) findViewById(R.id.play_blur);
-        llRootMain = (LinearLayout) findViewById(R.id.play_root_main);
-
-        rlListBarContainer = findViewById(R.id.play_list_bar_container);
-
-        vgListShowBar = (ViewGroup) findViewById(R.id.play_list_show_bar);
-        vgListShowBar.setVisibility(View.GONE);
-        btLocation = (ImageButton) findViewById(R.id.play_location);
-
-        vgListHideBar = (ViewGroup) findViewById(R.id.play_list_hide_bar);
-        vgListHideBar.setVisibility(View.VISIBLE);
-        btHideListBar = (ImageButton) findViewById(R.id.play_list_hide);
-        tvPlayMode = (TextView) findViewById(R.id.play_mode);
 
         Theme theme = playPreference.getTheme();
         int mainTextColor = Color.DKGRAY;
@@ -446,6 +317,7 @@ public class PlayActivity extends RootActivity implements
             mainTextColor = getResources().getColor(R.color.theme_white_main_text);
             vicTextColor = getResources().getColor(R.color.theme_white_vic_text);
         }
+
         //设置属性
         final int finalMainTextColor = mainTextColor;
         tsSongName.setFactory(new ViewSwitcher.ViewFactory() {
@@ -470,32 +342,11 @@ public class PlayActivity extends RootActivity implements
             }
         });
 
-        //设置主题
-        themeChange(theme);
-
-        vgListHideBar.setOnClickListener(this);
-        vgListShowBar.setOnClickListener(this);
-
-        btHideListBar.setOnClickListener(this);
-        vDarkBg.setOnClickListener(this);
-        btLocation.setOnClickListener(this);
-        tvPlayMode.setOnClickListener(this);
-        clName.setOnClickListener(this);
         flFragmentContainer.setOnClickListener(this);
         flFragmentContainer.setOnLongClickListener(this);
         btPre.setOnClickListener(this);
         btNext.setOnClickListener(this);
         btPlay.setOnClickListener(this);
-        btMore.setOnClickListener(this);
-
-        tvPlayMode.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return false;
-            }
-        });
-        btMore.setEnabled(false);
-        btMore.setVisibility(View.INVISIBLE);
 
         sbSongProgress.setNumericTransformer(new DiscreteSeekBar.NumericTransformer() {
             @Override
@@ -540,121 +391,21 @@ public class PlayActivity extends RootActivity implements
 
         lyricFragment = new LyricFragment();
         visualizerFragment = new VisualizerFragment();
-
-        fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         //顺序 依次叠放
         transaction.add(R.id.play_fragment_container, visualizerFragment, VisualizerFragment.TAG);
-        //TODO lyricFragment
         transaction.add(R.id.play_fragment_container, lyricFragment, LyricFragment.TAG);
         transaction.hide(lyricFragment);
         transaction.commit();
 
-        ViewGroup.LayoutParams params = cvList.getLayoutParams();
-        DisplayMetrics metrics = Utils.getMetrics(this);
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        params.height = metrics.heightPixels / 2;
-        cvList.setX(0);
-        int marginB = (int) getResources().getDimension(R.dimen.action_bar_default_height);
-        cvList.setY(metrics.heightPixels - marginB);
-        cvList.setLayoutParams(params);
+        playListController = new PlayListController(this);
+        //更新主题
+        themeChange(theme);
 
     }
 
-
-    private void hidePlayListBar() {
-        isListBarHide = true;
-
-        final int duration = getResources().getInteger(R.integer.play_list_anim_duration);
-        int marginB = (int) getResources().getDimension(R.dimen.action_bar_default_height);
-        float from = cvList.getY();
-        float to = from + marginB;
-
-        startTranslateBarAnim(from, to, duration);
-    }
-
-    private void showPlayListBar() {
-        isListBarHide = false;
-
-        final int duration = getResources().getInteger(R.integer.play_list_anim_duration);
-        int marginB = (int) getResources().getDimension(R.dimen.action_bar_default_height);
-        float from = cvList.getY();
-        float to = from - marginB;
-        startTranslateBarAnim(from, to, duration);
-
-    }
-
-    private void startTranslateBarAnim(float from, float to, int duration) {
-        AnimatorSet set = new AnimatorSet();
-        set.setDuration(duration);
-
-        ValueAnimator animY = ObjectAnimator.ofFloat(from, to);
-
-        int marginB = (int) getResources().getDimension(R.dimen.action_bar_default_height);
-        int fromM = isListBarHide ? marginB : 0;
-        int toM = isListBarHide ? 0 : marginB;
-        ValueAnimator animM = ObjectAnimator.ofInt(fromM, toM);
-        animM.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                FrameLayout.LayoutParams param = (FrameLayout.LayoutParams) llRootMain.getLayoutParams();
-                int va = (int) animation.getAnimatedValue();
-                param.setMargins(0, 0, 0, va);
-                llRootMain.setLayoutParams(param);
-                llRootMain.requestLayout();
-
-            }
-        });
-
-        animY.setDuration(duration);
-        animY.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float va = (float) animation.getAnimatedValue();
-                cvList.setY(va);
-            }
-        });
-
-        set.play(animY).with(animM);
-        set.start();
-    }
-
-    private void startTranslateYAnim(float from, float to, int duration, final View view, @Nullable TimeInterpolator interpolator, @Nullable Animator.AnimatorListener listener) {
-        final ValueAnimator anim = ObjectAnimator.ofFloat(from, to);
-        anim.setDuration(duration);
-        if (interpolator != null)
-            anim.setInterpolator(interpolator);
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float va = (float) animation.getAnimatedValue();
-                view.setY(va);
-            }
-        });
-        if (listener != null)
-            anim.addListener(listener);
-        anim.start();
-    }
-
-    private void startAlphaAnim(int duration, @Nullable Animator.AnimatorListener listener, float... values) {
-        ValueAnimator alphaAnim = ObjectAnimator.ofFloat(values);
-        alphaAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float alpha = (float) animation.getAnimatedValue();
-                vDarkBg.setAlpha(alpha);
-            }
-        });
-        if (listener != null)
-            alphaAnim.addListener(listener);
-
-        alphaAnim.setDuration(duration);
-        alphaAnim.start();
-    }
-
-
-    @Override
-    public void noSongsInDisk() {
+    private void noSongsInDisk() {
         btPlay.setEnabled(false);
         btPre.setEnabled(false);
         btNext.setEnabled(false);
@@ -662,110 +413,12 @@ public class PlayActivity extends RootActivity implements
     }
 
     @Override
-    public void showPlayList() {
-        isListShowing = true;
-
-        //更新列表数据（当前播放歌曲）
-        playListAdapter.notifyDataSetChanged();
-
-        final int duration = getResources().getInteger(R.integer.play_list_anim_duration);
-
-        int mb = (int) getResources().getDimension(R.dimen.activity_default_margin);
-        int marginB = (int) getResources().getDimension(R.dimen.action_bar_default_height);
-        float from = cvList.getY();
-        float to = isListBarHide ? from - (cvList.getHeight() - mb) : from - (cvList.getHeight() - mb - marginB);
-        startTranslateYAnim(
-                from,
-                to,
-                duration,
-                cvList,
-                new AccelerateInterpolator(), null);
-
-        updatePlayListBar(true);
-
-        vDarkBg.setClickable(true);
-        vDarkBg.setVisibility(View.VISIBLE);
-
-        if (playPreference.getTheme() == WHITE) {
-            startAlphaAnim(duration, null, 0.0f, 0.6f);
-        } else {
-            vDarkBg.setBackgroundColor(Color.TRANSPARENT);
-        }
-
-    }
-
-    @Override
-    public void hidePlayList() {
-        isListShowing = false;
-        final int duration = getResources().getInteger(R.integer.play_list_anim_duration);
-
-        int marginB = (int) getResources().getDimension(R.dimen.action_bar_default_height);
-        int mb = (int) getResources().getDimension(R.dimen.activity_default_margin);
-        float from = cvList.getY();
-        float to = isListBarHide ? from + (cvList.getHeight() - mb) : from + (cvList.getHeight() - mb - marginB);
-        startTranslateYAnim(
-                from,
-                to,
-                duration,
-                cvList,
-                new DecelerateInterpolator(), null);
-
-        updatePlayListBar(false);
-
-        vDarkBg.setClickable(false);
-
-        if (playPreference.getTheme() == WHITE) {
-            startAlphaAnim(duration, new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    vDarkBg.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onAnimationCancel(Animator animation) {
-
-                }
-
-                @Override
-                public void onAnimationRepeat(Animator animation) {
-
-                }
-            }, 0.6f, 0.0f);
-        } else
-            vDarkBg.setVisibility(View.GONE);
-    }
-
-    /**
-     * 更新播放列表在显示和只显示头部时的显示内容等
-     */
-    private void updatePlayListBar(boolean show) {
-        if (show) {
-            vgListHideBar.setVisibility(View.GONE);
-            vgListShowBar.setVisibility(View.VISIBLE);
-        } else {
-            vgListHideBar.setVisibility(View.VISIBLE);
-            vgListShowBar.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public void showDetail() {
-        //TODO
-    }
-
-
-    @Override
     public boolean onLongClick(View v) {
 
         switch (v.getId()) {
             case R.id.play_fragment_container:
-                if (isListBarHide)
-                    showPlayListBar();
+                if (playListController.isListTitleHide())
+                    playListController.showPlayListBar();
                 return true;
             default:
                 break;
@@ -813,59 +466,14 @@ public class PlayActivity extends RootActivity implements
                     );
                 }
                 break;
-            case R.id.play_more:
-                Toast.makeText(this, "click", Toast.LENGTH_SHORT).show();
-                break;
             case R.id.play_fragment_container:
-                if (!isListShowing)
-                    showPlayList();
-                break;
-            case R.id.play_name:
-                showDetail();
-                break;
-            case R.id.play_mode:
-                updatePlayMode();
-                try {
-                    int mode = mServiceConnection.takeControl().getPlayMode();
-                    mode = ((mode - 21) + 1) % 3 + 21;
-                    mServiceConnection.takeControl().setPlayMode(mode);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                    new ExceptionHandler().handleRemoteException(this,
-                            this.getString(R.string.exception_remote), null
-                    );
-                }
-                break;
-            case R.id.play_location:
-                try {
-                    int index = mServiceConnection.takeControl().currentSongIndex();
-                    lvPlayList.smoothScrollToPosition(index);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                    new ExceptionHandler().handleRemoteException(this,
-                            this.getString(R.string.exception_remote), null
-                    );
-                }
-                break;
-            case R.id.play_dark_bg:
-                if (isListShowing)
-                    hidePlayList();
-                break;
-            case R.id.play_list_hide_bar:
-            case R.id.play_list_show_bar:
-                if (isListShowing)
-                    hidePlayList();
-                else showPlayList();
-                break;
-            case R.id.play_list_hide:
-                if (!isListBarHide)
-                    hidePlayListBar();
+                if (!playListController.isListShowing())
+                    playListController.show();
                 break;
             default:
                 break;
         }
     }
-
 
     @Override
     public void onConnected(ComponentName name, IBinder service) {
@@ -905,33 +513,8 @@ public class PlayActivity extends RootActivity implements
             }
         }, 800);
 
-        //更新播放模式
-        updatePlayMode();
-
         //预先设置播放列表外观
-        if (playListAdapter == null)
-            playListAdapter = new PlayListAdapter(this, mServiceConnection.takeControl());
-        lvPlayList.setAdapter(playListAdapter);
-
-        //更新播放列表字体颜色模式（亮 暗）
-        Theme theme = playPreference.getTheme();
-        int alpha = getResources().getInteger(R.integer.play_list_bg_alpha);
-        int color;
-        switch (theme) {
-            case DARK: {
-                color = getResources().getColor(R.color.theme_dark_vic_text);
-                break;
-            }
-            case VARYING:
-            case WHITE:
-            default:
-                color = getResources().getColor(R.color.theme_white_main_text);
-                break;
-        }
-        color = ColorUtils.setAlphaComponent(color, alpha);
-        rtbPlayList.setOverlayColor(color);
-        rlListBarContainer.setBackgroundColor(ColorUtils.setAlphaComponent(rtbPlayList.getOverlayColor(), 255));
-        updatePlayListColorMode();
+        playListController.initData(mServiceConnection.takeControl());
 
         //检查播放列表是否为空
         List<Song> songs = null;
@@ -976,15 +559,12 @@ public class PlayActivity extends RootActivity implements
 
         switch (theme) {
             case WHITE:
-                changeColorFollowAlbum = false;
                 colors = com.duan.musicoco.util.ColorUtils.getThemeWhiteColors(this);
                 break;
             case VARYING:
-                changeColorFollowAlbum = true;
                 break;
             case DARK:
             default:
-                changeColorFollowAlbum = false;
                 colors = com.duan.musicoco.util.ColorUtils.getThemeDarkColors(this);
                 break;
         }

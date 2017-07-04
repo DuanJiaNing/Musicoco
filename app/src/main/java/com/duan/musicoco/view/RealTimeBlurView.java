@@ -28,7 +28,7 @@ import com.duan.musicoco.R;
  * <li>realtimeOverlayColor (#aaffffff)</li>
  * </ul>
  */
-public class RealtimeBlurView extends View {
+public class RealTimeBlurView extends View {
 
     private float mDownsampleFactor; // default 4
     private int mOverlayColor; // default #aaffffff
@@ -44,14 +44,14 @@ public class RealtimeBlurView extends View {
     private final Rect mRectSrc = new Rect(), mRectDst = new Rect();
     private static int RENDERING_COUNT;
 
-    public RealtimeBlurView(Context context, AttributeSet attrs) {
+    public RealTimeBlurView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RealtimeBlurView);
-        mBlurRadius = a.getDimension(R.styleable.RealtimeBlurView_realtimeBlurRadius,
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RealTimeBlurView);
+        mBlurRadius = a.getDimension(R.styleable.RealTimeBlurView_realtimeBlurRadius,
                 TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, context.getResources().getDisplayMetrics()));
-        mDownsampleFactor = a.getFloat(R.styleable.RealtimeBlurView_realtimeDownsampleFactor, 4);
-        mOverlayColor = a.getColor(R.styleable.RealtimeBlurView_realtimeOverlayColor, 0xAAFFFFFF);
+        mDownsampleFactor = a.getFloat(R.styleable.RealTimeBlurView_realtimeDownsampleFactor, 4);
+        mOverlayColor = a.getColor(R.styleable.RealTimeBlurView_realtimeOverlayColor, 0xAAFFFFFF);
         a.recycle();
     }
 
@@ -275,7 +275,7 @@ public class RealtimeBlurView extends View {
 
     static {
         try {
-            RealtimeBlurView.class.getClassLoader().loadClass("android.support.v8.renderscript.RenderScript");
+            RealTimeBlurView.class.getClassLoader().loadClass("android.support.v8.renderscript.RenderScript");
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("RenderScript support not enabled. Add \"android { defaultConfig { renderscriptSupportModeEnabled true }}\" in your build.gradle");
         }

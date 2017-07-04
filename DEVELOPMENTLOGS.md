@@ -119,3 +119,9 @@
 
 1 aidl IPlayControl 中添加 getPlayMode 方法<br>
 2 修改 AlbumPictureController 的构造方法，传入图片直径，避免 getWidth 方法获取到 0 的一系列麻烦。<br>
+
+- 2017-07-04
+
+1 添加 OnThemeChange OnViewVisibilityChange 接口<br>
+2 修改 PlayListAdapter ，使其从 PlayActivity 中分离出，以进行重用<br>
+3 将播放界面的播放列表从 PlayActivity 中抽离，提取出 PlayListController 类<br>

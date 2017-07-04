@@ -46,6 +46,15 @@ public class MainActivity extends RootActivity implements
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mServiceConnection.hasConnected) {
+            mServiceConnection.unregisterListener();
+            unbindService(mServiceConnection);
+        }
+    }
+
+    @Override
     protected void initViews() {
         bottomNavigation.initView();
 

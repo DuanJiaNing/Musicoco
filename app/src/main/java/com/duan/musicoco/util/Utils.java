@@ -21,6 +21,7 @@ public class Utils {
     }
 
     public static DisplayMetrics getMetrics(Activity activity) {
+        Context context;
         Display display = activity.getWindowManager().getDefaultDisplay();
         DisplayMetrics metrics = new DisplayMetrics();
         display.getMetrics(metrics);
