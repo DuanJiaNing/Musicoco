@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
@@ -137,14 +136,12 @@ public class PlayActivity extends RootActivity implements
     }
 
     @Override
-    public void songChanged(Song song, int index) {
+    public void songChanged(Song song, int index, boolean isNext) {
 
-        //FIXME 上下曲判断
-        //更换专辑图片，计算出颜色值
         boolean updateColor = playPreference.getTheme().equals(Theme.VARYING);
-        visualizerPresenter.songChanged(song, 1, updateColor);
-
+        visualizerPresenter.songChanged(song, isNext, updateColor);
         synchronize(song);
+
     }
 
     /**
@@ -534,7 +531,7 @@ public class PlayActivity extends RootActivity implements
 
                 Song song = mServiceConnection.takeControl().currentSong();
                 int index = songs.indexOf(song);
-                songChanged(song, index);
+                songChanged(song, index, true);
 
             } catch (RemoteException e) {
                 e.printStackTrace();
@@ -559,13 +556,13 @@ public class PlayActivity extends RootActivity implements
 
         switch (theme) {
             case WHITE:
-                colors = com.duan.musicoco.util.ColorUtils.getThemeWhiteColors(this);
+                colors = com.duan.musicoco.util.ColorUtils.getWhiteThemeColors(this);
                 break;
             case VARYING:
                 break;
             case DARK:
             default:
-                colors = com.duan.musicoco.util.ColorUtils.getThemeDarkColors(this);
+                colors = com.duan.musicoco.util.ColorUtils.getDarkThemeColors(this);
                 break;
         }
         updateColors(colors);

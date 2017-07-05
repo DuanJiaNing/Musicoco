@@ -6,10 +6,12 @@
 
     <color name="colorPrimaryLight">#dfbd6e</color>
     <color name="text_gray">#ababab</color>
+
     <color name="white">#eeeeee</color>
-    <color name="white_d">#b6b6b6</color>
-    <color name="white_d_d">#696969</color>
-    <color name="white_d_d_d">#4d4d4d</color>
+    <color name="white_d">#e2e2e2</color>
+    <color name="white_d_d">#c1c0c0</color>
+    <color name="white_d_d_d">#a1a1a1</color>
+    <color name="white_d_d_d_d">#8e8e8e</color>
 
     <color name="dark">#000000</color>
     <color name="dark_l">#101010</color>

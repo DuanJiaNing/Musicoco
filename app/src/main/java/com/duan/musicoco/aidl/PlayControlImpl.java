@@ -189,13 +189,13 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
     private class NotifySongChange implements PlayController.NotifySongChanged {
 
         @Override
-        public void notify(Song song, int index) {
+        public void notify(Song song, int index, boolean isNext) {
             final int N = mSongChangeListeners.beginBroadcast();
             for (int i = 0; i < N; i++) {
                 IOnSongChangedListener listener = mSongChangeListeners.getBroadcastItem(i);
                 if (listener != null) {
                     try {
-                        listener.onSongChange(song, index);
+                        listener.onSongChange(song, index, isNext);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }

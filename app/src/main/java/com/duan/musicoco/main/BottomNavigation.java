@@ -102,7 +102,7 @@ public class BottomNavigation implements
     }
 
     @Override
-    public void songChanged(Song song, int index) {
+    public void songChanged(Song song, int index, boolean isNext) {
         SongInfo info = mediaManager.getSongInfo(song);
         mDuration = (int) info.getDuration();
 
@@ -224,12 +224,12 @@ public class BottomNavigation implements
         }
     }
 
-    public void setTheme(Theme theme) {
+    private void setTheme(Theme theme) {
         int[] colors = new int[4];
         if (theme == Theme.DARK) {
-            colors = ColorUtils.getThemeDarkColors(activity);
+            colors = ColorUtils.getDarkThemeColors(activity);
         } else if (theme == Theme.WHITE) {
-            ColorUtils.getThemeWhiteColors(activity);
+            colors = ColorUtils.getWhiteThemeColors(activity);
         } else return;
 
         int mainBC = colors[0];

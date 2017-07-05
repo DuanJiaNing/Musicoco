@@ -59,7 +59,7 @@ public class MainActivity extends RootActivity implements
         bottomNavigation.initView();
 
         Theme theme = appPreference.getTheme();
-        bottomNavigation.themeChange(theme);
+        bottomNavigation.themeChange(Theme.DARK);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

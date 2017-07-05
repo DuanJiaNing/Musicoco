@@ -23,5 +23,5 @@ public abstract class OnSongChangedListener extends IOnSongChangedListener.Stub 
     /**
      * 该方法在服务端线程的 Binder 线程池中运行，客户端调用时不能操作 UI 控件
      */
-    public abstract void onSongChange(Song which, int index);
+    public abstract void onSongChange(Song which, int index, boolean isNext);
 }

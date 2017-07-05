@@ -7,5 +7,5 @@ import com.duan.musicoco.aidl.Song;
 interface IOnSongChangedListener {
 
     //该方法运行在线程池中（非 UI 线程）
-    void onSongChange(in Song which,int index);
+    void onSongChange(in Song which,int index,boolean isNext);
 }

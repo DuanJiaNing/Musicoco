@@ -33,12 +33,14 @@ public class PlayController {
 
     private final MediaPlayer mPlayer;
 
+    private boolean isNext = true;
+
     public interface NotifyStatusChanged {
         void notify(Song song, int index, int status);
     }
 
     public interface NotifySongChanged {
-        void notify(Song song, int index);
+        void notify(Song song, int index, boolean isNext);
     }
 
     private NotifySongChanged mNotifySongChanged;
@@ -73,11 +75,11 @@ public class PlayController {
     //默认播放模式，列表播放，播放至列表末端时停止播放
     public static final int MODE_DEFAULT = 20;
 
-    //单曲循环
-    public static final int MODE_SINGLE_LOOP = 21;
-
     //列表循环
-    public static final int MODE_LIST_LOOP = 22;
+    public static final int MODE_LIST_LOOP = 21;
+
+    //单曲循环
+    public static final int MODE_SINGLE_LOOP = 22;
 
     //随机播放
     public static final int MODE_RANDOM = 23;
@@ -158,6 +160,7 @@ public class PlayController {
         int result = ERROR_INVALID;
         if (index != -1) { //列表中有该歌曲
             if (mCurrentSong != index) { //不是当前歌曲
+                isNext = mCurrentSong < index;
                 mCurrentSong = index;
                 if (mPlayState != STATUS_PLAYING) {
                     mNotifyStatusChanged.notify(getCurrentSong(), mCurrentSong, STATUS_START);
@@ -202,6 +205,7 @@ public class PlayController {
 
     //上一曲
     public Song preSong() {
+        isNext = false;
         switch (mPlayMode) {
             case MODE_SINGLE_LOOP: {
                 changeSong();
@@ -233,6 +237,7 @@ public class PlayController {
 
     //下一曲
     public Song nextSong() {
+        isNext = true;
         switch (mPlayMode) {
             case MODE_SINGLE_LOOP: {
                 changeSong();
@@ -329,7 +334,7 @@ public class PlayController {
             mPlayer.start();
         }
 
-        mNotifySongChanged.notify(getCurrentSong(), mCurrentSong);
+        mNotifySongChanged.notify(getCurrentSong(), mCurrentSong, isNext);
         return 1;
     }
 

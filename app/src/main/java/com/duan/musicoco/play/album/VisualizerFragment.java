@@ -98,15 +98,15 @@ public class VisualizerFragment extends Fragment implements ViewContract {
     }
 
     @Override
-    public void songChanged(final Song song, final int dir, final boolean updateColors) {
+    public void songChanged(Song song, boolean isNext, boolean updateColors) {
         final SongInfo info = song == null ? null : mediaManager.getSongInfo(song);
         if (info == null)
             return;
 
-        if (dir == 0) {
-            currColors = albumPictureController.pre(info, updateColors);
-        } else {
+        if (isNext) {
             currColors = albumPictureController.next(info, updateColors);
+        } else {
+            currColors = albumPictureController.pre(info, updateColors);
         }
 
     }

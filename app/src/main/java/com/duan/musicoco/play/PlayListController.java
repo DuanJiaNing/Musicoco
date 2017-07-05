@@ -23,6 +23,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
@@ -32,6 +33,7 @@ import com.duan.musicoco.app.OnViewVisibilityChange;
 import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
+import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.RealTimeBlurView;
 
@@ -401,14 +403,14 @@ public class PlayListController implements
             int color;
             switch (theme) {
                 case WHITE: {
-                    int[] colors = com.duan.musicoco.util.ColorUtils.getThemeWhiteColors(PlayListController.this.activity);
-                    color = colors[1];
+                    int[] colors = com.duan.musicoco.util.ColorUtils.getWhiteListThemeTextColor(PlayListController.this.activity);
+                    color = colors[0];
                     break;
                 }
                 case DARK:
                 default: {
-                    int[] colors = com.duan.musicoco.util.ColorUtils.getThemeDarkColors(PlayListController.this.activity);
-                    color = colors[1];
+                    int[] colors = com.duan.musicoco.util.ColorUtils.getDarkListThemeTextColor(PlayListController.this.activity);
+                    color = colors[0];
                     break;
                 }
             }
@@ -426,13 +428,15 @@ public class PlayListController implements
 
         private ViewGroup container;
         private ImageButton hidePlayListBar;
-        private TextView playMode;
+        private ImageButton playMode;
+
+        private Theme theme;
 
         public SongOption(Activity activity) {
 
             container = (ViewGroup) activity.findViewById(R.id.play_list_hide_bar);
             hidePlayListBar = (ImageButton) activity.findViewById(R.id.play_list_hide);
-            playMode = (TextView) activity.findViewById(R.id.play_mode);
+            playMode = (ImageButton) activity.findViewById(R.id.play_mode);
 
             hidePlayListBar.setOnClickListener(this);
             playMode.setOnClickListener(this);
@@ -443,11 +447,11 @@ public class PlayListController implements
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.play_mode:
-                    updatePlayMode();
                     try {
                         int mode = control.getPlayMode();
                         mode = ((mode - 21) + 1) % 3 + 21;
                         control.setPlayMode(mode);
+                        updatePlayMode();
                     } catch (RemoteException e) {
                         e.printStackTrace();
                         new ExceptionHandler().handleRemoteException(activity,
@@ -481,33 +485,35 @@ public class PlayListController implements
         @Override
         public void themeChange(Theme theme) {
             int color;
+            this.theme = theme;
             switch (theme) {
                 case WHITE: {
-                    int[] colors = com.duan.musicoco.util.ColorUtils.getThemeWhiteColors(PlayListController.this.activity);
-                    color = colors[1];
+                    int[] colors = com.duan.musicoco.util.ColorUtils.getWhiteListThemeTextColor(PlayListController.this.activity);
+                    color = colors[0];
                     break;
                 }
                 case DARK:
                 default: {
-                    int[] colors = com.duan.musicoco.util.ColorUtils.getThemeDarkColors(PlayListController.this.activity);
-                    color = colors[1];
+                    int[] colors = com.duan.musicoco.util.ColorUtils.getDarkListThemeTextColor(PlayListController.this.activity);
+                    color = colors[0];
                     break;
                 }
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 hidePlayListBar.getDrawable().setTint(color);
-                playMode.getCompoundDrawables()[0].setTint(color);
+                Drawable d = playMode.getDrawable();
+                if (d != null) {
+                    playMode.getDrawable().setTint(color);
+                }
             }
 
-            playMode.setTextColor(color);
         }
 
         void updatePlayMode() {
 
             Drawable drawable = null;
             StringBuilder builder = new StringBuilder();
-            int num = 0;
             int mode = PlayController.MODE_LIST_LOOP;
 
             try {
@@ -539,22 +545,9 @@ public class PlayListController implements
                     break;
             }
 
-            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-            playMode.setCompoundDrawables(drawable, null, null, null);
-
-            try {
-                num = control.getPlayList().size();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-                new ExceptionHandler().handleRemoteException(activity,
-                        activity.getString(R.string.exception_remote), null
-                );
-            }
-
-            if (num != 0)
-                builder.append(' ').append('(').append(num).append(')');
-
-            playMode.setText(builder.toString());
+            playMode.setImageDrawable(drawable);
+            ToastUtils.showToast(activity, builder.toString());
+            themeChange(theme);
         }
     }
 

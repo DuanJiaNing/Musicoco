@@ -12,7 +12,7 @@ public interface PlayServiceCallback {
      * 当当前歌曲改变时回调
      * 此方法由服务端控制调用
      */
-    void songChanged(Song song, int index);
+    void songChanged(Song song, int index, boolean isNext);
 
     /**
      * 此方法由服务端控制调用

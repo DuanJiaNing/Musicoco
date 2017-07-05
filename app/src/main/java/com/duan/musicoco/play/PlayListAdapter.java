@@ -18,7 +18,6 @@ import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.ExceptionHandler;
 import com.duan.musicoco.app.MediaManager;
 import com.duan.musicoco.app.OnThemeChange;
-import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
@@ -161,13 +160,9 @@ public class PlayListAdapter extends BaseAdapter implements OnThemeChange {
         holder.remove.setTag(R.id.play_list_item_remove_path, info.getData());
         holder.remove.setOnClickListener(removeClickListener);
 
-        Drawable drawable = null;
-
         int index = 0;
         try {
-
             index = control.currentSongIndex();
-
         } catch (RemoteException e) {
             e.printStackTrace();
             new ExceptionHandler().handleRemoteException(context,
@@ -176,19 +171,10 @@ public class PlayListAdapter extends BaseAdapter implements OnThemeChange {
         }
 
         if (position == index) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                drawable = context.getDrawable(R.drawable.ic_volume_up_black_24dp);
-            } else
-                drawable = context.getResources().getDrawable(R.drawable.ic_volume_up_black_24dp);
+            setSelectItem(holder);
+        } else {
+            setNormalItem(holder);
         }
-
-        if (drawable != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                drawable.setTint(colorMain);
-            }
-            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-        }
-        holder.name.setCompoundDrawables(drawable, null, null, null);
 
         holder.name.setTextColor(colorMain);
         holder.arts.setTextColor(colorVic);
@@ -199,22 +185,43 @@ public class PlayListAdapter extends BaseAdapter implements OnThemeChange {
         return convertView;
     }
 
+    private void setSelectItem(ViewHolder holder) {
+
+        Drawable drawable;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            drawable = context.getDrawable(R.drawable.ic_volume_up_black_24dp);
+            if (drawable != null) {
+                drawable.setTint(colorMain);
+            }
+        } else {
+            drawable = context.getResources().getDrawable(R.drawable.ic_volume_up_black_24dp);
+        }
+        if (drawable != null) {
+            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+            holder.name.setCompoundDrawables(drawable, null, null, null);
+        }
+
+    }
+
+    private void setNormalItem(ViewHolder holder) {
+        holder.name.setCompoundDrawables(null, null, null, null);
+    }
 
     @Override
     public void themeChange(Theme theme) {
         int[] colors;
         switch (theme) {
             case DARK:
-                colors = ColorUtils.getThemeDarkColors(context);
+                colors = ColorUtils.getDarkListThemeTextColor(context);
                 break;
             case WHITE:
             default:
-                colors = ColorUtils.getThemeWhiteColors(context);
+                colors = ColorUtils.getWhiteListThemeTextColor(context);
                 break;
         }
 
-        colorMain = colors[1];
-        colorVic = colors[3];
+        colorMain = colors[0];
+        colorVic = colors[1];
 
         notifyDataSetChanged();
     }

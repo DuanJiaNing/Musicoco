@@ -175,7 +175,7 @@ public class ColorUtils {
      * 2 辅背景色
      * 3 辅字体色
      */
-    public static int[] getThemeWhiteColors(Context context) {
+    public static int[] getWhiteThemeColors(Context context) {
 
         int[] colors = new int[4];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -200,7 +200,7 @@ public class ColorUtils {
      * 2 辅背景色
      * 3 辅字体色
      */
-    public static int[] getThemeDarkColors(Context context) {
+    public static int[] getDarkThemeColors(Context context) {
 
         int[] colors = new int[4];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -213,6 +213,34 @@ public class ColorUtils {
             colors[1] = context.getResources().getColor(R.color.theme_dark_main_text); // 主字体色
             colors[2] = context.getResources().getColor(R.color.theme_dark_vic_bg); // 辅背景色
             colors[3] = context.getResources().getColor(R.color.theme_dark_vic_text); // 辅字体色
+        }
+
+        return colors;
+    }
+
+    public static int[] getWhiteListThemeTextColor(Context context) {
+        int[] colors = new int[2];
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            colors[0] = context.getColor(R.color.dark_l_l_l); //主字体色
+            colors[1] = context.getColor(R.color.dark_l_l_l_l); // 辅字体色
+        } else {
+            colors[0] = context.getResources().getColor(R.color.dark_l_l_l);
+            colors[1] = context.getResources().getColor(R.color.dark_l_l_l_l);
+        }
+
+        return colors;
+    }
+
+    public static int[] getDarkListThemeTextColor(Context context) {
+        int[] colors = new int[2];
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            colors[0] = context.getColor(R.color.white_d_d); //主字体色
+            colors[1] = context.getColor(R.color.white_d_d_d); // 辅字体色
+        } else {
+            colors[0] = context.getResources().getColor(R.color.white_d_d);
+            colors[1] = context.getResources().getColor(R.color.white_d_d_d);
         }
 
         return colors;

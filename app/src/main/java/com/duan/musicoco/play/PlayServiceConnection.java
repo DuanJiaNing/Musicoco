@@ -39,13 +39,14 @@ public class PlayServiceConnection implements ServiceConnection {
         this.serviceConnect = serviceConnect;
         this.mSongChangedListener = new OnSongChangedListener() {
             @Override
-            public void onSongChange(Song which, int index) {
+            public void onSongChange(Song which, int index, boolean isNext) {
                 final Song s = which;
                 final int in = index;
+                final boolean isn = isNext;
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        serviceCallback.songChanged(s, in);
+                        serviceCallback.songChanged(s, in, isn);
                     }
                 });
             }

@@ -16,8 +16,7 @@ public interface PresenterContract extends BasePresenter {
     void stopPlay();
 
     //歌曲切换
-    //dir 为 0 为上一曲，为 1 为下一曲
     //是否更新专辑对应的颜色
-    void songChanged(Song song,int dir,boolean updateColors);
+    void songChanged(Song song, boolean isNext, boolean updateColors);
 
 }

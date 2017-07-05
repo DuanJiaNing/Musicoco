@@ -25,6 +25,9 @@ public class AppPreference {
     }
 
     public void modifyTheme(Theme theme) {
+        if (theme == Theme.VARYING)
+            return;
+
         check();
         editor = preferences.edit();
         editor.putString(KEY_THEME, theme.name());
