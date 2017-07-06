@@ -22,6 +22,7 @@ import com.duan.musicoco.play.PlayActivity;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.service.PlayServiceCallback;
+import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.PeriodicTask;
 import com.duan.musicoco.util.Utils;
@@ -138,7 +139,18 @@ public class BottomNavigation implements
     private void updateSong(SongInfo info) {
         String name = info.getTitle();
         String arts = info.getArtist();
-        Bitmap b = builder.setPath(info.getAlbum_path()).resize(mAlbum.getHeight()).build().getBitmap();
+        Bitmap b = builder.setPath(info.getAlbum_path())
+                .resize(mAlbum.getHeight())
+                .build()
+                .getBitmap();
+
+        if (b == null) {
+            b = BitmapUtils.bitmapResizeFromResource(
+                    activity.getResources(),
+                    R.mipmap.default_album,
+                    mAlbum.getWidth(),
+                    mAlbum.getHeight());
+        }
 
         mName.setText(name);
         mArts.setText(arts);
@@ -147,18 +159,20 @@ public class BottomNavigation implements
     }
 
     public void update() {
-        if (checkNull())
+        if (checkNull()) {
             return;
+        }
 
         try {
 
-            if (controller.status() == PlayController.STATUS_PLAYING)
+            if (controller.status() == PlayController.STATUS_PLAYING) {
                 mPlay.setPlayStatus(true);
-            else mPlay.setPlayStatus(false);
+            } else {
+                mPlay.setPlayStatus(false);
+            }
 
             Song song = controller.currentSong();
             SongInfo info = mediaManager.getSongInfo(song);
-
             mDuration = (int) info.getDuration();
             updateProgress();
             updateSong(info);
@@ -169,10 +183,11 @@ public class BottomNavigation implements
     }
 
     private boolean checkNull() {
-        if (controller == null)
+        if (controller == null) {
             return true;
-
-        return false;
+        } else {
+            return false;
+        }
     }
 
     @Override

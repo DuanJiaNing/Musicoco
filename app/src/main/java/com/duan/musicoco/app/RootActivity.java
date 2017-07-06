@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.play.PlayActivity;
@@ -64,6 +65,13 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
     }
 
     protected void checkPermission() {
+
+        if (Build.VERSION.SDK_INT < 23) {
+            String msg = getString(R.string.per_api_too_low);
+            Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
 
         String[] ps = new String[]{
                 Manifest.permission.READ_EXTERNAL_STORAGE,

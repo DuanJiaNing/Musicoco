@@ -1,11 +1,17 @@
 package com.duan.musicoco.app;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.media.MediaPlayer;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.service.PlayController;
@@ -42,13 +48,6 @@ public class MediaManager {
         return MEDIAMANAGER;
     }
 
-//    /**
-//     * 获得存储上的所有歌曲信息
-//     * 服务端获取存储中歌曲信息的主要方法
-//     * 客户端想获取时在确保服务启动的前提下应优先选择通过 aidl 获取 {@link PlayController#getSongsList()}
-//     * 而不是此方法
-//     *
-//     */
     public HashSet<SongInfo> refreshData() {
         if (songs == null)
             songs = new HashSet<>();
@@ -132,4 +131,10 @@ public class MediaManager {
             refreshData();
     }
 
+    public void scanSdCard(@Nullable MediaScannerConnection.OnScanCompletedListener listener) {
+
+        MediaScannerConnection.scanFile(context, new String[]{Environment
+                .getExternalStorageDirectory().getAbsolutePath()}, null, listener);
+
+    }
 }
