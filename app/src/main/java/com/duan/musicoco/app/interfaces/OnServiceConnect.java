@@ -1,4 +1,4 @@
-package com.duan.musicoco.app;
+package com.duan.musicoco.app.interfaces;
 
 import android.content.ComponentName;
 import android.os.IBinder;

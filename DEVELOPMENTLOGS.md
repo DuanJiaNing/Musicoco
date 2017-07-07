@@ -125,3 +125,8 @@
 1 添加 OnThemeChange OnViewVisibilityChange 接口<br>
 2 修改 PlayListAdapter ，使其从 PlayActivity 中分离出，以进行重用<br>
 3 将播放界面的播放列表从 PlayActivity 中抽离，提取出 PlayListController 类<br>
+
+- 2017-07-07
+
+1 主界面底部播放导航可以正确弹出播放列表<br>
+2 主界面和播放界面的播放曲目和播放状态可以同步<br>

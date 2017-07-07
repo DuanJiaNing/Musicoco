@@ -22,14 +22,14 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.app.ExceptionHandler;
-import com.duan.musicoco.app.OnThemeChange;
-import com.duan.musicoco.app.OnViewVisibilityChange;
+import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.interfaces.OnViewVisibilityChange;
+import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
+import com.duan.musicoco.app.interfaces.UserInterfaceUpdate;
 import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
@@ -46,7 +46,8 @@ import static com.duan.musicoco.preference.Theme.WHITE;
 
 public class PlayListController implements
         View.OnClickListener,
-        OnViewVisibilityChange,
+        OnPlayListVisibilityChange,
+        UserInterfaceUpdate,
         OnThemeChange {
 
     private Activity activity;
@@ -301,16 +302,6 @@ public class PlayListController implements
         anim.start();
     }
 
-    public void updateBackgroundColors(int color) {
-
-        int alpha = activity.getResources().getInteger(R.integer.play_list_bg_alpha);
-        int colorA = ColorUtils.setAlphaComponent(color, alpha);
-
-        mRealTimeView.setOverlayColor(colorA);
-        mListTitleContainer.setBackgroundColor(color);
-
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -347,6 +338,20 @@ public class PlayListController implements
         listOption.themeChange(t);
         songOption.themeChange(t);
 
+    }
+
+    @Override
+    public void update(Object obj) {
+        if (!(obj instanceof Integer)) {
+            return;
+        }
+
+        int color = (int) obj;
+        int alpha = activity.getResources().getInteger(R.integer.play_list_bg_alpha);
+        int colorA = ColorUtils.setAlphaComponent(color, alpha);
+
+        mRealTimeView.setOverlayColor(colorA);
+        mListTitleContainer.setBackgroundColor(color);
     }
 
     private class ListOption implements

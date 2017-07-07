@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/play_list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="@dimen/activity_default_margin_s_s"
+    android:layout_marginRight="@dimen/activity_default_margin_s_s"
+    app:cardBackgroundColor="#51ffffff"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="12dp"
+    app:contentPaddingBottom="@dimen/activity_default_margin">
+
+    <com.duan.musicoco.view.RealTimeBlurView
+        android:id="@+id/play_blur"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:realtimeBlurRadius="50dp"
+        app:realtimeOverlayColor="#b9ffffff" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            layout="@layout/play_list_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <ListView
+            android:id="@+id/play_play_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:dividerHeight="1px" />
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

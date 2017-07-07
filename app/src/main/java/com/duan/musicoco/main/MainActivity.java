@@ -15,8 +15,8 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.app.OnServiceConnect;
-import com.duan.musicoco.app.OnThemeChange;
+import com.duan.musicoco.app.interfaces.OnServiceConnect;
+import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.PlayServiceManager;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.play.PlayServiceConnection;
@@ -33,7 +33,7 @@ public class MainActivity extends RootActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bottomNavigation = new BottomNavigation(this, mediaManager);
+        bottomNavigation = new BottomNavigation(this, mediaManager, appPreference);
         setContentView(R.layout.activity_main);
 
         //状态栏透明
@@ -57,9 +57,6 @@ public class MainActivity extends RootActivity implements
     @Override
     protected void initViews() {
         bottomNavigation.initView();
-
-        Theme theme = appPreference.getTheme();
-        bottomNavigation.themeChange(Theme.DARK);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -87,8 +84,9 @@ public class MainActivity extends RootActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        if (bottomNavigation != null)
-            bottomNavigation.update();
+        if (bottomNavigation != null) {
+            bottomNavigation.update(null);
+        }
     }
 
     @Override
@@ -148,8 +146,7 @@ public class MainActivity extends RootActivity implements
 
     @Override
     public void onConnected(ComponentName name, IBinder service) {
-        bottomNavigation.setController(mServiceConnection.takeControl());
-        bottomNavigation.update();
+        bottomNavigation.initData(mServiceConnection.takeControl());
 
     }
 

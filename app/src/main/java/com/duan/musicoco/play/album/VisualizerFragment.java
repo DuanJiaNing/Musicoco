@@ -41,6 +41,8 @@ public class VisualizerFragment extends Fragment implements ViewContract {
 
     private MediaManager mediaManager;
 
+    private Song currentSong;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -99,6 +101,12 @@ public class VisualizerFragment extends Fragment implements ViewContract {
 
     @Override
     public void songChanged(Song song, boolean isNext, boolean updateColors) {
+        if (currentSong != null && currentSong == song) {
+            return;
+        } else {
+            currentSong = song;
+        }
+
         final SongInfo info = song == null ? null : mediaManager.getSongInfo(song);
         if (info == null)
             return;

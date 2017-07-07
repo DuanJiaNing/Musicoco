@@ -49,8 +49,8 @@ public class BitmapBuilder {
         return this;
     }
 
-    public void resizeForDefault(int reqWidth,int reqHeight,int resID){
-        bitM = BitmapUtils.bitmapResizeFromResource(context.getResources(),resID,reqWidth,reqHeight);
+    public void resizeForDefault(int reqWidth, int reqHeight, int resID) {
+        bitM = BitmapUtils.bitmapResizeFromResource(context.getResources(), resID, reqWidth, reqHeight);
     }
 
     /**
@@ -124,9 +124,12 @@ public class BitmapBuilder {
     }
 
     public void reset() {
-
         radius = -1;
-
         setPath(null);
+        if (bitM != null && !bitM.isRecycled()) {
+            bitM.recycle();
+        }
+
+        bitM = null;
     }
 }

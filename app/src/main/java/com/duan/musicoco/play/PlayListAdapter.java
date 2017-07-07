@@ -17,7 +17,7 @@ import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.ExceptionHandler;
 import com.duan.musicoco.app.MediaManager;
-import com.duan.musicoco.app.OnThemeChange;
+import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
@@ -139,7 +139,7 @@ public class PlayListAdapter extends BaseAdapter implements OnThemeChange {
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.activity_play_list_item, null);
+            convertView = LayoutInflater.from(context).inflate(R.layout.play_list_item, null);
             holder = new ViewHolder();
             holder.name = (TextView) convertView.findViewById(R.id.play_list_item_name);
             holder.arts = (TextView) convertView.findViewById(R.id.play_list_item_arts);

@@ -7,7 +7,7 @@
     <color name="colorPrimaryLight">#dfbd6e</color>
     <color name="text_gray">#ababab</color>
 
-    <color name="white">#eeeeee</color>
+    <color name="white">#f5f5f5</color>
     <color name="white_d">#e2e2e2</color>
     <color name="white_d_d">#c1c0c0</color>
     <color name="white_d_d_d">#a1a1a1</color>
@@ -25,7 +25,7 @@
     <color name="dsb_ripple_color_pressed">#77939393</color>
     <color name="dsb_ripple_color_focused">#99999999</color>
 
-    <color name="theme_white_main_bg">#ececec</color>
+    <color name="theme_white_main_bg">@color/white</color>
     <color name="theme_white_vic_bg">#dfdfdf</color>
     <color name="theme_white_main_text">@color/dark_l_l_l</color>
     <color name="theme_white_vic_text">@color/dark_l_l_l_l</color>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_play_list_container"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:layout_marginLeft="@dimen/activity_default_margin_s_s"
+    android:layout_marginRight="@dimen/activity_default_margin_s_s"
+    android:background="#fff"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/action_bar_default_height">
+
+        <TextView
+            android:id="@+id/main_play_location"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:background="?android:selectableItemBackground"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/activity_default_padding"
+            android:paddingRight="@dimen/activity_default_padding" />
+
+        <TextView
+            android:id="@+id/main_play_mode"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:background="?android:selectableItemBackground"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/activity_default_padding"
+            android:paddingRight="@dimen/activity_default_padding" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/white_d_d" />
+
+    <ListView
+        android:id="@+id/main_play_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:dividerHeight="1px" />
+
+</LinearLayout>

@@ -15,15 +15,14 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.ExceptionHandler;
-import com.duan.musicoco.app.OnServiceConnect;
-import com.duan.musicoco.app.OnThemeChange;
+import com.duan.musicoco.app.interfaces.OnServiceConnect;
+import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.PlayServiceManager;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.SongInfo;
@@ -104,6 +103,15 @@ public class PlayActivity extends RootActivity implements
         savePreference();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mServiceConnection.takeControl() != null) {
+            synchronize(null, true);
+        }
+    }
+
     private void savePreference() {
 
         try {
@@ -138,16 +146,14 @@ public class PlayActivity extends RootActivity implements
     @Override
     public void songChanged(Song song, int index, boolean isNext) {
 
-        boolean updateColor = playPreference.getTheme().equals(Theme.VARYING);
-        visualizerPresenter.songChanged(song, isNext, updateColor);
-        synchronize(song);
+        synchronize(song, isNext);
 
     }
 
     /**
      * 同步当前播放歌曲
      */
-    public void synchronize(@Nullable Song song) {
+    public void synchronize(@Nullable Song song, boolean isNext) {
 
         if (song == null) {
             try {
@@ -164,6 +170,7 @@ public class PlayActivity extends RootActivity implements
         if (song == null)
             return;
 
+        //更新文字
         int pro = 0;
         try {
             pro = mServiceConnection.takeControl().getProgress();
@@ -173,7 +180,6 @@ public class PlayActivity extends RootActivity implements
                     this.getString(R.string.exception_remote), null
             );
         }
-
         SongInfo info = mediaManager.getSongInfo(song);
         int duration = (int) info.getDuration();
         int progress = pro;
@@ -181,11 +187,35 @@ public class PlayActivity extends RootActivity implements
         String arts = info.getArtist();
         updateData(duration, progress, name, arts);
 
+        //更新状态 要在更新颜色之前更新
+        updateStatus(song, isNext);
 
+        //更新颜色
         boolean updateColor = playPreference.getTheme().equals(Theme.VARYING);
         if (updateColor) {
             updateColors(visualizerFragment.getCurrColors());
         }
+
+    }
+
+    private void updateStatus(Song song, boolean isNext) {
+
+        IPlayControl control = mServiceConnection.takeControl();
+        try {
+            boolean playing = control.status() == PlayController.STATUS_PLAYING;
+            btPlay.setPlayStatus(playing);
+            if (playing) {
+                visualizerPresenter.startPlay();
+            } else {
+                visualizerPresenter.stopPlay();
+            }
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+        boolean updateColor = playPreference.getTheme().equals(Theme.VARYING);
+        visualizerPresenter.songChanged(song, isNext, updateColor);
 
     }
 
@@ -252,7 +282,7 @@ public class PlayActivity extends RootActivity implements
 
         flFragmentContainer.setBackgroundColor(Color.TRANSPARENT);
 
-        playListController.updateBackgroundColors(colors[2]);
+        playListController.update(colors[2]);
         playListController.themeChange(null);
 
     }

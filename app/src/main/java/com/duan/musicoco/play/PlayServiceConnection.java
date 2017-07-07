@@ -10,8 +10,7 @@ import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.OnPlayStatusChangedListener;
 import com.duan.musicoco.aidl.OnSongChangedListener;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.OnServiceConnect;
-import com.duan.musicoco.app.PlayServiceManager;
+import com.duan.musicoco.app.interfaces.OnServiceConnect;
 import com.duan.musicoco.service.PlayServiceCallback;
 
 /**
