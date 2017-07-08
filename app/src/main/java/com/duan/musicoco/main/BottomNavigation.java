@@ -357,8 +357,10 @@ public class BottomNavigation implements
         }
 
         mContainer.setBackgroundColor(mainBC);
+
         mName.setTextColor(mainTC);
         mArts.setTextColor(vicTC);
+
         mPlay.setPauseLineColor(mainTC);
         mPlay.setSolidColor(mainTC);
         mPlay.setTriangleColor(mainTC);

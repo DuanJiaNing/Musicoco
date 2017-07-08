@@ -54,6 +54,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginRight="@dimen/activity_default_margin"
             android:layout_marginLeft="@dimen/activity_default_margin_s"
             android:layout_toLeftOf="@id/list_play"
             android:layout_toRightOf="@id/list_album"
@@ -61,12 +62,14 @@
             android:orientation="vertical">
 
             <TextView
+                android:textSize="@dimen/text_middle"
                 android:id="@+id/list_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:lines="1" />
 
             <TextView
+                android:textSize="@dimen/text_small"
                 android:id="@+id/list_arts"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
