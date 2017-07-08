@@ -1,7 +1,5 @@
 package com.duan.musicoco.app.interfaces;
 
-import android.support.annotation.Nullable;
-
 import com.duan.musicoco.preference.Theme;
 
 /**
@@ -9,5 +7,6 @@ import com.duan.musicoco.preference.Theme;
  */
 
 public interface OnThemeChange {
-    void themeChange(@Nullable Theme theme);
+
+    void themeChange(Theme theme, int[] colors);
 }

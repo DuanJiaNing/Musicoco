@@ -39,6 +39,17 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="BottomDialog" parent="@style/Base.V7.Theme.AppCompat.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="BottomDialog.Animation" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/slide_in_bottom</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
+    </style>
+
+
     <style name="AppThemeList" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@color/list_white_d_d</item>
         <item name="colorPrimary">@color/list_white_d</item>
@@ -48,14 +59,14 @@
         <item name="colorControlNormal">@color/dark_l_l_l</item>
     </style>
 
-    <style name="BottomDialog" parent="@style/Base.V7.Theme.AppCompat.Light.Dialog">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
+    <style name="Theme.DARK" parent="AppThemeList">
+        <item name="android:windowBackground">@color/dark_l_l_l</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
-    <style name="BottomDialog.Animation" parent="Animation.AppCompat.Dialog">
-        <item name="android:windowEnterAnimation">@anim/slide_in_bottom</item>
-        <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
+    <style name="Theme.WHITE" parent="AppThemeList">
+        <item name="android:windowBackground">@color/white_d</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
 </resources>

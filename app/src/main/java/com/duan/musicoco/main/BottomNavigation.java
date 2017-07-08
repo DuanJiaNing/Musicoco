@@ -7,8 +7,10 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +25,7 @@ import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.ExceptionHandler;
 import com.duan.musicoco.app.MediaManager;
+import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
 import com.duan.musicoco.app.SongInfo;
@@ -50,9 +53,11 @@ public class BottomNavigation implements
         View.OnClickListener,
         PlayServiceCallback,
         UserInterfaceUpdate,
+        OnEmptyMediaLibrary,
         OnThemeChange {
 
     private final Activity activity;
+    private final static String TAG = "BottomNavigation";
 
     private View mContainer;
     private View mListContainer;
@@ -74,6 +79,7 @@ public class BottomNavigation implements
 
     private final Dialog mDialog;
     private ListView mList;
+    private View mLine;
     private TextView mPlayMode;
     private TextView mLocation;
     private PlayListAdapter adapter;
@@ -107,23 +113,25 @@ public class BottomNavigation implements
         mContainer = activity.findViewById(R.id.list_bottom_nav_container);
         mProgress = activity.findViewById(R.id.list_progress);
 
-        mContainer.setOnClickListener(this);
-        mShowList.setOnClickListener(this);
-        mPlay.setOnClickListener(this);
-
         View contentView = activity.getLayoutInflater().inflate(R.layout.main_play_list, null);
         mListContainer = contentView.findViewById(R.id.main_play_list_container);
         mList = (ListView) contentView.findViewById(R.id.main_play_list);
         mLocation = (TextView) contentView.findViewById(R.id.main_play_location);
         mPlayMode = (TextView) contentView.findViewById(R.id.main_play_mode);
+        mLine = contentView.findViewById(R.id.main_play_line);
 
+        mPlayMode.setCompoundDrawablePadding(8);
         mLocation.setText("当前播放");
         Drawable drawable = activity.getResources().getDrawable(R.drawable.ic_location_searching_black_24dp);
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
         mLocation.setCompoundDrawablePadding(8);
         mLocation.setCompoundDrawables(null, null, drawable, null);
 
-        mPlayMode.setCompoundDrawablePadding(8);
+
+        mContainer.setOnClickListener(this);
+        mShowList.setOnClickListener(this);
+        mPlay.setOnClickListener(this);
+
         mLocation.setOnClickListener(this);
         mPlayMode.setOnClickListener(this);
 
@@ -139,8 +147,21 @@ public class BottomNavigation implements
 
     }
 
-    public void initData(IPlayControl controller) {
+    public void setController(@NonNull IPlayControl controller) {
         this.controller = controller;
+    }
+
+    public void initData() {
+
+        if (null == controller) {
+            IllegalStateException e = new IllegalStateException("make sure call setController() first");
+            Log.w(TAG, e.getMessage());
+            throw e;
+        }
+
+        mContainer.setEnabled(true);
+        mPlay.setEnabled(true);
+        mShowList.setEnabled(true);
 
         adapter = new PlayListAdapter(activity, controller);
         mList.setAdapter(adapter);
@@ -211,9 +232,6 @@ public class BottomNavigation implements
             return;
         }
 
-        Theme theme = appPreference.getTheme();
-        themeChange(theme);
-
         updatePlayMode();
 
         try {
@@ -277,7 +295,23 @@ public class BottomNavigation implements
                     int mode = controller.getPlayMode();
                     mode = ((mode - 21) + 1) % 3 + 21;
                     controller.setPlayMode(mode);
-                    updatePlayMode();
+
+                    mode = updatePlayMode();
+                    StringBuilder builder = new StringBuilder();
+                    switch (mode) {
+                        case PlayController.MODE_LIST_LOOP:
+                            builder.append(activity.getString(R.string.play_mode_list_loop));
+                            break;
+
+                        case PlayController.MODE_SINGLE_LOOP:
+                            builder.append(activity.getString(R.string.play_mode_single_loop));
+                            break;
+
+                        case PlayController.MODE_RANDOM:
+                            builder.append(activity.getString(R.string.play_mode_random));
+                            break;
+                    }
+                    ToastUtils.showToast(activity, builder.toString());
                 } catch (RemoteException e) {
                     e.printStackTrace();
                     new ExceptionHandler().handleRemoteException(activity,
@@ -300,23 +334,12 @@ public class BottomNavigation implements
     }
 
     @Override
-    public void themeChange(Theme theme) {
-        switch (theme) {
-            case DARK: {
-                setTheme(theme);
-                adapter.themeChange(theme);
-                break;
-            }
-            case WHITE:
-            default: {
-                setTheme(theme);
-                adapter.themeChange(theme);
-                break;
-            }
-        }
+    public void themeChange(Theme theme, int[] colors) {
+        setTheme(theme);
     }
 
     private void setTheme(Theme theme) {
+
         int[] colors = new int[4];
         if (theme == Theme.DARK) {
             colors = ColorUtils.getDarkThemeColors(activity);
@@ -328,6 +351,10 @@ public class BottomNavigation implements
         int mainTC = colors[1];
         int vicTC = colors[3];
 
+        if (adapter != null) {
+            adapter.themeChange(theme, new int[]{mainTC, vicTC});
+        }
+
         mContainer.setBackgroundColor(mainBC);
         mName.setTextColor(mainTC);
         mArts.setTextColor(vicTC);
@@ -336,6 +363,7 @@ public class BottomNavigation implements
         mPlay.setTriangleColor(mainTC);
         mProgress.setBackgroundColor(mainTC);
         mList.setBackgroundColor(mainBC);
+        mLine.setBackgroundColor(vicTC);
 
         mPlayMode.setTextColor(mainTC);
         mListContainer.setBackgroundColor(mainBC);
@@ -360,7 +388,7 @@ public class BottomNavigation implements
         }
     }
 
-    void updatePlayMode() {
+    int updatePlayMode() {
 
         Drawable drawable = null;
         StringBuilder builder = new StringBuilder();
@@ -395,11 +423,14 @@ public class BottomNavigation implements
                 break;
         }
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            drawable.setTint(adapter.getColorVic());
+        }
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
         mPlayMode.setCompoundDrawables(drawable, null, null, null);
         mPlayMode.setText(builder.toString());
 
-        ToastUtils.showToast(activity, builder.toString());
+        return mode;
     }
 
     @Override
@@ -418,5 +449,12 @@ public class BottomNavigation implements
             mDialog.dismiss();
         }
 
+    }
+
+    @Override
+    public void emptyMediaLibrary() {
+        mContainer.setEnabled(false);
+        mPlay.setEnabled(false);
+        mShowList.setEnabled(false);
     }
 }

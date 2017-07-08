@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="AppThemeList" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:windowBackground">@color/list_white_d_d</item>
-        <item name="colorPrimary">@color/list_white_d</item>
-        <item name="colorPrimaryDark">@color/list_white_d</item>
-        <item name="colorAccent">@color/list_blue</item>
-        <item name="android:textColorPrimary">@color/dark_l_l_l</item>
-        <item name="colorControlNormal">@color/dark_l_l_l</item>
+    <style name="Theme.DARK" parent="AppThemeList">
+        <item name="android:windowBackground">@color/dark_l_l_l</item>
         <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="Theme.WHITE" parent="AppThemeList">
+        <item name="android:windowBackground">@color/white_d</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 </resources>

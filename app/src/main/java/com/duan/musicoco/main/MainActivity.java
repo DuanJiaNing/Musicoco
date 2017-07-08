@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -12,15 +13,21 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.aidl.IPlayControl;
+import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.ExceptionHandler;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.PlayServiceManager;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.play.PlayServiceConnection;
 import com.duan.musicoco.preference.Theme;
+
+import java.util.List;
 
 public class MainActivity extends RootActivity implements
         NavigationView.OnNavigationItemSelectedListener,
@@ -34,14 +41,24 @@ public class MainActivity extends RootActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bottomNavigation = new BottomNavigation(this, mediaManager, appPreference);
+
+        //FIXME test
+        appPreference.modifyTheme(Theme.DARK);
+        Theme theme = appPreference.getTheme();
+        if (theme == Theme.DARK) {
+            this.setTheme(R.style.Theme_DARK);
+        } else if (theme == Theme.WHITE) {
+            this.setTheme(R.style.Theme_WHITE);
+        }
+
         setContentView(R.layout.activity_main);
 
-        //状态栏透明
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
+//        //状态栏透明
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//            getWindow().setStatusBarColor(Color.TRANSPARENT);
+//        }
 
     }
 
@@ -146,8 +163,36 @@ public class MainActivity extends RootActivity implements
 
     @Override
     public void onConnected(ComponentName name, IBinder service) {
-        bottomNavigation.initData(mServiceConnection.takeControl());
 
+        initSelfData();
+
+    }
+
+    private void initSelfData() {
+
+        Theme theme = appPreference.getTheme();
+        themeChange(theme, null);
+
+        IPlayControl c = mServiceConnection.takeControl();
+        try {
+            List<Song> songs = c.getPlayList();
+            if (songs.size() == 0) {
+                noSongsInDisk();
+            } else {
+                bottomNavigation.setController(c);
+                bottomNavigation.initData();
+                bottomNavigation.themeChange(theme, null);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            new ExceptionHandler().handleRemoteException(this, getString(R.string.exception_remote), null);
+        }
+
+
+    }
+
+    private void noSongsInDisk() {
+        bottomNavigation.emptyMediaLibrary();
     }
 
     @Override
@@ -158,7 +203,8 @@ public class MainActivity extends RootActivity implements
     }
 
     @Override
-    public void themeChange(Theme theme) {
-        bottomNavigation.themeChange(theme);
+    public void themeChange(Theme theme, int[] colors) {
+        bottomNavigation.themeChange(theme, null);
+
     }
 }

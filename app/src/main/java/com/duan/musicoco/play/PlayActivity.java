@@ -21,6 +21,7 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.ExceptionHandler;
+import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.PlayServiceManager;
@@ -36,6 +37,7 @@ import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.service.PlayServiceCallback;
 import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.util.PeriodicTask;
+import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.discreteseekbar.DiscreteSeekBar;
 import com.duan.musicoco.view.media.PlayView;
@@ -54,6 +56,7 @@ public class PlayActivity extends RootActivity implements
         OnServiceConnect,
         View.OnClickListener,
         View.OnLongClickListener,
+        OnEmptyMediaLibrary,
         OnThemeChange {
 
     private VisualizerFragment visualizerFragment;
@@ -63,8 +66,11 @@ public class PlayActivity extends RootActivity implements
 
     private TextView tvPlayProgress;
     private TextView tvDuration;
+
+    private View nameContainer;
     private TextSwitcher tsSongName;
     private TextSwitcher tsSongArts;
+
     private DiscreteSeekBar sbSongProgress;
     private FrameLayout flFragmentContainer;
     private FrameLayout flRootView;
@@ -217,6 +223,8 @@ public class PlayActivity extends RootActivity implements
         boolean updateColor = playPreference.getTheme().equals(Theme.VARYING);
         visualizerPresenter.songChanged(song, isNext, updateColor);
 
+        playListController.updatePlayMode();
+
     }
 
     @Override
@@ -283,7 +291,7 @@ public class PlayActivity extends RootActivity implements
         flFragmentContainer.setBackgroundColor(Color.TRANSPARENT);
 
         playListController.update(colors[2]);
-        playListController.themeChange(null);
+        playListController.themeChange(null, null);
 
     }
 
@@ -327,8 +335,11 @@ public class PlayActivity extends RootActivity implements
         tvPlayProgress = (TextView) findViewById(R.id.play_progress);
         tvDuration = (TextView) findViewById(R.id.play_duration);
         sbSongProgress = (DiscreteSeekBar) findViewById(R.id.play_seekBar);
+
+        nameContainer = findViewById(R.id.play_name);
         tsSongName = (TextSwitcher) findViewById(R.id.play_ts_song_name);
         tsSongArts = (TextSwitcher) findViewById(R.id.play_ts_song_arts);
+
         btPre = (SkipView) findViewById(R.id.play_pre_song);
         btNext = (SkipView) findViewById(R.id.play_next_song);
         btPlay = (PlayView) findViewById(R.id.play_song);
@@ -369,6 +380,7 @@ public class PlayActivity extends RootActivity implements
             }
         });
 
+        nameContainer.setOnClickListener(this);
         flFragmentContainer.setOnClickListener(this);
         flFragmentContainer.setOnLongClickListener(this);
         btPre.setOnClickListener(this);
@@ -428,15 +440,8 @@ public class PlayActivity extends RootActivity implements
 
         playListController = new PlayListController(this);
         //更新主题
-        themeChange(theme);
+        themeChange(theme, null);
 
-    }
-
-    private void noSongsInDisk() {
-        btPlay.setEnabled(false);
-        btPre.setEnabled(false);
-        btNext.setEnabled(false);
-        sbSongProgress.setEnabled(false);
     }
 
     @Override
@@ -497,6 +502,10 @@ public class PlayActivity extends RootActivity implements
                 if (!playListController.isListShowing())
                     playListController.show();
                 break;
+            case R.id.play_name:
+                //TODO
+                ToastUtils.showToast(this, "click");
+                break;
             default:
                 break;
         }
@@ -515,6 +524,13 @@ public class PlayActivity extends RootActivity implements
 
         visualizerPresenter = new VisualizerPresenter(this, mServiceConnection.takeControl(), visualizerFragment);
         lyricPresenter = new LyricPresenter(this, lyricFragment, this);
+
+        btPlay.setEnabled(true);
+        btPre.setEnabled(true);
+        btNext.setEnabled(true);
+        sbSongProgress.setEnabled(true);
+        flFragmentContainer.setClickable(true);
+        nameContainer.setClickable(true);
 
         periodicTask = new PeriodicTask(new PeriodicTask.Task() {
             int progress;
@@ -540,35 +556,23 @@ public class PlayActivity extends RootActivity implements
             }
         }, 800);
 
-        //预先设置播放列表外观
-        playListController.initData(mServiceConnection.takeControl());
-
-        //检查播放列表是否为空
-        List<Song> songs = null;
         try {
-            songs = mServiceConnection.takeControl().getPlayList();
+            List<Song> songs = mServiceConnection.takeControl().getPlayList();
+            if (songs == null) { //检查播放列表是否为空
+                emptyMediaLibrary();
+                updateData(0, 0, "", "");
+            } else {
+                playListController.initData(mServiceConnection.takeControl());
+                Song song = mServiceConnection.takeControl().currentSong();
+                int index = songs.indexOf(song);
+                //服务端在 onCreate 时会回调 songChanged ，PlayActivity 第一次绑定可能接收不到此次回调
+                songChanged(song, index, true);
+            }
         } catch (RemoteException e) {
             e.printStackTrace();
             new ExceptionHandler().handleRemoteException(this,
                     this.getString(R.string.exception_remote), null
             );
-        }
-        if (songs == null) {
-            noSongsInDisk();
-            updateData(0, 0, "", "");
-        } else { //服务端在 onCreate 时会回调 songChanged ，PlayActivity 第一次绑定可能接收不到此次回调
-            try {
-
-                Song song = mServiceConnection.takeControl().currentSong();
-                int index = songs.indexOf(song);
-                songChanged(song, index, true);
-
-            } catch (RemoteException e) {
-                e.printStackTrace();
-                new ExceptionHandler().handleRemoteException(this,
-                        this.getString(R.string.exception_remote), null
-                );
-            }
         }
     }
 
@@ -580,21 +584,35 @@ public class PlayActivity extends RootActivity implements
     }
 
     @Override
-    public void themeChange(Theme theme) {
+    public void themeChange(Theme theme, int[] colors) {
 
-        int colors[] = new int[4];
+        int cs[] = new int[4];
 
         switch (theme) {
             case WHITE:
-                colors = com.duan.musicoco.util.ColorUtils.getWhiteThemeColors(this);
+                cs = com.duan.musicoco.util.ColorUtils.getWhiteThemeColors(this);
                 break;
             case VARYING:
                 break;
             case DARK:
             default:
-                colors = com.duan.musicoco.util.ColorUtils.getDarkThemeColors(this);
+                cs = com.duan.musicoco.util.ColorUtils.getDarkThemeColors(this);
                 break;
         }
-        updateColors(colors);
+        updateColors(cs);
+    }
+
+    @Override
+    public void emptyMediaLibrary() {
+        btPlay.setEnabled(false);
+        btPre.setEnabled(false);
+        btNext.setEnabled(false);
+
+        sbSongProgress.setEnabled(false);
+
+        flFragmentContainer.setClickable(false);
+        nameContainer.setClickable(false);
+
+        playListController.emptyMediaLibrary();
     }
 }

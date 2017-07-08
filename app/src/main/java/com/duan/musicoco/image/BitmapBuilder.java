@@ -126,10 +126,6 @@ public class BitmapBuilder {
     public void reset() {
         radius = -1;
         setPath(null);
-        if (bitM != null && !bitM.isRecycled()) {
-            bitM.recycle();
-        }
-
         bitM = null;
     }
 }

@@ -151,6 +151,9 @@ public abstract class MediaView extends View implements ValueAnimator.AnimatorUp
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (!isEnabled()) {
+            return false;
+        }
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 startPreAnim();

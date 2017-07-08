@@ -109,9 +109,6 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
         initAppDataIfNeed();
         initChildViews();
 
-        //FIXME test
-        appPreference.modifyTheme(Theme.DARK);
-
     }
 
     private void prepareData() {
@@ -127,6 +124,7 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
             Init init = new Init();
             init.initAlbumVisualizerImageCache(this);
             init.initMusicocoDB(this, mediaManager);
+            mediaManager.scanSdCard(null);
         }
     }
 

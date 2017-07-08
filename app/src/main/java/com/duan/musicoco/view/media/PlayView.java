@@ -137,6 +137,10 @@ public class PlayView extends SkipView implements Checkable {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (!isEnabled()) {
+            return false;
+        }
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 startPreAnim();

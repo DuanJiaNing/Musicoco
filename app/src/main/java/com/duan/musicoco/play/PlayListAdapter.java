@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.RemoteException;
+import android.support.annotation.IntRange;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -208,20 +209,24 @@ public class PlayListAdapter extends BaseAdapter implements OnThemeChange {
     }
 
     @Override
-    public void themeChange(Theme theme) {
-        int[] colors;
-        switch (theme) {
-            case DARK:
-                colors = ColorUtils.getDarkListThemeTextColor(context);
-                break;
-            case WHITE:
-            default:
-                colors = ColorUtils.getWhiteListThemeTextColor(context);
-                break;
+    public void themeChange(Theme theme, int[] colors) {
+        int[] cs = new int[2];
+        if (colors == null) {
+            switch (theme) {
+                case DARK:
+                    cs = ColorUtils.getDarkListThemeTextColor(context);
+                    break;
+                case WHITE:
+                default:
+                    cs = ColorUtils.getWhiteListThemeTextColor(context);
+                    break;
+            }
+        } else if (colors.length >= 2) {
+            cs = colors;
         }
 
-        colorMain = colors[0];
-        colorVic = colors[1];
+        colorMain = cs[0];
+        colorVic = cs[1];
 
         notifyDataSetChanged();
     }
@@ -232,6 +237,13 @@ public class PlayListAdapter extends BaseAdapter implements OnThemeChange {
         ImageButton remove;
     }
 
+    public int getColorMain() {
+        return colorMain;
+    }
+
+    public int getColorVic() {
+        return colorVic;
+    }
 
     public void setOnRemoveClickListener(View.OnClickListener removeClickListener) {
         this.removeClickListener = removeClickListener;

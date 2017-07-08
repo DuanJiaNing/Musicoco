@@ -26,6 +26,7 @@ import android.widget.ListView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.app.ExceptionHandler;
+import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnViewVisibilityChange;
 import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
@@ -48,6 +49,7 @@ public class PlayListController implements
         View.OnClickListener,
         OnPlayListVisibilityChange,
         UserInterfaceUpdate,
+        OnEmptyMediaLibrary,
         OnThemeChange {
 
     private Activity activity;
@@ -98,9 +100,10 @@ public class PlayListController implements
     public void initData(IPlayControl control) {
         this.control = control;
 
-        if (playListAdapter == null)
+        if (playListAdapter == null) {
             playListAdapter = new PlayListAdapter(activity, control);
-        mPlayList.setAdapter(playListAdapter);
+            mPlayList.setAdapter(playListAdapter);
+        }
 
         //更新播放列表字体颜色模式（亮 暗）
         Theme theme = playPreference.getTheme();
@@ -121,10 +124,16 @@ public class PlayListController implements
         mRealTimeView.setOverlayColor(color);
         mListTitleContainer.setBackgroundColor(ColorUtils.setAlphaComponent(mRealTimeView.getOverlayColor(), 255));
 
-        themeChange(null);
+        themeChange(null, null);
         songOption.updatePlayMode();
         songOption.show();
         listOption.hide();
+
+        int count = mViewRoot.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View v = mViewRoot.getChildAt(i);
+            v.setEnabled(true);
+        }
     }
 
     @Override
@@ -321,7 +330,7 @@ public class PlayListController implements
     }
 
     @Override
-    public void themeChange(Theme theme) {
+    public void themeChange(Theme theme, int[] colors) {
 
         if (playListAdapter == null)
             return;
@@ -334,9 +343,9 @@ public class PlayListController implements
         else
             t = DARK;
 
-        playListAdapter.themeChange(t);
-        listOption.themeChange(t);
-        songOption.themeChange(t);
+        playListAdapter.themeChange(t, null);
+        listOption.themeChange(t, null);
+        songOption.themeChange(t, null);
 
     }
 
@@ -352,6 +361,21 @@ public class PlayListController implements
 
         mRealTimeView.setOverlayColor(colorA);
         mListTitleContainer.setBackgroundColor(color);
+    }
+
+    public void updatePlayMode() {
+        if (songOption != null) {
+            songOption.updatePlayMode();
+        }
+    }
+
+    @Override
+    public void emptyMediaLibrary() {
+        int count = mViewRoot.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View v = mViewRoot.getChildAt(i);
+            v.setEnabled(false);
+        }
     }
 
     private class ListOption implements
@@ -404,18 +428,18 @@ public class PlayListController implements
         }
 
         @Override
-        public void themeChange(Theme theme) {
+        public void themeChange(Theme theme, int[] colors) {
             int color;
             switch (theme) {
                 case WHITE: {
-                    int[] colors = com.duan.musicoco.util.ColorUtils.getWhiteListThemeTextColor(PlayListController.this.activity);
-                    color = colors[0];
+                    int[] cs = com.duan.musicoco.util.ColorUtils.getWhiteListThemeTextColor(PlayListController.this.activity);
+                    color = cs[0];
                     break;
                 }
                 case DARK:
                 default: {
-                    int[] colors = com.duan.musicoco.util.ColorUtils.getDarkListThemeTextColor(PlayListController.this.activity);
-                    color = colors[0];
+                    int[] cs = com.duan.musicoco.util.ColorUtils.getDarkListThemeTextColor(PlayListController.this.activity);
+                    color = cs[0];
                     break;
                 }
             }
@@ -434,8 +458,6 @@ public class PlayListController implements
         private ViewGroup container;
         private ImageButton hidePlayListBar;
         private ImageButton playMode;
-
-        private Theme theme;
 
         public SongOption(Activity activity) {
 
@@ -456,7 +478,23 @@ public class PlayListController implements
                         int mode = control.getPlayMode();
                         mode = ((mode - 21) + 1) % 3 + 21;
                         control.setPlayMode(mode);
-                        updatePlayMode();
+
+                        mode = updatePlayMode();
+                        StringBuilder builder = new StringBuilder();
+                        switch (mode) {
+                            case PlayController.MODE_LIST_LOOP:
+                                builder.append(activity.getString(R.string.play_mode_list_loop));
+                                break;
+
+                            case PlayController.MODE_SINGLE_LOOP:
+                                builder.append(activity.getString(R.string.play_mode_single_loop));
+                                break;
+
+                            case PlayController.MODE_RANDOM:
+                                builder.append(activity.getString(R.string.play_mode_random));
+                                break;
+                        }
+                        ToastUtils.showToast(activity, builder.toString());
                     } catch (RemoteException e) {
                         e.printStackTrace();
                         new ExceptionHandler().handleRemoteException(activity,
@@ -488,37 +526,32 @@ public class PlayListController implements
         }
 
         @Override
-        public void themeChange(Theme theme) {
+        public void themeChange(Theme theme, int[] colors) {
             int color;
-            this.theme = theme;
             switch (theme) {
                 case WHITE: {
-                    int[] colors = com.duan.musicoco.util.ColorUtils.getWhiteListThemeTextColor(PlayListController.this.activity);
-                    color = colors[0];
+                    int[] cs = com.duan.musicoco.util.ColorUtils.getWhiteListThemeTextColor(PlayListController.this.activity);
+                    color = cs[0];
                     break;
                 }
                 case DARK:
                 default: {
-                    int[] colors = com.duan.musicoco.util.ColorUtils.getDarkListThemeTextColor(PlayListController.this.activity);
-                    color = colors[0];
+                    int[] cs = com.duan.musicoco.util.ColorUtils.getDarkListThemeTextColor(PlayListController.this.activity);
+                    color = cs[0];
                     break;
                 }
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 hidePlayListBar.getDrawable().setTint(color);
-                Drawable d = playMode.getDrawable();
-                if (d != null) {
-                    playMode.getDrawable().setTint(color);
-                }
+                playMode.getDrawable().setTint(color);
             }
 
         }
 
-        void updatePlayMode() {
+        int updatePlayMode() {
 
             Drawable drawable = null;
-            StringBuilder builder = new StringBuilder();
             int mode = PlayController.MODE_LIST_LOOP;
 
             try {
@@ -532,27 +565,27 @@ public class PlayListController implements
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         drawable = activity.getDrawable(R.drawable.list_loop);
                     } else drawable = activity.getResources().getDrawable(R.drawable.list_loop);
-                    builder.append(activity.getString(R.string.play_mode_list_loop));
                     break;
 
                 case PlayController.MODE_SINGLE_LOOP:
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         drawable = activity.getDrawable(R.drawable.single_loop);
                     } else drawable = activity.getResources().getDrawable(R.drawable.single_loop);
-                    builder.append(activity.getString(R.string.play_mode_single_loop));
                     break;
 
                 case PlayController.MODE_RANDOM:
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         drawable = activity.getDrawable(R.drawable.random);
                     } else drawable = activity.getResources().getDrawable(R.drawable.random);
-                    builder.append(activity.getString(R.string.play_mode_random));
                     break;
             }
 
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                drawable.setTint(playListAdapter.getColorVic());
+            }
             playMode.setImageDrawable(drawable);
-            ToastUtils.showToast(activity, builder.toString());
-            themeChange(theme);
+
+            return mode;
         }
     }
 
