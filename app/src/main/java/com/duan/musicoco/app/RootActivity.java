@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.interfaces.PermissionRequestCallback;
+import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.Theme;
 
@@ -27,6 +28,7 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
 
     protected MediaManager mediaManager;
     protected final AppPreference appPreference;
+    protected DBMusicocoController dbMusicoco;
 
     private boolean isGranted = false;
 
@@ -40,6 +42,7 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
         super.onCreate(savedInstanceState);
 
         mediaManager = MediaManager.getInstance(getApplicationContext());
+        dbMusicoco = new DBMusicocoController(this, true);
 
         //检查权限
         checkPermission();

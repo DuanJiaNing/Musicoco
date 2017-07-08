@@ -444,6 +444,7 @@ public class DBMusicocoController {
      */
     public void addTimes(Song song) {
         updateSongPlayTimes(song);
+        updateSongLastPlayTime(song);
     }
 
     public void truncate(String table) {

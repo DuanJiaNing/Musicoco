@@ -89,7 +89,7 @@ public class PlayListController implements
         ViewGroup.LayoutParams params = mViewRoot.getLayoutParams();
         DisplayMetrics metrics = Utils.getMetrics(activity);
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        params.height = metrics.heightPixels / 2;
+        params.height = metrics.heightPixels * 5 / 9;
         mViewRoot.setX(0);
         int marginB = (int) activity.getResources().getDimension(R.dimen.action_bar_default_height);
         mViewRoot.setY(metrics.heightPixels - marginB);

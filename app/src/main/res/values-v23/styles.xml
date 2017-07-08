@@ -1,13 +1,3 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="Theme.DARK" parent="AppThemeList">
-        <item name="android:windowBackground">@color/dark_l_l_l</item>
-        <item name="android:windowLightStatusBar">true</item>
-    </style>
-
-    <style name="Theme.WHITE" parent="AppThemeList">
-        <item name="android:windowBackground">@color/white_d</item>
-        <item name="android:windowLightStatusBar">false</item>
-    </style>
 </resources>

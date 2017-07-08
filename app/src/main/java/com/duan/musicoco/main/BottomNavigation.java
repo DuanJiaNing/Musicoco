@@ -349,6 +349,7 @@ public class BottomNavigation implements
 
         int mainBC = colors[0];
         int mainTC = colors[1];
+        int vicBC = colors[2];
         int vicTC = colors[3];
 
         if (adapter != null) {

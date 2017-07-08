@@ -43,7 +43,7 @@ public class MainActivity extends RootActivity implements
         bottomNavigation = new BottomNavigation(this, mediaManager, appPreference);
 
         //FIXME test
-        appPreference.modifyTheme(Theme.DARK);
+        appPreference.modifyTheme(Theme.WHITE);
         Theme theme = appPreference.getTheme();
         if (theme == Theme.DARK) {
             this.setTheme(R.style.Theme_DARK);
@@ -53,12 +53,12 @@ public class MainActivity extends RootActivity implements
 
         setContentView(R.layout.activity_main);
 
-//        //状态栏透明
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-//            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//            getWindow().setStatusBarColor(Color.TRANSPARENT);
-//        }
+        //状态栏透明
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
 
     }
 

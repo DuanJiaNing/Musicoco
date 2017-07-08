@@ -19,14 +19,13 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:supportsRtl="true">
         <!-- 需要为 PlayActivity 开启硬件加速，Android 4.1 以上默认开启 -->
         <activity
-            android:launchMode="singleInstance"
             android:name=".play.PlayActivity"
             android:hardwareAccelerated="true"
-            android:theme="@style/AppThemePlay" />
+            android:launchMode="singleInstance"
+            android:theme="@style/AppTheme.Play" />
 
         <service
             android:name=".service.PlayService"
@@ -40,11 +39,11 @@
         </service>
 
         <activity
-            android:alwaysRetainTaskState="true"
-            android:launchMode="singleInstance"
             android:name=".main.MainActivity"
-            android:theme="@style/AppThemeList"
-            android:label="@string/title_activity_list">
+            android:alwaysRetainTaskState="true"
+            android:label="@string/title_activity_list"
+            android:launchMode="singleInstance"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

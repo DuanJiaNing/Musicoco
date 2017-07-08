@@ -179,14 +179,14 @@ public class ColorUtils {
 
         int[] colors = new int[4];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            colors[0] = context.getColor(R.color.theme_white_main_bg); //主背景色
+            colors[0] = context.getColor(R.color.theme_white_primary); //主背景色
             colors[1] = context.getColor(R.color.theme_white_main_text); // 主字体色
-            colors[2] = context.getColor(R.color.theme_white_vic_bg); // 辅背景色
+            colors[2] = context.getColor(R.color.theme_white_primary_dark); // 辅背景色
             colors[3] = context.getColor(R.color.theme_white_vic_text); // 辅字体色
         } else {
-            colors[0] = context.getResources().getColor(R.color.theme_white_main_bg); //主背景色
+            colors[0] = context.getResources().getColor(R.color.theme_white_primary); //主背景色
             colors[1] = context.getResources().getColor(R.color.theme_white_main_text); // 主字体色
-            colors[2] = context.getResources().getColor(R.color.theme_white_vic_bg); // 辅背景色
+            colors[2] = context.getResources().getColor(R.color.theme_white_primary_dark); // 辅背景色
             colors[3] = context.getResources().getColor(R.color.theme_white_vic_text); // 辅字体色
         }
 
@@ -204,14 +204,14 @@ public class ColorUtils {
 
         int[] colors = new int[4];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            colors[0] = context.getColor(R.color.theme_dark_main_bg); //主背景色
+            colors[0] = context.getColor(R.color.theme_dark_primary); //主背景色
             colors[1] = context.getColor(R.color.theme_dark_main_text); // 主字体色
-            colors[2] = context.getColor(R.color.theme_dark_vic_bg); // 辅背景色
+            colors[2] = context.getColor(R.color.theme_dark_primary_dark); // 辅背景色
             colors[3] = context.getColor(R.color.theme_dark_vic_text); // 辅字体色
         } else {
-            colors[0] = context.getResources().getColor(R.color.theme_dark_main_bg); //主背景色
+            colors[0] = context.getResources().getColor(R.color.theme_dark_primary); //主背景色
             colors[1] = context.getResources().getColor(R.color.theme_dark_main_text); // 主字体色
-            colors[2] = context.getResources().getColor(R.color.theme_dark_vic_bg); // 辅背景色
+            colors[2] = context.getResources().getColor(R.color.theme_dark_primary_dark); // 辅背景色
             colors[3] = context.getResources().getColor(R.color.theme_dark_vic_text); // 辅字体色
         }
 
