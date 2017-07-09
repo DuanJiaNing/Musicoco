@@ -2,9 +2,9 @@ package com.duan.musicoco.app.interfaces;
 
 /**
  * Created by DuanJiaNing on 2017/7/7.
- * 界面更新
+ * 内容更新
  */
 
-public interface UserInterfaceUpdate {
+public interface OnContentUpdate {
     void update(Object obj);
 }

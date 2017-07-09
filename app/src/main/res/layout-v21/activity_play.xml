@@ -180,7 +180,7 @@
         android:visibility="gone" />
 
     <include
-        layout="@layout/play_play_list"
+        layout="@layout/activity_play_list"
         android:visibility="visible" />
 
 </FrameLayout>

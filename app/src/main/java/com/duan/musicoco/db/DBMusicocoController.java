@@ -18,6 +18,7 @@ import java.util.Locale;
 
 /**
  * Created by DuanJiaNing on 2017/7/1.
+ * 每个线程只能使用一个SQLiteOpenHelper，也就使得每个线程使用一个SQLiteDatabase对象（多线程操作数据库会报错）
  */
 
 public class DBMusicocoController {

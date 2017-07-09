@@ -30,7 +30,7 @@ import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnViewVisibilityChange;
 import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
-import com.duan.musicoco.app.interfaces.UserInterfaceUpdate;
+import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
@@ -48,7 +48,7 @@ import static com.duan.musicoco.preference.Theme.WHITE;
 public class PlayListController implements
         View.OnClickListener,
         OnPlayListVisibilityChange,
-        UserInterfaceUpdate,
+        OnContentUpdate,
         OnEmptyMediaLibrary,
         OnThemeChange {
 
@@ -432,13 +432,13 @@ public class PlayListController implements
             int color;
             switch (theme) {
                 case WHITE: {
-                    int[] cs = com.duan.musicoco.util.ColorUtils.getWhiteListThemeTextColor(PlayListController.this.activity);
+                    int[] cs = com.duan.musicoco.util.ColorUtils.getWhiteThemeTextColor(PlayListController.this.activity);
                     color = cs[0];
                     break;
                 }
                 case DARK:
                 default: {
-                    int[] cs = com.duan.musicoco.util.ColorUtils.getDarkListThemeTextColor(PlayListController.this.activity);
+                    int[] cs = com.duan.musicoco.util.ColorUtils.getDarkThemeTextColor(PlayListController.this.activity);
                     color = cs[0];
                     break;
                 }
@@ -530,13 +530,13 @@ public class PlayListController implements
             int color;
             switch (theme) {
                 case WHITE: {
-                    int[] cs = com.duan.musicoco.util.ColorUtils.getWhiteListThemeTextColor(PlayListController.this.activity);
+                    int[] cs = com.duan.musicoco.util.ColorUtils.getWhiteThemeTextColor(PlayListController.this.activity);
                     color = cs[0];
                     break;
                 }
                 case DARK:
                 default: {
-                    int[] cs = com.duan.musicoco.util.ColorUtils.getDarkListThemeTextColor(PlayListController.this.activity);
+                    int[] cs = com.duan.musicoco.util.ColorUtils.getDarkThemeTextColor(PlayListController.this.activity);
                     color = cs[0];
                     break;
                 }

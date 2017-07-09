@@ -11,12 +11,10 @@ import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.duan.musicoco.R;
@@ -29,7 +27,6 @@ import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.PlayServiceManager;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.SongInfo;
-import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.play.album.VisualizerFragment;
 import com.duan.musicoco.play.album.VisualizerPresenter;
 import com.duan.musicoco.play.lyric.LyricFragment;
@@ -366,7 +363,7 @@ public class PlayActivity extends RootActivity implements
         tsSongName.setFactory(new ViewSwitcher.ViewFactory() {
             @Override
             public View makeView() {
-                TextView text = (TextView) getLayoutInflater().inflate(R.layout.play_name, null);
+                TextView text = (TextView) getLayoutInflater().inflate(R.layout.song_name, null);
                 Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/name.TTF");
                 text.setTypeface(tf);
                 text.setTextColor(finalMainTextColor);
@@ -377,7 +374,7 @@ public class PlayActivity extends RootActivity implements
         tsSongArts.setFactory(new ViewSwitcher.ViewFactory() {
             @Override
             public View makeView() {
-                TextView text = (TextView) getLayoutInflater().inflate(R.layout.play_arts, null);
+                TextView text = (TextView) getLayoutInflater().inflate(R.layout.song_arts, null);
                 Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/arts.TTF");
                 text.setTypeface(tf);
                 text.setTextColor(finalVicTextColor);

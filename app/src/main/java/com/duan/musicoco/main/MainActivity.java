@@ -36,11 +36,13 @@ public class MainActivity extends RootActivity implements
 
     private PlayServiceConnection mServiceConnection;
     private BottomNavigation bottomNavigation;
+    private RecentMostPlayController mostPlayController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         bottomNavigation = new BottomNavigation(this, mediaManager, appPreference);
+        mostPlayController = new RecentMostPlayController(this, mediaManager);
 
         //FIXME test
         appPreference.modifyTheme(Theme.WHITE);
@@ -74,6 +76,7 @@ public class MainActivity extends RootActivity implements
     @Override
     protected void initViews() {
         bottomNavigation.initView();
+        mostPlayController.initView();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -182,6 +185,10 @@ public class MainActivity extends RootActivity implements
                 bottomNavigation.setController(c);
                 bottomNavigation.initData();
                 bottomNavigation.themeChange(theme, null);
+
+                //FIXME 设置显示 历史最多播放 或 最近几周内最多播放
+                mostPlayController.initData(dbMusicoco, "历史最多播放");
+                mostPlayController.themeChange(theme, null);
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -193,6 +200,7 @@ public class MainActivity extends RootActivity implements
 
     private void noSongsInDisk() {
         bottomNavigation.emptyMediaLibrary();
+        mostPlayController.emptyMediaLibrary();
     }
 
     @Override

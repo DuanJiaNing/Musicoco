@@ -29,7 +29,7 @@ import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
 import com.duan.musicoco.app.SongInfo;
-import com.duan.musicoco.app.interfaces.UserInterfaceUpdate;
+import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.image.BitmapBuilder;
 import com.duan.musicoco.play.PlayActivity;
 import com.duan.musicoco.play.PlayListAdapter;
@@ -52,7 +52,7 @@ public class BottomNavigation implements
         OnPlayListVisibilityChange,
         View.OnClickListener,
         PlayServiceCallback,
-        UserInterfaceUpdate,
+        OnContentUpdate,
         OnEmptyMediaLibrary,
         OnThemeChange {
 

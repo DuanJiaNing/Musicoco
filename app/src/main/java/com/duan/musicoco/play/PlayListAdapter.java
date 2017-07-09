@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.RemoteException;
-import android.support.annotation.IntRange;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -214,11 +213,11 @@ public class PlayListAdapter extends BaseAdapter implements OnThemeChange {
         if (colors == null) {
             switch (theme) {
                 case DARK:
-                    cs = ColorUtils.getDarkListThemeTextColor(context);
+                    cs = ColorUtils.getDarkThemeTextColor(context);
                     break;
                 case WHITE:
                 default:
-                    cs = ColorUtils.getWhiteListThemeTextColor(context);
+                    cs = ColorUtils.getWhiteThemeTextColor(context);
                     break;
             }
         } else if (colors.length >= 2) {

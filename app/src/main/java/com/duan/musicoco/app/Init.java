@@ -63,7 +63,6 @@ public class Init {
         String allName = context.getString(R.string.sheet_all);
         db.addSheet(allName, "");
 
-        db.close();
     }
 
 }

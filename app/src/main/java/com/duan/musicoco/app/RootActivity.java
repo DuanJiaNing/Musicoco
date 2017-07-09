@@ -131,5 +131,13 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (dbMusicoco != null) {
+            dbMusicoco.close();
+        }
+    }
+
     protected abstract void initViews();
 }

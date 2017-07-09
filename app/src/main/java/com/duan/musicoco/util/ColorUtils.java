@@ -218,7 +218,11 @@ public class ColorUtils {
         return colors;
     }
 
-    public static int[] getWhiteListThemeTextColor(Context context) {
+    /**
+     * 0 主字体颜色
+     * 1 辅字体颜色
+     */
+    public static int[] getWhiteThemeTextColor(Context context) {
         int[] colors = new int[2];
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -232,7 +236,12 @@ public class ColorUtils {
         return colors;
     }
 
-    public static int[] getDarkListThemeTextColor(Context context) {
+
+    /**
+     * 0 主字体颜色
+     * 1 辅字体颜色
+     */
+    public static int[] getDarkThemeTextColor(Context context) {
         int[] colors = new int[2];
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

@@ -4,10 +4,13 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="activity_default_margin">16dp</dimen>
+    <dimen name="activity_default_margin_l">18dp</dimen>
     <dimen name="activity_default_margin_s">10dp</dimen>
     <dimen name="activity_default_margin_s_s">5dp</dimen>
     <dimen name="activity_default_margin_2x">32dp</dimen>
+
     <dimen name="activity_default_padding">6dp</dimen>
+    <dimen name="activity_default_padding_s">4dp</dimen>
     <dimen name="activity_default_padding_2x">12dp</dimen>
 
     <dimen name="play_seek_bar_padding">5dp</dimen>
@@ -22,9 +25,12 @@
 
     <dimen name="text_large">24sp</dimen>
     <dimen name="text_large_l">26sp</dimen>
+    <dimen name="text_large_l_l">28sp</dimen>
+    <dimen name="text_large_l_l_l">30sp</dimen>
 
     <dimen name="text_middle">16sp</dimen>
     <dimen name="text_middle_l">18sp</dimen>
+    <dimen name="text_middle_l_l">20sp</dimen>
 
     <dimen name="play_more_radius">15dp</dimen>
     <dimen name="play_album_padding">25dp</dimen>
@@ -35,5 +41,10 @@
     <dimen name="list_top_height">300dp</dimen>
     <dimen name="list_top_nav_height">70dp</dimen>
     <dimen name="list_bottom_nav_height">60dp</dimen>
+
+    <!--最近最多播放-->
+    <dimen name="rmp_content_height">150dp</dimen>
+    <dimen name="rmp_content_bottom_height">40dp</dimen>
+    <dimen name="rmp_line_width">40dp</dimen>
 
 </resources>
