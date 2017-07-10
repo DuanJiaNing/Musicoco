@@ -162,4 +162,10 @@
         <attr name="realtimeOverlayColor" format="color" />
     </declare-styleable>
 
+    <declare-styleable name="ImageTextView">
+        <attr name="text" format="string" />
+        <attr name="bitmap" format="reference" />
+        <attr name="textSize" format="dimension" />
+    </declare-styleable>
+
 </resources>

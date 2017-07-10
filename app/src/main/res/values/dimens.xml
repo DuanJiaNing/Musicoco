@@ -28,6 +28,7 @@
     <dimen name="text_large_l_l">28sp</dimen>
     <dimen name="text_large_l_l_l">30sp</dimen>
 
+    <dimen name="text_middle_s">14sp</dimen>
     <dimen name="text_middle">16sp</dimen>
     <dimen name="text_middle_l">18sp</dimen>
     <dimen name="text_middle_l_l">20sp</dimen>
