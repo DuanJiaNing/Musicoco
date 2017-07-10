@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
 
 import java.io.IOException;

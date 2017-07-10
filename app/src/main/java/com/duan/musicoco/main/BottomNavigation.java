@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -59,6 +60,9 @@ public class BottomNavigation implements
     private final Activity activity;
     private final static String TAG = "BottomNavigation";
 
+    public final static String CURRENT_POSITION = "current_position";
+    private int currentPosition;
+
     private View mContainer;
     private View mListContainer;
     private View mProgress;
@@ -83,6 +87,8 @@ public class BottomNavigation implements
     private TextView mPlayMode;
     private TextView mLocation;
     private PlayListAdapter adapter;
+
+    private boolean hasInitData = false;
 
     BottomNavigation(Activity activity, MediaManager mediaManager, AppPreference appPreference) {
         this.activity = activity;
@@ -119,6 +125,17 @@ public class BottomNavigation implements
         mLocation = (TextView) contentView.findViewById(R.id.main_play_location);
         mPlayMode = (TextView) contentView.findViewById(R.id.main_play_mode);
         mLine = contentView.findViewById(R.id.main_play_line);
+        mList.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                currentPosition = firstVisibleItem;
+            }
+        });
 
         mPlayMode.setCompoundDrawablePadding(8);
         mLocation.setText("当前播放");
@@ -147,11 +164,8 @@ public class BottomNavigation implements
 
     }
 
-    public void setController(@NonNull IPlayControl controller) {
-        this.controller = controller;
-    }
-
-    public void initData() {
+    public void initData(IPlayControl c) {
+        this.controller = c;
 
         if (null == controller) {
             IllegalStateException e = new IllegalStateException("make sure call setController() first");
@@ -167,6 +181,12 @@ public class BottomNavigation implements
         mList.setAdapter(adapter);
 
         update(null);
+
+        hasInitData = true;
+    }
+
+    public boolean hasInitData() {
+        return hasInitData;
     }
 
     @Override
@@ -443,6 +463,7 @@ public class BottomNavigation implements
             return;
         } else {
             mDialog.show();
+            mList.setSelection(currentPosition);
         }
     }
 
@@ -459,5 +480,13 @@ public class BottomNavigation implements
         mContainer.setEnabled(false);
         mPlay.setEnabled(false);
         mShowList.setEnabled(false);
+    }
+
+    public int getCurrentPosition() {
+        return currentPosition;
+    }
+
+    public void setCurrentPosition(int currentPosition) {
+        this.currentPosition = currentPosition;
     }
 }

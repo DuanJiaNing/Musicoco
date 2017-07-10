@@ -5,10 +5,12 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.PersistableBundle;
 import android.os.RemoteException;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -32,11 +34,14 @@ import java.util.List;
 public class MainActivity extends RootActivity implements
         NavigationView.OnNavigationItemSelectedListener,
         OnServiceConnect,
-        OnThemeChange {
+        OnThemeChange,
+        SwipeRefreshLayout.OnRefreshListener {
 
     private PlayServiceConnection mServiceConnection;
     private BottomNavigation bottomNavigation;
     private RecentMostPlayController mostPlayController;
+
+    private SwipeRefreshLayout refreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +72,7 @@ public class MainActivity extends RootActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mServiceConnection.hasConnected) {
+        if (mServiceConnection != null && mServiceConnection.hasConnected) {
             mServiceConnection.unregisterListener();
             unbindService(mServiceConnection);
         }
@@ -77,6 +82,9 @@ public class MainActivity extends RootActivity implements
     protected void initViews() {
         bottomNavigation.initView();
         mostPlayController.initView();
+
+        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.main_swipe_refresh);
+        refreshLayout.setOnRefreshListener(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -102,11 +110,33 @@ public class MainActivity extends RootActivity implements
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+
+        outState.putInt(BottomNavigation.CURRENT_POSITION, bottomNavigation.getCurrentPosition());
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        int listPos = savedInstanceState.getInt(BottomNavigation.CURRENT_POSITION);
+        bottomNavigation.setCurrentPosition(listPos);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        if (bottomNavigation != null) {
+        if (bottomNavigation.hasInitData()) {
             bottomNavigation.update(null);
         }
+
+        //FIXME 设置显示 历史最多播放 或 最近几周内最多播放
+        if (mostPlayController.hasInitData()) {
+            mostPlayController.update("历史最多播放");
+        }
+
     }
 
     @Override
@@ -182,8 +212,7 @@ public class MainActivity extends RootActivity implements
             if (songs.size() == 0) {
                 noSongsInDisk();
             } else {
-                bottomNavigation.setController(c);
-                bottomNavigation.initData();
+                bottomNavigation.initData(c);
                 bottomNavigation.themeChange(theme, null);
 
                 //FIXME 设置显示 历史最多播放 或 最近几周内最多播放
@@ -214,5 +243,12 @@ public class MainActivity extends RootActivity implements
     public void themeChange(Theme theme, int[] colors) {
         bottomNavigation.themeChange(theme, null);
 
+    }
+
+    @Override
+    public void onRefresh() {
+        //FIXME 设置显示 历史最多播放 或 最近几周内最多播放
+        mostPlayController.update("历史最多播放");
+        refreshLayout.setRefreshing(false);
     }
 }

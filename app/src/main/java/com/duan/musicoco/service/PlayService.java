@@ -63,7 +63,7 @@ public class PlayService extends RootService {
 
                 int pro = cur.progress;
                 if (pro >= 0) {
-                    iBinder.seekTo(pro);
+                    //iBinder.seekTo(pro);
                 }
 
             } catch (RemoteException e) {
@@ -87,8 +87,9 @@ public class PlayService extends RootService {
 
     @Override
     public void onDestroy() {
-        if (iBinder.isBinderAlive())
+        if (iBinder.isBinderAlive()) {
             iBinder.releaseMediaPlayer();
+        }
         super.onDestroy();
     }
 

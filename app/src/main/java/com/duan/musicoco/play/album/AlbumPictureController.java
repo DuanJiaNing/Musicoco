@@ -1,5 +1,6 @@
 package com.duan.musicoco.play.album;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
@@ -11,6 +12,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageSwitcher;
@@ -43,15 +45,11 @@ public final class AlbumPictureController implements IAlbum {
 
     private final ValueAnimator rotateAnim;
 
-    private final ValueAnimator randomAnim;
-
     private boolean isSpin = false;
 
     private final BitmapCache cache;
 
     private final AlbumBitmapProducer bitmapProducer;
-
-    private int ran = 0;
 
     private int defaultColor = Color.DKGRAY;
     private int defaultTextColor = Color.DKGRAY;
@@ -84,32 +82,6 @@ public final class AlbumPictureController implements IAlbum {
                 defaultTextColor
         };
 
-        randomAnim = ObjectAnimator.ofFloat(view, "rotationY", 0, 0);
-        randomAnim.setInterpolator(new AccelerateDecelerateInterpolator());
-        randomAnim.setDuration(1000);
-
-        //FIXME 移除
-        new Timer().schedule(new TimerTask() {
-            Random rand = new Random();
-
-            @Override
-            public void run() {
-                AlbumPictureController.this.view.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (ran == 0)
-                            return;
-
-                        float r = rand.nextInt(ran);
-                        float rr = rand.nextBoolean() ? -r : r;
-
-                        randomAnim.setFloatValues(0, rr, 0, -rr / 2, 0);
-                        randomAnim.start();
-                    }
-                });
-            }
-        }, 2000, 60 * 1000);
-
         rotateAnim = ObjectAnimator.ofFloat(0, 360);
         rotateAnim.setDuration(45 * 1000);
         rotateAnim.setRepeatMode(ValueAnimator.RESTART);
@@ -120,10 +92,9 @@ public final class AlbumPictureController implements IAlbum {
             public void onAnimationUpdate(ValueAnimator animation) {
                 float value = (float) animation.getAnimatedValue();
                 view.getCurrentView().setRotation(value);
+                Log.i(TAG, "onAnimationUpdate: " + view.hashCode() + " c" + view.getCurrentView().hashCode());
             }
         });
-
-
     }
 
     /**
@@ -134,10 +105,7 @@ public final class AlbumPictureController implements IAlbum {
         view.setInAnimation(AnimationUtils.loadAnimation(context, android.R.anim.slide_in_left));
         view.setOutAnimation(AnimationUtils.loadAnimation(context, android.R.anim.slide_out_right));
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (rotateAnim.isPaused())
-                rotateAnim.cancel();
-        }
+        rotateAnim.cancel();
         view.getNextView().setRotation(0.0f);
 
         Bitmap bitmap = bitmapProducer.get(song, size);
@@ -154,6 +122,10 @@ public final class AlbumPictureController implements IAlbum {
                 Bitmap b = new Init().initAlbumVisualizerImageCache((Activity) context);
                 view.setImageDrawable(new BitmapDrawable(context.getResources(), b));
             }
+        }
+
+        if (isSpin()) {
+            startSpin();
         }
 
         return colors;
@@ -161,13 +133,12 @@ public final class AlbumPictureController implements IAlbum {
 
     public int[] next(@NonNull SongInfo song, boolean updateColors) {
 
-        view.setInAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_in_right));
-        view.setOutAnimation(AnimationUtils.loadAnimation(context, R.anim.slide_out_left));
+        Animation in = AnimationUtils.loadAnimation(context, R.anim.slide_in_right);
+        Animation out = AnimationUtils.loadAnimation(context, R.anim.slide_out_left);
+        view.setInAnimation(in);
+        view.setOutAnimation(out);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (rotateAnim.isPaused())
-                rotateAnim.cancel();
-        }
+        rotateAnim.cancel();
         view.getNextView().setRotation(0.0f);
 
         Bitmap bitmap = bitmapProducer.get(song, size);
@@ -185,19 +156,26 @@ public final class AlbumPictureController implements IAlbum {
                 view.setImageDrawable(new BitmapDrawable(context.getResources(), b));
             }
         }
+
+        if (isSpin()) {
+            startSpin();
+        }
+
         return colors;
     }
 
     @Override
     public void startSpin() {
 
-        ran = 30;
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (rotateAnim.isPaused())
+            if (rotateAnim.isPaused()) {
                 rotateAnim.resume();
-            else rotateAnim.start();
-        } else rotateAnim.start();
+            } else {
+                rotateAnim.start();
+            }
+        } else {
+            rotateAnim.start();
+        }
 
         isSpin = true;
     }
@@ -205,12 +183,12 @@ public final class AlbumPictureController implements IAlbum {
     @Override
     public void stopSpin() {
 
-        ran = 0;
-
         if (rotateAnim.isRunning()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 rotateAnim.pause();
-            } else rotateAnim.cancel();
+            } else {
+                rotateAnim.cancel();
+            }
             isSpin = false;
         }
     }

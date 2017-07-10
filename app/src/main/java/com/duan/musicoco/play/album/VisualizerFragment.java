@@ -101,7 +101,7 @@ public class VisualizerFragment extends Fragment implements ViewContract {
 
     @Override
     public void songChanged(Song song, boolean isNext, boolean updateColors) {
-        if (currentSong != null && currentSong == song) {
+        if (currentSong != null && currentSong.equals(song)) {
             return;
         } else {
             currentSong = song;

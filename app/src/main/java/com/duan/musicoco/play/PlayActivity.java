@@ -107,6 +107,7 @@ public class PlayActivity extends RootActivity implements
     protected void onPause() {
         super.onPause();
         savePreference();
+        visualizerPresenter.stopPlay();
     }
 
     @Override
@@ -152,6 +153,7 @@ public class PlayActivity extends RootActivity implements
     @Override
     public void songChanged(Song song, int index, boolean isNext) {
 
+        //FIXME 次数计算策略完善
         dbMusicoco.addTimes(song);
 
         synchronize(song, isNext);

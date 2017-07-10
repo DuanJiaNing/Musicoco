@@ -7,7 +7,13 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AlertDialog;
+import android.widget.Toast;
+
+import com.duan.musicoco.R;
+
+import static android.R.attr.targetSdkVersion;
 
 /**
  * Created by DuanJiaNing on 2017/5/25.
@@ -61,24 +67,33 @@ public final class PermissionManager {
 
     //检查权限是否获取
     public static boolean checkPermission(Context context, String... permission) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
-            boolean nr = true;
+        boolean nr = true;
 
-            for (int i = 0; i < permission.length; i++) {
-                if (ContextCompat.checkSelfPermission(context, permission[i]) != PackageManager.PERMISSION_GRANTED) {
-                    nr = false;
+        for (int i = 0; i < permission.length; i++) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+
+                if (targetSdkVersion >= Build.VERSION_CODES.M) {
+                    // targetSdkVersion >= Android M, we can
+                    // use Context#checkSelfPermission
+                    nr = context.checkSelfPermission(permission[i])
+                            == PackageManager.PERMISSION_GRANTED;
+                } else {
+                    // targetSdkVersion < Android M, we have to use PermissionChecker
+                    nr = PermissionChecker.checkSelfPermission(context, permission[i])
+                            == PermissionChecker.PERMISSION_GRANTED;
+                }
+
+                if (!nr) {
                     break;
                 }
             }
-
-            return nr;
-
-        } else
-            return false;
+        }
+        return nr;
     }
 
     //检查权限是否获取
+
     public static boolean checkPermission(Context context, PerMap perMap) {
         return PermissionManager.checkPermission(context, perMap.permissions);
     }

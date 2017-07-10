@@ -41,5 +41,6 @@
     <color name="list_white_d_d">#e7e7e7</color>
 
     <color name="rmp_info_bg">#5f000000</color>
+    <color name="rmp_image_default_bg">#2d2d2d</color>
 
 </resources>

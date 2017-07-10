@@ -18,15 +18,16 @@
             android:layout_height="match_parent" />
 
         <TextView
-            android:layout_marginLeft="10dp"
             android:id="@+id/rmp_type"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
             android:gravity="start|center_vertical"
             android:textSize="@dimen/text_small_s" />
     </LinearLayout>
 
     <FrameLayout
+        android:id="@+id/rmp_container"
         android:layout_width="match_parent"
         android:layout_height="@dimen/rmp_content_height">
 
@@ -42,7 +43,6 @@
             android:id="@+id/rmp_info_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/rmp_info_bg"
             android:clickable="true">
 
             <LinearLayout
@@ -69,7 +69,7 @@
                     android:shadowColor="@color/white_d"
                     android:shadowDx="0"
                     android:shadowDy="0"
-                    android:shadowRadius="30"
+                    android:shadowRadius="20"
                     android:textColor="@color/white_d"
                     android:textSize="@dimen/text_large_l_l_l"
                     android:textStyle="bold" />
@@ -129,10 +129,10 @@
 
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingLeft="3dp"
-            android:paddingRight="3dp"
             android:layout_toRightOf="@id/rmp_l_time"
             android:gravity="center_vertical"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
             android:text="0"
             android:textSize="@dimen/text_middle_l_l"
             android:textStyle="italic|bold" />

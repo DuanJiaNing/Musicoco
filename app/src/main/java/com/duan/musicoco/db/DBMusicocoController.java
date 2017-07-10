@@ -253,8 +253,10 @@ public class DBMusicocoController {
         String sql = "select * from " + TABLE_SONG + " where " + SONG_PATH + " like '" + song.path + "'";
         Cursor cursor = database.rawQuery(sql, null);
 
-        SongInfo info = new SongInfo();
+        SongInfo info = null;
         while (cursor.moveToNext()) {
+            info = new SongInfo();
+
             info.id = cursor.getInt(cursor.getColumnIndex(SONG_ID));
             info.path = cursor.getString(cursor.getColumnIndex(SONG_PATH));
 
@@ -400,6 +402,7 @@ public class DBMusicocoController {
         String whereClause = SONG_PATH + " like ?";
         String[] whereArgs = {song.path + ""};
         database.update(TABLE_SONG, values, whereClause, whereArgs);
+
     }
 
     public void updateSongPlayTimes(int songID, int times) {
@@ -443,9 +446,15 @@ public class DBMusicocoController {
      * 歌曲的播放次数加一
      * 同时修改最后播放时间为当前时间
      */
-    public void addTimes(Song song) {
+    public void addTimes(@NonNull Song song) {
         updateSongPlayTimes(song);
         updateSongLastPlayTime(song);
+
+        SongInfo info = getSongInfo(song);
+        if (info != null) {
+            Log.d(TAG, "addTimes: song=" + info.path + " lastPlayTime=" + info.lastPlayTime + " times=" + info.playTimes);
+        }
+
     }
 
     public void truncate(String table) {

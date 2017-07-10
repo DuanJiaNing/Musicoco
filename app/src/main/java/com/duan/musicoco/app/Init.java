@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.DisplayMetrics;
+import android.util.Log;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.cache.BitmapCache;
@@ -20,6 +21,8 @@ import com.duan.musicoco.util.Utils;
  */
 
 public class Init {
+
+    private static final String TAG = "Init";
 
     public Bitmap initAlbumVisualizerImageCache(Activity activity) {
 
@@ -62,6 +65,8 @@ public class Init {
 
         String allName = context.getString(R.string.sheet_all);
         db.addSheet(allName, "");
+
+        Log.d(TAG, "initMusicocoDB: initialization database success ");
 
     }
 

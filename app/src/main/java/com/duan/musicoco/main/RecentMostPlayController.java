@@ -2,8 +2,13 @@ package com.duan.musicoco.main;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -51,10 +56,14 @@ public class RecentMostPlayController implements
 
     private ImageView mImage;
     private View mInfoContainer;
+    private View mContainer;
 
     private final Activity activity;
     private DBMusicocoController dbMusicoco;
     private final MediaManager mediaManager;
+    private boolean hasInitData = false;
+
+    private Song currentSong;
 
     public RecentMostPlayController(Activity activity, MediaManager manager) {
         this.activity = activity;
@@ -78,6 +87,7 @@ public class RecentMostPlayController implements
         mInfoLine = activity.findViewById(R.id.rmp_info_line);
         mImage = (ImageView) activity.findViewById(R.id.rmp_image);
         mInfoContainer = activity.findViewById(R.id.rmp_info_container);
+        mContainer = activity.findViewById(R.id.rmp_container);
 
         mShowMore.setOnClickListener(this);
         mInfoContainer.setOnClickListener(this);
@@ -92,6 +102,8 @@ public class RecentMostPlayController implements
         mInfoContainer.setClickable(true);
 
         update(title);
+
+        hasInitData = true;
     }
 
     @Override
@@ -126,7 +138,7 @@ public class RecentMostPlayController implements
     public void update(Object obj) {
         List<DBMusicocoController.SongInfo> list = dbMusicoco.getSongInfos();
 
-        int maxPlayTime = -1;
+        int maxPlayTime = 0;
         String path = "";
         String remark = "";
         for (DBMusicocoController.SongInfo s : list) {
@@ -140,6 +152,19 @@ public class RecentMostPlayController implements
 
         Song song = new Song(path);
         SongInfo info = mediaManager.getSongInfo(song);
+
+        String type = (obj != null && obj instanceof CharSequence) ? obj.toString() : "";
+        updateText(info, remark, maxPlayTime, type);
+
+        if (currentSong == null || !currentSong.equals(song)) {
+            updateImage(info);
+            currentSong = song;
+        }
+
+    }
+
+    private void updateText(SongInfo info, String remark, int maxPlayTime, String type) {
+
         String name = info.getTitle();
         String arts = info.getArtist();
 
@@ -156,6 +181,11 @@ public class RecentMostPlayController implements
                 mInfoLine.setLayoutParams(p);
             }
         });
+
+        mType.setText(type);
+    }
+
+    private void updateImage(SongInfo info) {
 
         Bitmap bitmap = null;
         if (info.getAlbum_path() != null) {
@@ -175,9 +205,21 @@ public class RecentMostPlayController implements
             mImage.setImageBitmap(bitmap);
         }
 
-        if (obj != null && obj instanceof CharSequence) {
-            mType.setText(obj.toString());
-        }
+        AlphaAnimation anim = new AlphaAnimation(0.4f, 1.0f);
+        anim.setDuration(1000);
+        mImage.startAnimation(anim);
+
+        int[] colors = new int[6];
+        int defaultColor = activity.getResources().getColor(R.color.rmp_image_default_bg);
+        ColorUtils.getColorFormBitmap(bitmap, defaultColor, colors);
+        GradientDrawable drawable = new GradientDrawable(
+                GradientDrawable.Orientation.LEFT_RIGHT,
+                new int[]{colors[4], colors[5]});
+        mContainer.setBackground(drawable);
+
+        drawable.setAlpha(180);
+        drawable.setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+        mInfoContainer.setBackground(drawable);
 
     }
 
@@ -192,7 +234,9 @@ public class RecentMostPlayController implements
                 int mainTC = cs[1];
                 int vicTC = cs[3];
                 mName.setTextColor(mainTC);
-                mName.setShadowLayer(30, 0, 0, mainTC);
+                // E/rsC++: RS CPP error: Blur radius out of 0-25 pixel bound
+                // radius 不能大于 25，模拟器没问题，但真机无法运行
+                mName.setShadowLayer(20, 0, 0, mainTC);
                 mRemark.setTextColor(vicTC);
                 mArts.setTextColor(vicTC);
                 mInfoLine.setBackgroundColor(mainTC);
@@ -204,7 +248,7 @@ public class RecentMostPlayController implements
                 int mainBC = cs[0];
                 int vicBC = cs[2];
                 mName.setTextColor(mainBC);
-                mName.setShadowLayer(30, 0, 0, mainBC);
+                mName.setShadowLayer(20, 0, 0, mainBC);
                 mRemark.setTextColor(vicBC);
                 mArts.setTextColor(vicBC);
                 mInfoLine.setBackgroundColor(mainBC);
@@ -223,5 +267,9 @@ public class RecentMostPlayController implements
         mType.setTextColor(mainTC);
         mTypeLine.setBackgroundColor(mainTC);
 
+    }
+
+    public boolean hasInitData() {
+        return hasInitData;
     }
 }
