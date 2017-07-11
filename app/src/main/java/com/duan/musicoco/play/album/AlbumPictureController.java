@@ -1,6 +1,5 @@
 package com.duan.musicoco.play.album;
 
-import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
@@ -11,7 +10,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -23,10 +21,6 @@ import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.cache.BitmapCache;
 import com.duan.musicoco.image.AlbumBitmapProducer;
 import com.duan.musicoco.util.ColorUtils;
-
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import static android.content.ContentValues.TAG;
 
@@ -98,7 +92,7 @@ public final class AlbumPictureController implements IAlbum {
     }
 
     /**
-     * 切换歌曲的同时返回从歌曲专辑图片中提取出的四种颜色值{@link ColorUtils#get2ColorWithTextFormBitmap(Bitmap, int, int, int[])}
+     * 切换歌曲的同时返回从歌曲专辑图片中提取出的四种颜色值{@link ColorUtils#get2DarkColorWithTextFormBitmap(Bitmap, int, int, int[])}
      */
     public int[] pre(@NonNull SongInfo song, boolean updateColors) {
 
@@ -111,7 +105,7 @@ public final class AlbumPictureController implements IAlbum {
         Bitmap bitmap = bitmapProducer.get(song, size);
         if (bitmap != null) {
             if (updateColors)
-                ColorUtils.get2ColorWithTextFormBitmap(bitmap, defaultColor, defaultTextColor, this.colors);
+                ColorUtils.get2DarkColorWithTextFormBitmap(bitmap, defaultColor, defaultTextColor, this.colors);
 
             view.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
         } else {
@@ -144,7 +138,7 @@ public final class AlbumPictureController implements IAlbum {
         Bitmap bitmap = bitmapProducer.get(song, size);
         if (bitmap != null) {
             if (updateColors)
-                ColorUtils.get2ColorWithTextFormBitmap(bitmap, defaultColor, defaultTextColor, this.colors);
+                ColorUtils.get2DarkColorWithTextFormBitmap(bitmap, defaultColor, defaultTextColor, this.colors);
 
             view.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
         } else {

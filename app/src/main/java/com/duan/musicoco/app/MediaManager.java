@@ -108,6 +108,10 @@ public class MediaManager {
         return info;
     }
 
+    public SongInfo getSongInfo(@NonNull String path) {
+        return getSongInfo(new Song(path));
+    }
+
     public List<Song> getSongList() {
         check();
         List<Song> songInfos = new ArrayList<>();

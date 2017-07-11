@@ -15,7 +15,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
 
 import com.duan.musicoco.R;
@@ -38,16 +37,18 @@ public class MainActivity extends RootActivity implements
         SwipeRefreshLayout.OnRefreshListener {
 
     private PlayServiceConnection mServiceConnection;
-    private BottomNavigation bottomNavigation;
-    private RecentMostPlayController mostPlayController;
-
     private SwipeRefreshLayout refreshLayout;
+
+    private BottomNavigationController bottomNavigationController;
+    private RecentMostPlayController mostPlayController;
+    private MainSheetsController mainSheetsController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bottomNavigation = new BottomNavigation(this, mediaManager, appPreference);
+        bottomNavigationController = new BottomNavigationController(this, mediaManager, appPreference);
         mostPlayController = new RecentMostPlayController(this, mediaManager);
+        mainSheetsController = new MainSheetsController(this, mediaManager);
 
         //FIXME test
         appPreference.modifyTheme(Theme.WHITE);
@@ -80,8 +81,9 @@ public class MainActivity extends RootActivity implements
 
     @Override
     protected void initViews() {
-        bottomNavigation.initView();
+        bottomNavigationController.initView();
         mostPlayController.initView();
+        mainSheetsController.initView();
 
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.main_swipe_refresh);
         refreshLayout.setOnRefreshListener(this);
@@ -113,7 +115,7 @@ public class MainActivity extends RootActivity implements
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
 
-        outState.putInt(BottomNavigation.CURRENT_POSITION, bottomNavigation.getCurrentPosition());
+        outState.putInt(BottomNavigationController.CURRENT_POSITION, bottomNavigationController.getCurrentPosition());
 
     }
 
@@ -121,15 +123,15 @@ public class MainActivity extends RootActivity implements
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-        int listPos = savedInstanceState.getInt(BottomNavigation.CURRENT_POSITION);
-        bottomNavigation.setCurrentPosition(listPos);
+        int listPos = savedInstanceState.getInt(BottomNavigationController.CURRENT_POSITION);
+        bottomNavigationController.setCurrentPosition(listPos);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (bottomNavigation.hasInitData()) {
-            bottomNavigation.update(null);
+        if (bottomNavigationController.hasInitData()) {
+            bottomNavigationController.update(null);
         }
 
         //FIXME 设置显示 历史最多播放 或 最近几周内最多播放
@@ -184,7 +186,7 @@ public class MainActivity extends RootActivity implements
     public void permissionGranted(int requestCode) {
         super.permissionGranted(requestCode);
 
-        mServiceConnection = new PlayServiceConnection(bottomNavigation, this, this);
+        mServiceConnection = new PlayServiceConnection(bottomNavigationController, this, this);
         PlayServiceManager.bindService(this, mServiceConnection);
 
     }
@@ -212,12 +214,7 @@ public class MainActivity extends RootActivity implements
             if (songs.size() == 0) {
                 noSongsInDisk();
             } else {
-                bottomNavigation.initData(c);
-                bottomNavigation.themeChange(theme, null);
-
-                //FIXME 设置显示 历史最多播放 或 最近几周内最多播放
-                mostPlayController.initData(dbMusicoco, "历史最多播放");
-                mostPlayController.themeChange(theme, null);
+                initController();
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -227,21 +224,35 @@ public class MainActivity extends RootActivity implements
 
     }
 
+    private void initController() {
+        Theme theme = appPreference.getTheme();
+
+        bottomNavigationController.initData(mServiceConnection.takeControl());
+        bottomNavigationController.themeChange(theme, null);
+
+        //FIXME 设置显示 历史最多播放 或 最近几周内最多播放
+        mostPlayController.initData(dbMusicoco, "历史最多播放");
+        mostPlayController.themeChange(theme, null);
+
+        mainSheetsController.initData(dbMusicoco);
+
+    }
+
     private void noSongsInDisk() {
-        bottomNavigation.emptyMediaLibrary();
+        bottomNavigationController.emptyMediaLibrary();
         mostPlayController.emptyMediaLibrary();
     }
 
     @Override
     public void disConnected(ComponentName name) {
         mServiceConnection = null;
-        mServiceConnection = new PlayServiceConnection(bottomNavigation, this, this);
+        mServiceConnection = new PlayServiceConnection(bottomNavigationController, this, this);
         PlayServiceManager.bindService(this, mServiceConnection);
     }
 
     @Override
     public void themeChange(Theme theme, int[] colors) {
-        bottomNavigation.themeChange(theme, null);
+        bottomNavigationController.themeChange(theme, null);
 
     }
 
@@ -249,6 +260,8 @@ public class MainActivity extends RootActivity implements
     public void onRefresh() {
         //FIXME 设置显示 历史最多播放 或 最近几周内最多播放
         mostPlayController.update("历史最多播放");
+        mainSheetsController.update(null);
+
         refreshLayout.setRefreshing(false);
     }
 }

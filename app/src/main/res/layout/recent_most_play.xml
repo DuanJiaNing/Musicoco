@@ -6,7 +6,8 @@
     android:layout_marginLeft="@dimen/activity_default_margin_l"
     android:layout_marginRight="@dimen/activity_default_margin_l"
     android:layout_marginTop="@dimen/activity_default_margin_s_s"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:weightSum="1">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -172,12 +173,6 @@
         android:layout_height="1px"
         android:background="@color/dark" />
 
-
-    <com.duan.musicoco.view.ImageTextView
-        app:text="全部歌曲"
-        app:textSize="30sp"
-        app:bitmap="@drawable/default_album"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <include layout="@layout/main_sheets" />
 
 </LinearLayout>

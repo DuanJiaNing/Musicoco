@@ -4,4 +4,7 @@
 
     <!--0 - 255-->
     <integer name="play_list_bg_alpha">180</integer>
+
+    <integer name="sheet_recent_count">50</integer>
+
 </resources>

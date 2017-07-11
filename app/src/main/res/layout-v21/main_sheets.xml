@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:layout_editor_absoluteX="0dp"
+    tools:layout_editor_absoluteY="81dp">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/sheet_all_container"
+
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="8dp"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline3"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="8dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/sheet_all_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/main_sheets_height"
+                    android:scaleType="centerCrop" />
+
+                <TextView
+                    android:id="@+id/sheet_all_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+
+                    android:padding="4dp"
+                    android:text="@string/sheet_all"
+                    android:textSize="@dimen/text_middle_s"
+                    android:typeface="serif" />
+
+            </LinearLayout>
+
+            <TextView
+                android:textSize="@dimen/text_small_s"
+                android:id="@+id/sheet_all_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|right"
+                android:layout_margin="3dp"
+                android:maxEms="3"
+                android:lines="1"
+                android:textStyle="bold"
+                android:ellipsize="end"
+                android:padding="4dp"
+                android:text="0" />
+
+        </FrameLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/sheet_recent_container"
+        android:layout_width="0dp"
+
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline4"
+        app:layout_constraintRight_toLeftOf="@+id/guideline3"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/sheet_recent_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/main_sheets_height"
+                    android:scaleType="centerCrop" />
+
+                <TextView
+                    android:id="@+id/sheet_recent_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+
+                    android:padding="4dp"
+                    android:text="@string/sheet_recent"
+                    android:textSize="@dimen/text_middle_s"
+                    android:typeface="serif" />
+
+            </LinearLayout>
+
+            <TextView
+                android:textSize="@dimen/text_small_s"
+                android:id="@+id/sheet_recent_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|right"
+                android:layout_margin="3dp"
+                android:padding="4dp"
+                android:maxEms="3"
+                android:textStyle="bold"
+                android:lines="1"
+                android:ellipsize="end"
+                android:text="0" />
+
+        </FrameLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/sheet_favorite_container"
+
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/guideline4"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginRight="8dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/sheet_favorite_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/main_sheets_height"
+                    android:scaleType="centerCrop" />
+
+                <TextView
+                    android:id="@+id/sheet_favorite_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:gravity="center"
+                    android:padding="4dp"
+                    android:text="@string/sheet_favorite"
+                    android:textSize="@dimen/text_middle_s"
+                    android:typeface="serif" />
+
+            </LinearLayout>
+
+            <TextView
+                android:textSize="@dimen/text_small_s"
+                android:id="@+id/sheet_favorite_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|right"
+                android:layout_margin="3dp"
+                android:maxEms="3"
+                android:textStyle="bold"
+                android:lines="1"
+                android:ellipsize="end"
+                android:padding="4dp"
+                android:text="0" />
+        </FrameLayout>
+    </android.support.v7.widget.CardView>
+
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.66"
+        tools:layout_editor_absoluteX="238dp"
+        tools:layout_editor_absoluteY="0dp" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.33055556"
+        tools:layout_editor_absoluteX="119dp"
+        tools:layout_editor_absoluteY="0dp" />
+
+</android.support.constraint.ConstraintLayout>

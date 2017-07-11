@@ -49,7 +49,7 @@ import com.duan.musicoco.view.media.PlayView;
  * Created by DuanJiaNing on 2017/6/27.
  */
 
-public class BottomNavigation implements
+public class BottomNavigationController implements
         OnPlayListVisibilityChange,
         View.OnClickListener,
         PlayServiceCallback,
@@ -58,7 +58,7 @@ public class BottomNavigation implements
         OnThemeChange {
 
     private final Activity activity;
-    private final static String TAG = "BottomNavigation";
+    private final static String TAG = "BottomNavigationController";
 
     public final static String CURRENT_POSITION = "current_position";
     private int currentPosition;
@@ -90,7 +90,7 @@ public class BottomNavigation implements
 
     private boolean hasInitData = false;
 
-    BottomNavigation(Activity activity, MediaManager mediaManager, AppPreference appPreference) {
+    BottomNavigationController(Activity activity, MediaManager mediaManager, AppPreference appPreference) {
         this.activity = activity;
         this.mediaManager = mediaManager;
         this.appPreference = appPreference;

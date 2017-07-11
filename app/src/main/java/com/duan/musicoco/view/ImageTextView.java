@@ -9,9 +9,11 @@ import android.graphics.BlurMaskFilter;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -26,7 +28,9 @@ public class ImageTextView extends View {
     private String mText;
     private Bitmap mBitmap;
     private float mTextSize;
-    private Paint paint = new Paint();
+    private TextPaint paint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
+    private Shader shader;
+    private Typeface typeface;
 
     public ImageTextView(Context context) {
         super(context);
@@ -47,10 +51,11 @@ public class ImageTextView extends View {
         mBitmap = BitmapFactory.decodeResource(context.getResources(), id);
         array.recycle();
 
+        paint.setAntiAlias(true);
         if (mBitmap != null) {
-            Bitmap b = BitmapFactory.decodeResource(context.getResources(), R.drawable.default_album);
-            shader = new BitmapShader(b, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+            shader = new BitmapShader(mBitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
         }
+        typeface = Typeface.SERIF;
 
     }
 
@@ -67,16 +72,19 @@ public class ImageTextView extends View {
         int hp = getPaddingTop() + getPaddingBottom();
 
         paint.setTextSize(mTextSize);
+        Rect rect = new Rect();
+        paint.getTextBounds(mText, 0, mText.length(), rect);
+
         if (widthMode == MeasureSpec.EXACTLY) {
-            width = widthSize;
+            width = widthSize + wp;
         } else {//xml中宽度设为warp_content
-            width = (int) (paint.measureText(mText) + wp);
+            width = rect.width() + wp;
         }
 
         if (heightMode == MeasureSpec.EXACTLY) {
-            height = heightSize;
+            height = heightSize + hp;
         } else {
-            height = (int) (mTextSize + hp);
+            height = rect.height() + hp;
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -89,39 +97,54 @@ public class ImageTextView extends View {
     }
 
     @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-
-    }
-
-    private Shader shader;
-
-    @Override
     protected void onDraw(Canvas canvas) {
 
         if (mBitmap == null || mText.isEmpty() || shader == null) {
             return;
         }
-        paint.setColor(Color.RED);
-        paint.setTypeface(Typeface.DEFAULT_BOLD);
-        paint.setShader(shader);
-        paint.setMaskFilter(new BlurMaskFilter(10, BlurMaskFilter.Blur.SOLID));
-        canvas.drawText(mText, 0, getHeight(), paint);
 
+        paint.setTextSize(mTextSize);
+        paint.setColor(Color.RED);
+        paint.setTypeface(typeface);
+        paint.setShader(shader);
+//        paint.setMaskFilter(new BlurMaskFilter(5, BlurMaskFilter.Blur.SOLID));
+
+        Rect targetRect = new Rect(0, 0, getWidth(), getHeight());
+        Paint.FontMetricsInt fontMetrics = paint.getFontMetricsInt();
+        int baseline = (targetRect.bottom + targetRect.top - fontMetrics.bottom - fontMetrics.top) / 2;
+        paint.setTextAlign(Paint.Align.CENTER);
+        canvas.drawText(mText, targetRect.centerX(), baseline, paint);
     }
 
     public void setText(String text) {
+        if (text == null) {
+            return;
+        }
+
         this.mText = text;
         invalidate();
     }
 
     public void setBitmap(Bitmap bitmap) {
+        if (bitmap == null) {
+            return;
+        }
+
         this.mBitmap = bitmap;
+        shader = new BitmapShader(mBitmap, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
         invalidate();
     }
 
     public void setTextSize(float size) {
         this.mTextSize = size;
+        invalidate();
+    }
+
+    public void setTypeface(Typeface typeface) {
+        if (typeface == null) {
+            return;
+        }
+        this.typeface = typeface;
         invalidate();
     }
 }

@@ -138,3 +138,8 @@
 - 2017-07-09
 
 1 添加 RecentMostPlayController ,封装对应的布局及其处理逻辑<br>
+
+- 2017-07-11
+
+1 添加 ImageTextView<br>
+2 添加 MainSheetController，并将代码补全，完成主要的三个歌单（我的收藏，最近播放，全部歌曲）的操作入口<br>

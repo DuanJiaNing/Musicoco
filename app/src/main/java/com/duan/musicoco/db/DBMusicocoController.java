@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.main.SongSheet;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class DBMusicocoController {
     public static final String SONG_REMARK = "remarks"; //备注
     public static final String SONG_SHEETS = "sheets"; //所属歌单 歌单编号，空格隔开
     public static final String SONG_CREATE = "create_time"; //创建时间
+    public static final String SONG_FAVORITE = "song_favorite"; //是否收藏 0 否， 1 是
 
     public static final String TABLE_SHEET = "sheet";
     public static final String SHEET_ID = "_id"; // 主键
@@ -53,7 +55,8 @@ public class DBMusicocoController {
                 DBMusicocoController.SONG_PLAYTIMES + " integer," +
                 DBMusicocoController.SONG_REMARK + " text," +
                 DBMusicocoController.SONG_SHEETS + " text," +
-                DBMusicocoController.SONG_CREATE + " text)";
+                DBMusicocoController.SONG_CREATE + " text," +
+                DBMusicocoController.SONG_FAVORITE + " integer)";
         db.execSQL(sql);
     }
 
@@ -75,30 +78,19 @@ public class DBMusicocoController {
         public String remark;
         public long create;
         public int[] sheets;
+        public boolean favorite;
 
         public SongInfo() {
         }
 
-        public SongInfo(String path, long lastPlayTime, int playTimes, String remark, long create, int[] sheets) {
+        public SongInfo(String path, long lastPlayTime, int playTimes, String remark, long create, int[] sheets, boolean favorite) {
             this.path = path;
             this.lastPlayTime = lastPlayTime;
             this.playTimes = playTimes;
             this.remark = remark;
             this.create = create;
             this.sheets = sheets;
-        }
-
-        @Override
-        public String toString() {
-            return "SongInfo{" +
-                    "id=" + id +
-                    ", path='" + path + '\'' +
-                    ", lastPlayTime=" + lastPlayTime +
-                    ", playTimes=" + playTimes +
-                    ", remark='" + remark + '\'' +
-                    ", create=" + create +
-                    ", sheets=" + Arrays.toString(sheets) +
-                    '}';
+            this.favorite = favorite;
         }
 
         @Override
@@ -106,9 +98,9 @@ public class DBMusicocoController {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 
-            SongInfo songInfo = (SongInfo) o;
+            SongInfo info = (SongInfo) o;
 
-            return path.equals(songInfo.path);
+            return path.equals(info.path);
 
         }
 
@@ -234,6 +226,9 @@ public class DBMusicocoController {
             String str1 = cursor.getString(cursor.getColumnIndex(SONG_CREATE));
             info.create = Long.valueOf(str1);
 
+            int far = cursor.getInt(cursor.getColumnIndex(SONG_FAVORITE));
+            info.favorite = far == 1;
+
             String sh = cursor.getString(cursor.getColumnIndex(SONG_SHEETS));
             String[] strs = sh.split(" ");
             int[] shs = new int[strs.length];
@@ -269,6 +264,9 @@ public class DBMusicocoController {
             String str1 = cursor.getString(cursor.getColumnIndex(SONG_CREATE));
             info.create = Long.valueOf(str1);
 
+            int far = cursor.getInt(cursor.getColumnIndex(SONG_FAVORITE));
+            info.favorite = far == 1;
+
             String sh = cursor.getString(cursor.getColumnIndex(SONG_SHEETS));
             String[] strs = sh.split(" ");
             int[] shs = new int[strs.length];
@@ -301,6 +299,9 @@ public class DBMusicocoController {
             String str1 = cursor.getString(cursor.getColumnIndex(SONG_CREATE));
             info.create = Long.valueOf(str1);
 
+            int far = cursor.getInt(cursor.getColumnIndex(SONG_FAVORITE));
+            info.favorite = far == 1;
+
             String sh = cursor.getString(cursor.getColumnIndex(SONG_SHEETS));
             String[] strs = sh.split(" ");
             int[] shs = new int[strs.length];
@@ -310,6 +311,56 @@ public class DBMusicocoController {
             info.sheets = shs;
 
             infos.add(info);
+        }
+
+        cursor.close();
+        return infos;
+    }
+
+    public List<SongInfo> getSongInfos(int sheetID) {
+
+        String sql = "select * from " + TABLE_SONG;
+        Cursor cursor = database.rawQuery(sql, null);
+
+        List<SongInfo> infos = new ArrayList<>();
+
+        while (cursor.moveToNext()) {
+            SongInfo info = new SongInfo();
+
+            String sh = cursor.getString(cursor.getColumnIndex(SONG_SHEETS));
+            String[] strs = sh.split(" ");
+            int[] shs = new int[strs.length];
+            for (int i = 0; i < shs.length; i++) {
+                shs[i] = Integer.parseInt(strs[i]);
+            }
+
+            boolean isContain = false;
+            for (int i : shs) {
+                if (i == sheetID) {
+                    isContain = true;
+                }
+            }
+
+            if (isContain) {
+                info.sheets = shs;
+
+                info.id = cursor.getInt(cursor.getColumnIndex(SONG_ID));
+                info.path = cursor.getString(cursor.getColumnIndex(SONG_PATH));
+
+                String str = cursor.getString(cursor.getColumnIndex(SONG_LASTPLAYTIME));
+                info.lastPlayTime = Long.valueOf(str);
+
+                info.playTimes = cursor.getInt(cursor.getColumnIndex(SONG_PLAYTIMES));
+                info.remark = cursor.getString(cursor.getColumnIndex(SONG_REMARK));
+
+                String str1 = cursor.getString(cursor.getColumnIndex(SONG_CREATE));
+                info.create = Long.valueOf(str1);
+
+                int far = cursor.getInt(cursor.getColumnIndex(SONG_FAVORITE));
+                info.favorite = far == 1;
+
+                infos.add(info);
+            }
         }
 
         cursor.close();
@@ -329,7 +380,7 @@ public class DBMusicocoController {
 
     }
 
-    public void addSongInfo(@NonNull Song song, int playTimes, @Nullable String remark, @Nullable int[] sheets) {
+    public void addSongInfo(@NonNull Song song, int playTimes, @Nullable String remark, @Nullable int[] sheets, boolean favorite) {
 
         if (remark == null) {
             remark = " ";
@@ -352,6 +403,7 @@ public class DBMusicocoController {
         values.put(SONG_PLAYTIMES, playTimes);
         values.put(SONG_REMARK, remark);
         values.put(SONG_SHEETS, builder.toString());
+        values.put(SONG_FAVORITE, favorite ? 1 : 0);
 
         database.insert(TABLE_SONG, null, values);
         Log.d(TAG, "addSongInfo: insert " + path);
@@ -361,7 +413,7 @@ public class DBMusicocoController {
     public void addSongInfo(List<Song> songs) {
         if (songs != null && songs.size() > 0) {
             for (Song song : songs) {
-                addSongInfo(song, 0, null, null);
+                addSongInfo(song, 0, null, null, false);
             }
         }
     }
@@ -437,6 +489,14 @@ public class DBMusicocoController {
     public void updateSongRemark(@NonNull Song song, @NonNull String remark) {
         ContentValues values = new ContentValues();
         values.put(SONG_REMARK, remark);
+        String whereClause = SONG_PATH + " like ?";
+        String[] whereArgs = {song.path};
+        database.update(TABLE_SONG, values, whereClause, whereArgs);
+    }
+
+    public void updateSongFavorite(@NonNull Song song, boolean favorite) {
+        ContentValues values = new ContentValues();
+        values.put(SONG_FAVORITE, favorite ? 1 : 0);
         String whereClause = SONG_PATH + " like ?";
         String[] whereArgs = {song.path};
         database.update(TABLE_SONG, values, whereClause, whereArgs);
