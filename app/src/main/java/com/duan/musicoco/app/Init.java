@@ -55,15 +55,7 @@ public class Init {
 
         db.addSongInfo(mediaManager.getSongList());
 
-        String favoriteName = context.getString(R.string.sheet_favorite);
-        String favoriteRemark = context.getString(R.string.sheet_desc_favorite);
-        db.addSheet(favoriteName, favoriteRemark);
-
-        String recentName = context.getString(R.string.sheet_recent);
-        String recentRemark = context.getString(R.string.sheet_desc_recent);
-        db.addSheet(recentName, recentRemark);
-
-        String allName = context.getString(R.string.sheet_all);
+        String allName = context.getString(R.string.sheet_new);
         db.addSheet(allName, "");
 
         Log.d(TAG, "initMusicocoDB: initialization database success ");

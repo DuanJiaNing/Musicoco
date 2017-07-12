@@ -206,6 +206,9 @@ public class PlayActivity extends RootActivity implements
             updateColors(visualizerFragment.getCurrColors());
         }
 
+        //在 updateColors 后调用
+        playListController.updateFavorite();
+
     }
 
     private void updateStatus(Song song, boolean isNext) {
@@ -442,7 +445,7 @@ public class PlayActivity extends RootActivity implements
         transaction.hide(lyricFragment);
         transaction.commit();
 
-        playListController = new PlayListController(this);
+        playListController = new PlayListController(this, dbMusicoco);
         //更新主题
         themeChange(theme, null);
 
@@ -454,7 +457,7 @@ public class PlayActivity extends RootActivity implements
         switch (v.getId()) {
             case R.id.play_fragment_container:
                 if (playListController.isListTitleHide())
-                    playListController.showPlayListBar();
+                    playListController.showPlayListTitle();
                 return true;
             default:
                 break;

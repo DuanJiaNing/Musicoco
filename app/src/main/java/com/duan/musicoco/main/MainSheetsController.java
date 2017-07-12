@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.shapes.ArcShape;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,6 +18,7 @@ import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
@@ -32,10 +32,6 @@ public class MainSheetsController implements
         View.OnClickListener,
         OnContentUpdate,
         OnEmptyMediaLibrary {
-
-    private int ID_ALL;
-    private int ID_RECENT;
-    private int ID_FAVORITE;
 
     private TextView mTextAll;
     private TextView mTextRecent;
@@ -91,22 +87,6 @@ public class MainSheetsController implements
         mContainerRecent.setClickable(true);
         mContainerFavorite.setClickable(true);
 
-        String all = activity.getString(R.string.sheet_all);
-        String recent = activity.getString(R.string.sheet_recent);
-        String favorite = activity.getString(R.string.sheet_favorite);
-        List<DBMusicocoController.Sheet> sheets = dbController.getSheets();
-        for (DBMusicocoController.Sheet s : sheets) {
-            int id = s.id;
-            String n = s.name;
-            if (n.equals(all)) {
-                ID_ALL = id;
-            } else if (n.equals(recent)) {
-                ID_RECENT = id;
-            } else if (n.equals(favorite)) {
-                ID_FAVORITE = id;
-            }
-        }
-
         update(null);
     }
 
@@ -137,27 +117,30 @@ public class MainSheetsController implements
     @Override
     public void update(Object obj) {
 
-        List<DBMusicocoController.SongInfo> favorite = dbController.getSongInfos(ID_FAVORITE);
         List<DBMusicocoController.SongInfo> all = dbController.getSongInfos();
 
         updateAll(all);
         updateRecent(all);
-        updateFavorite(favorite);
+        updateFavorite(all);
 
     }
 
-    private void updateFavorite(List<DBMusicocoController.SongInfo> favorite) {
+    private void updateFavorite(List<DBMusicocoController.SongInfo> all) {
         Bitmap bitmap = null;
-        if (favorite.size() == 0) {
+        int count = 0;
+        if (all.size() == 0) {
             bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.default_sheet_favorite);
         } else {
-            for (DBMusicocoController.SongInfo i : favorite) {
-                SongInfo info = mediaManager.getSongInfo(i.path);
-                bitmap = BitmapUtils.bitmapResizeFromFile(info.getAlbum_path(), mImageFavorite.getWidth(), mImageFavorite.getHeight());
-                if (bitmap != null) {
-                    break;
+            List<DBMusicocoController.SongInfo> favorite = new ArrayList<>();
+            for (DBMusicocoController.SongInfo i : all) {
+                if (i.favorite) {
+                    favorite.add(i);
                 }
             }
+
+            count = favorite.size();
+            TreeSet<DBMusicocoController.SongInfo> treeSet = dbController.descSortByLastPlayTime(favorite);
+            bitmap = findBitmap(treeSet);
         }
 
         if (bitmap == null) {
@@ -165,7 +148,21 @@ public class MainSheetsController implements
         }
 
         mImageFavorite.setImageBitmap(createImage(bitmap));
-        updateText(mTextFavorite, bitmap, favorite.size(), mCountFavorite);
+        updateText(mTextFavorite, bitmap, count, mCountFavorite);
+    }
+
+    private Bitmap findBitmap(TreeSet<DBMusicocoController.SongInfo> treeSet) {
+        Bitmap bitmap = null;
+        Iterator<DBMusicocoController.SongInfo> it = treeSet.iterator();
+        while (it.hasNext()) {
+            DBMusicocoController.SongInfo s = it.next();
+            SongInfo info = mediaManager.getSongInfo(s.path);
+            bitmap = BitmapUtils.bitmapResizeFromFile(info.getAlbum_path(), mImageRecent.getWidth(), mImageRecent.getHeight());
+            if (bitmap != null) {
+                break;
+            }
+        }
+        return bitmap;
     }
 
     private void updateRecent(List<DBMusicocoController.SongInfo> all) {
@@ -173,34 +170,8 @@ public class MainSheetsController implements
         if (all.size() == 0) {
             bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.default_sheet);
         } else {
-
-            TreeSet<DBMusicocoController.SongInfo> treeSet = new TreeSet<>(new Comparator<DBMusicocoController.SongInfo>() {
-                @Override
-                public int compare(DBMusicocoController.SongInfo o1, DBMusicocoController.SongInfo o2) {
-                    int rs = 0;
-                    if (o1.lastPlayTime > o2.lastPlayTime) {
-                        rs = -1;
-                    } else if (o1.lastPlayTime < o2.lastPlayTime) {
-                        rs = 1;
-                    }
-                    return rs;
-                }
-            });
-
-            //按 最后播放时间 降序排列
-            for (DBMusicocoController.SongInfo s : all) {
-                treeSet.add(s);
-            }
-
-            Iterator<DBMusicocoController.SongInfo> it = treeSet.iterator();
-            while (it.hasNext()) {
-                DBMusicocoController.SongInfo s = it.next();
-                SongInfo info = mediaManager.getSongInfo(s.path);
-                bitmap = BitmapUtils.bitmapResizeFromFile(info.getAlbum_path(), mImageRecent.getWidth(), mImageRecent.getHeight());
-                if (bitmap != null) {
-                    break;
-                }
-            }
+            TreeSet<DBMusicocoController.SongInfo> treeSet = dbController.descSortByLastPlayTime(all);
+            bitmap = findBitmap(treeSet);
         }
 
         if (bitmap == null) {

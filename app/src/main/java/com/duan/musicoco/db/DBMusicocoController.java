@@ -14,8 +14,10 @@ import com.duan.musicoco.main.SongSheet;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.TreeSet;
 
 /**
  * Created by DuanJiaNing on 2017/7/1.
@@ -338,6 +340,7 @@ public class DBMusicocoController {
             for (int i : shs) {
                 if (i == sheetID) {
                     isContain = true;
+                    Log.d(TAG, "getSongInfos: sheet " + sheetID + " contain:true " + info.path);
                 }
             }
 
@@ -500,6 +503,7 @@ public class DBMusicocoController {
         String whereClause = SONG_PATH + " like ?";
         String[] whereArgs = {song.path};
         database.update(TABLE_SONG, values, whereClause, whereArgs);
+        Log.d(TAG, "updateSongFavorite: " + song.path + " favorite:" + favorite);
     }
 
     /**
@@ -526,6 +530,31 @@ public class DBMusicocoController {
         else if (table.equals(TABLE_SONG))
             createSongTable(database);
 
+    }
+
+
+    private TreeSet<DBMusicocoController.SongInfo> treeSet = new TreeSet<>(new Comparator<SongInfo>() {
+        @Override
+        public int compare(DBMusicocoController.SongInfo o1, DBMusicocoController.SongInfo o2) {
+            int rs = 0;
+            if (o1.lastPlayTime > o2.lastPlayTime) {
+                rs = -1;
+            } else if (o1.lastPlayTime < o2.lastPlayTime) {
+                rs = 1;
+            }
+            return rs;
+        }
+    });
+
+    /**
+     * 按最后播放时间降序排序
+     */
+    public TreeSet<SongInfo> descSortByLastPlayTime(List<SongInfo> list) {
+        treeSet.clear();
+        for (DBMusicocoController.SongInfo s : list) {
+            treeSet.add(s);
+        }
+        return treeSet;
     }
 
 }

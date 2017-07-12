@@ -43,4 +43,6 @@
     <color name="rmp_info_bg">#5f000000</color>
     <color name="rmp_image_default_bg">#2d2d2d</color>
 
+    <color name="favorite">#dc1e1e</color>
+
 </resources>

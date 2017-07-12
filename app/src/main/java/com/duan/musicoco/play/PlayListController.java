@@ -8,9 +8,11 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.hardware.camera2.params.TonemapCurve;
 import android.os.Build;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
@@ -18,19 +20,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
+import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.ExceptionHandler;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnViewVisibilityChange;
 import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
 import com.duan.musicoco.app.interfaces.OnContentUpdate;
+import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
@@ -66,12 +73,14 @@ public class PlayListController implements
     private PlayListAdapter playListAdapter;
     private PlayPreference playPreference;
     private IPlayControl control;
+    private DBMusicocoController dbMusicoco;
 
     private ListOption listOption;
     private SongOption songOption;
 
-    public PlayListController(Activity activity) {
+    public PlayListController(Activity activity, DBMusicocoController dbMusicoco) {
         this.activity = activity;
+        this.dbMusicoco = dbMusicoco;
         this.playPreference = new PlayPreference(activity);
 
         mViewRoot = (CardView) activity.findViewById(R.id.play_list);
@@ -212,8 +221,9 @@ public class PlayListController implements
 
                 }
             }, 0.6f, 0.0f);
-        } else
+        } else {
             vDarkBg.setVisibility(View.GONE);
+        }
     }
 
     public void hidePlayListTitle() {
@@ -227,7 +237,7 @@ public class PlayListController implements
         startTranslateTitleAnim(from, to, duration);
     }
 
-    public void showPlayListBar() {
+    public void showPlayListTitle() {
         isListTitleHide = false;
 
         final int duration = activity.getResources().getInteger(R.integer.play_list_anim_duration);
@@ -315,8 +325,9 @@ public class PlayListController implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.play_dark_bg:
-                if (isListShowing())
+                if (isListShowing()) {
                     hide();
+                }
                 break;
         }
     }
@@ -338,10 +349,11 @@ public class PlayListController implements
         int color = mRealTimeView.getOverlayColor();
         double d = ColorUtils.calculateLuminance(color);
         Theme t;
-        if (d - 0.400 > 0.000001)
+        if (d - 0.400 > 0.000001) {
             t = WHITE;
-        else
+        } else {
             t = DARK;
+        }
 
         playListAdapter.themeChange(t, null);
         listOption.themeChange(t, null);
@@ -375,6 +387,21 @@ public class PlayListController implements
         for (int i = 0; i < count; i++) {
             View v = mViewRoot.getChildAt(i);
             v.setEnabled(false);
+        }
+    }
+
+    public void updateFavorite() {
+        try {
+            Song song = control.currentSong();
+            if (song != null) {
+                DBMusicocoController.SongInfo info = dbMusicoco.getSongInfo(song);
+                boolean isFavorite = info != null && info.favorite;
+                if (isFavorite) {
+                    songOption.updateCurrentFavorite(song, true);
+                }
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
     }
 
@@ -456,18 +483,29 @@ public class PlayListController implements
             OnThemeChange {
 
         private ViewGroup container;
+        private int currentDrawableColor;
+
         private ImageButton hidePlayListBar;
         private ImageButton playMode;
+        private ImageButton playFavorite;
+        private ImageButton playShowList;
+        private ImageButton playShowMore;
 
         public SongOption(Activity activity) {
 
             container = (ViewGroup) activity.findViewById(R.id.play_list_hide_bar);
             hidePlayListBar = (ImageButton) activity.findViewById(R.id.play_list_hide);
             playMode = (ImageButton) activity.findViewById(R.id.play_mode);
+            playFavorite = (ImageButton) activity.findViewById(R.id.play_favorite);
+            playShowList = (ImageButton) activity.findViewById(R.id.play_show_list);
+            playShowMore = (ImageButton) activity.findViewById(R.id.play_show_more);
 
             hidePlayListBar.setOnClickListener(this);
             playMode.setOnClickListener(this);
             container.setOnClickListener(this);
+            playFavorite.setOnClickListener(this);
+            playShowList.setOnClickListener(this);
+            playShowMore.setOnClickListener(this);
         }
 
         @Override
@@ -512,6 +550,30 @@ public class PlayListController implements
                     if (!isListTitleHide)
                         hidePlayListTitle();
                     break;
+                case R.id.play_favorite:
+                    try {
+                        Song song = control.currentSong();
+                        if (song != null) {
+                            DBMusicocoController.SongInfo info = dbMusicoco.getSongInfo(song);
+                            boolean isFavorite = info.favorite;
+                            updateCurrentFavorite(song, !isFavorite);
+                        }
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case R.id.play_show_list:
+                    if (isListShowing()) {
+                        PlayListController.this.hide();
+                    } else {
+                        PlayListController.this.show();
+                    }
+                    break;
+                case R.id.play_show_more:
+                    //TODO
+                    Toast.makeText(activity, "show more", Toast.LENGTH_SHORT).show();
+                    break;
+
             }
         }
 
@@ -527,26 +589,27 @@ public class PlayListController implements
 
         @Override
         public void themeChange(Theme theme, int[] colors) {
-            int color;
             switch (theme) {
                 case WHITE: {
                     int[] cs = com.duan.musicoco.util.ColorUtils.getWhiteThemeTextColor(PlayListController.this.activity);
-                    color = cs[0];
+                    currentDrawableColor = cs[0];
                     break;
                 }
                 case DARK:
                 default: {
                     int[] cs = com.duan.musicoco.util.ColorUtils.getDarkThemeTextColor(PlayListController.this.activity);
-                    color = cs[0];
+                    currentDrawableColor = cs[0];
                     break;
                 }
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                hidePlayListBar.getDrawable().setTint(color);
-                playMode.getDrawable().setTint(color);
+                hidePlayListBar.getDrawable().setTint(currentDrawableColor);
+                playMode.getDrawable().setTint(currentDrawableColor);
+                playFavorite.getDrawable().setTint(currentDrawableColor);
+                playShowList.getDrawable().setTint(currentDrawableColor);
+                playShowMore.getDrawable().setTint(currentDrawableColor);
             }
-
         }
 
         int updatePlayMode() {
@@ -586,6 +649,55 @@ public class PlayListController implements
             playMode.setImageDrawable(drawable);
 
             return mode;
+        }
+
+        public int getCurrentDrawableColor() {
+            return currentDrawableColor;
+        }
+
+        private void updateCurrentFavorite(Song song, boolean isFavorite) {
+            int color = activity.getResources().getColor(R.color.favorite);
+            if (isFavorite) {
+                startFavoriteSwitchAnim(getCurrentDrawableColor(), color);
+            } else {
+                startFavoriteSwitchAnim(color, getCurrentDrawableColor());
+            }
+
+            dbMusicoco.updateSongFavorite(song, isFavorite);
+        }
+
+        private void startFavoriteSwitchAnim(int colorFrom, int colorTo) {
+            float sFrom = 0.8f;
+            float sCenter = 1.1f;
+            float sTo = 0.8f;
+            ValueAnimator scaleAnimX = ObjectAnimator.ofFloat(playFavorite, "scaleX", sFrom, sCenter, sTo);
+            ValueAnimator scaleAnimY = ObjectAnimator.ofFloat(playFavorite, "scaleY", sFrom, sCenter, sTo);
+
+            ValueAnimator colorAnim = null;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                colorAnim = ObjectAnimator.ofArgb(colorFrom, colorTo);
+                colorAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator animation) {
+                        int value = (int) animation.getAnimatedValue();
+                        playFavorite.getDrawable().setTint(value);
+                    }
+                });
+            }
+
+            AnimatorSet set = new AnimatorSet();
+            set.setDuration(500);
+            if (colorAnim != null) {
+                set.play(scaleAnimX).with(scaleAnimY).with(colorAnim);
+                set.start();
+            } else {
+                set.play(scaleAnimX).with(scaleAnimY);
+                set.start();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    playFavorite.getDrawable().setTint(colorTo);
+                }
+            }
         }
     }
 

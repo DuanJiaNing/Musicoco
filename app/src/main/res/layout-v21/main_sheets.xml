@@ -47,7 +47,7 @@
                     android:gravity="center"
 
                     android:padding="4dp"
-                    android:text="@string/sheet_all"
+                    android:text="@string/main_sheet_all"
                     android:textSize="@dimen/text_middle_s"
                     android:typeface="serif" />
 
@@ -112,7 +112,7 @@
                     android:gravity="center"
 
                     android:padding="4dp"
-                    android:text="@string/sheet_recent"
+                    android:text="@string/main_sheet_recent"
                     android:textSize="@dimen/text_middle_s"
                     android:typeface="serif" />
 
@@ -176,7 +176,7 @@
 
                     android:gravity="center"
                     android:padding="4dp"
-                    android:text="@string/sheet_favorite"
+                    android:text="@string/main_sheet_favorite"
                     android:textSize="@dimen/text_middle_s"
                     android:typeface="serif" />
 

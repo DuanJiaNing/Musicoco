@@ -86,7 +86,6 @@ public final class AlbumPictureController implements IAlbum {
             public void onAnimationUpdate(ValueAnimator animation) {
                 float value = (float) animation.getAnimatedValue();
                 view.getCurrentView().setRotation(value);
-                Log.i(TAG, "onAnimationUpdate: " + view.hashCode() + " c" + view.getCurrentView().hashCode());
             }
         });
     }

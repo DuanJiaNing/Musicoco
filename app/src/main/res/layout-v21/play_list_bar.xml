@@ -28,35 +28,64 @@
 
         </RelativeLayout>
 
-        <RelativeLayout
+        <LinearLayout
+            android:orientation="horizontal"
             android:id="@+id/play_list_hide_bar"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <ImageButton
-                android:src="@drawable/single_loop"
                 android:id="@+id/play_mode"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
+                android:layout_weight="0.5"
                 android:background="?android:selectableItemBackground"
                 android:gravity="center"
-                android:padding="@dimen/activity_default_padding_2x" />
+                android:padding="@dimen/activity_default_padding_2x"
+                android:src="@drawable/single_loop" />
+
+            <ImageButton
+                android:id="@+id/play_show_list"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:background="?android:selectableItemBackground"
+                android:gravity="center"
+                android:src="@drawable/ic_format_list_bulleted_black_24dp" />
+
+            <ImageButton
+                android:scaleX="0.8"
+                android:scaleY="0.8"
+                android:id="@+id/play_favorite"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:padding="@dimen/activity_default_padding_2x"
+                android:src="@drawable/ic_action_heart" />
 
             <ImageButton
                 android:id="@+id/play_list_hide"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
+                android:layout_weight="0.5"
                 android:background="?android:selectableItemBackground"
                 android:padding="@dimen/activity_default_padding_2x"
-                android:src="@drawable/ic_compress"
-                android:tint="@color/white" />
-        </RelativeLayout>
+                android:src="@drawable/ic_compress" />
+
+            <ImageButton
+                android:id="@+id/play_show_more"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:background="?android:selectableItemBackground"
+                android:gravity="center"
+                android:padding="@dimen/activity_default_padding_2x"
+                android:src="@drawable/ic_more_vert_black_24dp" />
+
+
+        </LinearLayout>
 
     </FrameLayout>
 </FrameLayout>
