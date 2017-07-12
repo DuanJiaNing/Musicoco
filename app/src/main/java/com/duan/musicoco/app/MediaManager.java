@@ -99,11 +99,11 @@ public class MediaManager {
     public SongInfo getSongInfo(@NonNull Song song) {
         check();
         SongInfo info = null;
-
         for (SongInfo song1 : songs) {
             info = song1;
-            if (info.getData().equals(song.path))
+            if (info.getData().equals(song.path)) {
                 break;
+            }
         }
         return info;
     }

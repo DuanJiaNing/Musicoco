@@ -19,7 +19,6 @@ import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
@@ -52,6 +51,8 @@ public class MainSheetsController implements
     private Activity activity;
     private DBMusicocoController dbController;
     private final MediaManager mediaManager;
+
+    private boolean hasInitData = false;
 
     public MainSheetsController(Activity activity, MediaManager mediaManager) {
         this.activity = activity;
@@ -88,6 +89,8 @@ public class MainSheetsController implements
         mContainerFavorite.setClickable(true);
 
         update(null);
+
+        hasInitData = true;
     }
 
     @Override
@@ -211,7 +214,7 @@ public class MainSheetsController implements
         int defaultColor = Color.GRAY;
         int defaultTextColor = Color.DKGRAY;
         int[] colors = new int[4];
-        ColorUtils.get2LightColorWithTextFormBitmap(bitmap, defaultColor, defaultTextColor, colors);
+        ColorUtils.get4LightColorWithTextFormBitmap(bitmap, defaultColor, defaultTextColor, colors);
 
         GradientDrawable categoryD = new GradientDrawable(
                 GradientDrawable.Orientation.LEFT_RIGHT,
@@ -237,5 +240,9 @@ public class MainSheetsController implements
 
     private Bitmap createImage(Bitmap bitmap) {
         return bitmap;
+    }
+
+    public boolean hasInitData() {
+        return hasInitData;
     }
 }

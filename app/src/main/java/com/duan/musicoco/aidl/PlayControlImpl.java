@@ -3,12 +3,11 @@ package com.duan.musicoco.aidl;
 import android.content.Context;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
+import android.util.Log;
 
 import com.duan.musicoco.service.PlayController;
 
 import java.util.List;
-
-import static com.duan.musicoco.service.PlayController.ERROR_INVALID;
 
 /**
  * Created by DuanJiaNing on 2017/5/23.<br><br>
@@ -23,15 +22,25 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
 
     protected RemoteCallbackList<IOnPlayStatusChangedListener> mStatusChangeListeners;
 
+    protected RemoteCallbackList<IOnPlayListChangedListener> mPlayListChangeListeners;
+
+    protected RemoteCallbackList<IOnDataIsReadyListener> mDataIsReadyListeners;
+
     private PlayController manager;
 
     private Context context;
 
-    public PlayControlImpl(List<Song> songs, Context context) {
+    public PlayControlImpl(Context context) {
         this.context = context;
         this.mSongChangeListeners = new RemoteCallbackList<>();
         this.mStatusChangeListeners = new RemoteCallbackList<>();
-        this.manager = PlayController.getMediaController(context, songs, new NotifyStatusChange(), new NotifySongChange());
+        this.mPlayListChangeListeners = new RemoteCallbackList<>();
+        this.mDataIsReadyListeners = new RemoteCallbackList<>();
+        this.manager = PlayController.getMediaController(
+                context,
+                new NotifyStatusChange(),
+                new NotifySongChange(),
+                new NotifyPlayListChange());
     }
 
     /**
@@ -122,18 +131,24 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
     }
 
     @Override
-    public synchronized Song setPlayList(List<Song> songs, int current) {
+    public Song setPlayList(List<Song> songs, int current, int id) throws RemoteException {
         int cu = 0;
-        if (current > 0 && current < songs.size() - 1)
+        if (current >= 0 && current < songs.size()) {
             cu = current;
+        }
 
-        Song n = manager.setPlayList(songs, cu);
+        Song n = manager.setPlayList(songs, cu, id);
         return n;
     }
 
     @Override
     public List<Song> getPlayList() {
         return manager.getSongsList();
+    }
+
+    @Override
+    public int getPlayListId() throws RemoteException {
+        return manager.getPlayListId();
     }
 
     @Override
@@ -173,6 +188,16 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
     }
 
     @Override
+    public void registerOnPlayListChangedListener(IOnPlayListChangedListener li) throws RemoteException {
+        mPlayListChangeListeners.register(li);
+    }
+
+    @Override
+    public void registerOnDataIsReadyListener(IOnDataIsReadyListener li) throws RemoteException {
+        mDataIsReadyListeners.register(li);
+    }
+
+    @Override
     public void unregisterOnSongChangedListener(IOnSongChangedListener li) {
         mSongChangeListeners.unregister(li);
     }
@@ -182,14 +207,41 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
         mStatusChangeListeners.unregister(li);
     }
 
+    @Override
+    public void unregisterOnPlayListChangedListener(IOnPlayListChangedListener li) throws RemoteException {
+        mPlayListChangeListeners.unregister(li);
+    }
+
+    @Override
+    public void unregisterOnDataIsReadyListener(IOnDataIsReadyListener li) throws RemoteException {
+        mDataIsReadyListeners.unregister(li);
+    }
+
     public void releaseMediaPlayer() {
         manager.releaseMediaPlayer();
+    }
+
+    public void notifyDataIsReady() {
+        Log.d("service", "notifyDataIsReady: ");
+        final int N = mDataIsReadyListeners.beginBroadcast();
+        for (int i = 0; i < N; i++) {
+            IOnDataIsReadyListener listener = mDataIsReadyListeners.getBroadcastItem(i);
+            if (listener != null) {
+                try {
+                    listener.dataIsReady();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        mDataIsReadyListeners.finishBroadcast();
     }
 
     private class NotifySongChange implements PlayController.NotifySongChanged {
 
         @Override
         public void notify(Song song, int index, boolean isNext) {
+            Log.d("service", "NotifySongChanged: ");
             final int N = mSongChangeListeners.beginBroadcast();
             for (int i = 0; i < N; i++) {
                 IOnSongChangedListener listener = mSongChangeListeners.getBroadcastItem(i);
@@ -209,6 +261,7 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
 
         @Override
         public void notify(Song song, int index, int status) {
+            Log.d("service", "NotifyStatusChanged: ");
             final int N = mStatusChangeListeners.beginBroadcast();
             for (int i = 0; i < N; i++) {
                 IOnPlayStatusChangedListener listener = mStatusChangeListeners.getBroadcastItem(i);
@@ -229,6 +282,26 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
                 }
             }
             mStatusChangeListeners.finishBroadcast();
+        }
+    }
+
+    private class NotifyPlayListChange implements PlayController.NotifyPlayListChanged {
+
+        @Override
+        public void notify(Song current, int index, int id) {
+
+            final int N = mPlayListChangeListeners.beginBroadcast();
+            for (int i = 0; i < N; i++) {
+                IOnPlayListChangedListener listener = mPlayListChangeListeners.getBroadcastItem(i);
+                if (listener != null) {
+                    try {
+                        listener.onPlayListChange(current, index, id);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            mPlayListChangeListeners.finishBroadcast();
         }
     }
 }

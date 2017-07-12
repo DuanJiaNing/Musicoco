@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.RemoteException;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -58,6 +57,7 @@ public class BottomNavigationController implements
         OnThemeChange {
 
     private final Activity activity;
+    private IPlayControl mControl;
     private final static String TAG = "BottomNavigationController";
 
     public final static String CURRENT_POSITION = "current_position";
@@ -72,7 +72,6 @@ public class BottomNavigationController implements
     private PlayView mPlay;
     private ImageButton mShowList;
 
-    private IPlayControl controller;
     private final PeriodicTask task;
 
     private long mDuration;
@@ -164,25 +163,30 @@ public class BottomNavigationController implements
 
     }
 
-    public void initData(IPlayControl c) {
-        this.controller = c;
+    @Override
+    public void dataIsReady(IPlayControl control) {
+        Log.d(TAG, "dataIsReady: ");
+        initData(control);
+    }
 
-        if (null == controller) {
-            IllegalStateException e = new IllegalStateException("make sure call setController() first");
-            Log.w(TAG, e.getMessage());
-            throw e;
+    public void initData(IPlayControl control) {
+        if (mControl == null) {
+            this.mControl = control;
+            hasInitData = true;
         }
 
         mContainer.setEnabled(true);
         mPlay.setEnabled(true);
         mShowList.setEnabled(true);
 
-        adapter = new PlayListAdapter(activity, controller);
+        adapter = new PlayListAdapter(activity, mControl);
         mList.setAdapter(adapter);
+
+        Theme theme = appPreference.getTheme();
+        themeChange(theme, null);
 
         update(null);
 
-        hasInitData = true;
     }
 
     public boolean hasInitData() {
@@ -211,7 +215,7 @@ public class BottomNavigationController implements
         final float phoneWidth = Utils.getMetrics(activity).widthPixels;
 
         try {
-            progress = controller.getProgress();
+            progress = mControl.getProgress();
             int width = (int) (phoneWidth * (progress / (float) mDuration));
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mProgress.getLayoutParams();
             params.width = width;
@@ -256,13 +260,13 @@ public class BottomNavigationController implements
 
         try {
 
-            if (controller.status() == PlayController.STATUS_PLAYING) {
+            if (mControl.status() == PlayController.STATUS_PLAYING) {
                 mPlay.setPlayStatus(true);
             } else {
                 mPlay.setPlayStatus(false);
             }
 
-            Song song = controller.currentSong();
+            Song song = mControl.currentSong();
             SongInfo info = mediaManager.getSongInfo(song);
             mDuration = (int) info.getDuration();
             updateProgress();
@@ -274,7 +278,7 @@ public class BottomNavigationController implements
     }
 
     private boolean checkNull() {
-        if (controller == null) {
+        if (mControl == null) {
             return true;
         } else {
             return false;
@@ -287,6 +291,11 @@ public class BottomNavigationController implements
     }
 
     @Override
+    public void onPlayListChange(Song current, int index, int id) {
+
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.list_bottom_nav_container:
@@ -296,8 +305,8 @@ public class BottomNavigationController implements
                 boolean play = mPlay.isChecked();
                 try {
                     if (play) {
-                        controller.resume();
-                    } else controller.pause();
+                        mControl.resume();
+                    } else mControl.pause();
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -312,9 +321,9 @@ public class BottomNavigationController implements
                 break;
             case R.id.main_play_mode:
                 try {
-                    int mode = controller.getPlayMode();
+                    int mode = mControl.getPlayMode();
                     mode = ((mode - 21) + 1) % 3 + 21;
-                    controller.setPlayMode(mode);
+                    mControl.setPlayMode(mode);
 
                     mode = updatePlayMode();
                     StringBuilder builder = new StringBuilder();
@@ -341,7 +350,7 @@ public class BottomNavigationController implements
                 break;
             case R.id.main_play_location:
                 try {
-                    int index = controller.currentSongIndex();
+                    int index = mControl.currentSongIndex();
                     mList.smoothScrollToPosition(index);
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -362,9 +371,9 @@ public class BottomNavigationController implements
 
         int[] colors = new int[4];
         if (theme == Theme.DARK) {
-            colors = ColorUtils.getDarkThemeColors(activity);
+            colors = ColorUtils.get4DarkThemeColors(activity);
         } else if (theme == Theme.WHITE) {
-            colors = ColorUtils.getWhiteThemeColors(activity);
+            colors = ColorUtils.get4WhiteThemeColors(activity);
         } else return;
 
         int mainBC = colors[0];
@@ -418,32 +427,28 @@ public class BottomNavigationController implements
         int mode = PlayController.MODE_LIST_LOOP;
 
         try {
-            mode = controller.getPlayMode();
+            mode = mControl.getPlayMode();
         } catch (RemoteException e) {
             e.printStackTrace();
         }
 
         switch (mode) {
-            case PlayController.MODE_LIST_LOOP:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    drawable = activity.getDrawable(R.drawable.list_loop);
-                } else drawable = activity.getResources().getDrawable(R.drawable.list_loop);
-                builder.append(activity.getString(R.string.play_mode_list_loop));
-                break;
-
             case PlayController.MODE_SINGLE_LOOP:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    drawable = activity.getDrawable(R.drawable.single_loop);
-                } else drawable = activity.getResources().getDrawable(R.drawable.single_loop);
+                drawable = activity.getResources().getDrawable(R.drawable.single_loop);
                 builder.append(activity.getString(R.string.play_mode_single_loop));
                 break;
 
             case PlayController.MODE_RANDOM:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    drawable = activity.getDrawable(R.drawable.random);
-                } else drawable = activity.getResources().getDrawable(R.drawable.random);
+                drawable = activity.getResources().getDrawable(R.drawable.random);
                 builder.append(activity.getString(R.string.play_mode_random));
                 break;
+
+            case PlayController.MODE_LIST_LOOP:
+            default:
+                drawable = activity.getResources().getDrawable(R.drawable.list_loop);
+                builder.append(activity.getString(R.string.play_mode_list_loop));
+                break;
+
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

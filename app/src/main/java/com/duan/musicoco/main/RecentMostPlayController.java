@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -211,7 +210,7 @@ public class RecentMostPlayController implements
 
         int[] colors = new int[6];
         int defaultColor = activity.getResources().getColor(R.color.rmp_image_default_bg);
-        ColorUtils.getColorFormBitmap(bitmap, defaultColor, colors);
+        ColorUtils.get6ColorFormBitmap(bitmap, defaultColor, colors);
         GradientDrawable drawable = new GradientDrawable(
                 GradientDrawable.Orientation.LEFT_RIGHT,
                 new int[]{colors[4], colors[5]});
@@ -230,7 +229,7 @@ public class RecentMostPlayController implements
 
         switch (theme) {
             case DARK: {
-                cs = ColorUtils.getDarkThemeColors(activity);
+                cs = ColorUtils.get4DarkThemeColors(activity);
                 int mainTC = cs[1];
                 int vicTC = cs[3];
                 mName.setTextColor(mainTC);
@@ -244,7 +243,7 @@ public class RecentMostPlayController implements
             }
             case WHITE:
             default: {
-                cs = ColorUtils.getWhiteThemeColors(activity);
+                cs = ColorUtils.get4WhiteThemeColors(activity);
                 int mainBC = cs[0];
                 int vicBC = cs[2];
                 mName.setTextColor(mainBC);

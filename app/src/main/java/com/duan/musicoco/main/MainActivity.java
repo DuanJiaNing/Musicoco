@@ -21,6 +21,7 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.ExceptionHandler;
+import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.PlayServiceManager;
@@ -134,9 +135,12 @@ public class MainActivity extends RootActivity implements
             bottomNavigationController.update(null);
         }
 
-        //FIXME 设置显示 历史最多播放 或 最近几周内最多播放
         if (mostPlayController.hasInitData()) {
             mostPlayController.update("历史最多播放");
+        }
+
+        if (mainSheetsController.hasInitData()) {
+            mainSheetsController.update(null);
         }
 
     }
@@ -199,49 +203,26 @@ public class MainActivity extends RootActivity implements
     @Override
     public void onConnected(ComponentName name, IBinder service) {
 
-        initSelfData();
+        prepareSelfData();
 
     }
 
-    private void initSelfData() {
+    private void prepareSelfData() {
 
         Theme theme = appPreference.getTheme();
         themeChange(theme, null);
 
-        IPlayControl c = mServiceConnection.takeControl();
-        try {
-            List<Song> songs = c.getPlayList();
-            if (songs.size() == 0) {
-                noSongsInDisk();
-            } else {
-                initController();
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            new ExceptionHandler().handleRemoteException(this, getString(R.string.exception_remote), null);
+        if (!bottomNavigationController.hasInitData()) {
+            //错过了服务端回调，服务端数据准备好后会回调 OnDataIsReadyListener#dataIsReady 方法
+            //当绑定速度慢与数据准备速度时就会错过该回调
+            bottomNavigationController.initData(mServiceConnection.takeControl());
         }
 
-
-    }
-
-    private void initController() {
-        Theme theme = appPreference.getTheme();
-
-        bottomNavigationController.initData(mServiceConnection.takeControl());
-        bottomNavigationController.themeChange(theme, null);
-
-        //FIXME 设置显示 历史最多播放 或 最近几周内最多播放
         mostPlayController.initData(dbMusicoco, "历史最多播放");
-        mostPlayController.themeChange(theme, null);
-
         mainSheetsController.initData(dbMusicoco);
 
     }
 
-    private void noSongsInDisk() {
-        bottomNavigationController.emptyMediaLibrary();
-        mostPlayController.emptyMediaLibrary();
-    }
 
     @Override
     public void disConnected(ComponentName name) {
@@ -253,15 +234,14 @@ public class MainActivity extends RootActivity implements
     @Override
     public void themeChange(Theme theme, int[] colors) {
         bottomNavigationController.themeChange(theme, null);
-
+        mostPlayController.themeChange(theme, null);
     }
 
     @Override
     public void onRefresh() {
-        //FIXME 设置显示 历史最多播放 或 最近几周内最多播放
+        //主线程阻塞刷新
         mostPlayController.update("历史最多播放");
         mainSheetsController.update(null);
-
         refreshLayout.setRefreshing(false);
     }
 }

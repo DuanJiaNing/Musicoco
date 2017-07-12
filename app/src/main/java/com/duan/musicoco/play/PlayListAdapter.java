@@ -213,11 +213,11 @@ public class PlayListAdapter extends BaseAdapter implements OnThemeChange {
         if (colors == null) {
             switch (theme) {
                 case DARK:
-                    cs = ColorUtils.getDarkThemeTextColor(context);
+                    cs = ColorUtils.get2DarkThemeTextColor(context);
                     break;
                 case WHITE:
                 default:
-                    cs = ColorUtils.getWhiteThemeTextColor(context);
+                    cs = ColorUtils.get2WhiteThemeTextColor(context);
                     break;
             }
         } else if (colors.length >= 2) {

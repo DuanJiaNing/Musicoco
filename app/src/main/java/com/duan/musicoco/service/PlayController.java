@@ -5,7 +5,6 @@ import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
 
 import java.io.IOException;
@@ -35,6 +34,11 @@ public class PlayController {
     private final MediaPlayer mPlayer;
 
     private boolean isNext = true;
+    private int mPlayListId;
+
+    public int getPlayListId() {
+        return mPlayListId;
+    }
 
     public interface NotifyStatusChanged {
         void notify(Song song, int index, int status);
@@ -44,8 +48,13 @@ public class PlayController {
         void notify(Song song, int index, boolean isNext);
     }
 
-    private NotifySongChanged mNotifySongChanged;
-    private NotifyStatusChanged mNotifyStatusChanged;
+    public interface NotifyPlayListChanged {
+        void notify(Song current, int index, int id);
+    }
+
+    private final NotifySongChanged mNotifySongChanged;
+    private final NotifyPlayListChanged mNotifyPlayListChanged;
+    private final NotifyStatusChanged mNotifyStatusChanged;
 
     //未知错误
     public static final int ERROR_UNKNOWN = -1;
@@ -87,17 +96,13 @@ public class PlayController {
 
     private int mPlayMode = MODE_DEFAULT;
 
-    private PlayController(Context context, List<Song> songs, NotifyStatusChanged sl, NotifySongChanged sc) {
+    private PlayController(Context context, NotifyStatusChanged sl, NotifySongChanged sc, NotifyPlayListChanged pl) {
 
         this.context = context;
-        this.mPlayList = songs;
         this.mNotifyStatusChanged = sl;
         this.mNotifySongChanged = sc;
+        this.mNotifyPlayListChanged = pl;
         mPlayState = STATUS_STOP;
-
-        if (songs.size() == 0) {
-            Log.e(TAG, "PlayController: the play list is empty");
-        }
 
         mPlayer = new MediaPlayer();
         mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -109,11 +114,11 @@ public class PlayController {
 
     }
 
-    public static PlayController getMediaController(Context context, List<Song> songs, NotifyStatusChanged sl, NotifySongChanged sc) {
+    public static PlayController getMediaController(Context context, NotifyStatusChanged sl, NotifySongChanged sc, NotifyPlayListChanged pl) {
         if (MANAGER == null) {
             synchronized (PlayController.class) {
                 if (MANAGER == null)
-                    MANAGER = new PlayController(context, songs, sl, sc);
+                    MANAGER = new PlayController(context, sl, sc, pl);
             }
         }
         return MANAGER;
@@ -135,12 +140,17 @@ public class PlayController {
     }
 
     //设置播放列表
-    public Song setPlayList(List<Song> songs, int current) {
-
+    public Song setPlayList(List<Song> songs, int current, int id) {
         this.mPlayList = songs;
+        this.mPlayListId = id;
+
+        Song currentS = songs.get(mCurrentSong);
+        mNotifyPlayListChanged.notify(currentS, current, id);
+
         mCurrentSong = current;
         changeSong();
-        return songs.get(mCurrentSong);
+
+        return currentS;
     }
 
     //当前正在播放曲目

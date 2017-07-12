@@ -5,8 +5,11 @@ import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
 
 import com.duan.musicoco.aidl.IPlayControl;
+import com.duan.musicoco.aidl.OnDataIsReadyListener;
+import com.duan.musicoco.aidl.OnPlayListChangedListener;
 import com.duan.musicoco.aidl.OnPlayStatusChangedListener;
 import com.duan.musicoco.aidl.OnSongChangedListener;
 import com.duan.musicoco.aidl.Song;
@@ -22,17 +25,17 @@ public class PlayServiceConnection implements ServiceConnection {
     public boolean hasConnected = false;
 
     private IPlayControl mControl;
-
     private Activity mActivity;
 
     private PlayServiceCallback serviceCallback;
-
     private OnServiceConnect serviceConnect;
 
     private OnPlayStatusChangedListener mPlayStatusChangedListener;
     private OnSongChangedListener mSongChangedListener;
+    private OnPlayListChangedListener mPlayListChangedListener;
+    private OnDataIsReadyListener mDataIsReadyListener;
 
-    public PlayServiceConnection(PlayServiceCallback callback, OnServiceConnect serviceConnect, Activity activity) {
+    public PlayServiceConnection(PlayServiceCallback callback, final OnServiceConnect serviceConnect, Activity activity) {
         this.mActivity = activity;
         this.serviceCallback = callback;
         this.serviceConnect = serviceConnect;
@@ -46,6 +49,33 @@ public class PlayServiceConnection implements ServiceConnection {
                     @Override
                     public void run() {
                         serviceCallback.songChanged(s, in, isn);
+                    }
+                });
+            }
+        };
+
+        this.mDataIsReadyListener = new OnDataIsReadyListener() {
+            @Override
+            public void dataIsReady() {
+                mActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        serviceCallback.dataIsReady(mControl);
+                    }
+                });
+            }
+        };
+
+        this.mPlayListChangedListener = new OnPlayListChangedListener() {
+            @Override
+            public void onPlayListChange(Song current, int index, int id) {
+                final Song s = current;
+                final int in = index;
+                final int i = id;
+                mActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        serviceCallback.onPlayListChange(s, in, i);
                     }
                 });
             }
@@ -88,6 +118,10 @@ public class PlayServiceConnection implements ServiceConnection {
         try {
             mControl.registerOnPlayStatusChangedListener(mPlayStatusChangedListener);
             mControl.registerOnSongChangedListener(mSongChangedListener);
+            mControl.registerOnPlayListChangedListener(mPlayListChangedListener);
+            mControl.registerOnDataIsReadyListener(mDataIsReadyListener);
+
+            Log.d("musicoco", "onServiceConnected: service connected");
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -108,6 +142,8 @@ public class PlayServiceConnection implements ServiceConnection {
         try {
             mControl.unregisterOnPlayStatusChangedListener(mPlayStatusChangedListener);
             mControl.unregisterOnSongChangedListener(mSongChangedListener);
+            mControl.unregisterOnPlayListChangedListener(mPlayListChangedListener);
+            mControl.unregisterOnDataIsReadyListener(mDataIsReadyListener);
         } catch (RemoteException e) {
             e.printStackTrace();
         }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 
+import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.PlayPreference;
 
@@ -17,16 +18,18 @@ public abstract class RootService extends Service {
     protected MediaManager mediaManager;
     protected final PlayPreference playPreference;
     protected final AppPreference appPreference;
+    protected DBMusicocoController dbController;
 
     public RootService() {
         this.playPreference = new PlayPreference(this);
-        appPreference = new AppPreference(this);
+        this.appPreference = new AppPreference(this);
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        mediaManager = MediaManager.getInstance(getApplicationContext());
+        this.dbController = new DBMusicocoController(this, false);
+        this.mediaManager = MediaManager.getInstance(getApplicationContext());
 
     }
 }

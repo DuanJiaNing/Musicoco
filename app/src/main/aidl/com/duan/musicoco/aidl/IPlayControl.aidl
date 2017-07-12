@@ -3,6 +3,8 @@ package com.duan.musicoco.aidl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.aidl.IOnSongChangedListener;
 import com.duan.musicoco.aidl.IOnPlayStatusChangedListener;
+import com.duan.musicoco.aidl.IOnPlayListChangedListener;
+import com.duan.musicoco.aidl.IOnDataIsReadyListener;
 // Declare any non-default types here with import statements
 
 interface IPlayControl {
@@ -39,20 +41,25 @@ interface IPlayControl {
        int status();
 
        //设置播放列表，返回下一首播放歌曲
-       Song setPlayList(in List<Song> songs,int current);
+       // 为该播放列表设置一个 id ，用于区分不同歌单
+       Song setPlayList(in List<Song> songs,int current,int id);
 
        //获得播放列表
        List<Song> getPlayList();
 
+       int getPlayListId();
+
        //注册播放曲目改变时回调
        void registerOnSongChangedListener(IOnSongChangedListener li);
-
        void registerOnPlayStatusChangedListener(IOnPlayStatusChangedListener li);
+       void registerOnPlayListChangedListener(IOnPlayListChangedListener li);
+       void registerOnDataIsReadyListener(IOnDataIsReadyListener li);
 
        //取消注册播放曲目改变时回调
        void unregisterOnSongChangedListener(IOnSongChangedListener li);
-
        void unregisterOnPlayStatusChangedListener(IOnPlayStatusChangedListener li);
+       void unregisterOnPlayListChangedListener(IOnPlayListChangedListener li);
+       void unregisterOnDataIsReadyListener(IOnDataIsReadyListener li);
 
        //设置播放模式 0 列表播放（默认，播放到列表最后时停止播放），1 单曲循环，2列表循环，3 随机播放
        void setPlayMode(int mode);
@@ -68,5 +75,6 @@ interface IPlayControl {
 
        //获得循环模式
        int getPlayMode();
+
 }
 

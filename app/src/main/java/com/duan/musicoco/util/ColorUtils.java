@@ -47,12 +47,8 @@ public class ColorUtils {
      * 3 柔和颜色<br>
      * 4 亮的柔和颜色<br>
      * 5 暗的柔和颜色<br>
-     *
-     * @param bitmap       图片
-     * @param defaultColor 默认颜色
-     * @return 大小为 6 的数组
      */
-    public static void getColorFormBitmap(@NonNull Bitmap bitmap, int defaultColor, int[] colors) {
+    public static void get6ColorFormBitmap(@NonNull Bitmap bitmap, int defaultColor, int[] colors) {
 
         if (colors.length != 6)
             return;
@@ -99,10 +95,6 @@ public class ColorUtils {
      * 获得图片中出现最多的颜色
      * 0 亮的活力颜色
      * 1 亮的柔和颜色
-     *
-     * @param bitmap       图片
-     * @param defaultColor 默认颜色
-     * @return 大小为 2 的数组
      */
     public static void get2ColorFormBitmap(@NonNull Bitmap bitmap, int defaultColor, int[] colors) {
 
@@ -133,12 +125,8 @@ public class ColorUtils {
      * 1 暗的活力颜色 对应适合的字体颜色<br>
      * 2 暗的柔和颜色<br>
      * 3 暗的柔和颜色 对应适合的字体颜色<br>
-     *
-     * @param bitmap       图片
-     * @param defaultColor 默认颜色
-     * @return 大小为 4 的数组
      */
-    public static void get2DarkColorWithTextFormBitmap(@NonNull Bitmap bitmap, int defaultColor, int defaultTextColor, int[] colors) {
+    public static void get4DarkColorWithTextFormBitmap(@NonNull Bitmap bitmap, int defaultColor, int defaultTextColor, int[] colors) {
 
         if (colors.length != 4)
             return;
@@ -175,12 +163,8 @@ public class ColorUtils {
      * 1 亮的活力颜色 对应适合的字体颜色<br>
      * 2 亮的柔和颜色<br>
      * 3 亮的柔和颜色 对应适合的字体颜色<br>
-     *
-     * @param bitmap       图片
-     * @param defaultColor 默认颜色
-     * @return 大小为 4 的数组
      */
-    public static void get2LightColorWithTextFormBitmap(@NonNull Bitmap bitmap, int defaultColor, int defaultTextColor, int[] colors) {
+    public static void get4LightColorWithTextFormBitmap(@NonNull Bitmap bitmap, int defaultColor, int defaultTextColor, int[] colors) {
 
         if (colors.length != 4)
             return;
@@ -217,7 +201,7 @@ public class ColorUtils {
      * 2 辅背景色
      * 3 辅字体色
      */
-    public static int[] getWhiteThemeColors(Context context) {
+    public static int[] get4WhiteThemeColors(Context context) {
 
         int[] colors = new int[4];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -242,7 +226,7 @@ public class ColorUtils {
      * 2 辅背景色
      * 3 辅字体色
      */
-    public static int[] getDarkThemeColors(Context context) {
+    public static int[] get4DarkThemeColors(Context context) {
 
         int[] colors = new int[4];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -264,7 +248,7 @@ public class ColorUtils {
      * 0 主字体颜色
      * 1 辅字体颜色
      */
-    public static int[] getWhiteThemeTextColor(Context context) {
+    public static int[] get2WhiteThemeTextColor(Context context) {
         int[] colors = new int[2];
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -278,12 +262,11 @@ public class ColorUtils {
         return colors;
     }
 
-
     /**
      * 0 主字体颜色
      * 1 辅字体颜色
      */
-    public static int[] getDarkThemeTextColor(Context context) {
+    public static int[] get2DarkThemeTextColor(Context context) {
         int[] colors = new int[2];
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

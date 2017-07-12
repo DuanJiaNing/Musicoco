@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.service.PlayController;
@@ -19,7 +20,8 @@ public class PlayPreference {
 
     public static final String PLAY_PREFERENCE = "play_preference";
     public static final String KEY_PLAY_MODE = "key_play_mode";
-    public static final String KEY_THEME = "KEY_THEME";
+    public static final String KEY_THEME = "key_theme";
+    public static final String KEY_SHEET = "key_sheet";
     private SharedPreferences.Editor editor;
     private SharedPreferences preferences;
 
@@ -30,24 +32,24 @@ public class PlayPreference {
     }
 
     private void check() {
-        if (preferences == null)
+        if (preferences == null) {
             preferences = context.getSharedPreferences(PLAY_PREFERENCE, Context.MODE_PRIVATE);
+        }
     }
 
-    public void modifyTheme(Theme theme) {
+    public void updateTheme(Theme theme) {
         check();
         editor = preferences.edit();
         editor.putString(KEY_THEME, theme.name());
         editor.apply();
+        Log.d("musicoco", "updateTheme: theme " + theme.name());
     }
-
 
     public Theme getTheme() {
         check();
         String pa = preferences.getString(KEY_THEME, Theme.VARYING.name());
         return Theme.valueOf(pa);
     }
-
 
     public int updatePlayMode(int mode) {
         check();
@@ -72,8 +74,9 @@ public class PlayPreference {
     public void updateSong(CurrentSong song) {
         check();
 
-        if (song == null)
+        if (song == null) {
             return;
+        }
 
         editor = preferences.edit();
         editor.putString(CurrentSong.KEY_CURRENT_SONG_PATH, song.path);
@@ -92,6 +95,28 @@ public class PlayPreference {
         int pro = preferences.getInt(CurrentSong.KEY_CURRENT_SONG_PLAY_PROGRESS, 0);
 
         return new CurrentSong(p, pro, in);
+    }
+
+    /**
+     * 0 为全部，其它的歌单 信息 可从 {@link com.duan.musicoco.db.DBMusicocoController#getSheet(String)}等方法获得
+     */
+    public void updateSheet(int sheetID) {
+        check();
+        if (sheetID < 0) {
+            return;
+        }
+
+        editor = preferences.edit();
+        editor.putInt(KEY_SHEET, sheetID);
+        editor.apply();
+    }
+
+    /**
+     * 0 为全部，其它的歌单 信息 可从 {@link com.duan.musicoco.db.DBMusicocoController#getSheet(String)}等方法获得
+     */
+    public int getSheetID() {
+        check();
+        return preferences.getInt(KEY_SHEET, 0);
     }
 
     public static class CurrentSong {

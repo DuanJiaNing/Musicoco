@@ -1,9 +1,11 @@
 package com.duan.musicoco.util;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.view.View;
@@ -43,4 +45,20 @@ public class AnimationUtils {
         anim.start();
     }
 
+    public static void startAlphaAnim(@NonNull final View view, int duration, @Nullable Animator.AnimatorListener listener, float... values) {
+        ValueAnimator alphaAnim = ObjectAnimator.ofFloat(values);
+        alphaAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float alpha = (float) animation.getAnimatedValue();
+                view.setAlpha(alpha);
+            }
+        });
+        if (listener != null) {
+            alphaAnim.addListener(listener);
+        }
+
+        alphaAnim.setDuration(duration);
+        alphaAnim.start();
+    }
 }

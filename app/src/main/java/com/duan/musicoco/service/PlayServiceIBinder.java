@@ -15,8 +15,8 @@ public class PlayServiceIBinder extends PlayControlImpl {
 
     private Context mContext;
 
-    public PlayServiceIBinder(Context context, List<Song> songs) {
-        super(songs,context);
+    public PlayServiceIBinder(Context context) {
+        super(context);
         this.mContext = context;
     }
 }

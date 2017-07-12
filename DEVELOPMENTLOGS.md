@@ -148,3 +148,6 @@
 
 1 完善播放界面底部导航<br>
 2 添加收藏功能的入口，完善主界面【我的收藏】歌单信息<br>
+3 添加 IOnDataIsReadyListener 接口，服务器数据初始化完成时回调<br>
+4 添加 IOnPlayListChangedListener 接口，用于在播放列表改变时回调<br>
+

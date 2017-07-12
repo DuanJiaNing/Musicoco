@@ -48,6 +48,7 @@ public class DBMusicocoController {
     public static final String SHEET_NAME = "name"; //歌单名称
     public static final String SHEET_REMARK = "remarks"; //歌单备注
     public static final String SHEET_CREATE = "create_time"; //创建时间
+    public static final String SHEET_PLAYTIMES = "sheet_playtimes"; //播放次数
 
     static void createSongTable(SQLiteDatabase db) {
         String sql = "create table " + DBMusicocoController.TABLE_SONG + "(" +
@@ -68,7 +69,8 @@ public class DBMusicocoController {
                 DBMusicocoController.SHEET_ID + " integer primary key autoincrement," +
                 DBMusicocoController.SHEET_NAME + " text unique," +
                 DBMusicocoController.SHEET_REMARK + " text," +
-                DBMusicocoController.SHEET_CREATE + " text)";
+                DBMusicocoController.SHEET_CREATE + " text," +
+                DBMusicocoController.SHEET_PLAYTIMES + " integer)";
         db.execSQL(sql);
     }
 
@@ -117,24 +119,16 @@ public class DBMusicocoController {
         public String name;
         public String remark;
         public long create;
+        public int playTimes;
 
         public Sheet() {
         }
 
-        public Sheet(String name, String remark, long create) {
+        public Sheet(String name, String remark) {
             this.name = name;
             this.remark = remark;
-            this.create = create;
-        }
-
-        @Override
-        public String toString() {
-            return "Sheet{" +
-                    "id=" + id +
-                    ", name='" + name + '\'' +
-                    ", remark='" + remark + '\'' +
-                    ", create=" + create +
-                    '}';
+            this.create = System.currentTimeMillis();
+            this.playTimes = 0;
         }
 
         @Override
@@ -168,45 +162,9 @@ public class DBMusicocoController {
     }
 
     public void close() {
-        if (database.isOpen())
+        if (database.isOpen()) {
             database.close();
-    }
-
-    @Nullable
-    public Sheet getSheet(int sheetId) {
-        String sql = "select * from " + TABLE_SHEET + " where " + SHEET_ID + " = " + sheetId;
-        Cursor cursor = database.rawQuery(sql, null);
-
-        Sheet sheet = new Sheet();
-        while (cursor.moveToNext()) {
-            sheet.id = cursor.getInt(cursor.getColumnIndex(SHEET_ID));
-            sheet.name = cursor.getString(cursor.getColumnIndex(SHEET_NAME));
-            sheet.remark = cursor.getString(cursor.getColumnIndex(SHEET_REMARK));
-            String str = cursor.getString(cursor.getColumnIndex(SHEET_CREATE));
-            sheet.create = Long.valueOf(str);
         }
-
-        cursor.close();
-        return sheet;
-    }
-
-    public List<Sheet> getSheets() {
-        String sql = "select * from " + TABLE_SHEET;
-        Cursor cursor = database.rawQuery(sql, null);
-
-        List<Sheet> sheets = new ArrayList<>();
-        while (cursor.moveToNext()) {
-            Sheet sheet = new Sheet();
-            sheet.id = cursor.getInt(cursor.getColumnIndex(SHEET_ID));
-            sheet.name = cursor.getString(cursor.getColumnIndex(SHEET_NAME));
-            sheet.remark = cursor.getString(cursor.getColumnIndex(SHEET_REMARK));
-            String str = cursor.getString(cursor.getColumnIndex(SHEET_CREATE));
-            sheet.create = Long.valueOf(str);
-            sheets.add(sheet);
-        }
-
-        cursor.close();
-        return sheets;
     }
 
     @Nullable
@@ -370,19 +328,6 @@ public class DBMusicocoController {
         return infos;
     }
 
-    public void addSheet(String name, String remark) {
-        String create = System.currentTimeMillis() + "";
-        if (remark == null)
-            remark = "";
-
-        String sql = String.format(Locale.CHINESE, "insert into %s values(null,'%s','%s','%s')",
-                TABLE_SHEET, name, remark, create);
-        database.execSQL(sql);
-        Log.d(TAG, "addSheet: insert " + name);
-
-
-    }
-
     public void addSongInfo(@NonNull Song song, int playTimes, @Nullable String remark, @Nullable int[] sheets, boolean favorite) {
 
         if (remark == null) {
@@ -470,8 +415,9 @@ public class DBMusicocoController {
 
     public void updateSongPlayTimes(int songID) {
         SongInfo info = getSongInfo(songID);
-        if (info == null)
+        if (info == null) {
             return;
+        }
 
         int times = info.playTimes + 1;
         updateSongPlayTimes(songID, times);
@@ -510,16 +456,109 @@ public class DBMusicocoController {
      * 歌曲的播放次数加一
      * 同时修改最后播放时间为当前时间
      */
-    public void addTimes(@NonNull Song song) {
+    public void addSongPlayTimes(@NonNull Song song) {
         updateSongPlayTimes(song);
         updateSongLastPlayTime(song);
 
         SongInfo info = getSongInfo(song);
         if (info != null) {
-            Log.d(TAG, "addTimes: song=" + info.path + " lastPlayTime=" + info.lastPlayTime + " times=" + info.playTimes);
+            Log.d(TAG, "addSongPlayTimes: song=" + info.path + " lastPlayTime=" + info.lastPlayTime + " times=" + info.playTimes);
         }
 
     }
+
+
+    public void addSheet(String name, String remark) {
+        String create = System.currentTimeMillis() + "";
+        if (remark == null)
+            remark = "";
+
+        String sql = String.format(Locale.CHINESE, "insert into %s values(null,'%s','%s','%s',%d)",
+                TABLE_SHEET, name, remark, create, 0);
+        database.execSQL(sql);
+        Log.d(TAG, "addSheet: insert " + sql);
+    }
+
+    public int addSheetPlayTimes(int sheedId) {
+        Sheet s = getSheet(sheedId);
+        updateSheetPlayTimes(s.name, s.playTimes + 1);
+        return s.playTimes + 1;
+    }
+
+    public int addSheetPlayTimes(String name) {
+        Sheet s = getSheet(name);
+        updateSheetPlayTimes(s.name, s.playTimes + 1);
+        return s.playTimes + 1;
+    }
+
+    @Nullable
+    public Sheet getSheet(String name) {
+        String sql = "select * from " + TABLE_SHEET + " where " + SHEET_NAME + " like '" + name + "'";
+        Cursor cursor = database.rawQuery(sql, null);
+
+        Sheet sheet = null;
+        while (cursor.moveToNext()) {
+            sheet = new Sheet();
+            sheet.id = cursor.getInt(cursor.getColumnIndex(SHEET_ID));
+            sheet.name = cursor.getString(cursor.getColumnIndex(SHEET_NAME));
+            sheet.remark = cursor.getString(cursor.getColumnIndex(SHEET_REMARK));
+            String str = cursor.getString(cursor.getColumnIndex(SHEET_CREATE));
+            sheet.create = Long.valueOf(str);
+            sheet.playTimes = cursor.getInt(cursor.getColumnIndex(SHEET_PLAYTIMES));
+        }
+
+        cursor.close();
+        return sheet;
+    }
+
+    @Nullable
+    public Sheet getSheet(int sheetId) {
+        String sql = "select * from " + TABLE_SHEET + " where " + SHEET_ID + " = " + sheetId;
+        Cursor cursor = database.rawQuery(sql, null);
+
+        Sheet sheet = null;
+        while (cursor.moveToNext()) {
+            sheet = new Sheet();
+            sheet.id = cursor.getInt(cursor.getColumnIndex(SHEET_ID));
+            sheet.name = cursor.getString(cursor.getColumnIndex(SHEET_NAME));
+            sheet.remark = cursor.getString(cursor.getColumnIndex(SHEET_REMARK));
+            String str = cursor.getString(cursor.getColumnIndex(SHEET_CREATE));
+            sheet.create = Long.valueOf(str);
+            sheet.playTimes = cursor.getInt(cursor.getColumnIndex(SHEET_PLAYTIMES));
+        }
+
+        cursor.close();
+        return sheet;
+    }
+
+    public List<Sheet> getSheets() {
+        String sql = "select * from " + TABLE_SHEET;
+        Cursor cursor = database.rawQuery(sql, null);
+
+        List<Sheet> sheets = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            Sheet sheet = new Sheet();
+            sheet.id = cursor.getInt(cursor.getColumnIndex(SHEET_ID));
+            sheet.name = cursor.getString(cursor.getColumnIndex(SHEET_NAME));
+            sheet.remark = cursor.getString(cursor.getColumnIndex(SHEET_REMARK));
+            String str = cursor.getString(cursor.getColumnIndex(SHEET_CREATE));
+            sheet.create = Long.valueOf(str);
+            sheet.playTimes = cursor.getInt(cursor.getColumnIndex(SHEET_PLAYTIMES));
+            sheets.add(sheet);
+        }
+
+        cursor.close();
+        return sheets;
+    }
+
+    public void updateSheetPlayTimes(@NonNull String sheetName, int times) {
+        ContentValues values = new ContentValues();
+        values.put(SHEET_PLAYTIMES, times);
+        String whereClause = SHEET_NAME + " like ?";
+        String[] whereArgs = {sheetName};
+        database.update(TABLE_SHEET, values, whereClause, whereArgs);
+    }
+
 
     public void truncate(String table) {
         String sql = "drop table " + table;

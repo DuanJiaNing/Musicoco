@@ -7,6 +7,9 @@
     <color name="colorPrimaryLight">#dfbd6e</color>
     <color name="text_gray">#ababab</color>
 
+    <color name="default_play_bg_color">#3d3d3d</color>
+    <color name="default_play_text_color">#d6d6d6</color>
+
     <color name="white">#ffffff</color>
     <color name="white_d">#e2e2e2</color>
     <color name="white_d_d">#c1c0c0</color>

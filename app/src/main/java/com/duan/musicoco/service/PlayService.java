@@ -6,6 +6,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.RootService;
 import com.duan.musicoco.preference.PlayPreference;
@@ -29,47 +30,10 @@ public class PlayService extends RootService {
     public void onCreate() {
         super.onCreate();
 
-        //获得播放列表
-        //替换获取方式，从配置文件读取当前播放列表及当前播放曲目
-        // 配置文件无法跨进程共享，同步工作由客户端负责
-        // getSongList 耗时方法
-        iBinder = new PlayServiceIBinder(getApplicationContext(), mediaManager.getSongList());
+        iBinder = new PlayServiceIBinder(getApplicationContext());
+        Runnable runnable = new ServiceInitThread(iBinder, mediaManager, playPreference, dbController);
+        new Thread(runnable).start();
 
-        //循环模式
-        int cm = playPreference.getPlayMode();
-        iBinder.setPlayMode(cm);
-
-        //恢复上次播放状态
-        Song song = null;
-        PlayPreference.CurrentSong cur = playPreference.getSong();
-        if (cur != null && cur.path != null)
-            song = new Song(cur.path);
-
-        List<Song> songs = iBinder.getPlayList();
-
-        if (songs != null && songs.size() > 0) {
-            if (song == null) {  //配置文件没有保存【最后播放曲目】信息（通常为第一次打开应用）
-                song = songs.get(0);
-            } else { //配置文件有保存
-                if (!songs.contains(song)) { //确认服务端有此歌曲
-                    song = songs.get(0);
-                }
-            }
-
-            try {
-                // songChanged 将被回调
-                iBinder.setCurrentSong(song);
-                Log.d(TAG, "onCreate: current song: " + song.path);
-
-                int pro = cur.progress;
-                if (pro >= 0) {
-                    //iBinder.seekTo(pro);
-                }
-
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     @Override

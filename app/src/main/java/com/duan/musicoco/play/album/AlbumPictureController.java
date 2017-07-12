@@ -57,14 +57,14 @@ public final class AlbumPictureController implements IAlbum {
         this.cache = new BitmapCache(context, context.getString(R.string.cache_bitmap_album_visualizer));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            defaultColor = context.getColor(R.color.colorPrimaryLight);
-            defaultTextColor = context.getColor(R.color.colorAccent);
+            defaultColor = context.getColor(R.color.default_play_bg_color);
+            defaultTextColor = context.getColor(R.color.default_play_text_color);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            defaultColor = context.getResources().getColor(R.color.colorPrimaryLight, null);
-            defaultTextColor = context.getResources().getColor(R.color.colorAccent, null);
+            defaultColor = context.getResources().getColor(R.color.default_play_bg_color, null);
+            defaultTextColor = context.getResources().getColor(R.color.default_play_text_color, null);
         } else {
-            defaultColor = context.getResources().getColor(R.color.colorPrimaryLight);
-            defaultTextColor = context.getResources().getColor(R.color.colorAccent);
+            defaultColor = context.getResources().getColor(R.color.default_play_bg_color);
+            defaultTextColor = context.getResources().getColor(R.color.default_play_text_color);
         }
 
         this.bitmapProducer = new AlbumBitmapProducer(context, cache, defaultColor);
@@ -91,7 +91,7 @@ public final class AlbumPictureController implements IAlbum {
     }
 
     /**
-     * 切换歌曲的同时返回从歌曲专辑图片中提取出的四种颜色值{@link ColorUtils#get2DarkColorWithTextFormBitmap(Bitmap, int, int, int[])}
+     * 切换歌曲的同时返回从歌曲专辑图片中提取出的四种颜色值{@link ColorUtils#get4DarkColorWithTextFormBitmap(Bitmap, int, int, int[])}
      */
     public int[] pre(@NonNull SongInfo song, boolean updateColors) {
 
@@ -104,7 +104,7 @@ public final class AlbumPictureController implements IAlbum {
         Bitmap bitmap = bitmapProducer.get(song, size);
         if (bitmap != null) {
             if (updateColors)
-                ColorUtils.get2DarkColorWithTextFormBitmap(bitmap, defaultColor, defaultTextColor, this.colors);
+                ColorUtils.get4DarkColorWithTextFormBitmap(bitmap, defaultColor, defaultTextColor, this.colors);
 
             view.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
         } else {
@@ -137,7 +137,7 @@ public final class AlbumPictureController implements IAlbum {
         Bitmap bitmap = bitmapProducer.get(song, size);
         if (bitmap != null) {
             if (updateColors)
-                ColorUtils.get2DarkColorWithTextFormBitmap(bitmap, defaultColor, defaultTextColor, this.colors);
+                ColorUtils.get4DarkColorWithTextFormBitmap(bitmap, defaultColor, defaultTextColor, this.colors);
 
             view.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
         } else {

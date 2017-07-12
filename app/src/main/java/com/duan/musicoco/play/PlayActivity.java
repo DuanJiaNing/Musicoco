@@ -154,7 +154,7 @@ public class PlayActivity extends RootActivity implements
     public void songChanged(Song song, int index, boolean isNext) {
 
         //FIXME 次数计算策略完善
-        dbMusicoco.addTimes(song);
+        dbMusicoco.addSongPlayTimes(song);
 
         synchronize(song, isNext);
 
@@ -250,6 +250,16 @@ public class PlayActivity extends RootActivity implements
         btPlay.setPlayStatus(false);
     }
 
+    @Override
+    public void onPlayListChange(Song current, int index, int id) {
+
+    }
+
+    @Override
+    public void dataIsReady(IPlayControl mControl) {
+
+    }
+
     /**
      * 更新颜色（当主题为 随专辑变化 时）<br>
      * 1 背景颜色<br>
@@ -265,39 +275,50 @@ public class PlayActivity extends RootActivity implements
      * 3 暗的柔和颜色 对应适合的字体颜色 辅字体色<br>
      */
     private void updateColors(int[] colors) {
-        if (colors.length != 4)
+        if (colors.length != 4) {
             return;
+        }
 
-        ((TextView) (tsSongName.getCurrentView())).setTextColor(colors[1]);
-        ((TextView) (tsSongArts.getCurrentView())).setTextColor(colors[3]);
+        int mainBC = colors[0];
+        int mainTC = colors[1];
+        int vicBC = colors[2];
+        int vicTC = colors[3];
 
+        ((TextView) (tsSongName.getCurrentView())).setTextColor(mainTC);
+        ((TextView) (tsSongArts.getCurrentView())).setTextColor(vicTC);
+
+        int colorTo = mainBC;
         ColorDrawable cd = (ColorDrawable) flRootView.getBackground();
         if (cd != null) {
-            if (cd.getColor() != colors[0]) {
+            if (cd.getColor() != colorTo) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    AnimationUtils.startColorGradientAnim(1000, flRootView, cd.getColor(), colors[0]);
-                } else flRootView.setBackgroundColor(colors[0]);
+                    AnimationUtils.startColorGradientAnim(1000, flRootView, cd.getColor(), colorTo);
+                } else {
+                    flRootView.setBackgroundColor(colorTo);
+                }
             }
-        } else flRootView.setBackgroundColor(colors[0]);
+        } else {
+            flRootView.setBackgroundColor(colorTo);
+        }
 
-        tvPlayProgress.setTextColor(colors[3]);
-        tvDuration.setTextColor(colors[3]);
+        tvPlayProgress.setTextColor(vicTC);
+        tvDuration.setTextColor(vicTC);
 
-        btPre.setTriangleColor(colors[1]);
-        btNext.setTriangleColor(colors[1]);
+        btPre.setTriangleColor(mainTC);
+        btNext.setTriangleColor(mainTC);
 
-        btPlay.setTriangleColor(colors[1]);
-        btPlay.setSolidColor(colors[1]);
-        btPlay.setPauseLineColor(colors[1]);
+        btPlay.setTriangleColor(mainTC);
+        btPlay.setSolidColor(mainTC);
+        btPlay.setPauseLineColor(mainTC);
 
-        sbSongProgress.setRippleColor(colors[3]);
-        sbSongProgress.setScrubberColor(colors[1]);
-        sbSongProgress.setThumbColor(colors[3], colors[1]);
-        sbSongProgress.setTrackColor(colors[3]);
+        sbSongProgress.setRippleColor(vicTC);
+        sbSongProgress.setScrubberColor(mainTC);
+        sbSongProgress.setThumbColor(vicTC, mainTC);
+        sbSongProgress.setTrackColor(vicTC);
 
         flFragmentContainer.setBackgroundColor(Color.TRANSPARENT);
 
-        playListController.update(colors[2]);
+        playListController.update(vicBC);
         playListController.themeChange(null, null);
 
     }
@@ -336,6 +357,9 @@ public class PlayActivity extends RootActivity implements
 
     @Override
     protected void initViews() {
+
+        //FIXME test
+        playPreference.updateTheme(Theme.VARYING);
 
         //初始控件
         flRootView = (FrameLayout) findViewById(R.id.play_root);
@@ -597,13 +621,13 @@ public class PlayActivity extends RootActivity implements
 
         switch (theme) {
             case WHITE:
-                cs = com.duan.musicoco.util.ColorUtils.getWhiteThemeColors(this);
+                cs = com.duan.musicoco.util.ColorUtils.get4WhiteThemeColors(this);
                 break;
             case VARYING:
                 break;
             case DARK:
             default:
-                cs = com.duan.musicoco.util.ColorUtils.getDarkThemeColors(this);
+                cs = com.duan.musicoco.util.ColorUtils.get4DarkThemeColors(this);
                 break;
         }
         updateColors(cs);

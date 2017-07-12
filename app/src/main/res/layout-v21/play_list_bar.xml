@@ -54,8 +54,8 @@
                 android:src="@drawable/ic_format_list_bulleted_black_24dp" />
 
             <ImageButton
-                android:scaleX="0.8"
-                android:scaleY="0.8"
+                android:scaleX="1.2"
+                android:scaleY="1.2"
                 android:id="@+id/play_favorite"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -63,7 +63,8 @@
                 android:background="@android:color/transparent"
                 android:gravity="center"
                 android:padding="@dimen/activity_default_padding_2x"
-                android:src="@drawable/ic_action_heart" />
+                android:tint="@color/dark"
+                android:src="@drawable/ic_favorite" />
 
             <ImageButton
                 android:id="@+id/play_list_hide"
@@ -72,7 +73,8 @@
                 android:layout_weight="0.5"
                 android:background="?android:selectableItemBackground"
                 android:padding="@dimen/activity_default_padding_2x"
-                android:src="@drawable/ic_compress" />
+                android:tint="@color/dark"
+                android:src="@drawable/ic_unfold_less" />
 
             <ImageButton
                 android:id="@+id/play_show_more"
@@ -83,7 +85,6 @@
                 android:gravity="center"
                 android:padding="@dimen/activity_default_padding_2x"
                 android:src="@drawable/ic_more_vert_black_24dp" />
-
 
         </LinearLayout>
 
