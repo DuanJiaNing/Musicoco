@@ -18,14 +18,14 @@ import java.util.List;
  * Created by DuanJiaNing on 2017/7/12.
  */
 
-class ServiceInitThread implements Runnable {
+class ServiceInit {
 
     private final PlayControlImpl control;
     private final MediaManager manager;
     private final PlayPreference preference;
     private final DBMusicocoController dbController;
 
-    public ServiceInitThread(PlayControlImpl control, MediaManager manager, PlayPreference preference, DBMusicocoController dbController) {
+    public ServiceInit(PlayControlImpl control, MediaManager manager, PlayPreference preference, DBMusicocoController dbController) {
         this.control = control;
         this.manager = manager;
         this.preference = preference;
@@ -33,8 +33,7 @@ class ServiceInitThread implements Runnable {
 
     }
 
-    @Override
-    public void run() {
+    public void start() {
 
         initData();
 
@@ -44,7 +43,6 @@ class ServiceInitThread implements Runnable {
 
         initCurrentSong();
 
-        control.notifyDataIsReady();
     }
 
     //恢复上次播放状态

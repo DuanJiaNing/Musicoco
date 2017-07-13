@@ -151,3 +151,7 @@
 3 添加 IOnDataIsReadyListener 接口，服务器数据初始化完成时回调<br>
 4 添加 IOnPlayListChangedListener 接口，用于在播放列表改变时回调<br>
 
+- 2017-07-12
+
+1 添加 MySheetsAdapter 和 MySheetsController<br>
+2 数据库歌单表添加 歌曲数 字段，添加对应方法<br>

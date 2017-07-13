@@ -49,6 +49,7 @@ public class DBMusicocoController {
     public static final String SHEET_REMARK = "remarks"; //歌单备注
     public static final String SHEET_CREATE = "create_time"; //创建时间
     public static final String SHEET_PLAYTIMES = "sheet_playtimes"; //播放次数
+    public static final String SHEET_COUNT = "sheet_count"; //歌曲数目
 
     static void createSongTable(SQLiteDatabase db) {
         String sql = "create table " + DBMusicocoController.TABLE_SONG + "(" +
@@ -70,7 +71,8 @@ public class DBMusicocoController {
                 DBMusicocoController.SHEET_NAME + " text unique," +
                 DBMusicocoController.SHEET_REMARK + " text," +
                 DBMusicocoController.SHEET_CREATE + " text," +
-                DBMusicocoController.SHEET_PLAYTIMES + " integer)";
+                DBMusicocoController.SHEET_PLAYTIMES + " integer," +
+                DBMusicocoController.SHEET_COUNT + " integer)";
         db.execSQL(sql);
     }
 
@@ -120,13 +122,15 @@ public class DBMusicocoController {
         public String remark;
         public long create;
         public int playTimes;
+        public int count;
 
         public Sheet() {
         }
 
-        public Sheet(String name, String remark) {
+        public Sheet(String name, String remark, int count) {
             this.name = name;
             this.remark = remark;
+            this.count = count;
             this.create = System.currentTimeMillis();
             this.playTimes = 0;
         }
@@ -468,15 +472,16 @@ public class DBMusicocoController {
     }
 
 
-    public void addSheet(String name, String remark) {
+    public void addSheet(String name, String remark, int count) {
         String create = System.currentTimeMillis() + "";
-        if (remark == null)
+        if (remark == null) {
             remark = "";
+        }
 
-        String sql = String.format(Locale.CHINESE, "insert into %s values(null,'%s','%s','%s',%d)",
-                TABLE_SHEET, name, remark, create, 0);
+        String sql = String.format(Locale.CHINESE, "insert into %s values(null,'%s','%s','%s',%d,%d)",
+                TABLE_SHEET, name, remark, create, 0, count);
         database.execSQL(sql);
-        Log.d(TAG, "addSheet: insert " + sql);
+        Log.d(TAG, "addSheet: " + sql);
     }
 
     public int addSheetPlayTimes(int sheedId) {
@@ -505,6 +510,7 @@ public class DBMusicocoController {
             String str = cursor.getString(cursor.getColumnIndex(SHEET_CREATE));
             sheet.create = Long.valueOf(str);
             sheet.playTimes = cursor.getInt(cursor.getColumnIndex(SHEET_PLAYTIMES));
+            sheet.count = cursor.getInt(cursor.getColumnIndex(SHEET_COUNT));
         }
 
         cursor.close();
@@ -525,6 +531,7 @@ public class DBMusicocoController {
             String str = cursor.getString(cursor.getColumnIndex(SHEET_CREATE));
             sheet.create = Long.valueOf(str);
             sheet.playTimes = cursor.getInt(cursor.getColumnIndex(SHEET_PLAYTIMES));
+            sheet.count = cursor.getInt(cursor.getColumnIndex(SHEET_COUNT));
         }
 
         cursor.close();
@@ -544,6 +551,8 @@ public class DBMusicocoController {
             String str = cursor.getString(cursor.getColumnIndex(SHEET_CREATE));
             sheet.create = Long.valueOf(str);
             sheet.playTimes = cursor.getInt(cursor.getColumnIndex(SHEET_PLAYTIMES));
+            sheet.count = cursor.getInt(cursor.getColumnIndex(SHEET_COUNT));
+
             sheets.add(sheet);
         }
 
@@ -552,6 +561,9 @@ public class DBMusicocoController {
     }
 
     public void updateSheetPlayTimes(@NonNull String sheetName, int times) {
+        if (times < 0) {
+            return;
+        }
         ContentValues values = new ContentValues();
         values.put(SHEET_PLAYTIMES, times);
         String whereClause = SHEET_NAME + " like ?";
@@ -559,6 +571,27 @@ public class DBMusicocoController {
         database.update(TABLE_SHEET, values, whereClause, whereArgs);
     }
 
+    public void updateSheetCount(@NonNull String sheetName, int count) {
+        if (count < 0) {
+            return;
+        }
+        ContentValues values = new ContentValues();
+        values.put(SHEET_COUNT, count);
+        String whereClause = SHEET_NAME + " like ?";
+        String[] whereArgs = {sheetName};
+        database.update(TABLE_SHEET, values, whereClause, whereArgs);
+    }
+
+    public void updateSheetCount(int sheetID, int count) {
+        if (count < 0) {
+            return;
+        }
+        ContentValues values = new ContentValues();
+        values.put(SHEET_COUNT, count);
+        String whereClause = SHEET_ID + " = ?";
+        String[] whereArgs = {String.valueOf(sheetID)};
+        database.update(TABLE_SHEET, values, whereClause, whereArgs);
+    }
 
     public void truncate(String table) {
         String sql = "drop table " + table;

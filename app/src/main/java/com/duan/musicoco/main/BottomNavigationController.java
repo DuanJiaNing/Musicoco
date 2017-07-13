@@ -166,7 +166,6 @@ public class BottomNavigationController implements
     @Override
     public void dataIsReady(IPlayControl control) {
         Log.d(TAG, "dataIsReady: ");
-        initData(control);
     }
 
     public void initData(IPlayControl control) {

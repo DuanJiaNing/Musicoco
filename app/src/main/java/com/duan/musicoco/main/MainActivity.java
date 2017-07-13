@@ -9,13 +9,16 @@ import android.os.PersistableBundle;
 import android.os.RemoteException;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.NestedScrollingChild;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
+import android.widget.ScrollView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
@@ -43,6 +46,7 @@ public class MainActivity extends RootActivity implements
     private BottomNavigationController bottomNavigationController;
     private RecentMostPlayController mostPlayController;
     private MainSheetsController mainSheetsController;
+    private MySheetsController mySheetsController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +54,7 @@ public class MainActivity extends RootActivity implements
         bottomNavigationController = new BottomNavigationController(this, mediaManager, appPreference);
         mostPlayController = new RecentMostPlayController(this, mediaManager);
         mainSheetsController = new MainSheetsController(this, mediaManager);
+        mySheetsController = new MySheetsController(this, dbMusicoco);
 
         //FIXME test
         appPreference.modifyTheme(Theme.WHITE);
@@ -85,6 +90,7 @@ public class MainActivity extends RootActivity implements
         bottomNavigationController.initView();
         mostPlayController.initView();
         mainSheetsController.initView();
+        mySheetsController.initView();
 
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.main_swipe_refresh);
         refreshLayout.setOnRefreshListener(this);
@@ -141,6 +147,10 @@ public class MainActivity extends RootActivity implements
 
         if (mainSheetsController.hasInitData()) {
             mainSheetsController.update(null);
+        }
+
+        if (mySheetsController.hasInitData()) {
+            mySheetsController.update(null);
         }
 
     }
@@ -203,23 +213,19 @@ public class MainActivity extends RootActivity implements
     @Override
     public void onConnected(ComponentName name, IBinder service) {
 
-        prepareSelfData();
+        initSelfData();
 
     }
 
-    private void prepareSelfData() {
+    private void initSelfData() {
+
+        bottomNavigationController.initData(mServiceConnection.takeControl());
+        mostPlayController.initData(dbMusicoco, "历史最多播放");
+        mainSheetsController.initData(dbMusicoco);
+        mySheetsController.initData();
 
         Theme theme = appPreference.getTheme();
         themeChange(theme, null);
-
-        if (!bottomNavigationController.hasInitData()) {
-            //错过了服务端回调，服务端数据准备好后会回调 OnDataIsReadyListener#dataIsReady 方法
-            //当绑定速度慢与数据准备速度时就会错过该回调
-            bottomNavigationController.initData(mServiceConnection.takeControl());
-        }
-
-        mostPlayController.initData(dbMusicoco, "历史最多播放");
-        mainSheetsController.initData(dbMusicoco);
 
     }
 
@@ -235,6 +241,7 @@ public class MainActivity extends RootActivity implements
     public void themeChange(Theme theme, int[] colors) {
         bottomNavigationController.themeChange(theme, null);
         mostPlayController.themeChange(theme, null);
+        mySheetsController.themeChange(theme, null);
     }
 
     @Override

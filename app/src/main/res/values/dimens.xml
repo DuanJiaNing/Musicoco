@@ -51,5 +51,6 @@
     <dimen name="rmp_line_width">40dp</dimen>
 
     <dimen name="main_sheets_height">50dp</dimen>
+    <dimen name="main_sheets_image_height">90dp</dimen>
 
 </resources>

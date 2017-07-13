@@ -252,11 +252,11 @@ public class ColorUtils {
         int[] colors = new int[2];
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            colors[0] = context.getColor(R.color.dark_l_l_l); //主字体色
-            colors[1] = context.getColor(R.color.dark_l_l_l_l); // 辅字体色
+            colors[0] = context.getColor(R.color.dark_l_l_l_l); //主字体色
+            colors[1] = context.getColor(R.color.white_d_d_d_d); // 辅字体色
         } else {
-            colors[0] = context.getResources().getColor(R.color.dark_l_l_l);
-            colors[1] = context.getResources().getColor(R.color.dark_l_l_l_l);
+            colors[0] = context.getResources().getColor(R.color.dark_l_l_l_l);
+            colors[1] = context.getResources().getColor(R.color.white_d_d_d_d);
         }
 
         return colors;

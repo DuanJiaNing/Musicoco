@@ -3,15 +3,9 @@ package com.duan.musicoco.service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.util.Log;
 
-import com.duan.musicoco.aidl.IPlayControl;
-import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.RootService;
-import com.duan.musicoco.preference.PlayPreference;
-
-import java.util.List;
 
 /**
  * Created by DuanJiaNing on 2017/5/23.
@@ -31,8 +25,8 @@ public class PlayService extends RootService {
         super.onCreate();
 
         iBinder = new PlayServiceIBinder(getApplicationContext());
-        Runnable runnable = new ServiceInitThread(iBinder, mediaManager, playPreference, dbController);
-        new Thread(runnable).start();
+        new ServiceInit(iBinder, mediaManager, playPreference, dbController).start();
+        iBinder.notifyDataIsReady();
 
     }
 
