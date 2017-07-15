@@ -1,7 +1,6 @@
 package com.duan.musicoco.main;
 
 import android.app.Activity;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.v4.widget.NestedScrollView;
 import android.view.View;
@@ -14,6 +13,7 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.util.ColorUtils;
@@ -67,8 +67,6 @@ public class MySheetsController implements
         adapter = new MySheetsAdapter(activity, sheets);
         mListView.setAdapter(adapter);
         ((NestedScrollView) activity.findViewById(R.id.main_scroll)).smoothScrollTo(0, 0);
-        update(null);
-
         hasInitData = true;
     }
 
@@ -118,7 +116,7 @@ public class MySheetsController implements
     }
 
     @Override
-    public void update(Object obj) {
+    public void update(Object obj, OnUpdateStatusChanged completed) {
 
         //注意不能修改 sheets 的引用，否则 notifyDataSetChanged 失效
         List<DBMusicocoController.Sheet> newData = dbMusicoco.getSheets();

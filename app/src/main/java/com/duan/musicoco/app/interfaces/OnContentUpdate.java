@@ -6,5 +6,5 @@ package com.duan.musicoco.app.interfaces;
  */
 
 public interface OnContentUpdate {
-    void update(Object obj);
+    void update(Object obj, OnUpdateStatusChanged statusChanged);
 }

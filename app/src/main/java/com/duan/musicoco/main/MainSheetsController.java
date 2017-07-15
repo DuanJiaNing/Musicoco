@@ -14,6 +14,8 @@ import com.duan.musicoco.app.MediaManager;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
+import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
+import com.duan.musicoco.app.interfaces.SubscriberAbstract;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
@@ -22,6 +24,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by DuanJiaNing on 2017/7/11.
@@ -88,8 +95,6 @@ public class MainSheetsController implements
         mContainerRecent.setClickable(true);
         mContainerFavorite.setClickable(true);
 
-        update(null);
-
         hasInitData = true;
     }
 
@@ -117,41 +122,151 @@ public class MainSheetsController implements
         mContainerFavorite.setClickable(false);
     }
 
-    @Override
-    public void update(Object obj) {
+    private static class Data {
+        final static int ALL = 0;
+        final static int RECENT = 1;
+        final static int FAVORITE = 2;
 
-        List<DBMusicocoController.SongInfo> all = dbController.getSongInfos();
-
-        updateAll(all);
-        updateRecent(all);
-        updateFavorite(all);
-
+        Bitmap bitmap;
+        int count;
+        int[] colors;
+        int which;
     }
 
-    private void updateFavorite(List<DBMusicocoController.SongInfo> all) {
-        Bitmap bitmap = null;
-        int count = 0;
-        if (all.size() == 0) {
-            bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.default_sheet_favorite);
-        } else {
-            List<DBMusicocoController.SongInfo> favorite = new ArrayList<>();
-            for (DBMusicocoController.SongInfo i : all) {
-                if (i.favorite) {
-                    favorite.add(i);
-                }
+    @Override
+    public void update(Object obj, final OnUpdateStatusChanged statusChanged) {
+
+        Observable.just(Data.ALL, Data.RECENT, Data.FAVORITE)
+                .map(new Func1<Integer, Data>() {
+                    List<DBMusicocoController.SongInfo> all = dbController.getSongInfos();
+
+                    @Override
+                    public Data call(Integer integer) {
+
+                        Data data = new Data();
+                        if (all.size() == 0) {
+                            data.count = 0;
+                            data.bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.default_sheet);
+                        } else {
+                            switch (integer) {
+                                case Data.ALL:
+                                    data = getBitmapForAll(all);
+                                    break;
+                                case Data.RECENT:
+                                    data = getBitmapForRecent(all);
+                                    break;
+                                case Data.FAVORITE:
+                                    data = getBitmapForFavorite(all);
+                                    break;
+                                default: {
+                                    data.count = 0;
+                                    data.bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.default_sheet);
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (data.bitmap == null) {
+                            data.bitmap = BitmapUtils.bitmapResizeFromResource(activity.getResources(), R.drawable.default_sheet, mImageRecent.getWidth(), mImageRecent.getHeight());
+                        }
+
+                        int[] colors = new int[4];
+                        int defaultColor = Color.GRAY;
+                        int defaultTextColor = Color.DKGRAY;
+                        ColorUtils.get4LightColorWithTextFormBitmap(
+                                data.bitmap,
+                                defaultColor,
+                                defaultTextColor,
+                                colors);
+                        data.colors = colors;
+                        data.which = integer;
+                        return data;
+                    }
+                })
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new SubscriberAbstract<Data>(statusChanged) {
+                    @Override
+                    public void onNext(Data data) {
+                        switch (data.which) {
+                            case Data.ALL:
+                                updateAll(data);
+                                break;
+                            case Data.RECENT:
+                                updateRecent(data);
+                                break;
+                            case Data.FAVORITE:
+                                updateFavorite(data);
+                                break;
+                        }
+                    }
+                });
+    }
+
+    private Data getBitmapForFavorite(List<DBMusicocoController.SongInfo> all) {
+        Data data = new Data();
+        Bitmap bitmap;
+        int count;
+        List<DBMusicocoController.SongInfo> favorite = new ArrayList<>();
+        for (DBMusicocoController.SongInfo i : all) {
+            if (i.favorite) {
+                favorite.add(i);
             }
-
-            count = favorite.size();
-            TreeSet<DBMusicocoController.SongInfo> treeSet = dbController.descSortByLastPlayTime(favorite);
-            bitmap = findBitmap(treeSet);
         }
 
-        if (bitmap == null) {
-            bitmap = BitmapUtils.bitmapResizeFromResource(activity.getResources(), R.drawable.default_sheet_favorite, mImageFavorite.getWidth(), mImageFavorite.getHeight());
+        count = favorite.size();
+        TreeSet<DBMusicocoController.SongInfo> treeSet = dbController.descSortByLastPlayTime(favorite);
+        bitmap = findBitmap(treeSet);
+
+        data.bitmap = bitmap;
+        data.count = count;
+        return data;
+    }
+
+    private Data getBitmapForRecent(List<DBMusicocoController.SongInfo> all) {
+        Data data = new Data();
+        Bitmap bitmap;
+        TreeSet<DBMusicocoController.SongInfo> treeSet = dbController.descSortByLastPlayTime(all);
+        bitmap = findBitmap(treeSet);
+
+        int count = activity.getResources().getInteger(R.integer.sheet_recent_count);
+        data.bitmap = bitmap;
+        data.count = count;
+        return data;
+    }
+
+    private Data getBitmapForAll(List<DBMusicocoController.SongInfo> all) {
+        Data data = new Data();
+        Bitmap bitmap = null;
+        for (DBMusicocoController.SongInfo i : all) {
+            SongInfo info = mediaManager.getSongInfo(i.path);
+            bitmap = BitmapUtils.bitmapResizeFromFile(info.getAlbum_path(), mImageAll.getWidth(), mImageAll.getHeight());
+            if (bitmap != null) {
+                break;
+            }
         }
 
-        mImageFavorite.setImageBitmap(createImage(bitmap));
-        updateText(mTextFavorite, bitmap, count, mCountFavorite);
+        data.bitmap = bitmap;
+        data.count = all.size();
+        return data;
+    }
+
+    private void updateFavorite(Data data) {
+        Bitmap b = data.bitmap;
+        mImageFavorite.setImageBitmap(createImage(b));
+        updateTextAndColor(mTextFavorite, data.count, mCountFavorite, data.colors);
+    }
+
+    private void updateRecent(Data data) {
+        Bitmap b = data.bitmap;
+        mImageRecent.setImageBitmap(createImage(b));
+        updateTextAndColor(mTextRecent, data.count, mCountRecent, data.colors);
+    }
+
+    private void updateAll(Data data) {
+        Bitmap b = data.bitmap;
+        mImageAll.setImageBitmap(createImage(b));
+        updateTextAndColor(mTextAll, data.count, mCountAll, data.colors);
     }
 
     private Bitmap findBitmap(TreeSet<DBMusicocoController.SongInfo> treeSet) {
@@ -168,53 +283,7 @@ public class MainSheetsController implements
         return bitmap;
     }
 
-    private void updateRecent(List<DBMusicocoController.SongInfo> all) {
-        Bitmap bitmap = null;
-        if (all.size() == 0) {
-            bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.default_sheet);
-        } else {
-            TreeSet<DBMusicocoController.SongInfo> treeSet = dbController.descSortByLastPlayTime(all);
-            bitmap = findBitmap(treeSet);
-        }
-
-        if (bitmap == null) {
-            bitmap = BitmapUtils.bitmapResizeFromResource(activity.getResources(), R.drawable.default_sheet, mImageRecent.getWidth(), mImageRecent.getHeight());
-        }
-
-        mImageRecent.setImageBitmap(createImage(bitmap));
-        updateText(mTextRecent, bitmap, all.size(), mCountRecent);
-
-    }
-
-    private void updateAll(List<DBMusicocoController.SongInfo> all) {
-        Bitmap bitmap = null;
-
-        if (all.size() == 0) {
-            bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.default_sheet);
-        } else {
-            for (DBMusicocoController.SongInfo i : all) {
-                SongInfo info = mediaManager.getSongInfo(i.path);
-                bitmap = BitmapUtils.bitmapResizeFromFile(info.getAlbum_path(), mImageAll.getWidth(), mImageAll.getHeight());
-                if (bitmap != null) {
-                    break;
-                }
-            }
-        }
-
-        if (bitmap == null) {
-            bitmap = BitmapUtils.bitmapResizeFromResource(activity.getResources(), R.drawable.default_sheet, mImageAll.getWidth(), mImageAll.getHeight());
-        }
-
-        mImageAll.setImageBitmap(createImage(bitmap));
-        updateText(mTextAll, bitmap, all.size(), mCountAll);
-
-    }
-
-    private void updateText(TextView categoryView, Bitmap bitmap, int count, TextView countView) {
-        int defaultColor = Color.GRAY;
-        int defaultTextColor = Color.DKGRAY;
-        int[] colors = new int[4];
-        ColorUtils.get4LightColorWithTextFormBitmap(bitmap, defaultColor, defaultTextColor, colors);
+    private void updateTextAndColor(TextView categoryView, int count, TextView countView, int[] colors) {
 
         GradientDrawable categoryD = new GradientDrawable(
                 GradientDrawable.Orientation.LEFT_RIGHT,

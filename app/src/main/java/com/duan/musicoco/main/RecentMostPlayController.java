@@ -19,6 +19,7 @@ import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.image.BitmapBuilder;
 import com.duan.musicoco.preference.Theme;
@@ -26,6 +27,12 @@ import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 
 import java.util.List;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by DuanJiaNing on 2017/7/9.
@@ -100,8 +107,6 @@ public class RecentMostPlayController implements
         mInfoContainer.setEnabled(true);
         mInfoContainer.setClickable(true);
 
-        update(title);
-
         hasInitData = true;
     }
 
@@ -133,33 +138,105 @@ public class RecentMostPlayController implements
         mPlayTime.setText(String.valueOf(0));
     }
 
+    private class Data {
+        SongInfo info;
+        String remark;
+        int maxPlayTime;
+        String type;
+        Bitmap bitmap = null;
+        int[] colors = null;
+    }
+
     @Override
-    public void update(Object obj) {
-        List<DBMusicocoController.SongInfo> list = dbMusicoco.getSongInfos();
+    public void update(Object obj, OnUpdateStatusChanged completed) {
 
-        int maxPlayTime = 0;
-        String path = "";
-        String remark = "";
-        for (DBMusicocoController.SongInfo s : list) {
-            int time = s.playTimes;
-            if (time > maxPlayTime) {
-                maxPlayTime = time;
-                path = s.path;
-                remark = s.remark;
+        final Object ob = obj;
+        Observable.OnSubscribe<Data> onSubscribe = new Observable.OnSubscribe<Data>() {
+            @Override
+            public void call(Subscriber<? super Data> subscriber) {
+
+                List<DBMusicocoController.SongInfo> list = dbMusicoco.getSongInfos();
+                int maxPlayTime = 0;
+                String path = "";
+                String remark = "";
+                for (DBMusicocoController.SongInfo s : list) {
+                    int time = s.playTimes;
+                    if (time > maxPlayTime) {
+                        maxPlayTime = time;
+                        path = s.path;
+                        remark = s.remark;
+                    }
+                }
+                Song song = new Song(path);
+                SongInfo info = mediaManager.getSongInfo(song);
+
+                Data data = new Data();
+                data.info = info;
+                data.remark = remark;
+                data.maxPlayTime = maxPlayTime;
+                data.type = (ob != null && ob instanceof CharSequence) ? ob.toString() : "";
+
+                if (currentSong == null || !currentSong.equals(song)) {
+                    Bitmap bitmap = null;
+                    if (info.getAlbum_path() != null) {
+                        BitmapBuilder builder = new BitmapBuilder(activity);
+                        bitmap = builder.setPath(info.getAlbum_path())
+                                .resize(mImage.getWidth(), mImage.getHeight())
+                                .build().getBitmap();
+                    }
+
+                    if (bitmap == null) {
+                        bitmap = BitmapUtils.bitmapResizeFromResource(activity.getResources(),
+                                R.drawable.default_album,
+                                mImage.getWidth(),
+                                mImage.getHeight());
+                    }
+                    data.bitmap = bitmap;
+
+                    //更新当前 XX 最多播放曲目
+                    currentSong = song;
+                } else {
+                    data.bitmap = null;
+                }
+
+                if (data.bitmap != null) {
+                    data.colors = new int[6];
+                    int defaultColor = activity.getResources().getColor(R.color.rmp_image_default_bg);
+                    ColorUtils.get6ColorFormBitmap(data.bitmap, defaultColor, data.colors);
+                } else {
+                    data.colors = null;
+                }
+
+                subscriber.onNext(data);
+                subscriber.onCompleted();
             }
-        }
+        };
 
-        Song song = new Song(path);
-        SongInfo info = mediaManager.getSongInfo(song);
+        Observable.create(onSubscribe)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Data>() {
+                    @Override
+                    public void call(Data data) {
+                        updateText(data.info, data.remark, data.maxPlayTime, data.type);
 
-        String type = (obj != null && obj instanceof CharSequence) ? obj.toString() : "";
-        updateText(info, remark, maxPlayTime, type);
+                        if (data.bitmap != null) {
+                            updateImage(data.bitmap);
+                        }
 
-        if (currentSong == null || !currentSong.equals(song)) {
-            updateImage(info);
-            currentSong = song;
-        }
+                        if (data.colors != null) {
+                            updateColors(data.colors);
+                        }
+                    }
+                });
 
+    }
+
+    private void updateImage(@NonNull Bitmap bitmap) {
+        mImage.setImageBitmap(bitmap);
+        AlphaAnimation anim = new AlphaAnimation(0.4f, 1.0f);
+        anim.setDuration(1000);
+        mImage.startAnimation(anim);
     }
 
     private void updateText(SongInfo info, String remark, int maxPlayTime, String type) {
@@ -184,39 +261,14 @@ public class RecentMostPlayController implements
         mType.setText(type);
     }
 
-    private void updateImage(SongInfo info) {
+    private void updateColors(@NonNull int[] colors) {
 
-        Bitmap bitmap = null;
-        if (info.getAlbum_path() != null) {
-            BitmapBuilder builder = new BitmapBuilder(activity);
-            bitmap = builder.setPath(info.getAlbum_path())
-                    .resize(mImage.getWidth(), mImage.getHeight())
-                    .build().getBitmap();
-        }
-
-        if (bitmap != null) {
-            mImage.setImageBitmap(bitmap);
-        } else {
-            bitmap = BitmapUtils.bitmapResizeFromResource(activity.getResources(),
-                    R.drawable.default_album,
-                    mImage.getWidth(),
-                    mImage.getHeight());
-            mImage.setImageBitmap(bitmap);
-        }
-
-        AlphaAnimation anim = new AlphaAnimation(0.4f, 1.0f);
-        anim.setDuration(1000);
-        mImage.startAnimation(anim);
-
-        int[] colors = new int[6];
-        int defaultColor = activity.getResources().getColor(R.color.rmp_image_default_bg);
-        ColorUtils.get6ColorFormBitmap(bitmap, defaultColor, colors);
         GradientDrawable drawable = new GradientDrawable(
                 GradientDrawable.Orientation.LEFT_RIGHT,
                 new int[]{colors[4], colors[5]});
         mContainer.setBackground(drawable);
 
-        drawable.setAlpha(180);
+        drawable.setAlpha(150);
         drawable.setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
         mInfoContainer.setBackground(drawable);
 

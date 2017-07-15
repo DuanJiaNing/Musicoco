@@ -30,6 +30,7 @@ import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnContentUpdate;
+import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.image.BitmapBuilder;
 import com.duan.musicoco.play.PlayActivity;
 import com.duan.musicoco.play.PlayListAdapter;
@@ -184,8 +185,6 @@ public class BottomNavigationController implements
         Theme theme = appPreference.getTheme();
         themeChange(theme, null);
 
-        update(null);
-
     }
 
     public boolean hasInitData() {
@@ -197,7 +196,7 @@ public class BottomNavigationController implements
         SongInfo info = mediaManager.getSongInfo(song);
         mDuration = (int) info.getDuration();
 
-        update(null);
+        update(null, null);
     }
 
     @Override
@@ -250,7 +249,7 @@ public class BottomNavigationController implements
     }
 
     @Override
-    public void update(@Nullable Object obj) {
+    public void update(@Nullable Object obj, OnUpdateStatusChanged completed) {
         if (checkNull()) {
             return;
         }

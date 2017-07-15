@@ -155,3 +155,8 @@
 
 1 添加 MySheetsAdapter 和 MySheetsController<br>
 2 数据库歌单表添加 歌曲数 字段，添加对应方法<br>
+
+- 2017-07-12
+
+1 添加 rxJava ，重构 MainActivity 中使用到的 OnContentUpdate 接口<br>
+2 添加 OnUpdateStatusChanged 接口和 SubscriberAbstract 抽象类<br>

@@ -6,33 +6,24 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PersistableBundle;
-import android.os.RemoteException;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.NestedScrollingChild;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
-import android.widget.ScrollView;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.aidl.IPlayControl;
-import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.ExceptionHandler;
-import com.duan.musicoco.app.interfaces.OnContentUpdate;
-import com.duan.musicoco.app.interfaces.OnServiceConnect;
-import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.PlayServiceManager;
 import com.duan.musicoco.app.RootActivity;
+import com.duan.musicoco.app.interfaces.OnServiceConnect;
+import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.play.PlayServiceConnection;
 import com.duan.musicoco.preference.Theme;
-
-import java.util.List;
 
 public class MainActivity extends RootActivity implements
         NavigationView.OnNavigationItemSelectedListener,
@@ -47,6 +38,23 @@ public class MainActivity extends RootActivity implements
     private RecentMostPlayController mostPlayController;
     private MainSheetsController mainSheetsController;
     private MySheetsController mySheetsController;
+
+    private OnUpdateStatusChanged statusChanged = new OnUpdateStatusChanged() {
+        @Override
+        public void onCompleted() {
+            refreshLayout.setRefreshing(false);
+        }
+
+        @Override
+        public void onStart() {
+            refreshLayout.setRefreshing(true);
+        }
+
+        @Override
+        public void onError(Throwable e) {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,27 +143,6 @@ public class MainActivity extends RootActivity implements
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (bottomNavigationController.hasInitData()) {
-            bottomNavigationController.update(null);
-        }
-
-        if (mostPlayController.hasInitData()) {
-            mostPlayController.update("历史最多播放");
-        }
-
-        if (mainSheetsController.hasInitData()) {
-            mainSheetsController.update(null);
-        }
-
-        if (mySheetsController.hasInitData()) {
-            mySheetsController.update(null);
-        }
-
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -224,6 +211,9 @@ public class MainActivity extends RootActivity implements
         mainSheetsController.initData(dbMusicoco);
         mySheetsController.initData();
 
+        update();
+        bottomNavigationController.update(null, null);
+
         Theme theme = appPreference.getTheme();
         themeChange(theme, null);
 
@@ -246,9 +236,13 @@ public class MainActivity extends RootActivity implements
 
     @Override
     public void onRefresh() {
-        //主线程阻塞刷新
-        mostPlayController.update("历史最多播放");
-        mainSheetsController.update(null);
-        refreshLayout.setRefreshing(false);
+        update();
     }
+
+    private void update() {
+        mostPlayController.update("历史最多播放", null);
+        mainSheetsController.update(null, statusChanged);
+        mySheetsController.update(null, statusChanged);
+    }
+
 }

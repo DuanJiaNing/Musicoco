@@ -318,7 +318,7 @@ public class PlayActivity extends RootActivity implements
 
         flFragmentContainer.setBackgroundColor(Color.TRANSPARENT);
 
-        playListController.update(vicBC);
+        playListController.update(vicBC, null);
         playListController.themeChange(null, null);
 
     }

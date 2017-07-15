@@ -34,6 +34,9 @@ dependencies {
     //    compile 'com.android.support:design:25.3.1'
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:design:26.0.0-alpha1'
+
+    compile 'io.reactivex:rxjava:1.0.14'
+    compile 'io.reactivex:rxandroid:1.0.1'
 }
 repositories {
     mavenCentral()

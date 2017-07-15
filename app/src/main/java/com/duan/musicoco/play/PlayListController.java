@@ -31,6 +31,7 @@ import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.ExceptionHandler;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.interfaces.OnViewVisibilityChange;
 import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
 import com.duan.musicoco.app.interfaces.OnContentUpdate;
@@ -362,7 +363,7 @@ public class PlayListController implements
     }
 
     @Override
-    public void update(Object obj) {
+    public void update(Object obj, OnUpdateStatusChanged completed) {
         if (!(obj instanceof Integer)) {
             return;
         }
