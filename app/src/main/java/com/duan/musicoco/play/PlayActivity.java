@@ -177,8 +177,9 @@ public class PlayActivity extends RootActivity implements
             }
         }
 
-        if (song == null)
+        if (song == null) {
             return;
+        }
 
         //更新文字
         int pro = 0;
@@ -469,7 +470,7 @@ public class PlayActivity extends RootActivity implements
         transaction.hide(lyricFragment);
         transaction.commit();
 
-        playListController = new PlayListController(this, dbMusicoco);
+        playListController = new PlayListController(this, dbMusicoco, mediaManager);
         //更新主题
         themeChange(theme, null);
 

@@ -32,5 +32,8 @@
     <string name="rmp_see_more">查看更多</string>
 
     <string name="my_sheet_title">创建的歌单</string>
+    <string name="click_for_new_sheet">点击这里创建歌单</string>
 
+    <string name="song_collection_sheet">收藏到歌单</string>
+    <string name="song_detail">歌曲信息</string>
 </resources>

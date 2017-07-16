@@ -28,7 +28,7 @@ public class BitmapCache {
 
     private Context mContext;
 
-    private static volatile BitmapCache BITMAPCACHE;
+//    private static volatile BitmapCache BITMAPCACHE;
 
     private final static String TAG = "BitmapCache";
 

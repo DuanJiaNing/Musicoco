@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:id="@+id/sheets_item_container"
-    android:layout_height="@dimen/main_sheets_image_height">
+    android:background="@color/white"
+    android:padding="@dimen/activity_default_margin"
+    android:layout_height="@dimen/my_sheets_item_height">
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline3"
@@ -69,7 +71,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="-1dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="0dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:gravity="center_vertical|start"
@@ -78,16 +80,17 @@
         android:textSize="@dimen/text_middle"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline3"
-        app:layout_constraintLeft_toRightOf="@+id/frameLayout"
         app:layout_constraintRight_toLeftOf="@+id/guideline6"
         app:layout_constraintTop_toTopOf="@+id/frameLayout"
-        android:layout_marginTop="0dp" />
+        android:layout_marginTop="0dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline7" />
 
     <TextView
         android:id="@+id/sheets_item_remark"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
+        android:layout_marginLeft="0dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:ellipsize="end"
@@ -97,9 +100,10 @@
         android:textSize="@dimen/text_small"
         app:layout_constraintBottom_toTopOf="@+id/guideline4"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toRightOf="@+id/frameLayout"
         app:layout_constraintRight_toLeftOf="@+id/guideline6"
-        app:layout_constraintTop_toTopOf="@+id/guideline3" />
+        app:layout_constraintTop_toTopOf="@+id/guideline3"
+        app:layout_constraintVertical_bias="0.538"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline7" />
 
     <TextView
         android:id="@+id/sheets_item_song_count"
@@ -110,10 +114,10 @@
         android:text="20首"
         android:textSize="@dimen/text_small_s"
         app:layout_constraintBottom_toBottomOf="@+id/frameLayout"
-        app:layout_constraintLeft_toLeftOf="@+id/sheets_item_remark"
         app:layout_constraintTop_toTopOf="@+id/guideline4"
-        android:layout_marginLeft="0dp"
-        android:layout_marginBottom="0dp" />
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline7" />
 
     <TextView
         android:id="@+id/sheets_item_play_times"
@@ -133,6 +137,8 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <ImageButton
+        android:scaleX="0.8"
+        android:scaleY="0.8"
         android:id="@+id/sheets_item_more"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -150,6 +156,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.6" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline7"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="84dp" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline6"

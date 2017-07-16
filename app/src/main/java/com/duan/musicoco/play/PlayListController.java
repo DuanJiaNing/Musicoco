@@ -22,27 +22,35 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.SimpleAdapter;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.ExceptionHandler;
+import com.duan.musicoco.app.MediaManager;
+import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
+import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.interfaces.OnViewVisibilityChange;
-import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
-import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.util.AnimationUtils;
+import com.duan.musicoco.util.OptionsDialog;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.RealTimeBlurView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.duan.musicoco.preference.Theme.DARK;
 import static com.duan.musicoco.preference.Theme.WHITE;
@@ -73,13 +81,15 @@ public class PlayListController implements
     private PlayPreference playPreference;
     private IPlayControl control;
     private DBMusicocoController dbMusicoco;
+    private MediaManager mediaManager;
 
     private ListOption listOption;
     private SongOption songOption;
 
-    public PlayListController(Activity activity, DBMusicocoController dbMusicoco) {
+    public PlayListController(Activity activity, DBMusicocoController dbMusicoco, MediaManager mediaManager) {
         this.activity = activity;
         this.dbMusicoco = dbMusicoco;
+        this.mediaManager = mediaManager;
         this.playPreference = new PlayPreference(activity);
 
         mViewRoot = (CardView) activity.findViewById(R.id.play_list);
@@ -107,6 +117,7 @@ public class PlayListController implements
 
     public void initData(IPlayControl control) {
         this.control = control;
+        songOption.initData();
 
         if (playListAdapter == null) {
             playListAdapter = new PlayListAdapter(activity, control);
@@ -488,6 +499,7 @@ public class PlayListController implements
 
         private ViewGroup container;
         private int currentDrawableColor;
+        private final OptionsDialog mDialog;
 
         private ImageButton hidePlayListBar;
         private ImageButton playMode;
@@ -510,6 +522,9 @@ public class PlayListController implements
             playFavorite.setOnClickListener(this);
             playShowList.setOnClickListener(this);
             playShowMore.setOnClickListener(this);
+
+            this.mDialog = new OptionsDialog(activity);
+
         }
 
         @Override
@@ -574,10 +589,22 @@ public class PlayListController implements
                     }
                     break;
                 case R.id.play_show_more:
-                    //TODO
-                    Toast.makeText(activity, "show more", Toast.LENGTH_SHORT).show();
+                    if (mDialog.isShowing()) {
+                        mDialog.hide();
+                    } else {
+                        Song s = null;
+                        try {
+                            s = control.currentSong();
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                        String title = s == null ?
+                                activity.getString(R.string.song_detail) :
+                                "歌曲:" + mediaManager.getSongInfo(s).getTitle();
+                        mDialog.setTitle(title);
+                        mDialog.show();
+                    }
                     break;
-
             }
         }
 
@@ -607,6 +634,9 @@ public class PlayListController implements
                     break;
                 }
             }
+
+            //FIXME
+            mDialog.setContentBgColor(Color.WHITE);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 hidePlayListBar.getDrawable().setTint(currentDrawableColor);
@@ -714,6 +744,33 @@ public class PlayListController implements
                 }
             }
         }
-    }
 
+        private List<? extends Map<String, ?>> getData() {
+            String collection = activity.getString(R.string.song_collection_sheet);
+            String detail = activity.getString(R.string.song_detail);
+
+            List<Map<String, Object>> data = new ArrayList<>();
+            Map<String, Object> mapC = new HashMap<String, Object>();
+            mapC.put("image", R.drawable.ic_create_new_folder_black_24dp);
+            mapC.put("text", collection);
+            data.add(mapC);
+
+            Map<String, Object> mapD = new HashMap<String, Object>();
+            mapD.put("image", R.drawable.ic_art_track_black_24dp);
+            mapD.put("text", detail);
+            data.add(mapD);
+
+            return data;
+        }
+
+        public void initData() {
+            ListAdapter adapter = new SimpleAdapter(
+                    activity,
+                    getData(),
+                    R.layout.simple_list_item_image_text,
+                    new String[]{"image", "text"},
+                    new int[]{R.id.simple_list_item_image, R.id.simple_list_item_text});
+            mDialog.setAdapter(adapter);
+        }
+    }
 }

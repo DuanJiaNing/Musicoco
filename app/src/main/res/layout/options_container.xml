@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/options_container"
+    android:orientation="vertical">
+
+    <TextView
+        android:paddingRight="@dimen/activity_default_margin"
+        android:paddingLeft="@dimen/activity_default_margin"
+        android:textSize="@dimen/text_middle_s"
+        android:gravity="center_vertical|start"
+        android:id="@+id/options_title"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/action_bar_default_height" />
+
+    <View
+        android:id="@+id/options_divide"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/white_d_d" />
+
+    <ListView
+        android:id="@+id/options_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

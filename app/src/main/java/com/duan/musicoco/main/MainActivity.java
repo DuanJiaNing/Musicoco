@@ -62,7 +62,7 @@ public class MainActivity extends RootActivity implements
         bottomNavigationController = new BottomNavigationController(this, mediaManager, appPreference);
         mostPlayController = new RecentMostPlayController(this, mediaManager);
         mainSheetsController = new MainSheetsController(this, mediaManager);
-        mySheetsController = new MySheetsController(this, dbMusicoco);
+        mySheetsController = new MySheetsController(this, dbMusicoco, mediaManager);
 
         //FIXME test
         appPreference.modifyTheme(Theme.WHITE);
@@ -240,7 +240,7 @@ public class MainActivity extends RootActivity implements
     }
 
     private void update() {
-        mostPlayController.update("历史最多播放", null);
+        mostPlayController.update("历史最多播放", statusChanged);
         mainSheetsController.update(null, statusChanged);
         mySheetsController.update(null, statusChanged);
     }

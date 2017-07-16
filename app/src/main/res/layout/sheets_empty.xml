@@ -2,7 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:background="@color/list_blue"
-    android:layout_height="300dp">
+    android:layout_height="match_parent"
+    android:gravity="center">
+
+    <TextView
+        android:layout_marginTop="@dimen/activity_default_margin_2x"
+        android:drawableTint="@color/white_d_d_d"
+        android:textColor="@color/white_d_d_d_d"
+        android:id="@+id/sheet_empty_add"
+        android:clickable="true"
+        android:drawableTop="@drawable/ic_action_add"
+        android:textSize="@dimen/text_middle_s"
+        android:text="@string/click_for_new_sheet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

@@ -271,9 +271,7 @@ public class MainSheetsController implements
 
     private Bitmap findBitmap(TreeSet<DBMusicocoController.SongInfo> treeSet) {
         Bitmap bitmap = null;
-        Iterator<DBMusicocoController.SongInfo> it = treeSet.iterator();
-        while (it.hasNext()) {
-            DBMusicocoController.SongInfo s = it.next();
+        for (DBMusicocoController.SongInfo s : treeSet) {
             SongInfo info = mediaManager.getSongInfo(s.path);
             bitmap = BitmapUtils.bitmapResizeFromFile(info.getAlbum_path(), mImageRecent.getWidth(), mImageRecent.getHeight());
             if (bitmap != null) {

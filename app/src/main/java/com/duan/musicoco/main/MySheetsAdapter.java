@@ -1,7 +1,9 @@
 package com.duan.musicoco.main;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Build;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,14 +13,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.duan.musicoco.R;
+import com.duan.musicoco.app.MediaManager;
+import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.Theme;
-import com.duan.musicoco.util.ColorUtils;
+import com.duan.musicoco.util.AnimationUtils;
+import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.view.media.PlayView;
 
+import java.util.Iterator;
 import java.util.List;
+import java.util.TreeSet;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by DuanJiaNing on 2017/7/13.
@@ -29,16 +43,23 @@ public class MySheetsAdapter extends BaseAdapter implements
 
     private Context context;
     private List<DBMusicocoController.Sheet> sheets;
+    private DBMusicocoController dbMusicoco;
+    private MediaManager mediaManager;
 
     private int colorMain;
     private int colorVic;
+    private int colorMainB;
+
+    private Bitmap defaultBitmap;
 
     private View.OnClickListener moreClickListener;
     private PlayView.OnCheckedChangeListener playCheckChangeListener;
 
-    public MySheetsAdapter(final Context context, List<DBMusicocoController.Sheet> sheets) {
+    public MySheetsAdapter(final Context context, List<DBMusicocoController.Sheet> sheets, DBMusicocoController dbMusicoco, MediaManager mediaManager) {
         this.context = context;
         this.sheets = sheets;
+        this.dbMusicoco = dbMusicoco;
+        this.mediaManager = mediaManager;
 
         moreClickListener = new View.OnClickListener() {
             @Override
@@ -85,6 +106,11 @@ public class MySheetsAdapter extends BaseAdapter implements
             holder.count = (TextView) convertView.findViewById(R.id.sheets_item_song_count);
             holder.playTimes = (TextView) convertView.findViewById(R.id.sheets_item_play_times);
             holder.more = (ImageButton) convertView.findViewById(R.id.sheets_item_more);
+
+            if (defaultBitmap == null) {
+                defaultBitmap = BitmapUtils.bitmapResizeFromResource(context.getResources(), R.drawable.default_sheet, holder.image.getWidth(), holder.image.getHeight());
+
+            }
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -96,6 +122,8 @@ public class MySheetsAdapter extends BaseAdapter implements
         int count = sheet.count;
         int playTimes = sheet.playTimes;
 
+        bindImage(holder.image, sheet.id);
+
         holder.more.setTag(sheet);
         holder.more.setOnClickListener(moreClickListener);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -103,8 +131,8 @@ public class MySheetsAdapter extends BaseAdapter implements
         }
 
         holder.play.setTag(sheet);
-        holder.play.setTriangleColor(colorMain);
-        holder.play.setPauseLineColor(colorMain);
+        holder.play.setTriangleColor(colorMainB);
+        holder.play.setPauseLineColor(colorMainB);
         holder.play.setOnCheckedChangeListener(playCheckChangeListener);
 
         holder.name.setTextColor(colorMain);
@@ -122,11 +150,49 @@ public class MySheetsAdapter extends BaseAdapter implements
         return convertView;
     }
 
+    private void bindImage(final ImageView image, final int id) {
+        Observable.just(id)
+                .map(new Func1<Integer, Bitmap>() {
+                    @Override
+                    public Bitmap call(Integer integer) {
+                        List<DBMusicocoController.SongInfo> infos = dbMusicoco.getSongInfos(id);
+                        TreeSet<DBMusicocoController.SongInfo> treeSet = dbMusicoco.descSortByLastPlayTime(infos);
+                        Bitmap bitmap = findBitmap(treeSet, image);
+                        if (bitmap == null) {
+                            bitmap = defaultBitmap;
+                        }
+                        return bitmap;
+                    }
+                })
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Bitmap>() {
+                    @Override
+                    public void call(Bitmap bitmap) {
+                        image.setImageBitmap(bitmap);
+                        AnimationUtils.startAlphaAnim(image, 500, null, 0.0f, 1.0f);
+                    }
+                });
+    }
+
+    private Bitmap findBitmap(TreeSet<DBMusicocoController.SongInfo> treeSet, ImageView image) {
+        Bitmap bitmap = null;
+        for (DBMusicocoController.SongInfo s : treeSet) {
+            SongInfo info = mediaManager.getSongInfo(s.path);
+            bitmap = BitmapUtils.bitmapResizeFromFile(info.getAlbum_path(), image.getWidth(), image.getHeight());
+            if (bitmap != null) {
+                break;
+            }
+        }
+        return bitmap;
+    }
+
     @Override
     public void themeChange(Theme theme, int[] colors) {
 
         colorMain = colors[0];
         colorVic = colors[1];
+        colorMainB = colors[2];
 
         notifyDataSetChanged();
     }
