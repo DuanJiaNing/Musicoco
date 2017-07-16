@@ -59,7 +59,7 @@ import static com.duan.musicoco.preference.Theme.WHITE;
  * Created by DuanJiaNing on 2017/7/4.
  */
 
-public class PlayListController implements
+public class BottomNavigationController implements
         View.OnClickListener,
         OnPlayListVisibilityChange,
         OnContentUpdate,
@@ -86,7 +86,7 @@ public class PlayListController implements
     private ListOption listOption;
     private SongOption songOption;
 
-    public PlayListController(Activity activity, DBMusicocoController dbMusicoco, MediaManager mediaManager) {
+    public BottomNavigationController(Activity activity, DBMusicocoController dbMusicoco, MediaManager mediaManager) {
         this.activity = activity;
         this.dbMusicoco = dbMusicoco;
         this.mediaManager = mediaManager;
@@ -452,8 +452,8 @@ public class PlayListController implements
                     break;
                 case R.id.play_list_show_bar:
                     if (isListShowing)
-                        PlayListController.this.hide();
-                    else PlayListController.this.show();
+                        BottomNavigationController.this.hide();
+                    else BottomNavigationController.this.show();
                     break;
             }
         }
@@ -474,13 +474,13 @@ public class PlayListController implements
             int color;
             switch (theme) {
                 case WHITE: {
-                    int[] cs = com.duan.musicoco.util.ColorUtils.get2WhiteThemeTextColor(PlayListController.this.activity);
+                    int[] cs = com.duan.musicoco.util.ColorUtils.get2WhiteThemeTextColor(BottomNavigationController.this.activity);
                     color = cs[0];
                     break;
                 }
                 case DARK:
                 default: {
-                    int[] cs = com.duan.musicoco.util.ColorUtils.get2DarkThemeTextColor(PlayListController.this.activity);
+                    int[] cs = com.duan.musicoco.util.ColorUtils.get2DarkThemeTextColor(BottomNavigationController.this.activity);
                     color = cs[0];
                     break;
                 }
@@ -562,8 +562,8 @@ public class PlayListController implements
 
                 case R.id.play_list_hide_bar:
                     if (isListShowing)
-                        PlayListController.this.hide();
-                    else PlayListController.this.show();
+                        BottomNavigationController.this.hide();
+                    else BottomNavigationController.this.show();
                     break;
                 case R.id.play_list_hide:
                     if (!isListTitleHide)
@@ -583,9 +583,9 @@ public class PlayListController implements
                     break;
                 case R.id.play_show_list:
                     if (isListShowing()) {
-                        PlayListController.this.hide();
+                        BottomNavigationController.this.hide();
                     } else {
-                        PlayListController.this.show();
+                        BottomNavigationController.this.show();
                     }
                     break;
                 case R.id.play_show_more:
@@ -623,13 +623,13 @@ public class PlayListController implements
         public void themeChange(Theme theme, int[] colors) {
             switch (theme) {
                 case WHITE: {
-                    int[] cs = com.duan.musicoco.util.ColorUtils.get2WhiteThemeTextColor(PlayListController.this.activity);
+                    int[] cs = com.duan.musicoco.util.ColorUtils.get2WhiteThemeTextColor(BottomNavigationController.this.activity);
                     currentDrawableColor = cs[0];
                     break;
                 }
                 case DARK:
                 default: {
-                    int[] cs = com.duan.musicoco.util.ColorUtils.get2DarkThemeTextColor(PlayListController.this.activity);
+                    int[] cs = com.duan.musicoco.util.ColorUtils.get2DarkThemeTextColor(BottomNavigationController.this.activity);
                     currentDrawableColor = cs[0];
                     break;
                 }

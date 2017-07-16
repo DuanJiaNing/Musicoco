@@ -81,7 +81,7 @@ public class PlayActivity extends RootActivity implements
     private PlayServiceConnection mServiceConnection;
     private PeriodicTask periodicTask;
     private final PlayPreference playPreference;
-    private PlayListController playListController;
+    private BottomNavigationController bottomNavigationController;
 
     public PlayActivity() {
         playPreference = new PlayPreference(this);
@@ -142,8 +142,8 @@ public class PlayActivity extends RootActivity implements
 
     @Override
     public void onBackPressed() {
-        if (playListController.isListShowing()) {
-            playListController.hide();
+        if (bottomNavigationController.isListShowing()) {
+            bottomNavigationController.hide();
             return;
         }
 
@@ -208,7 +208,7 @@ public class PlayActivity extends RootActivity implements
         }
 
         //在 updateColors 后调用
-        playListController.updateFavorite();
+        bottomNavigationController.updateFavorite();
 
     }
 
@@ -231,7 +231,7 @@ public class PlayActivity extends RootActivity implements
         boolean updateColor = playPreference.getTheme().equals(Theme.VARYING);
         visualizerPresenter.songChanged(song, isNext, updateColor);
 
-        playListController.updatePlayMode();
+        bottomNavigationController.updatePlayMode();
 
     }
 
@@ -319,8 +319,8 @@ public class PlayActivity extends RootActivity implements
 
         flFragmentContainer.setBackgroundColor(Color.TRANSPARENT);
 
-        playListController.update(vicBC, null);
-        playListController.themeChange(null, null);
+        bottomNavigationController.update(vicBC, null);
+        bottomNavigationController.themeChange(null, null);
 
     }
 
@@ -470,7 +470,7 @@ public class PlayActivity extends RootActivity implements
         transaction.hide(lyricFragment);
         transaction.commit();
 
-        playListController = new PlayListController(this, dbMusicoco, mediaManager);
+        bottomNavigationController = new BottomNavigationController(this, dbMusicoco, mediaManager);
         //更新主题
         themeChange(theme, null);
 
@@ -481,8 +481,8 @@ public class PlayActivity extends RootActivity implements
 
         switch (v.getId()) {
             case R.id.play_fragment_container:
-                if (playListController.isListTitleHide())
-                    playListController.showPlayListTitle();
+                if (bottomNavigationController.isListTitleHide())
+                    bottomNavigationController.showPlayListTitle();
                 return true;
             default:
                 break;
@@ -531,8 +531,8 @@ public class PlayActivity extends RootActivity implements
                 }
                 break;
             case R.id.play_fragment_container:
-                if (!playListController.isListShowing())
-                    playListController.show();
+                if (!bottomNavigationController.isListShowing())
+                    bottomNavigationController.show();
                 break;
             case R.id.play_name:
                 //TODO
@@ -594,7 +594,7 @@ public class PlayActivity extends RootActivity implements
                 emptyMediaLibrary();
                 updateData(0, 0, "", "");
             } else {
-                playListController.initData(mServiceConnection.takeControl());
+                bottomNavigationController.initData(mServiceConnection.takeControl());
                 Song song = mServiceConnection.takeControl().currentSong();
                 int index = songs.indexOf(song);
                 //服务端在 onCreate 时会回调 songChanged ，PlayActivity 第一次绑定可能接收不到此次回调
@@ -645,6 +645,6 @@ public class PlayActivity extends RootActivity implements
         flFragmentContainer.setClickable(false);
         nameContainer.setClickable(false);
 
-        playListController.emptyMediaLibrary();
+        bottomNavigationController.emptyMediaLibrary();
     }
 }

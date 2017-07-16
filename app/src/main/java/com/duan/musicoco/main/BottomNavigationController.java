@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.target.FixedSizeDrawable;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
@@ -41,6 +42,7 @@ import com.duan.musicoco.service.PlayServiceCallback;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.PeriodicTask;
+import com.duan.musicoco.util.PullDownListHelper;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.media.PlayView;
@@ -87,6 +89,7 @@ public class BottomNavigationController implements
     private TextView mPlayMode;
     private TextView mLocation;
     private PlayListAdapter adapter;
+    private PullDownListHelper pullDownListHelper;
 
     private boolean hasInitData = false;
 
@@ -125,17 +128,8 @@ public class BottomNavigationController implements
         mLocation = (TextView) contentView.findViewById(R.id.main_play_location);
         mPlayMode = (TextView) contentView.findViewById(R.id.main_play_mode);
         mLine = contentView.findViewById(R.id.main_play_line);
-        mList.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
 
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                currentPosition = firstVisibleItem;
-            }
-        });
+        pullDownListHelper = new PullDownListHelper(mListContainer, mList);
 
         mPlayMode.setCompoundDrawablePadding(8);
         mLocation.setText("当前播放");
@@ -474,6 +468,7 @@ public class BottomNavigationController implements
     public void hide() {
         if (mDialog.isShowing()) {
             mDialog.dismiss();
+            currentPosition = mList.getFirstVisiblePosition();
         }
 
     }
