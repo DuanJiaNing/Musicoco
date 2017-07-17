@@ -3,11 +3,16 @@ package com.duan.musicoco.util;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -15,22 +20,26 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnViewVisibilityChange;
+import com.duan.musicoco.view.PullDownLinearLayout;
 
 /**
  * Created by DuanJiaNing on 2017/7/16.
  */
 
-public class OptionsDialog implements OnViewVisibilityChange {
+public class OptionsDialog implements
+        OnViewVisibilityChange {
 
     private final Dialog mDialog;
 
-    private LinearLayout contentView;
+    private PullDownLinearLayout contentView;
     private TextView titleText;
     private View divide;
     private ListView listView;
 
     private Activity activity;
+    private SongInfo song;
 
     public OptionsDialog(Activity activity) {
         this.activity = activity;
@@ -41,10 +50,13 @@ public class OptionsDialog implements OnViewVisibilityChange {
         mDialog.setCanceledOnTouchOutside(true);
 
         View view = LayoutInflater.from(activity).inflate(R.layout.options_container, null);
-        contentView = (LinearLayout) view.findViewById(R.id.options_container);
+        listView = (ListView) view.findViewById(R.id.options_list);
+
+        contentView = (PullDownLinearLayout) view.findViewById(R.id.options_container);
+        contentView.isListViewExist(true);
+
         titleText = (TextView) view.findViewById(R.id.options_title);
         divide = view.findViewById(R.id.options_divide);
-        listView = (ListView) view.findViewById(R.id.options_list);
         mDialog.setContentView(view);
         listView.post(new Runnable() {
             @Override
@@ -52,6 +64,12 @@ public class OptionsDialog implements OnViewVisibilityChange {
                 setDialogHeight();
             }
         });
+    }
+
+    public void setOnItemClickListener(AdapterView.OnItemClickListener listener) {
+        if (listener != null) {
+            listView.setOnItemClickListener(listener);
+        }
     }
 
     public void setAdapter(ListAdapter adapter) {
@@ -94,8 +112,17 @@ public class OptionsDialog implements OnViewVisibilityChange {
         return mDialog;
     }
 
-    public void setTitle(String title) {
+    public void setSong(SongInfo info) {
+        String title = activity.getString(R.string.song_detail);
+        if (info != null) {
+            title = "歌曲：" + info.getTitle();
+            this.song = info;
+        }
         titleText.setText(title);
+    }
+
+    public SongInfo getSong() {
+        return song;
     }
 
     public void setTitleTextColor(int color) {
@@ -114,17 +141,18 @@ public class OptionsDialog implements OnViewVisibilityChange {
         contentView.setBackgroundColor(color);
     }
 
-    public boolean isShowing() {
-        return mDialog.isShowing();
-    }
-
     @Override
     public void show() {
-        mDialog.show();
+        if (!mDialog.isShowing()) {
+            mDialog.show();
+        }
     }
 
     @Override
     public void hide() {
-        mDialog.hide();
+        if (mDialog.isShowing()) {
+            mDialog.dismiss();
+        }
     }
+
 }

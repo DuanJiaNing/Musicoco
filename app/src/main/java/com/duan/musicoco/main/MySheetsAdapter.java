@@ -97,6 +97,7 @@ public class MySheetsAdapter extends BaseAdapter implements
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
+            //FIXME 替换成普通视图容器
             convertView = LayoutInflater.from(context).inflate(R.layout.my_sheet_list_item, null);
             holder = new ViewHolder();
             holder.image = (ImageView) convertView.findViewById(R.id.sheets_item_image);

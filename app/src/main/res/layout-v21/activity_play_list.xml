@@ -19,6 +19,7 @@
         app:realtimeOverlayColor="#b9ffffff" />
 
     <LinearLayout
+        android:id="@+id/play_nav_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">

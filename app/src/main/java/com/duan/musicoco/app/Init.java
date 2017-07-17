@@ -55,15 +55,14 @@ public class Init {
 
         db.addSongInfo(mediaManager.getSongList());
 
-        String allName = context.getString(R.string.sheet_new);
-        db.addSheet(allName, "", 0);
+        db.addSheet("我喜欢的", "收藏我所喜欢", 0);
 
         //FIXME test
-        db.addSheet("新的歌单", "测试备注显示在这里", 20);
+        db.addSheet("新的歌单 --", "测试备注显示在这里", 0);
 
-        db.addSheet("song sheet", "test for remark", 200);
+        db.addSheet("song sheet", "test for remark", 0);
 
-        db.addSheet("再来一个", "test 胜多负少的法法阿达是否阿达的说法大师傅大厦法定是否大厦法定是否for remark", 20000);
+        db.addSheet("nice song", "test 胜多负少的法法阿达是否阿达的说法大师傅大厦法定是否大厦法定是否for remark", 0);
 
         Log.d(TAG, "initMusicocoDB: initialization database success ");
 

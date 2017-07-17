@@ -320,7 +320,7 @@ public class PlayActivity extends RootActivity implements
         flFragmentContainer.setBackgroundColor(Color.TRANSPARENT);
 
         bottomNavigationController.update(vicBC, null);
-        bottomNavigationController.themeChange(null, null);
+        bottomNavigationController.themeChange(null, colors);
 
     }
 

@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
@@ -20,17 +21,16 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.request.target.FixedSizeDrawable;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.ExceptionHandler;
 import com.duan.musicoco.app.MediaManager;
-import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
-import com.duan.musicoco.app.interfaces.OnThemeChange;
-import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnContentUpdate;
+import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
+import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
+import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.image.BitmapBuilder;
 import com.duan.musicoco.play.PlayActivity;
@@ -42,9 +42,10 @@ import com.duan.musicoco.service.PlayServiceCallback;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.PeriodicTask;
-import com.duan.musicoco.util.PullDownListHelper;
+import com.duan.musicoco.util.PullDownViewListenerHelper;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
+import com.duan.musicoco.view.PullDownLinearLayout;
 import com.duan.musicoco.view.media.PlayView;
 
 /**
@@ -67,7 +68,7 @@ public class BottomNavigationController implements
     private int currentPosition;
 
     private View mContainer;
-    private View mListContainer;
+    private PullDownLinearLayout mListContainer;
     private View mProgress;
     private ImageView mAlbum;
     private TextView mName;
@@ -89,7 +90,6 @@ public class BottomNavigationController implements
     private TextView mPlayMode;
     private TextView mLocation;
     private PlayListAdapter adapter;
-    private PullDownListHelper pullDownListHelper;
 
     private boolean hasInitData = false;
 
@@ -123,13 +123,14 @@ public class BottomNavigationController implements
         mProgress = activity.findViewById(R.id.list_progress);
 
         View contentView = activity.getLayoutInflater().inflate(R.layout.main_play_list, null);
-        mListContainer = contentView.findViewById(R.id.main_play_list_container);
         mList = (ListView) contentView.findViewById(R.id.main_play_list);
+
+        mListContainer = (PullDownLinearLayout) contentView.findViewById(R.id.main_play_list_container);
+        mListContainer.isListViewExist(true);
+
         mLocation = (TextView) contentView.findViewById(R.id.main_play_location);
         mPlayMode = (TextView) contentView.findViewById(R.id.main_play_mode);
         mLine = contentView.findViewById(R.id.main_play_line);
-
-        pullDownListHelper = new PullDownListHelper(mListContainer, mList);
 
         mPlayMode.setCompoundDrawablePadding(8);
         mLocation.setText("当前播放");
@@ -487,4 +488,5 @@ public class BottomNavigationController implements
     public void setCurrentPosition(int currentPosition) {
         this.currentPosition = currentPosition;
     }
+
 }

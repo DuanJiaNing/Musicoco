@@ -166,3 +166,8 @@
 1 修改 MySheets 部分的 ui <br>
 2 添加 OptionsDialog <br>
 3 添加 PullDownListHelper <br>
+
+- 2017-07-15
+
+1 添加 DialogUtils PullDownLinearLayout 和 PullDownViewListenerHelper，但是不能用<br>
+2 PlayActivity 添加歌曲选项(SongOptions)中的显示更多，完成收藏歌曲到歌单功能<br>

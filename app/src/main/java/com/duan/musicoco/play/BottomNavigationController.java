@@ -6,10 +6,13 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.graphics.ColorUtils;
@@ -19,6 +22,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -31,6 +36,7 @@ import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.ExceptionHandler;
 import com.duan.musicoco.app.MediaManager;
+import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
@@ -42,6 +48,7 @@ import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.util.AnimationUtils;
+import com.duan.musicoco.util.DialogUtils;
 import com.duan.musicoco.util.OptionsDialog;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
@@ -71,6 +78,7 @@ public class BottomNavigationController implements
     private boolean isListTitleHide = false;
 
     private CardView mViewRoot;
+    private LinearLayout mPlayListContainer;
     private ListView mPlayList;
     private RealTimeBlurView mRealTimeView;
     private View mListTitleContainer;
@@ -94,6 +102,7 @@ public class BottomNavigationController implements
 
         mViewRoot = (CardView) activity.findViewById(R.id.play_list);
         mPlayList = (ListView) activity.findViewById(R.id.play_play_list);
+
         mRealTimeView = (RealTimeBlurView) activity.findViewById(R.id.play_blur);
         mListTitleContainer = activity.findViewById(R.id.play_list_bar_container);
         vDarkBg = activity.findViewById(R.id.play_dark_bg);
@@ -112,6 +121,9 @@ public class BottomNavigationController implements
         int marginB = (int) activity.getResources().getDimension(R.dimen.action_bar_default_height);
         mViewRoot.setY(metrics.heightPixels - marginB);
         mViewRoot.setLayoutParams(params);
+
+        //TODO 下拉时隐藏
+        mPlayListContainer = (LinearLayout) activity.findViewById(R.id.play_nav_container);
 
     }
 
@@ -355,8 +367,9 @@ public class BottomNavigationController implements
     @Override
     public void themeChange(Theme theme, int[] colors) {
 
-        if (playListAdapter == null)
+        if (playListAdapter == null) {
             return;
+        }
 
         int color = mRealTimeView.getOverlayColor();
         double d = ColorUtils.calculateLuminance(color);
@@ -507,7 +520,7 @@ public class BottomNavigationController implements
         private ImageButton playShowList;
         private ImageButton playShowMore;
 
-        public SongOption(Activity activity) {
+        public SongOption(final Activity activity) {
 
             container = (ViewGroup) activity.findViewById(R.id.play_list_hide_bar);
             hidePlayListBar = (ImageButton) activity.findViewById(R.id.play_list_hide);
@@ -524,7 +537,69 @@ public class BottomNavigationController implements
             playShowMore.setOnClickListener(this);
 
             this.mDialog = new OptionsDialog(activity);
+            mDialog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    SongInfo info = mDialog.getSong();
+                    if (info != null) {
+                        switch (position) {
+                            case 0:
+                                showSheetsDialog(info);
+                                break;
+                            case 1:
+                                DialogUtils.showDetailDialog(info);
+                                ToastUtils.showToast(activity, "显示歌曲详细对话框");
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    mDialog.hide();
+                }
+            });
 
+        }
+
+        private void showSheetsDialog(final SongInfo info) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            final String[] res = getSheetsData();
+
+            builder.setAdapter(new ArrayAdapter<String>(
+                    activity,
+                    android.R.layout.simple_list_item_1,
+                    res
+            ), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (which == res.length - 1) {
+                        DialogUtils.showAddSheetDialog();
+                        ToastUtils.showToast(activity, "显示添加歌单对话框");
+                    } else {
+                        String sheetName = res[which];
+                        Song song = new Song(info.getData());
+                        if (dbMusicoco.addSongToSheet(sheetName, song)) {
+                            ToastUtils.showToast(activity, "成功添加到[" + sheetName + "]");
+                        } else {
+                            ToastUtils.showToast(activity, activity.getString(R.string.song_is_already_in_sheet));
+                        }
+                    }
+                    dialog.dismiss();
+                }
+            }).setCancelable(true).setTitle("歌曲：" + info.getTitle()).show();
+
+        }
+
+        @NonNull
+        private String[] getSheetsData() {
+            String[] res;
+            List<DBMusicocoController.Sheet> sheets = dbMusicoco.getSheets();
+            res = new String[sheets.size() + 1];
+            for (int i = 0; i < sheets.size(); i++) {
+                DBMusicocoController.Sheet s = sheets.get(i);
+                res[i] = s.name + " (" + s.count + "首)";
+            }
+            res[res.length - 1] = activity.getString(R.string.sheet_new) + " + ";
+            return res;
         }
 
         @Override
@@ -589,7 +664,7 @@ public class BottomNavigationController implements
                     }
                     break;
                 case R.id.play_show_more:
-                    if (mDialog.isShowing()) {
+                    if (mDialog.getDialog().isShowing()) {
                         mDialog.hide();
                     } else {
                         Song s = null;
@@ -598,10 +673,7 @@ public class BottomNavigationController implements
                         } catch (RemoteException e) {
                             e.printStackTrace();
                         }
-                        String title = s == null ?
-                                activity.getString(R.string.song_detail) :
-                                "歌曲:" + mediaManager.getSongInfo(s).getTitle();
-                        mDialog.setTitle(title);
+                        mDialog.setSong(mediaManager.getSongInfo(s));
                         mDialog.show();
                     }
                     break;

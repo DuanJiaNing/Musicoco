@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.duan.musicoco.view.PullDownLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/options_container"
@@ -8,7 +8,7 @@
     <TextView
         android:paddingRight="@dimen/activity_default_margin"
         android:paddingLeft="@dimen/activity_default_margin"
-        android:textSize="@dimen/text_middle_s"
+        android:textSize="@dimen/text_small"
         android:gravity="center_vertical|start"
         android:id="@+id/options_title"
         android:layout_width="match_parent"
@@ -21,7 +21,10 @@
         android:background="@color/white_d_d" />
 
     <ListView
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
         android:id="@+id/options_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-</LinearLayout>
+
+</com.duan.musicoco.view.PullDownLinearLayout>

@@ -36,4 +36,6 @@
 
     <string name="song_collection_sheet">收藏到歌单</string>
     <string name="song_detail">歌曲信息</string>
+
+    <string name="song_is_already_in_sheet">歌曲已在歌单中</string>
 </resources>

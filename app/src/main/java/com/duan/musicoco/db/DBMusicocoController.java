@@ -9,11 +9,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.main.SongSheet;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
@@ -74,6 +71,43 @@ public class DBMusicocoController {
                 DBMusicocoController.SHEET_PLAYTIMES + " integer," +
                 DBMusicocoController.SHEET_COUNT + " integer)";
         db.execSQL(sql);
+    }
+
+    public boolean addSongToSheet(int sheetID, Song song) {
+        SongInfo info = getSongInfo(song);
+        if (info == null) {
+            return false;
+        }
+
+        int[] sheets = info.sheets;
+        String ss = songSheetsIntArrayToString(sheets) + sheetID + " ";
+
+        ContentValues values = new ContentValues();
+        values.put(SONG_SHEETS, ss);
+        String whereClause = SONG_ID + " = ?";
+        String[] whereArgs = {info.id + ""};
+        database.update(TABLE_SONG, values, whereClause, whereArgs);
+
+        addSheetCount(sheetID);
+        return true;
+    }
+
+    private int addSheetCount(int sheetID) {
+        Sheet sheet = getSheet(sheetID);
+        if (sheet != null) {
+            return updateSheetCount(sheetID, sheet.count + 1);
+        } else {
+            return -1;
+        }
+    }
+
+    public boolean addSongToSheet(String sheetName, Song song) {
+        Sheet sheet = getSheet(sheetName);
+        if (sheet == null) {
+            return false;
+        }
+
+        return addSongToSheet(sheet.id, song);
     }
 
     public static class SongInfo {
@@ -194,12 +228,7 @@ public class DBMusicocoController {
             info.favorite = far == 1;
 
             String sh = cursor.getString(cursor.getColumnIndex(SONG_SHEETS));
-            String[] strs = sh.split(" ");
-            int[] shs = new int[strs.length];
-            for (int i = 0; i < shs.length; i++) {
-                shs[i] = Integer.parseInt(strs[i]);
-            }
-            info.sheets = shs;
+            info.sheets = songSheetsStringToIntArray(sh);
 
         }
 
@@ -232,12 +261,7 @@ public class DBMusicocoController {
             info.favorite = far == 1;
 
             String sh = cursor.getString(cursor.getColumnIndex(SONG_SHEETS));
-            String[] strs = sh.split(" ");
-            int[] shs = new int[strs.length];
-            for (int i = 0; i < shs.length; i++) {
-                shs[i] = Integer.parseInt(strs[i]);
-            }
-            info.sheets = shs;
+            info.sheets = songSheetsStringToIntArray(sh);
         }
 
         cursor.close();
@@ -267,12 +291,7 @@ public class DBMusicocoController {
             info.favorite = far == 1;
 
             String sh = cursor.getString(cursor.getColumnIndex(SONG_SHEETS));
-            String[] strs = sh.split(" ");
-            int[] shs = new int[strs.length];
-            for (int i = 0; i < shs.length; i++) {
-                shs[i] = Integer.parseInt(strs[i]);
-            }
-            info.sheets = shs;
+            info.sheets = songSheetsStringToIntArray(sh);
 
             infos.add(info);
         }
@@ -292,11 +311,7 @@ public class DBMusicocoController {
             SongInfo info = new SongInfo();
 
             String sh = cursor.getString(cursor.getColumnIndex(SONG_SHEETS));
-            String[] strs = sh.split(" ");
-            int[] shs = new int[strs.length];
-            for (int i = 0; i < shs.length; i++) {
-                shs[i] = Integer.parseInt(strs[i]);
-            }
+            int[] shs = songSheetsStringToIntArray(sh);
 
             boolean isContain = false;
             for (int i : shs) {
@@ -338,13 +353,7 @@ public class DBMusicocoController {
             remark = " ";
         }
 
-        StringBuilder builder = new StringBuilder();
-        builder.append("0 "); //任何一首歌都在 全部歌曲 歌单中
-        if (sheets != null && sheets.length > 0) {
-            for (int i : sheets) {
-                builder.append(i).append(" ");
-            }
-        }
+        String ss = songSheetsIntArrayToString(sheets);
 
         String path = song.path;
         String lpt = String.valueOf(System.currentTimeMillis()) + "";
@@ -354,12 +363,33 @@ public class DBMusicocoController {
         values.put(SONG_PATH, path);
         values.put(SONG_PLAYTIMES, playTimes);
         values.put(SONG_REMARK, remark);
-        values.put(SONG_SHEETS, builder.toString());
+        values.put(SONG_SHEETS, ss);
         values.put(SONG_FAVORITE, favorite ? 1 : 0);
 
         database.insert(TABLE_SONG, null, values);
         Log.d(TAG, "addSongInfo: insert " + path);
 
+    }
+
+    private String songSheetsIntArrayToString(int[] sheets) {
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("0 "); //任何一首歌都在 全部歌曲 歌单中
+        if (sheets != null && sheets.length > 0) {
+            for (int i : sheets) {
+                builder.append(i).append(" ");
+            }
+        }
+        return builder.toString();
+    }
+
+    private int[] songSheetsStringToIntArray(String sheets) {
+        String[] strs = sheets.split(" ");
+        int[] shs = new int[strs.length];
+        for (int i = 0; i < shs.length; i++) {
+            shs[i] = Integer.parseInt(strs[i]);
+        }
+        return shs;
     }
 
     public void addSongInfo(List<Song> songs) {
@@ -582,15 +612,17 @@ public class DBMusicocoController {
         database.update(TABLE_SHEET, values, whereClause, whereArgs);
     }
 
-    public void updateSheetCount(int sheetID, int count) {
+    public int updateSheetCount(int sheetID, int count) {
         if (count < 0) {
-            return;
+            return count;
         }
         ContentValues values = new ContentValues();
         values.put(SHEET_COUNT, count);
         String whereClause = SHEET_ID + " = ?";
         String[] whereArgs = {String.valueOf(sheetID)};
         database.update(TABLE_SHEET, values, whereClause, whereArgs);
+
+        return count;
     }
 
     public void truncate(String table) {
