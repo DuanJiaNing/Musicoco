@@ -42,11 +42,14 @@ public class DialogUtils {
                 nameLimit,
                 countOutLimit, ""
         );
+        nameHolder.editText.setLines(1);
+
         final TextInputHelper.ViewHolder remarkHolder = inputHelper.getLimitedTexInputLayoutView(
                 inputRemark,
                 remarkLimit,
                 countOutLimit, ""
         );
+        remarkHolder.editText.setMaxLines(5);
 
         LinearLayout ll = new LinearLayout(activity);
         ll.setOrientation(LinearLayout.VERTICAL);
