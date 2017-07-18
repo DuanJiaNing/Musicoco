@@ -2,6 +2,10 @@ package com.duan.musicoco.main;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -65,7 +69,7 @@ public class MySheetsAdapter extends BaseAdapter implements
             @Override
             public void onClick(View v) {
                 DBMusicocoController.Sheet sheet = (DBMusicocoController.Sheet) v.getTag();
-                Toast.makeText(context, "click sheet more " + sheet.name, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "OnClickListener sheet more " + sheet.name, Toast.LENGTH_SHORT).show();
             }
         };
 
@@ -97,7 +101,6 @@ public class MySheetsAdapter extends BaseAdapter implements
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            //FIXME 替换成普通视图容器
             convertView = LayoutInflater.from(context).inflate(R.layout.my_sheet_list_item, null);
             holder = new ViewHolder();
             holder.image = (ImageView) convertView.findViewById(R.id.sheets_item_image);
@@ -123,7 +126,7 @@ public class MySheetsAdapter extends BaseAdapter implements
         int count = sheet.count;
         int playTimes = sheet.playTimes;
 
-        bindImage(holder.image, sheet.id);
+        bindImage(holder, sheet);
 
         holder.more.setTag(sheet);
         holder.more.setOnClickListener(moreClickListener);
@@ -151,17 +154,18 @@ public class MySheetsAdapter extends BaseAdapter implements
         return convertView;
     }
 
-    private void bindImage(final ImageView image, final int id) {
-        Observable.just(id)
+    private void bindImage(final ViewHolder holder, final DBMusicocoController.Sheet sheet) {
+        Observable.just(sheet.id)
                 .map(new Func1<Integer, Bitmap>() {
                     @Override
                     public Bitmap call(Integer integer) {
-                        List<DBMusicocoController.SongInfo> infos = dbMusicoco.getSongInfos(id);
+                        List<DBMusicocoController.SongInfo> infos = dbMusicoco.getSongInfos(integer);
                         TreeSet<DBMusicocoController.SongInfo> treeSet = dbMusicoco.descSortByLastPlayTime(infos);
-                        Bitmap bitmap = findBitmap(treeSet, image);
+                        Bitmap bitmap = findBitmap(treeSet, holder.image);
                         if (bitmap == null) {
                             bitmap = defaultBitmap;
                         }
+
                         return bitmap;
                     }
                 })
@@ -170,8 +174,13 @@ public class MySheetsAdapter extends BaseAdapter implements
                 .subscribe(new Action1<Bitmap>() {
                     @Override
                     public void call(Bitmap bitmap) {
-                        image.setImageBitmap(bitmap);
-                        AnimationUtils.startAlphaAnim(image, 500, null, 0.0f, 1.0f);
+                        holder.image.setImageBitmap(bitmap);
+
+                        ColorDrawable drawable = new ColorDrawable(Color.BLACK);
+                        drawable.setAlpha(100);
+                        holder.play.setBackground(drawable);
+
+                        AnimationUtils.startAlphaAnim(holder.image, 400, null, 0.5f, 1.0f);
                     }
                 });
     }

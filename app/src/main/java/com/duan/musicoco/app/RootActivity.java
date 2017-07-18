@@ -69,8 +69,8 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
 
         if (!PermissionManager.checkPermission(this, ps)) {
             PermissionManager.PerMap perMap = new PermissionManager.PerMap(
-                    "存储读取权限",
-                    getResources().getString(R.string.per_rw_storage),
+                    getString(R.string.permission_media_read),
+                    getResources().getString(R.string.permission_required),
                     PermissionManager.PerMap.CATEGORY_MEDIA_READ,
                     ps);
             PermissionManager.requestPermission(perMap, this);

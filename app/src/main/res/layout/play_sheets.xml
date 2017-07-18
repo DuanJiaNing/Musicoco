@@ -14,7 +14,9 @@
         <View
             android:layout_centerInParent="true"
             android:id="@+id/my_sheet_line"
-            android:layout_width="2px"
+            android:layout_width="1dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:layout_height="match_parent"
             android:background="@color/dark" />
 
@@ -26,7 +28,7 @@
             android:gravity="center_vertical|start"
             android:layout_marginRight="@dimen/activity_default_margin"
             android:text="@string/my_sheet_title"
-            android:textSize="@dimen/text_small_s"
+            android:textSize="@dimen/text_small"
             android:textStyle="bold" />
 
         <ImageButton

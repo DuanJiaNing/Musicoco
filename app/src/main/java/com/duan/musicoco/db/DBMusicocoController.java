@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
 
 import java.util.ArrayList;
@@ -502,7 +503,15 @@ public class DBMusicocoController {
     }
 
 
-    public void addSheet(String name, String remark, int count) {
+    public String addSheet(String name, String remark, int count) {
+
+        List<Sheet> sheets = getSheets();
+        for (Sheet s : sheets) {
+            if (s.name.equals(name)) {
+                return context.getString(R.string.error_sheet_already_exits);
+            }
+        }
+
         String create = System.currentTimeMillis() + "";
         if (remark == null) {
             remark = "";
@@ -512,6 +521,8 @@ public class DBMusicocoController {
                 TABLE_SHEET, name, remark, create, 0, count);
         database.execSQL(sql);
         Log.d(TAG, "addSheet: " + sql);
+
+        return null;
     }
 
     public int addSheetPlayTimes(int sheedId) {

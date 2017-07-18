@@ -18,7 +18,7 @@ import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.util.ColorUtils;
-import com.duan.musicoco.view.bezier.BezierImpl;
+import com.duan.musicoco.util.DialogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +79,7 @@ public class MySheetsController implements
 
         switch (v.getId()) {
             case R.id.my_sheet_add:
-
+                DialogUtils.showAddSheetDialog(activity, dbMusicoco);
                 break;
             case R.id.sheet_empty_add:
 
@@ -147,7 +147,6 @@ public class MySheetsController implements
             adapter.notifyDataSetChanged();
         }
     }
-
 
     public boolean hasInitData() {
         return hasInitData;

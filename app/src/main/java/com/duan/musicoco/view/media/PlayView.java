@@ -144,14 +144,14 @@ public class PlayView extends SkipView implements Checkable {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 startPreAnim();
-                //调用 View 的事件监听以使用 View 的 click 和 longClick 监听
+                //调用 View 的事件监听以使用 View 的 OnClickListener 和 longClick 监听
                 super.onTouchEvent(event);
                 return true;
             case MotionEvent.ACTION_UP:
                 startReleaseAnim();
                 //状态反转
                 toggle();
-                //调用 View 的事件监听以使用 View 的 click 和 longClick 监听
+                //调用 View 的事件监听以使用 View 的 OnClickListener 和 longClick 监听
                 super.onTouchEvent(event);
                 break;
             default:

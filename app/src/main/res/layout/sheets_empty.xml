@@ -13,7 +13,7 @@
         android:clickable="true"
         android:drawableTop="@drawable/ic_action_add"
         android:textSize="@dimen/text_middle_s"
-        android:text="@string/click_for_new_sheet"
+        android:text="@string/my_sheet_click_here_for_new_sheet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 

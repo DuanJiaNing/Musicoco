@@ -1,13 +1,14 @@
 <resources>
     <string name="app_name">我的音乐</string>
+    <string name="app_name_us">Musicoco</string>
+
+    <string name="cache_bitmap_album_visualizer">album_visualizer</string>
+
     <string name="title_play_list">播放列表</string>
     <string name="title_lyric">歌词</string>
 
-    <string name="title_activity_list">Musicoco</string>
-    <string name="title_activity_play">Musicoco</string>
-
-    <string name="per_rw_storage">应用需要这些权限以读取歌曲文件，否则程序将无法正常工作并退出！</string>
-    <string name="per_api_too_low">请在手机设置中为应用开启文件读取权限</string>
+    <string name="permission_required">应用需要这些权限以读取歌曲文件，否则程序将无法正常工作并退出！</string>
+    <string name="permission_media_read">媒体文件读取权限</string>
 
     <string name="play_mode_list_loop">列表循环</string>
     <string name="play_mode_single_loop">单曲循环</string>
@@ -15,27 +16,33 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
     <string name="action_settings">Settings</string>
 
-    <string name="cache_bitmap_album_visualizer">album_visualizer</string>
-
     <string name="main_sheet_favorite">我的收藏</string>
-    <string name="main_sheet_desc_favorite">收藏的歌曲都会被加入到这个歌单里哦</string>
     <string name="main_sheet_recent">最近播放</string>
-    <string name="main_sheet_desc_recent">播放次数最多的50首歌曲</string>
     <string name="main_sheet_all">全部歌曲</string>
 
-    <string name="sheet_new">新建歌单</string>
-
     <string name="exception_remote">与播放服务连接断开啦:)，可以尝试退出应用，并重新打开。 </string>
+
     <string name="rmp_see_more">查看更多</string>
 
     <string name="my_sheet_title">创建的歌单</string>
-    <string name="click_for_new_sheet">点击这里创建歌单</string>
+    <string name="my_sheet_click_here_for_new_sheet">点击这里创建歌单</string>
 
     <string name="song_collection_sheet">收藏到歌单</string>
     <string name="song_detail">歌曲信息</string>
 
-    <string name="song_is_already_in_sheet">歌曲已在歌单中</string>
+    <string name="new_sheet">新建歌单</string>
+    <string name="new_sheet_input_name">输入歌单名</string>
+    <string name="new_sheet_input_remark">输入备注信息</string>
+    <string name="new_sheet_input_message">输入歌单名和备注，备注可以为空</string>
+
+    <string name="error_song_is_already_in_sheet">歌曲已在歌单中</string>
+    <string name="error_text_count_out_of_limit">字数超出限制啦!</string>
+    <string name="error_name_required">名称不能为空</string>
+    <string name="error_sheet_already_exits">歌单已存在</string>
+
+    <string name="success_create_sheet">成功创建歌单</string>
+    <string name="success_add_to_sheet">成功添加到歌单</string>
+
 </resources>

@@ -41,7 +41,7 @@
         <activity
             android:name=".main.MainActivity"
             android:alwaysRetainTaskState="true"
-            android:label="@string/title_activity_list"
+            android:label="@string/app_name"
             android:launchMode="singleInstance"
             android:theme="@style/AppTheme">
             <intent-filter>

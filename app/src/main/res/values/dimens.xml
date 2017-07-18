@@ -53,5 +53,6 @@
     <dimen name="main_sheets_height">50dp</dimen>
     <dimen name="main_sheets_image_height">90dp</dimen>
 
-    <dimen name="my_sheets_item_height">120dp</dimen>
+    <dimen name="my_sheets_item_image_width">100dp</dimen>
+    <dimen name="my_sheets_item_image_height">80dp</dimen>
 </resources>

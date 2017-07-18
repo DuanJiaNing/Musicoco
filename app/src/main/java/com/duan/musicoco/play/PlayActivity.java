@@ -536,7 +536,7 @@ public class PlayActivity extends RootActivity implements
                 break;
             case R.id.play_name:
                 //TODO
-                ToastUtils.showToast(this, "click");
+                ToastUtils.showToast(this, "OnClickListener");
                 break;
             default:
                 break;

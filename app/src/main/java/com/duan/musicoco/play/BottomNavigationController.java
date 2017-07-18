@@ -572,15 +572,15 @@ public class BottomNavigationController implements
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if (which == res.length - 1) {
-                        DialogUtils.showAddSheetDialog();
-                        ToastUtils.showToast(activity, "显示添加歌单对话框");
+                        DialogUtils.showAddSheetDialog(activity, dbMusicoco);
                     } else {
                         String sheetName = res[which];
                         Song song = new Song(info.getData());
                         if (dbMusicoco.addSongToSheet(sheetName, song)) {
-                            ToastUtils.showToast(activity, "成功添加到[" + sheetName + "]");
+                            String msg = activity.getString(R.string.success_add_to_sheet) + "[" + sheetName + "]";
+                            ToastUtils.showToast(activity, msg);
                         } else {
-                            ToastUtils.showToast(activity, activity.getString(R.string.song_is_already_in_sheet));
+                            ToastUtils.showToast(activity, activity.getString(R.string.error_song_is_already_in_sheet));
                         }
                     }
                     dialog.dismiss();
@@ -598,7 +598,7 @@ public class BottomNavigationController implements
                 DBMusicocoController.Sheet s = sheets.get(i);
                 res[i] = s.name + " (" + s.count + "首)";
             }
-            res[res.length - 1] = activity.getString(R.string.sheet_new) + " + ";
+            res[res.length - 1] = activity.getString(R.string.new_sheet) + " + ";
             return res;
         }
 
