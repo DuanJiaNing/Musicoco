@@ -10,8 +10,11 @@
     <dimen name="activity_default_margin_2x">32dp</dimen>
 
     <dimen name="activity_default_padding">6dp</dimen>
+    <dimen name="activity_default_padding_l">8dp</dimen>
+    <dimen name="activity_default_padding_l_l">10dp</dimen>
     <dimen name="activity_default_padding_s">4dp</dimen>
     <dimen name="activity_default_padding_2x">12dp</dimen>
+    <dimen name="activity_default_padding_2x_l">14dp</dimen>
     <dimen name="activity_default_padding_3x">16dp</dimen>
 
     <dimen name="play_seek_bar_padding">5dp</dimen>

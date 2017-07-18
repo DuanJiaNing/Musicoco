@@ -7,33 +7,42 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.RemoteException;
+import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.BroadcastManager;
+import com.duan.musicoco.app.DialogManager;
 import com.duan.musicoco.app.ExceptionHandler;
 import com.duan.musicoco.app.MediaManager;
 import com.duan.musicoco.app.SongInfo;
@@ -49,7 +58,9 @@ import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.util.DialogUtils;
+import com.duan.musicoco.util.FileUtils;
 import com.duan.musicoco.util.OptionsDialog;
+import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.RealTimeBlurView;
@@ -155,7 +166,7 @@ public class BottomNavigationController implements
         mRealTimeView.setOverlayColor(color);
         mListTitleContainer.setBackgroundColor(ColorUtils.setAlphaComponent(mRealTimeView.getOverlayColor(), 255));
 
-        themeChange(null, null);
+        themeChange(theme, null);
         songOption.updatePlayMode();
         songOption.show();
         listOption.hide();
@@ -367,37 +378,25 @@ public class BottomNavigationController implements
     @Override
     public void themeChange(Theme theme, int[] colors) {
 
-        if (playListAdapter == null) {
-            return;
+        switch (theme) {
+            case DARK: {
+                updateColors(com.duan.musicoco.util.ColorUtils.get4DarkThemeColors(activity)[2]);
+                break;
+            }
+            case VARYING:
+            case WHITE:
+            default:
+                updateColors(com.duan.musicoco.util.ColorUtils.get4WhiteThemeColors(activity)[2]);
+                break;
         }
 
-        int color = mRealTimeView.getOverlayColor();
-        double d = ColorUtils.calculateLuminance(color);
-        Theme t;
-        if (d - 0.400 > 0.000001) {
-            t = WHITE;
-        } else {
-            t = DARK;
-        }
-
-        playListAdapter.themeChange(t, null);
-        listOption.themeChange(t, null);
-        songOption.themeChange(t, null);
-
+        songOption.themeChange(theme, null);
+        listOption.themeChange(theme, null);
     }
 
     @Override
     public void update(Object obj, OnUpdateStatusChanged completed) {
-        if (!(obj instanceof Integer)) {
-            return;
-        }
-
-        int color = (int) obj;
-        int alpha = activity.getResources().getInteger(R.integer.play_list_bg_alpha);
-        int colorA = ColorUtils.setAlphaComponent(color, alpha);
-
-        mRealTimeView.setOverlayColor(colorA);
-        mListTitleContainer.setBackgroundColor(color);
+        playListAdapter.update(obj, completed);
     }
 
     public void updatePlayMode() {
@@ -430,6 +429,30 @@ public class BottomNavigationController implements
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    public void updateColors(int color) {
+        int alpha = activity.getResources().getInteger(R.integer.play_list_bg_alpha);
+        int colorA = ColorUtils.setAlphaComponent(color, alpha);
+
+        mRealTimeView.setOverlayColor(colorA);
+        mListTitleContainer.setBackgroundColor(color);
+
+        Theme t = WHITE;
+        if (playListAdapter != null) {
+            double d = ColorUtils.calculateLuminance(colorA);
+            if (d - 0.400 > 0.000001) {
+                t = WHITE;
+            } else {
+                t = DARK;
+            }
+
+            playListAdapter.updateColors(t, null);
+        }
+
+        listOption.updateColors(t);
+        songOption.updateColors(t);
+
     }
 
     private class ListOption implements
@@ -482,8 +505,7 @@ public class BottomNavigationController implements
             container.setVisibility(View.GONE);
         }
 
-        @Override
-        public void themeChange(Theme theme, int[] colors) {
+        public void updateColors(Theme theme) {
             int color;
             switch (theme) {
                 case WHITE: {
@@ -503,6 +525,11 @@ public class BottomNavigationController implements
                 location.getDrawable().setTint(color);
             }
         }
+
+        @Override
+        public void themeChange(Theme theme, int[] colors) {
+
+        }
     }
 
     private class SongOption implements
@@ -519,6 +546,8 @@ public class BottomNavigationController implements
         private ImageButton playFavorite;
         private ImageButton playShowList;
         private ImageButton playShowMore;
+
+        private OptionsAdapter moreOptionsAdapter;
 
         public SongOption(final Activity activity) {
 
@@ -540,16 +569,41 @@ public class BottomNavigationController implements
             mDialog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    SongInfo info = mDialog.getSong();
+                    final SongInfo info = mDialog.getSong();
                     if (info != null) {
                         switch (position) {
                             case 0:
                                 showSheetsDialog(info);
                                 break;
                             case 1:
-                                DialogUtils.showDetailDialog(info);
-                                ToastUtils.showToast(activity, "显示歌曲详细对话框");
+                                DialogUtils.showDetailDialog(activity, info);
                                 break;
+                            case 2: //从歌单中移除
+                                removeFromPlayList(new Song(info.getData()));
+                                break;
+                            case 3: {//彻底删除
+                                DialogManager manager = new DialogManager(activity);
+                                final Dialog dialog = manager.createPromptDialog(
+                                        activity.getString(R.string.warning),
+                                        activity.getString(R.string.delete_confirm)
+                                );
+                                manager.setOnPositiveButtonListener("确认", new DialogManager.OnClickListener() {
+                                    @Override
+                                    public void onClick(Button view) {
+                                        deleteForever(info);
+                                        dialog.dismiss();
+                                    }
+                                });
+
+                                manager.setOnNegativeButtonListener("取消", new DialogManager.OnClickListener() {
+                                    @Override
+                                    public void onClick(Button view) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                dialog.show();
+                                break;
+                            }
                             default:
                                 break;
                         }
@@ -558,6 +612,28 @@ public class BottomNavigationController implements
                 }
             });
 
+        }
+
+        private void deleteForever(SongInfo info) {
+            Song song = new Song(info.getData());
+            removeFromPlayList(song);
+
+            String msg = activity.getString(R.string.error_delete_file_fail);
+            if (FileUtils.deleteFile(song.path)) {
+                dbMusicoco.removeSong(song);
+                msg = activity.getString(R.string.success_delete_file);
+            }
+
+            ToastUtils.showToast(activity, msg);
+        }
+
+        private void removeFromPlayList(Song song) {
+            try {
+                control.remove(song);
+                BroadcastManager.sendMyBroadcast(activity, BroadcastManager.REFRESH_PLAY_ACTIVITY_DATA);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
 
         private void showSheetsDialog(final SongInfo info) {
@@ -691,8 +767,7 @@ public class BottomNavigationController implements
             container.setVisibility(View.GONE);
         }
 
-        @Override
-        public void themeChange(Theme theme, int[] colors) {
+        public void updateColors(Theme theme) {
             switch (theme) {
                 case WHITE: {
                     int[] cs = com.duan.musicoco.util.ColorUtils.get2WhiteThemeTextColor(BottomNavigationController.this.activity);
@@ -707,9 +782,6 @@ public class BottomNavigationController implements
                 }
             }
 
-            //FIXME
-            mDialog.setContentBgColor(Color.WHITE);
-
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 hidePlayListBar.getDrawable().setTint(currentDrawableColor);
                 playMode.getDrawable().setTint(currentDrawableColor);
@@ -717,6 +789,35 @@ public class BottomNavigationController implements
                 playShowList.getDrawable().setTint(currentDrawableColor);
                 playShowMore.getDrawable().setTint(currentDrawableColor);
             }
+        }
+
+        @Override
+        public void themeChange(Theme theme, int[] colors) {
+            int[] cs;
+            switch (theme) {
+                case DARK: {
+                    cs = com.duan.musicoco.util.ColorUtils.get4DarkThemeColors(activity);
+                    break;
+                }
+                case VARYING:
+                case WHITE:
+                default:
+                    cs = com.duan.musicoco.util.ColorUtils.get4WhiteThemeColors(activity);
+                    break;
+            }
+
+            int mainBC = cs[0];
+            int mainTC = cs[1];
+            int vicBC = cs[2];
+            int vicTC = cs[3];
+
+            mDialog.setTitleBarBgColor(vicBC);
+            mDialog.setContentBgColor(mainBC);
+            mDialog.setDivideColor(vicTC);
+            mDialog.setTitleTextColor(mainTC);
+
+            moreOptionsAdapter.setTextColor(vicTC);
+            moreOptionsAdapter.setIconColor(mainTC);
         }
 
         int updatePlayMode() {
@@ -751,7 +852,7 @@ public class BottomNavigationController implements
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                drawable.setTint(playListAdapter.getColorVic());
+                drawable.setTint(currentDrawableColor);
             }
             playMode.setImageDrawable(drawable);
 
@@ -817,32 +918,29 @@ public class BottomNavigationController implements
             }
         }
 
-        private List<? extends Map<String, ?>> getData() {
-            String collection = activity.getString(R.string.song_collection_sheet);
-            String detail = activity.getString(R.string.song_detail);
-
-            List<Map<String, Object>> data = new ArrayList<>();
-            Map<String, Object> mapC = new HashMap<String, Object>();
-            mapC.put("image", R.drawable.ic_create_new_folder_black_24dp);
-            mapC.put("text", collection);
-            data.add(mapC);
-
-            Map<String, Object> mapD = new HashMap<String, Object>();
-            mapD.put("image", R.drawable.ic_art_track_black_24dp);
-            mapD.put("text", detail);
-            data.add(mapD);
-
-            return data;
+        public void initData() {
+            moreOptionsAdapter = new OptionsAdapter(activity, getIconsID(), getTexts());
+            mDialog.setAdapter(moreOptionsAdapter);
         }
 
-        public void initData() {
-            ListAdapter adapter = new SimpleAdapter(
-                    activity,
-                    getData(),
-                    R.layout.simple_list_item_image_text,
-                    new String[]{"image", "text"},
-                    new int[]{R.id.simple_list_item_image, R.id.simple_list_item_text});
-            mDialog.setAdapter(adapter);
+        private String[] getTexts() {
+            String[] sts = new String[4];
+            sts[0] = activity.getString(R.string.song_collection_sheet);
+            sts[1] = activity.getString(R.string.song_detail);
+            sts[2] = activity.getString(R.string.remove_song_from_play_list);
+            sts[3] = activity.getString(R.string.delete_song);
+
+            return sts;
+        }
+
+        private int[] getIconsID() {
+            int[] ids = new int[4];
+            ids[0] = R.drawable.ic_create_new_folder_black_24dp;
+            ids[1] = R.drawable.ic_art_track_black_24dp;
+            ids[2] = R.drawable.ic_clear_black_24dp;
+            ids[3] = R.drawable.ic_delete_forever_black_24dp;
+
+            return ids;
         }
     }
 }

@@ -1,6 +1,9 @@
 package com.duan.musicoco.main;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,12 +20,14 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.app.BroadcastManager;
 import com.duan.musicoco.app.PlayServiceManager;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.play.PlayServiceConnection;
+import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.Theme;
 
 public class MainActivity extends RootActivity implements
@@ -38,6 +43,7 @@ public class MainActivity extends RootActivity implements
     private RecentMostPlayController mostPlayController;
     private MainSheetsController mainSheetsController;
     private MySheetsController mySheetsController;
+    private BroadcastReceiver refreshDataReceiver;
 
     private OnUpdateStatusChanged statusChanged = new OnUpdateStatusChanged() {
         @Override
@@ -66,6 +72,7 @@ public class MainActivity extends RootActivity implements
 
         //FIXME test
         appPreference.modifyTheme(Theme.WHITE);
+
         Theme theme = appPreference.getTheme();
         if (theme == Theme.DARK) {
             this.setTheme(R.style.Theme_DARK);
@@ -90,6 +97,10 @@ public class MainActivity extends RootActivity implements
         if (mServiceConnection != null && mServiceConnection.hasConnected) {
             mServiceConnection.unregisterListener();
             unbindService(mServiceConnection);
+        }
+
+        if (refreshDataReceiver != null) {
+            BroadcastManager.unregisterReceiver(this, refreshDataReceiver);
         }
     }
 
@@ -202,6 +213,13 @@ public class MainActivity extends RootActivity implements
 
         initSelfData();
 
+        refreshDataReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                update();
+            }
+        };
+        BroadcastManager.registerBroadReceiver(this, refreshDataReceiver, BroadcastManager.REFRESH_MAIN_ACTIVITY_DATA);
     }
 
     private void initSelfData() {

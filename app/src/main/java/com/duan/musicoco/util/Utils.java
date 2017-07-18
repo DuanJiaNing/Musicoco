@@ -12,13 +12,6 @@ import android.view.ViewGroup;
 
 public class Utils {
 
-    public static String getGenTime(int misec) {
-        int min = misec / 1000 / 60;
-        int sec = (misec / 1000) % 60;
-        String minStr = min < 10 ? "0" + min : min + "";
-        String secStr = sec < 10 ? "0" + sec : sec + "";
-        return minStr + ":" + secStr;
-    }
 
     public static DisplayMetrics getMetrics(Activity activity) {
         Display display = activity.getWindowManager().getDefaultDisplay();

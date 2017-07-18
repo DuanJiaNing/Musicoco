@@ -33,4 +33,12 @@ public class StringUtils {
         return sb.toString();
     }
 
+    public static String getGenTime(int misec) {
+        int min = misec / 1000 / 60;
+        int sec = (misec / 1000) % 60;
+        String minStr = min < 10 ? "0" + min : min + "";
+        String secStr = sec < 10 ? "0" + sec : sec + "";
+        return minStr + ":" + secStr;
+    }
+
 }

@@ -21,7 +21,9 @@ import android.widget.TextView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnViewVisibilityChange;
+import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.view.PullDownLinearLayout;
 
 /**
@@ -112,6 +114,10 @@ public class OptionsDialog implements
         return mDialog;
     }
 
+    public ListView getListView() {
+        return listView;
+    }
+
     public void setSong(SongInfo info) {
         String title = activity.getString(R.string.song_detail);
         if (info != null) {
@@ -154,5 +160,4 @@ public class OptionsDialog implements
             mDialog.dismiss();
         }
     }
-
 }

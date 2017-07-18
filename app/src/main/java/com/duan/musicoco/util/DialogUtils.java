@@ -2,15 +2,24 @@ package com.duan.musicoco.util;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.app.BroadcastManager;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.db.DBMusicocoController;
+import com.duan.musicoco.app.DialogManager;
+import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.view.TextInputHelper;
 
 /**
@@ -20,8 +29,45 @@ import com.duan.musicoco.view.TextInputHelper;
 public class DialogUtils {
 
 
-    public static void showDetailDialog(SongInfo info) {
-        //TODO
+    //TODO 对话框响应主题改变
+    public static void showDetailDialog(Activity activity, SongInfo info) {
+        DialogManager manager = new DialogManager(activity);
+
+        String[] infos = new String[7];
+        infos[0] = "歌曲：" + info.getTitle();
+        infos[1] = "歌手：" + info.getArtist();
+        infos[2] = "专辑：" + info.getAlbum();
+        infos[3] = "时长：" + StringUtils.getGenTime((int) info.getDuration());
+        infos[4] = "格式：" + info.getMime_type();
+        infos[5] = "大小：" + String.valueOf(info.getSize() >> 10 >> 10) + " MB";
+        infos[6] = "路径：" + info.getData();
+
+        View view = activity.getLayoutInflater().inflate(R.layout.list_image, null);
+        ListView listView = (ListView) view.findViewById(R.id.list_image_list);
+        ImageView imageView = (ImageView) view.findViewById(R.id.list_image_image);
+        listView.setAdapter(new ArrayAdapter<String>(
+                activity,
+                R.layout.text_view_start,
+                infos
+        ));
+
+        Bitmap b = BitmapUtils.bitmapResizeFromFile(
+                info.getAlbum_path(),
+                imageView.getWidth(),
+                imageView.getHeight());
+        if (b == null) {
+            b = BitmapUtils.getDefaultAlbumPicture(activity, imageView.getWidth(), imageView.getHeight());
+        }
+
+        if (b != null) {
+            imageView.setImageBitmap(b);
+        }
+
+        ColorDrawable drawable = new ColorDrawable(Color.WHITE);
+        drawable.setAlpha(245);
+        listView.setBackground(drawable);
+
+        manager.createFullyCustomDialog(view, "歌曲信息").show();
     }
 
 
@@ -88,6 +134,8 @@ public class DialogUtils {
                 } else {
                     String msg = activity.getString(R.string.success_create_sheet) + "[" + name + "]";
                     ToastUtils.showToast(activity, msg);
+                    BroadcastManager.sendMyBroadcast(activity, BroadcastManager.REFRESH_MAIN_ACTIVITY_DATA);
+                    dialog.dismiss();
                 }
             }
         });

@@ -17,8 +17,10 @@ import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.ExceptionHandler;
 import com.duan.musicoco.app.MediaManager;
+import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.util.ColorUtils;
@@ -30,7 +32,9 @@ import java.util.List;
  * Created by DuanJiaNing on 2017/6/22.
  */
 
-public class PlayListAdapter extends BaseAdapter implements OnThemeChange {
+public class PlayListAdapter extends BaseAdapter implements
+        OnThemeChange,
+        OnContentUpdate {
 
     private static final String TAG = "PlayListAdapter";
 
@@ -60,8 +64,7 @@ public class PlayListAdapter extends BaseAdapter implements OnThemeChange {
                 try {
                     //如果移除当前正在播放曲目服务端会自动跳到下一首
                     control.remove(s);
-                    updateData();
-                    notifyDataSetChanged();
+                    update(null, null);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                     new ExceptionHandler().handleRemoteException(context,
@@ -100,24 +103,7 @@ public class PlayListAdapter extends BaseAdapter implements OnThemeChange {
         };
 
         this.songs = new ArrayList<>();
-        updateData();
-    }
-
-    private void updateData() {
-        try {
-
-            List<Song> ss = control.getPlayList();
-            songs.clear();
-            for (Song s : ss) {
-                songs.add(mediaManager.getSongInfo(s));
-            }
-
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            new ExceptionHandler().handleRemoteException(context,
-                    context.getString(R.string.exception_remote), null
-            );
-        }
+        update(null, null);
     }
 
     @Override
@@ -207,8 +193,7 @@ public class PlayListAdapter extends BaseAdapter implements OnThemeChange {
         holder.name.setCompoundDrawables(null, null, null, null);
     }
 
-    @Override
-    public void themeChange(Theme theme, int[] colors) {
+    public void updateColors(Theme theme, int[] colors) {
         int[] cs = new int[2];
         if (colors == null) {
             switch (theme) {
@@ -228,6 +213,31 @@ public class PlayListAdapter extends BaseAdapter implements OnThemeChange {
         colorVic = cs[1];
 
         notifyDataSetChanged();
+    }
+
+    @Override
+    public void themeChange(Theme theme, int[] colors) {
+
+    }
+
+    @Override
+    public void update(Object obj, OnUpdateStatusChanged statusChanged) {
+        Log.i(TAG, "play list adapter: data update");
+        try {
+
+            List<Song> ss = control.getPlayList();
+            songs.clear();
+            for (Song s : ss) {
+                songs.add(mediaManager.getSongInfo(s));
+            }
+            notifyDataSetChanged();
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            new ExceptionHandler().handleRemoteException(context,
+                    context.getString(R.string.exception_remote), null
+            );
+        }
     }
 
     private final class ViewHolder {

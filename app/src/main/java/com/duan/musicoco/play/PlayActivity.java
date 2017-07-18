@@ -1,6 +1,9 @@
 package com.duan.musicoco.play;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -20,6 +23,7 @@ import android.widget.ViewSwitcher;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.BroadcastManager;
 import com.duan.musicoco.app.ExceptionHandler;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
@@ -37,8 +41,8 @@ import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.service.PlayServiceCallback;
 import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.util.PeriodicTask;
+import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.util.ToastUtils;
-import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.discreteseekbar.DiscreteSeekBar;
 import com.duan.musicoco.view.media.PlayView;
 import com.duan.musicoco.view.media.SkipView;
@@ -83,6 +87,8 @@ public class PlayActivity extends RootActivity implements
     private final PlayPreference playPreference;
     private BottomNavigationController bottomNavigationController;
 
+    private BroadcastReceiver playListDataChangeReceiver;
+
     public PlayActivity() {
         playPreference = new PlayPreference(this);
     }
@@ -100,6 +106,10 @@ public class PlayActivity extends RootActivity implements
         if (mServiceConnection.hasConnected) {
             mServiceConnection.unregisterListener();
             unbindService(mServiceConnection);
+        }
+
+        if (playListDataChangeReceiver != null) {
+            BroadcastManager.unregisterReceiver(this, playListDataChangeReceiver);
         }
     }
 
@@ -319,8 +329,7 @@ public class PlayActivity extends RootActivity implements
 
         flFragmentContainer.setBackgroundColor(Color.TRANSPARENT);
 
-        bottomNavigationController.update(vicBC, null);
-        bottomNavigationController.themeChange(null, colors);
+        bottomNavigationController.updateColors(vicBC);
 
     }
 
@@ -333,8 +342,8 @@ public class PlayActivity extends RootActivity implements
      */
     private void updateData(int duration, int progress, String title, String arts) {
 
-        tvDuration.setText(Utils.getGenTime(duration));
-        tvPlayProgress.setText(Utils.getGenTime(progress));
+        tvDuration.setText(StringUtils.getGenTime(duration));
+        tvPlayProgress.setText(StringUtils.getGenTime(progress));
 
         sbSongProgress.setMax(duration);
         sbSongProgress.setProgress(progress);
@@ -360,7 +369,7 @@ public class PlayActivity extends RootActivity implements
     protected void initViews() {
 
         //FIXME test
-        playPreference.updateTheme(Theme.VARYING);
+        playPreference.updateTheme(Theme.WHITE);
 
         //初始控件
         flRootView = (FrameLayout) findViewById(R.id.play_root);
@@ -433,7 +442,7 @@ public class PlayActivity extends RootActivity implements
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
 
                 pos = value;
-                tvPlayProgress.setText(Utils.getGenTime(value));
+                tvPlayProgress.setText(StringUtils.getGenTime(value));
                 change = true;
 
             }
@@ -544,13 +553,21 @@ public class PlayActivity extends RootActivity implements
     }
 
     @Override
-    public void onConnected(ComponentName name, IBinder service) {
+    public void onConnected(final ComponentName name, IBinder service) {
 
         initSelfData();
         visualizerPresenter.initData(null);
         lyricPresenter.initData(null);
 
+        playListDataChangeReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                bottomNavigationController.update(null, null);
+            }
+        };
+        BroadcastManager.registerBroadReceiver(this, playListDataChangeReceiver, BroadcastManager.REFRESH_PLAY_ACTIVITY_DATA);
     }
+
 
     private void initSelfData() {
 
@@ -575,7 +592,7 @@ public class PlayActivity extends RootActivity implements
                         try {
                             progress = mServiceConnection.takeControl().getProgress();
                             sbSongProgress.setProgress(progress);
-                            tvPlayProgress.setText(Utils.getGenTime(progress));
+                            tvPlayProgress.setText(StringUtils.getGenTime(progress));
 
                         } catch (RemoteException e) {
                             e.printStackTrace();

@@ -2,6 +2,7 @@ package com.duan.musicoco.util;
 
 import android.content.Context;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 
@@ -22,4 +23,19 @@ public class FileUtils {
         return new File(cachePath + File.separator + uniqueName);
     }
 
+    public static boolean deleteFile(String path) {
+        File file = new File(path);
+        boolean d = false;
+        if (file.exists() && file.isFile()) {
+            d = file.delete();
+        }
+
+        if (d) {
+            Log.d("musicoco", "success deleteFile: " + path);
+        } else {
+            Log.d("musicoco", "fial deleteFile: " + path);
+        }
+
+        return d;
+    }
 }

@@ -8,7 +8,7 @@
     android:layout_marginRight="@dimen/activity_default_margin_s_s"
     app:cardBackgroundColor="#51ffffff"
     app:cardCornerRadius="12dp"
-    app:cardElevation="12dp"
+    app:cardElevation="20dp"
     app:contentPaddingBottom="@dimen/activity_default_margin">
 
     <com.duan.musicoco.view.RealTimeBlurView

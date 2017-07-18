@@ -42,7 +42,7 @@ public class PlayPreference {
         editor = preferences.edit();
         editor.putString(KEY_THEME, theme.name());
         editor.apply();
-        Log.d("musicoco", "updateTheme: theme " + theme.name());
+        Log.d("musicoco", "updateColors: theme " + theme.name());
     }
 
     public Theme getTheme() {

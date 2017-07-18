@@ -270,13 +270,12 @@ public class ColorUtils {
         int[] colors = new int[2];
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            colors[0] = context.getColor(R.color.white_d_d); //主字体色
-            colors[1] = context.getColor(R.color.white_d_d_d); // 辅字体色
+            colors[0] = context.getColor(R.color.theme_dark_main_text); //主字体色
+            colors[1] = context.getColor(R.color.theme_dark_vic_text); // 辅字体色
         } else {
-            colors[0] = context.getResources().getColor(R.color.white_d_d);
-            colors[1] = context.getResources().getColor(R.color.white_d_d_d);
+            colors[0] = context.getResources().getColor(R.color.theme_dark_main_text);
+            colors[1] = context.getResources().getColor(R.color.theme_dark_vic_text);
         }
-
         return colors;
     }
 

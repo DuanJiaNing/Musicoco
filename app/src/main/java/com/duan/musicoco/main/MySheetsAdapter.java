@@ -159,13 +159,14 @@ public class MySheetsAdapter extends BaseAdapter implements
                 .map(new Func1<Integer, Bitmap>() {
                     @Override
                     public Bitmap call(Integer integer) {
+                        //Java.util.ConcurrentModificationException
+                        //FIXME 多线程导致迭代时修改错误
                         List<DBMusicocoController.SongInfo> infos = dbMusicoco.getSongInfos(integer);
-                        TreeSet<DBMusicocoController.SongInfo> treeSet = dbMusicoco.descSortByLastPlayTime(infos);
-                        Bitmap bitmap = findBitmap(treeSet, holder.image);
+//                        TreeSet<DBMusicocoController.SongInfo> treeSet = dbMusicoco.descSortByLastPlayTime(infos);
+                        Bitmap bitmap = findBitmap(infos, holder.image);
                         if (bitmap == null) {
                             bitmap = defaultBitmap;
                         }
-
                         return bitmap;
                     }
                 })
@@ -185,7 +186,7 @@ public class MySheetsAdapter extends BaseAdapter implements
                 });
     }
 
-    private Bitmap findBitmap(TreeSet<DBMusicocoController.SongInfo> treeSet, ImageView image) {
+    private Bitmap findBitmap(List<DBMusicocoController.SongInfo> treeSet, ImageView image) {
         Bitmap bitmap = null;
         for (DBMusicocoController.SongInfo s : treeSet) {
             SongInfo info = mediaManager.getSongInfo(s.path);

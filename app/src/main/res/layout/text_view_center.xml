@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:textSize="@dimen/text_middle_l"
+    android:gravity="center"
+    android:id="@+id/text_view_center"
+    android:maxLines="2"
+    android:ellipsize="marquee"
+    android:marqueeRepeatLimit="marquee_forever"
+    android:padding="@dimen/activity_default_padding"
+    android:layout_height="match_parent"></TextView>

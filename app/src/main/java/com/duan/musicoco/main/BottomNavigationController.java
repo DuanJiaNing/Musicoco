@@ -357,22 +357,18 @@ public class BottomNavigationController implements
 
     @Override
     public void themeChange(Theme theme, int[] colors) {
-        setTheme(theme);
-    }
 
-    private void setTheme(Theme theme) {
-
-        int[] colors = new int[4];
+        int[] cs = new int[4];
         if (theme == Theme.DARK) {
-            colors = ColorUtils.get4DarkThemeColors(activity);
+            cs = ColorUtils.get4DarkThemeColors(activity);
         } else if (theme == Theme.WHITE) {
-            colors = ColorUtils.get4WhiteThemeColors(activity);
+            cs = ColorUtils.get4WhiteThemeColors(activity);
         } else return;
 
-        int mainBC = colors[0];
-        int mainTC = colors[1];
-        int vicBC = colors[2];
-        int vicTC = colors[3];
+        int mainBC = cs[0];
+        int mainTC = cs[1];
+        int vicBC = cs[2];
+        int vicTC = cs[3];
 
         if (adapter != null) {
             adapter.themeChange(theme, new int[]{mainTC, vicTC});

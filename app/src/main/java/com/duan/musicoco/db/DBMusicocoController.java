@@ -102,6 +102,15 @@ public class DBMusicocoController {
         }
     }
 
+    private int minusSheetCount(int sheetID) {
+        Sheet sheet = getSheet(sheetID);
+        if (sheet != null) {
+            return updateSheetCount(sheetID, sheet.count - 1);
+        } else {
+            return -1;
+        }
+    }
+
     public boolean addSongToSheet(String sheetName, Song song) {
         Sheet sheet = getSheet(sheetName);
         if (sheet == null) {
@@ -671,5 +680,34 @@ public class DBMusicocoController {
         }
         return treeSet;
     }
+
+    public boolean removeSong(Song song) {
+        SongInfo info = getSongInfo(song);
+        boolean r = false;
+
+        if (info != null) {
+            database.beginTransaction();
+
+            int[] sheets = info.sheets;
+            for (int s : sheets) {
+                minusSheetCount(s);
+            }
+            r = removeSongInfo(song);
+
+            database.endTransaction();
+        }
+
+        return r;
+    }
+
+    public boolean removeSongInfo(Song song) {
+
+        String where = SONG_PATH + " like ? ";
+        String[] whereArg = new String[]{song.path};
+        database.delete(TABLE_SONG, where, whereArg);
+
+        return true;
+    }
+
 
 }

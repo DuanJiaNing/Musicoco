@@ -10,6 +10,8 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 
+import com.duan.musicoco.R;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -154,6 +156,9 @@ public class BitmapUtils {
         return BitmapFactory.decodeFile(filePath, options);
     }
 
+    public static Bitmap getDefaultAlbumPicture(Context context, int reqWidth, int reqHeight) {
+        return bitmapResizeFromResource(context.getResources(), R.drawable.default_album, reqWidth, reqHeight);
+    }
 
 }
 

@@ -1,8 +1,7 @@
-package com.duan.musicoco.util;
+package com.duan.musicoco.app;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -122,7 +121,6 @@ public class DialogManager {
 
     }
 
-
     /**
      * 外部实现按钮点击事件方法体
      */
@@ -205,6 +203,12 @@ public class DialogManager {
 
     }
 
+    public AlertDialog createPromptDialog(String title, String info) {
+        mTitle.setText(title);
+        mMessage.setText(info);
+        return getDialog();
+    }
+
     private AlertDialog getDialog() {
 
         builder.setView(rootView);
@@ -268,20 +272,36 @@ public class DialogManager {
         return getDialog();
     }
 
-    public void setTopLineColor(int color) {
-        if (mLine1 == null) {
-            return;
-        }
 
-        mLine1.setBackgroundColor(color);
+    public View getTopLine() {
+        return mLine1;
     }
 
-    public void setMessageLineColor(int color) {
-        if (mLine2 == null) {
-            return;
-        }
-
-        mLine2.setBackgroundColor(color);
+    public View getMessageLine() {
+        return mLine2;
     }
 
+    public TextView getTitleTextView() {
+        return mTitle;
+    }
+
+    public TextView getMessageTextView() {
+        return mMessage;
+    }
+
+    public Button getNeuterButton() {
+        return mNeuterButton;
+    }
+
+    public Button getNegativeButton() {
+        return mNegativeButton;
+    }
+
+    public Button getPositiveButton() {
+        return mPositiveButton;
+    }
+
+    public View getRootView() {
+        return rootView;
+    }
 }
