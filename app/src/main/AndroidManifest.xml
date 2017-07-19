@@ -20,6 +20,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true">
+
         <!-- 需要为 PlayActivity 开启硬件加速，Android 4.1 以上默认开启 -->
         <activity
             android:name=".play.PlayActivity"
@@ -46,9 +47,14 @@
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".detail.Main2Activity"
+            android:label="@string/title_activity_main2"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

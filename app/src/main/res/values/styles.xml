@@ -59,16 +59,19 @@
 
     <style name="Theme.WHITE" parent="AppTheme">
         <item name="android:windowBackground">@color/theme_white_primary_dark</item>
-        <item name="colorPrimary">@color/theme_white_primary_dark</item>
-        <item name="colorPrimaryDark">@color/theme_white_primary_dark</item>
-        <item name="colorAccent">@color/theme_white_main_text</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColorPrimary">@color/theme_white_main_text</item>
-        <item name="android:textColorSecondary">@color/theme_white_main_text</item>
+        <item name="android:textColorSecondary">@color/theme_white_vic_text</item>
 
-        <item name="android:colorControlHighlight">@color/white_d_d</item>
-        <item name="android:colorControlNormal">@color/theme_white_main_text</item>
+        <item name="android:colorControlActivated">@color/colorAccent</item>
+        <item name="android:colorControlNormal">@color/colorAccentLight</item>
+
         <item name="android:navigationBarColor">@color/theme_white_main_text</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
 </resources>

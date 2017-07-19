@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.view.View;
 import android.widget.ImageView;
@@ -173,7 +174,7 @@ public class MainSheetsController implements
                         int[] colors = new int[4];
                         int defaultColor = Color.GRAY;
                         int defaultTextColor = Color.DKGRAY;
-                        ColorUtils.get4LightColorWithTextFormBitmap(
+                        ColorUtils.get4DarkColorWithTextFormBitmap(
                                 data.bitmap,
                                 defaultColor,
                                 defaultTextColor,
@@ -283,15 +284,11 @@ public class MainSheetsController implements
 
     private void updateTextAndColor(TextView categoryView, int count, TextView countView, int[] colors) {
 
-        GradientDrawable categoryD = new GradientDrawable(
-                GradientDrawable.Orientation.LEFT_RIGHT,
-                new int[]{colors[0], colors[2]}
-        );
-        categoryView.setBackground(categoryD);
-        categoryView.setTextColor(colors[1]);
+        categoryView.setBackgroundColor(colors[2]);
+        categoryView.setTextColor(colors[3]);
 
         GradientDrawable countD = new GradientDrawable();
-        countD.setColor(colors[2]);
+        countD.setColor(colors[0]);
         countD.setCornerRadius(countView.getHeight() / 2);
         countView.setBackground(countD);
         countView.setTextColor(colors[1]);

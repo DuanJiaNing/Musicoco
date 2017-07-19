@@ -52,5 +52,6 @@
 
     <string name="warning">警告</string>
     <string name="delete_confirm">确认删除</string>
+    <string name="title_activity_main2">Main2Activity</string>
 
 </resources>

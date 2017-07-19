@@ -27,17 +27,16 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    //    compile 'com.android.support:design:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
     compile 'com.android.support:palette-v7:23.4.0'
     compile 'com.android.support:appcompat-v7:26.0.0-alpha1'
     compile 'com.android.support:cardview-v7:26.0.0-alpha1'
-    //    compile 'com.android.support:design:25.3.1'
-    testCompile 'junit:junit:4.12'
     compile 'com.android.support:design:26.0.0-alpha1'
     compile 'io.reactivex:rxjava:1.0.14'
     compile 'io.reactivex:rxandroid:1.0.1'
     compile 'com.github.bumptech.glide:glide:4.0.0-RC1'
-    compile 'com.google.android:support-v4:r7'
+    testCompile 'junit:junit:4.12'
 }
 repositories {
     mavenCentral()

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -61,17 +62,17 @@ public class DialogManager {
     /**
      * 中性按钮
      */
-    private Button mNeuterButton;
+    private TextView mNeuterButton;
 
     /**
      * 消极按钮
      */
-    private Button mNegativeButton;
+    private TextView mNegativeButton;
 
     /**
      * 中性按钮
      */
-    private Button mPositiveButton;
+    private TextView mPositiveButton;
 
     /**
      * layout视图
@@ -93,9 +94,15 @@ public class DialogManager {
      */
     private AlertDialog dialog;
 
+    private final int buttonTextSize;
+    private final int buttonPadding;
+
     public DialogManager(Context context) {
 
         this.context = context;
+
+        buttonTextSize = context.getResources().getDimensionPixelSize(R.dimen.text_dialog_button);
+        buttonPadding = context.getResources().getDimensionPixelSize(R.dimen.activity_default_padding_l);
 
         rootView = LayoutInflater.from(context).inflate(R.layout.dialog, null);
         mFirstOuter = (LinearLayout) rootView.findViewById(R.id.dialog_layout_outermost);
@@ -105,13 +112,17 @@ public class DialogManager {
         mTitle = (TextView) rootView.findViewById(R.id.dialog_title);
         mMessage = (TextView) rootView.findViewById(R.id.dialog_message);
 
-        mNeuterButton = (Button) rootView.findViewById(R.id.dialog_Neuter);
+        ViewGroup.LayoutParams p = mCustomContainer.getLayoutParams();
+        p.height = 0;
+        mCustomContainer.setLayoutParams(p);
+
+        mNeuterButton = (TextView) rootView.findViewById(R.id.dialog_Neuter);
         mNeuterButton.setEnabled(false);
 
-        mPositiveButton = (Button) rootView.findViewById(R.id.dialog_positive);
+        mPositiveButton = (TextView) rootView.findViewById(R.id.dialog_positive);
         mPositiveButton.setEnabled(false);
 
-        mNegativeButton = (Button) rootView.findViewById(R.id.dialog_Negative);
+        mNegativeButton = (TextView) rootView.findViewById(R.id.dialog_Negative);
         mNegativeButton.setEnabled(false);
 
         mLine1 = rootView.findViewById(R.id.dialog_line1);
@@ -125,7 +136,7 @@ public class DialogManager {
      * 外部实现按钮点击事件方法体
      */
     public interface OnClickListener {
-        void onClick(Button view);
+        void onClick(View view);
     }
 
     /**
@@ -135,7 +146,13 @@ public class DialogManager {
      * @param OnClickListener 外部实现点击事件
      */
     public void setOnNeuterButtonListener(String text, final OnClickListener OnClickListener) {
+        ViewGroup.LayoutParams p = mCustomContainer.getLayoutParams();
+        p.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        mCustomContainer.setLayoutParams(p);
+
         mNeuterButton.setEnabled(true);
+        mNeuterButton.setTextSize(buttonTextSize);
+        mNeuterButton.setPadding(buttonPadding, buttonPadding, buttonPadding, buttonPadding);
         mNeuterButton.setText(text);
         mNeuterButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,7 +169,13 @@ public class DialogManager {
      * @param OnClickListener 外部实现点击事件
      */
     public void setOnNegativeButtonListener(String text, final OnClickListener OnClickListener) {
+        ViewGroup.LayoutParams p = mCustomContainer.getLayoutParams();
+        p.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        mCustomContainer.setLayoutParams(p);
+
         mNegativeButton.setEnabled(true);
+        mNegativeButton.setTextSize(buttonTextSize);
+        mNegativeButton.setPadding(buttonPadding, buttonPadding, buttonPadding, buttonPadding);
         mNegativeButton.setText(text);
         mNegativeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -169,7 +192,13 @@ public class DialogManager {
      * @param OnClickListener 外部实现点击事件
      */
     public void setOnPositiveButtonListener(String text, final OnClickListener OnClickListener) {
+        ViewGroup.LayoutParams p = mCustomContainer.getLayoutParams();
+        p.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        mCustomContainer.setLayoutParams(p);
+
         mPositiveButton.setEnabled(true);
+        mPositiveButton.setTextSize(buttonTextSize);
+        mPositiveButton.setPadding(buttonPadding, buttonPadding, buttonPadding, buttonPadding);
         mPositiveButton.setText(text);
         mPositiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -217,17 +246,11 @@ public class DialogManager {
         return builder.create();
     }
 
-    /**
-     * 显示内层视图填充（如输入对话框）
-     *
-     * @param messageInfo 要显示的信息
-     * @param titleInfo   标题
-     */
-    public AlertDialog createCustomInsiderDialog(@Nullable String messageInfo, String titleInfo, View v) {
+    public AlertDialog createCustomInsiderDialog(String title, @Nullable String message, View v) {
         mInsider.addView(v);
-        mTitle.setText(titleInfo);
-        if (messageInfo != null) {
-            mMessage.setText(messageInfo);
+        mTitle.setText(title);
+        if (message != null) {
+            mMessage.setText(message);
         } else mFirstOuter.removeView(mMessage);
         return getDialog();
 
@@ -287,18 +310,6 @@ public class DialogManager {
 
     public TextView getMessageTextView() {
         return mMessage;
-    }
-
-    public Button getNeuterButton() {
-        return mNeuterButton;
-    }
-
-    public Button getNegativeButton() {
-        return mNegativeButton;
-    }
-
-    public Button getPositiveButton() {
-        return mPositiveButton;
     }
 
     public View getRootView() {

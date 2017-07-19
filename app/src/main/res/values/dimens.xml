@@ -28,6 +28,9 @@
     <dimen name="text_small_s">11sp</dimen>
     <dimen name="text_small_s_s">9sp</dimen>
 
+    <dimen name="text_dialog_button">6sp</dimen>
+
+    <dimen name="text_large_s">22sp</dimen>
     <dimen name="text_large">24sp</dimen>
     <dimen name="text_large_l">26sp</dimen>
     <dimen name="text_large_l_l">28sp</dimen>

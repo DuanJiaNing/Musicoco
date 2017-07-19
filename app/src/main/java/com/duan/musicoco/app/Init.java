@@ -58,7 +58,7 @@ public class Init {
         db.addSheet("我喜欢的", "收藏我所喜欢", 0);
 
         //FIXME test
-        db.addSheet("新的歌单 --", "测试备注显示在这里", 0);
+        db.addSheet("新的歌单 --", "", 0);
 
         db.addSheet("song sheet", "test for remark", 0);
 

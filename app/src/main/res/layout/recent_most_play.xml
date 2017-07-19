@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="@dimen/activity_default_margin_l"
     android:layout_marginRight="@dimen/activity_default_margin_l"
-    android:layout_marginTop="@dimen/activity_default_margin_s_s"
+    android:paddingTop="@dimen/activity_default_margin_s"
     android:orientation="vertical"
     android:weightSum="1">
 
@@ -84,25 +84,31 @@
                     android:background="@color/white_d_d" />
 
                 <TextView
+                    android:textStyle="bold"
+                    android:alpha="0.7"
                     android:id="@+id/rmp_info_remark"
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_default_margin_s_s"
                     android:maxLines="3"
+                    android:ellipsize="end"
                     android:textColor="@color/white_d_d"
                     android:textSize="@dimen/text_small" />
             </LinearLayout>
 
             <TextView
                 android:id="@+id/rmp_info_arts"
-
+                android:layout_marginLeft="-15dp"
+                android:paddingLeft="18dp"
+                android:paddingTop="3dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="3dp"
+                android:layout_marginBottom="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:padding="@dimen/activity_default_padding"
                 android:textColor="@color/white_d"
                 android:textSize="@dimen/text_small" />
         </RelativeLayout>

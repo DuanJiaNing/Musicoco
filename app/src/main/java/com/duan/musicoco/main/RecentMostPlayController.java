@@ -200,9 +200,10 @@ public class RecentMostPlayController implements
                 }
 
                 if (data.bitmap != null) {
-                    data.colors = new int[6];
+                    data.colors = new int[4];
                     int defaultColor = activity.getResources().getColor(R.color.rmp_image_default_bg);
-                    ColorUtils.get6ColorFormBitmap(data.bitmap, defaultColor, data.colors);
+                    int defaultTextColor = Color.GRAY;
+                    ColorUtils.get4LightColorWithTextFormBitmap(data.bitmap, defaultColor, defaultTextColor, data.colors);
                 } else {
                     data.colors = null;
                 }
@@ -246,7 +247,7 @@ public class RecentMostPlayController implements
 
         mName.setText(name);
         mArts.setText(arts);
-        mRemark.setText(remark);
+        mRemark.setText("  " + remark);
         mPlayTime.setText(String.valueOf(maxPlayTime));
 
         mName.post(new Runnable() {
@@ -263,14 +264,27 @@ public class RecentMostPlayController implements
 
     private void updateColors(@NonNull int[] colors) {
 
+        int startC = colors[0];
+        int endC = colors[2];
+
         GradientDrawable drawable = new GradientDrawable(
                 GradientDrawable.Orientation.LEFT_RIGHT,
-                new int[]{colors[4], colors[5]});
+                new int[]{startC, endC});
         mContainer.setBackground(drawable);
 
-        drawable.setAlpha(150);
-        drawable.setColorFilter(Color.GRAY, PorterDuff.Mode.MULTIPLY);
+        drawable.setAlpha(170);
+        int colorFilter = activity.getColor(R.color.main_rmp_image_filter);
+        drawable.setColorFilter(colorFilter, PorterDuff.Mode.MULTIPLY);
         mInfoContainer.setBackground(drawable);
+
+
+        int textC = colors[3];
+        int textBC = colors[0];
+        GradientDrawable td = new GradientDrawable();
+        td.setColor(textBC);
+        td.setCornerRadius(mArts.getHeight() / 2);
+        mArts.setBackground(td);
+        mArts.setTextColor(textC);
 
     }
 

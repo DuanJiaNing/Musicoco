@@ -1,17 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:fitsSystemWindows="true"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <LinearLayout
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/main_swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/ll003"
-        android:layout_alignParentTop="true">
+        android:layout_above="@+id/ll003">
 
-        <include layout="@layout/activity_content_main" />
-    </LinearLayout>
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/main_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/l001"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true">
+
+                    <include layout="@layout/recent_most_play" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/l001">
+
+                    <include layout="@layout/play_sheets" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+        </android.support.v4.widget.NestedScrollView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <LinearLayout
         android:id="@+id/ll003"

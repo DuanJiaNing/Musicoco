@@ -40,7 +40,6 @@ public class TextInputHelper {
         }
 
         holder.textView.setText(holder.editText.getText().length() + "/" + limit);
-
         holder.editText.addTextChangedListener(new TextWatcher() {
 
             /**

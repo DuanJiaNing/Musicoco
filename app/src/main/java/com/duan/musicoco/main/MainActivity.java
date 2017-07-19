@@ -82,13 +82,6 @@ public class MainActivity extends RootActivity implements
 
         setContentView(R.layout.activity_main);
 
-        //状态栏透明
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
-
     }
 
     @Override

@@ -9,19 +9,17 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.RemoteException;
-import android.support.annotation.IntegerRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -31,12 +29,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.TextView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
@@ -60,12 +54,10 @@ import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.util.DialogUtils;
 import com.duan.musicoco.util.FileUtils;
 import com.duan.musicoco.util.OptionsDialog;
-import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.RealTimeBlurView;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -589,7 +581,7 @@ public class BottomNavigationController implements
                                 );
                                 manager.setOnPositiveButtonListener("确认", new DialogManager.OnClickListener() {
                                     @Override
-                                    public void onClick(Button view) {
+                                    public void onClick(View view) {
                                         deleteForever(info);
                                         dialog.dismiss();
                                     }
@@ -597,7 +589,7 @@ public class BottomNavigationController implements
 
                                 manager.setOnNegativeButtonListener("取消", new DialogManager.OnClickListener() {
                                     @Override
-                                    public void onClick(Button view) {
+                                    public void onClick(View view) {
                                         dialog.dismiss();
                                     }
                                 });
@@ -637,20 +629,27 @@ public class BottomNavigationController implements
         }
 
         private void showSheetsDialog(final SongInfo info) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-            final String[] res = getSheetsData();
+            final Map<Integer, String[]> res = getSheetsData();
 
-            builder.setAdapter(new ArrayAdapter<String>(
-                    activity,
-                    android.R.layout.simple_list_item_1,
-                    res
-            ), new DialogInterface.OnClickListener() {
+            DialogManager manager = new DialogManager(activity);
+            ListView listView = new ListView(activity);
+            listView.setDivider(new ColorDrawable(Color.TRANSPARENT));
+            OptionsAdapter adapter = new OptionsAdapter(activity, null, res.get(0), res.get(1));
+            adapter.setPaddingLeft(30);
+            listView.setAdapter(adapter);
+            final AlertDialog dialog = manager.createCustomInsiderDialog(
+                    activity.getString(R.string.song_collection_sheet),
+                    "歌曲：" + info.getTitle(),
+                    listView
+            );
+
+            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (which == res.length - 1) {
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    if (position == res.size() - 1) {
                         DialogUtils.showAddSheetDialog(activity, dbMusicoco);
                     } else {
-                        String sheetName = res[which];
+                        String sheetName = res.get(0)[position];
                         Song song = new Song(info.getData());
                         if (dbMusicoco.addSongToSheet(sheetName, song)) {
                             String msg = activity.getString(R.string.success_add_to_sheet) + "[" + sheetName + "]";
@@ -661,20 +660,29 @@ public class BottomNavigationController implements
                     }
                     dialog.dismiss();
                 }
-            }).setCancelable(true).setTitle("歌曲：" + info.getTitle()).show();
+            });
 
+            dialog.show();
         }
 
-        @NonNull
-        private String[] getSheetsData() {
-            String[] res;
+        private Map<Integer, String[]> getSheetsData() {
+            Map<Integer, String[]> res = new HashMap<>();
+            String[] names;
+            String[] counts;
+
             List<DBMusicocoController.Sheet> sheets = dbMusicoco.getSheets();
-            res = new String[sheets.size() + 1];
+            names = new String[sheets.size() + 1];
+            counts = new String[sheets.size() + 1];
             for (int i = 0; i < sheets.size(); i++) {
                 DBMusicocoController.Sheet s = sheets.get(i);
-                res[i] = s.name + " (" + s.count + "首)";
+                names[i] = s.name;
+                counts[i] = s.count + "首";
             }
-            res[res.length - 1] = activity.getString(R.string.new_sheet) + " + ";
+            names[names.length - 1] = activity.getString(R.string.new_sheet) + " + ";
+            counts[names.length - 1] = "";
+
+            res.put(0, names);
+            res.put(1, counts);
             return res;
         }
 
@@ -919,17 +927,12 @@ public class BottomNavigationController implements
         }
 
         public void initData() {
-            moreOptionsAdapter = new OptionsAdapter(activity, getIconsID(), getTexts());
+            moreOptionsAdapter = new OptionsAdapter(activity, getIconsID(), getTexts(), null);
             mDialog.setAdapter(moreOptionsAdapter);
         }
 
         private String[] getTexts() {
-            String[] sts = new String[4];
-            sts[0] = activity.getString(R.string.song_collection_sheet);
-            sts[1] = activity.getString(R.string.song_detail);
-            sts[2] = activity.getString(R.string.remove_song_from_play_list);
-            sts[3] = activity.getString(R.string.delete_song);
-
+            String[] sts = activity.getResources().getStringArray(R.array.song_options_titles);
             return sts;
         }
 

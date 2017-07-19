@@ -106,13 +106,14 @@ public class DialogUtils {
 
         ll.addView(remarkHolder.view);
         final AlertDialog dialog = manager.createCustomInsiderDialog(
+                newSheet,
                 inputMessage,
-                newSheet, ll
+                ll
         );
 
         manager.setOnPositiveButtonListener("确定", new DialogManager.OnClickListener() {
             @Override
-            public void onClick(Button view) {
+            public void onClick(View view) {
                 String name = nameHolder.editText.getText().toString();
                 String error = null;
 
@@ -142,7 +143,7 @@ public class DialogUtils {
 
         manager.setOnNegativeButtonListener("取消", new DialogManager.OnClickListener() {
             @Override
-            public void onClick(Button view) {
+            public void onClick(View view) {
                 dialog.dismiss();
             }
         });
