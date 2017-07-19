@@ -11,10 +11,8 @@ import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -42,7 +40,6 @@ import com.duan.musicoco.service.PlayServiceCallback;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.PeriodicTask;
-import com.duan.musicoco.util.PullDownViewListenerHelper;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.PullDownLinearLayout;
@@ -333,7 +330,7 @@ public class BottomNavigationController implements
                             builder.append(activity.getString(R.string.play_mode_random));
                             break;
                     }
-                    ToastUtils.showToast(activity, builder.toString());
+                    ToastUtils.showShortToast(activity, builder.toString());
                 } catch (RemoteException e) {
                     e.printStackTrace();
                     new ExceptionHandler().handleRemoteException(activity,

@@ -61,4 +61,6 @@
 
     <dimen name="my_sheets_item_image_width">100dp</dimen>
     <dimen name="my_sheets_item_image_height">80dp</dimen>
+
+    <dimen name="song_detail_image_height">230dp</dimen>
 </resources>

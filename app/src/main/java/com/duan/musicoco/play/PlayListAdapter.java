@@ -194,23 +194,9 @@ public class PlayListAdapter extends BaseAdapter implements
     }
 
     public void updateColors(Theme theme, int[] colors) {
-        int[] cs = new int[2];
-        if (colors == null) {
-            switch (theme) {
-                case DARK:
-                    cs = ColorUtils.get2DarkThemeTextColor(context);
-                    break;
-                case WHITE:
-                default:
-                    cs = ColorUtils.get2WhiteThemeTextColor(context);
-                    break;
-            }
-        } else if (colors.length >= 2) {
-            cs = colors;
-        }
 
-        colorMain = cs[0];
-        colorVic = cs[1];
+        colorMain = colors[0];
+        colorVic = colors[1];
 
         notifyDataSetChanged();
     }

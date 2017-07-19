@@ -2,6 +2,8 @@
     <string name="app_name">我的音乐</string>
     <string name="app_name_us">Musicoco</string>
 
+    <string name="album_save_path">image</string>
+
     <string name="cache_bitmap_album_visualizer">album_visualizer</string>
 
     <string name="title_play_list">播放列表</string>
@@ -30,8 +32,7 @@
     <string name="my_sheet_click_here_for_new_sheet">点击这里创建歌单</string>
 
     <string name="song_collection_sheet">收藏到歌单</string>
-    <string name="song_detail">歌曲信息</string>
-
+    <string name="song_detail">歌曲详情</string>
     <string name="remove_song_from_play_list">从歌单中移除歌曲</string>
     <string name="delete_song">彻底删除歌曲</string>
 
@@ -45,6 +46,7 @@
     <string name="error_name_required">名称不能为空</string>
     <string name="error_sheet_already_exits">歌单已存在</string>
     <string name="error_delete_file_fail">文件删除失败</string>
+    <string name="error_no_album_image">没有专辑图片</string>
 
     <string name="success_create_sheet">成功创建歌单</string>
     <string name="success_add_to_sheet">成功添加到歌单</string>

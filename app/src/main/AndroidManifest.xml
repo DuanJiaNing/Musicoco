@@ -51,10 +51,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".detail.Main2Activity"
-            android:label="@string/title_activity_main2"
-            android:theme="@style/AppTheme"></activity>
+            android:name=".detail.SongDetailActivity"
+            android:theme="@style/AppTheme.Song.Detail" />
+
     </application>
 
 </manifest>

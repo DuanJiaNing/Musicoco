@@ -177,3 +177,11 @@
 1 添加 OptionsAdapter，BroadcastManager<br>
 2 向歌曲选项中添加从歌单中移除和彻底删除并完成功能<br>
 3 歌曲选项列表随主题变化
+
+- 2017-07-19
+
+1 添加 ActivityManager 管理 Activity 启动<br>
+2 歌曲选项的查看详情改用单独的 Activity(SongDetailActivity)展示<br>
+3 歌曲选项的添加到歌单改用 DialogManager，不使用 AlertDialog<br>
+4 歌曲详情 Activity 可以调用系统图片查看功能查看图片，可以将图片保存到Download 目录下<br>
+5 播放页点击名字可直接查看详情<br>

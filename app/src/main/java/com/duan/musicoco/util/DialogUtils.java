@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -19,7 +18,6 @@ import com.duan.musicoco.app.BroadcastManager;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.app.DialogManager;
-import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.view.TextInputHelper;
 
 /**
@@ -29,7 +27,6 @@ import com.duan.musicoco.view.TextInputHelper;
 public class DialogUtils {
 
 
-    //TODO 对话框响应主题改变
     public static void showDetailDialog(Activity activity, SongInfo info) {
         DialogManager manager = new DialogManager(activity);
 
@@ -37,7 +34,7 @@ public class DialogUtils {
         infos[0] = "歌曲：" + info.getTitle();
         infos[1] = "歌手：" + info.getArtist();
         infos[2] = "专辑：" + info.getAlbum();
-        infos[3] = "时长：" + StringUtils.getGenTime((int) info.getDuration());
+        infos[3] = "时长：" + StringUtils.getGenTimeMS((int) info.getDuration());
         infos[4] = "格式：" + info.getMime_type();
         infos[5] = "大小：" + String.valueOf(info.getSize() >> 10 >> 10) + " MB";
         infos[6] = "路径：" + info.getData();
@@ -134,7 +131,7 @@ public class DialogUtils {
                     nameHolder.textInputLayout.setErrorEnabled(true);
                 } else {
                     String msg = activity.getString(R.string.success_create_sheet) + "[" + name + "]";
-                    ToastUtils.showToast(activity, msg);
+                    ToastUtils.showShortToast(activity, msg);
                     BroadcastManager.sendMyBroadcast(activity, BroadcastManager.REFRESH_MAIN_ACTIVITY_DATA);
                     dialog.dismiss();
                 }

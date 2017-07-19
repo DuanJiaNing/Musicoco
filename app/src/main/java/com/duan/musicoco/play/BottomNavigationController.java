@@ -8,13 +8,11 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.RemoteException;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.graphics.ColorUtils;
@@ -25,8 +23,6 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -35,6 +31,7 @@ import android.widget.ListView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.ActivityManager;
 import com.duan.musicoco.app.BroadcastManager;
 import com.duan.musicoco.app.DialogManager;
 import com.duan.musicoco.app.ExceptionHandler;
@@ -96,6 +93,7 @@ public class BottomNavigationController implements
 
     private ListOption listOption;
     private SongOption songOption;
+    private int currentDrawableColor;
 
     public BottomNavigationController(Activity activity, DBMusicocoController dbMusicoco, MediaManager mediaManager) {
         this.activity = activity;
@@ -372,13 +370,13 @@ public class BottomNavigationController implements
 
         switch (theme) {
             case DARK: {
-                updateColors(com.duan.musicoco.util.ColorUtils.get4DarkThemeColors(activity)[2]);
+                updateColors(com.duan.musicoco.util.ColorUtils.get4DarkThemeColors(activity)[2], false);
                 break;
             }
             case VARYING:
             case WHITE:
             default:
-                updateColors(com.duan.musicoco.util.ColorUtils.get4WhiteThemeColors(activity)[2]);
+                updateColors(com.duan.musicoco.util.ColorUtils.get4WhiteThemeColors(activity)[2], false);
                 break;
         }
 
@@ -423,7 +421,7 @@ public class BottomNavigationController implements
         }
     }
 
-    public void updateColors(int color) {
+    public void updateColors(int color, boolean isVarying) {
         int alpha = activity.getResources().getInteger(R.integer.play_list_bg_alpha);
         int colorA = ColorUtils.setAlphaComponent(color, alpha);
 
@@ -431,19 +429,40 @@ public class BottomNavigationController implements
         mListTitleContainer.setBackgroundColor(color);
 
         Theme t = WHITE;
-        if (playListAdapter != null) {
-            double d = ColorUtils.calculateLuminance(colorA);
-            if (d - 0.400 > 0.000001) {
-                t = WHITE;
-            } else {
-                t = DARK;
-            }
-
-            playListAdapter.updateColors(t, null);
+        double d = ColorUtils.calculateLuminance(colorA);
+        if (d - 0.400 > 0.000001) {
+            t = WHITE;
+        } else {
+            t = DARK;
         }
 
-        listOption.updateColors(t);
-        songOption.updateColors(t);
+        int cs[] = new int[2];
+        switch (t) {
+            case WHITE: {
+                if (isVarying) {
+                    cs = com.duan.musicoco.util.ColorUtils.get2ColorWhiteThemeForPlayOptions(BottomNavigationController.this.activity);
+                } else {
+                    cs = com.duan.musicoco.util.ColorUtils.get2WhiteThemeTextColor(BottomNavigationController.this.activity);
+                }
+                break;
+            }
+            case DARK:
+            default: {
+                if (isVarying) {
+                    cs = com.duan.musicoco.util.ColorUtils.get2ColorDarkThemeForPlayOptions(BottomNavigationController.this.activity);
+                } else {
+                    cs = com.duan.musicoco.util.ColorUtils.get2DarkThemeTextColor(BottomNavigationController.this.activity);
+                }
+                break;
+            }
+        }
+        currentDrawableColor = cs[0];
+        if (playListAdapter != null) {
+            playListAdapter.updateColors(null, cs);
+        }
+
+        listOption.updateColors();
+        songOption.updateColors();
 
     }
 
@@ -497,24 +516,10 @@ public class BottomNavigationController implements
             container.setVisibility(View.GONE);
         }
 
-        public void updateColors(Theme theme) {
-            int color;
-            switch (theme) {
-                case WHITE: {
-                    int[] cs = com.duan.musicoco.util.ColorUtils.get2WhiteThemeTextColor(BottomNavigationController.this.activity);
-                    color = cs[0];
-                    break;
-                }
-                case DARK:
-                default: {
-                    int[] cs = com.duan.musicoco.util.ColorUtils.get2DarkThemeTextColor(BottomNavigationController.this.activity);
-                    color = cs[0];
-                    break;
-                }
-            }
+        public void updateColors() {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                location.getDrawable().setTint(color);
+                location.getDrawable().setTint(currentDrawableColor);
             }
         }
 
@@ -530,7 +535,6 @@ public class BottomNavigationController implements
             OnThemeChange {
 
         private ViewGroup container;
-        private int currentDrawableColor;
         private final OptionsDialog mDialog;
 
         private ImageButton hidePlayListBar;
@@ -568,7 +572,7 @@ public class BottomNavigationController implements
                                 showSheetsDialog(info);
                                 break;
                             case 1:
-                                DialogUtils.showDetailDialog(activity, info);
+                                new ActivityManager(activity).startSongDetailActivity(new Song(info.getData()));
                                 break;
                             case 2: //从歌单中移除
                                 removeFromPlayList(new Song(info.getData()));
@@ -616,7 +620,7 @@ public class BottomNavigationController implements
                 msg = activity.getString(R.string.success_delete_file);
             }
 
-            ToastUtils.showToast(activity, msg);
+            ToastUtils.showShortToast(activity, msg);
         }
 
         private void removeFromPlayList(Song song) {
@@ -646,16 +650,16 @@ public class BottomNavigationController implements
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    if (position == res.size() - 1) {
+                    if (position == (res.get(0).length - 1)) {
                         DialogUtils.showAddSheetDialog(activity, dbMusicoco);
                     } else {
                         String sheetName = res.get(0)[position];
                         Song song = new Song(info.getData());
                         if (dbMusicoco.addSongToSheet(sheetName, song)) {
                             String msg = activity.getString(R.string.success_add_to_sheet) + "[" + sheetName + "]";
-                            ToastUtils.showToast(activity, msg);
+                            ToastUtils.showShortToast(activity, msg);
                         } else {
-                            ToastUtils.showToast(activity, activity.getString(R.string.error_song_is_already_in_sheet));
+                            ToastUtils.showShortToast(activity, activity.getString(R.string.error_song_is_already_in_sheet));
                         }
                     }
                     dialog.dismiss();
@@ -710,7 +714,7 @@ public class BottomNavigationController implements
                                 builder.append(activity.getString(R.string.play_mode_random));
                                 break;
                         }
-                        ToastUtils.showToast(activity, builder.toString());
+                        ToastUtils.showShortToast(activity, builder.toString());
                     } catch (RemoteException e) {
                         e.printStackTrace();
                         new ExceptionHandler().handleRemoteException(activity,
@@ -775,20 +779,7 @@ public class BottomNavigationController implements
             container.setVisibility(View.GONE);
         }
 
-        public void updateColors(Theme theme) {
-            switch (theme) {
-                case WHITE: {
-                    int[] cs = com.duan.musicoco.util.ColorUtils.get2WhiteThemeTextColor(BottomNavigationController.this.activity);
-                    currentDrawableColor = cs[0];
-                    break;
-                }
-                case DARK:
-                default: {
-                    int[] cs = com.duan.musicoco.util.ColorUtils.get2DarkThemeTextColor(BottomNavigationController.this.activity);
-                    currentDrawableColor = cs[0];
-                    break;
-                }
-            }
+        public void updateColors() {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 hidePlayListBar.getDrawable().setTint(currentDrawableColor);

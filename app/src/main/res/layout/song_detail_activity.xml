@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/song_detail_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_default_margin_2x"
+            android:orientation="vertical"
+            android:padding="@dimen/activity_default_margin">
+
+            <ImageView
+                android:id="@+id/song_detail_image"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/song_detail_image_height"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="40dp"
+                android:src="@drawable/default_album" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:ellipsize="marquee"
+                    android:lines="1"
+                    android:id="@+id/song_detail_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_toLeftOf="@+id/song_detail_ns_line"
+                    android:layout_toStartOf="@+id/song_detail_ns_line"
+                    android:gravity="center" />
+
+                <View
+                    android:id="@+id/song_detail_ns_line"
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="@dimen/activity_default_margin_s"
+                    android:background="#6c6c6c" />
+
+                <TextView
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:ellipsize="marquee"
+                    android:lines="1"
+                    android:id="@+id/song_detail_arts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/song_detail_ns_line"
+                    android:layout_toRightOf="@+id/song_detail_ns_line"
+                    android:gravity="center" />
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/song_detail_ni_line"
+                android:layout_width="wrap_content"
+                android:layout_height="1px"
+                android:layout_margin="@dimen/activity_default_margin" />
+
+            <TextView
+                android:paddingBottom="@dimen/activity_default_margin"
+                android:paddingRight="@dimen/activity_default_margin"
+                android:paddingLeft="@dimen/activity_default_margin"
+                android:id="@+id/song_detail_infos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="10sp"
+                android:textSize="@dimen/text_middle" />
+        </LinearLayout>
+    </ScrollView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/status_bar_height">
+
+        <ImageButton
+            android:id="@+id/song_detail_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="@dimen/activity_default_margin"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:padding="10dp"
+            android:src="@drawable/ic_clear_black_24dp" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/song_detail_save_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="@dimen/activity_default_margin_l"
+            android:layout_marginBottom="24dp"
+            android:src="@drawable/ic_file_download_black_24dp"
+            android:layout_alignParentRight="true" />
+
+    </RelativeLayout>
+
+</FrameLayout>

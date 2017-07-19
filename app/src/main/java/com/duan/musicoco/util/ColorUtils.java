@@ -1,5 +1,6 @@
 package com.duan.musicoco.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -88,6 +89,105 @@ public class ColorUtils {
             color = swatch.getRgb();
         else color = defaultColor;
         colors[5] = color;
+
+    }
+
+    /**
+     * 获得图片中出现最多的颜色
+     * 0 活力颜色<br>
+     * 1 对应字体颜色<br>
+     * 2 亮的活力颜色<br>
+     * 3 对应字体颜色<br>
+     * 4 暗的活力颜色<br>
+     * 5 对应字体颜色<br>
+     * 6 柔和颜色<br>
+     * 7 对应字体颜色<br>
+     * 8 亮的柔和颜色<br>
+     * 9 对应字体颜色<br>
+     * 10 暗的柔和颜色<br>
+     * 11 对应字体颜色<br>
+     */
+    public static void get12ColorFormBitmap(@NonNull Bitmap bitmap, int defaultColor, int defaultTextColor, int[] colors) {
+
+        if (colors.length != 12)
+            return;
+
+        Palette palette;
+        palette = new Palette.Builder(bitmap).generate();
+
+        Palette.Swatch swatch;
+        int color;
+        int tColor;
+
+        if ((swatch = palette.getVibrantSwatch()) != null) {
+            color = swatch.getRgb();
+            tColor = swatch.getTitleTextColor();
+        } else {
+            color = defaultColor;
+            tColor = defaultTextColor;
+        }
+        colors[0] = color;
+        colors[1] = tColor;
+
+        if ((swatch = palette.getLightVibrantSwatch()) != null) {
+            color = swatch.getRgb();
+            tColor = swatch.getTitleTextColor();
+
+        } else {
+            color = defaultColor;
+            tColor = defaultTextColor;
+
+        }
+        colors[2] = color;
+        colors[3] = tColor;
+
+        if ((swatch = palette.getDarkVibrantSwatch()) != null) {
+            color = swatch.getRgb();
+            tColor = swatch.getTitleTextColor();
+
+        } else {
+            color = defaultColor;
+            tColor = defaultTextColor;
+
+        }
+        colors[4] = color;
+        colors[5] = tColor;
+
+        if ((swatch = palette.getMutedSwatch()) != null) {
+            color = swatch.getRgb();
+            tColor = swatch.getTitleTextColor();
+
+        } else {
+            color = defaultColor;
+            tColor = defaultTextColor;
+
+        }
+        colors[6] = color;
+        colors[7] = tColor;
+
+        if ((swatch = palette.getLightMutedSwatch()) != null) {
+            color = swatch.getRgb();
+            tColor = swatch.getTitleTextColor();
+
+        } else {
+            color = defaultColor;
+            tColor = defaultTextColor;
+
+        }
+        colors[8] = color;
+        colors[9] = tColor;
+
+        if ((swatch = palette.getDarkMutedSwatch()) != null) {
+            color = swatch.getRgb();
+            tColor = swatch.getTitleTextColor();
+
+        } else {
+            color = defaultColor;
+            tColor = defaultTextColor;
+
+        }
+        colors[10] = color;
+        colors[11] = tColor;
 
     }
 
@@ -279,4 +379,17 @@ public class ColorUtils {
         return colors;
     }
 
+    public static int[] get2ColorWhiteThemeForPlayOptions(Activity activity) {
+        return new int[]{
+                activity.getColor(R.color.dark_l_l_l_l),
+                activity.getColor(R.color.white_d_d_d)
+        };
+    }
+
+    public static int[] get2ColorDarkThemeForPlayOptions(Activity activity) {
+        return new int[]{
+                activity.getColor(R.color.white_d_d),
+                activity.getColor(R.color.white_d_d_d)
+        };
+    }
 }

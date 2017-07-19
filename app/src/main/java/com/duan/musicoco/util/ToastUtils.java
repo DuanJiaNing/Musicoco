@@ -9,8 +9,12 @@ import android.widget.Toast;
 
 public class ToastUtils {
 
-    public static void showToast(Context context, CharSequence msg) {
+    public static void showShortToast(Context context, CharSequence msg) {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void showLongToast(Context context, CharSequence msg) {
+        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
     }
 
 }

@@ -23,6 +23,7 @@ import android.widget.ViewSwitcher;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.ActivityManager;
 import com.duan.musicoco.app.BroadcastManager;
 import com.duan.musicoco.app.ExceptionHandler;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
@@ -329,7 +330,7 @@ public class PlayActivity extends RootActivity implements
 
         flFragmentContainer.setBackgroundColor(Color.TRANSPARENT);
 
-        bottomNavigationController.updateColors(vicBC);
+        bottomNavigationController.updateColors(vicBC, true);
 
     }
 
@@ -342,8 +343,8 @@ public class PlayActivity extends RootActivity implements
      */
     private void updateData(int duration, int progress, String title, String arts) {
 
-        tvDuration.setText(StringUtils.getGenTime(duration));
-        tvPlayProgress.setText(StringUtils.getGenTime(progress));
+        tvDuration.setText(StringUtils.getGenTimeMS(duration));
+        tvPlayProgress.setText(StringUtils.getGenTimeMS(progress));
 
         sbSongProgress.setMax(duration);
         sbSongProgress.setProgress(progress);
@@ -369,7 +370,7 @@ public class PlayActivity extends RootActivity implements
     protected void initViews() {
 
         //FIXME test
-        playPreference.updateTheme(Theme.WHITE);
+        playPreference.updateTheme(Theme.VARYING);
 
         //初始控件
         flRootView = (FrameLayout) findViewById(R.id.play_root);
@@ -442,7 +443,7 @@ public class PlayActivity extends RootActivity implements
             public void onProgressChanged(DiscreteSeekBar seekBar, int value, boolean fromUser) {
 
                 pos = value;
-                tvPlayProgress.setText(StringUtils.getGenTime(value));
+                tvPlayProgress.setText(StringUtils.getGenTimeMS(value));
                 change = true;
 
             }
@@ -544,8 +545,13 @@ public class PlayActivity extends RootActivity implements
                     bottomNavigationController.show();
                 break;
             case R.id.play_name:
-                //TODO
-                ToastUtils.showToast(this, "OnClickListener");
+                try {
+                    Song song = mServiceConnection.takeControl().currentSong();
+                    new ActivityManager(this).startSongDetailActivity(song);
+
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
                 break;
             default:
                 break;
@@ -592,7 +598,7 @@ public class PlayActivity extends RootActivity implements
                         try {
                             progress = mServiceConnection.takeControl().getProgress();
                             sbSongProgress.setProgress(progress);
-                            tvPlayProgress.setText(StringUtils.getGenTime(progress));
+                            tvPlayProgress.setText(StringUtils.getGenTimeMS(progress));
 
                         } catch (RemoteException e) {
                             e.printStackTrace();
