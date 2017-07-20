@@ -1,11 +1,7 @@
-package com.duan.musicoco.app;
+package com.duan.musicoco.app.manager;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.database.Cursor;
-import android.media.MediaPlayer;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Environment;
@@ -14,7 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.service.PlayController;
+import com.duan.musicoco.app.SongInfo;
 
 import java.util.ArrayList;
 import java.util.HashSet;

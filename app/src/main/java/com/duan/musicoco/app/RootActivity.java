@@ -2,20 +2,19 @@ package com.duan.musicoco.app;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.interfaces.PermissionRequestCallback;
+import com.duan.musicoco.app.manager.MediaManager;
+import com.duan.musicoco.app.manager.PermissionManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.AppPreference;
-import com.duan.musicoco.preference.Theme;
 
 /**
  * Created by DuanJiaNing on 2017/3/21.

@@ -4,14 +4,13 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.app.MediaManager;
+import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
@@ -22,7 +21,6 @@ import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 

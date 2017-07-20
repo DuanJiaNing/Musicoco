@@ -22,8 +22,8 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.ExceptionHandler;
-import com.duan.musicoco.app.MediaManager;
+import com.duan.musicoco.shared.ExceptionHandler;
+import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
@@ -32,14 +32,14 @@ import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.image.BitmapBuilder;
 import com.duan.musicoco.play.PlayActivity;
-import com.duan.musicoco.play.PlayListAdapter;
+import com.duan.musicoco.shared.PlayListAdapter;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.service.PlayServiceCallback;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
-import com.duan.musicoco.util.PeriodicTask;
+import com.duan.musicoco.shared.PeriodicTask;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.PullDownLinearLayout;
@@ -162,10 +162,7 @@ public class BottomNavigationController implements
     }
 
     public void initData(IPlayControl control) {
-        if (mControl == null) {
-            this.mControl = control;
-            hasInitData = true;
-        }
+        this.mControl = control;
 
         mContainer.setEnabled(true);
         mPlay.setEnabled(true);
@@ -176,6 +173,8 @@ public class BottomNavigationController implements
 
         Theme theme = appPreference.getTheme();
         themeChange(theme, null);
+
+        hasInitData = true;
 
     }
 
@@ -227,9 +226,7 @@ public class BottomNavigationController implements
                 .getBitmap();
 
         if (b == null) {
-            b = BitmapUtils.bitmapResizeFromResource(
-                    activity.getResources(),
-                    R.mipmap.default_album,
+            b = BitmapUtils.getDefaultAlbumPicture(activity,
                     mAlbum.getWidth(),
                     mAlbum.getHeight());
         }
@@ -282,7 +279,7 @@ public class BottomNavigationController implements
 
     @Override
     public void onPlayListChange(Song current, int index, int id) {
-
+        adapter.update(null, null);
     }
 
     @Override

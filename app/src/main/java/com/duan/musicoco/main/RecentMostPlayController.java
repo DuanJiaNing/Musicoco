@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.MediaManager;
+import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;

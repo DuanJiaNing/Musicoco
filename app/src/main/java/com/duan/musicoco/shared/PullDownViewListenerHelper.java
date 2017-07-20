@@ -1,4 +1,4 @@
-package com.duan.musicoco.util;
+package com.duan.musicoco.shared;
 
 import android.content.Context;
 import android.support.annotation.Nullable;

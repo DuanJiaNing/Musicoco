@@ -1,4 +1,4 @@
-package com.duan.musicoco.app;
+package com.duan.musicoco.shared;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -23,7 +23,7 @@ import com.duan.musicoco.R;
  * 注意：只有在调用了show..显示对话框之后才可以getDialog()获得实例。在自定义并保留三个固有按钮时可在外部调用对
  * 应按钮的setOn...ButtonListener(String text, final OnClickListener OnClickListener)并实现接口实现点击事件监听。
  */
-public class DialogManager {
+public class DialogProvider {
 
     /**
      * 用于addView()的最外层容器
@@ -97,7 +97,7 @@ public class DialogManager {
     private final int buttonTextSize;
     private final int buttonPadding;
 
-    public DialogManager(Context context) {
+    public DialogProvider(Context context) {
 
         this.context = context;
 

@@ -1,10 +1,8 @@
 package com.duan.musicoco.app;
 
 import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
-import android.support.annotation.Nullable;
 
+import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.PlayPreference;

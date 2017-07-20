@@ -31,11 +31,11 @@ import android.widget.ListView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.ActivityManager;
-import com.duan.musicoco.app.BroadcastManager;
-import com.duan.musicoco.app.DialogManager;
-import com.duan.musicoco.app.ExceptionHandler;
-import com.duan.musicoco.app.MediaManager;
+import com.duan.musicoco.app.manager.ActivityManager;
+import com.duan.musicoco.app.manager.BroadcastManager;
+import com.duan.musicoco.shared.DialogProvider;
+import com.duan.musicoco.shared.ExceptionHandler;
+import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
@@ -43,14 +43,16 @@ import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.interfaces.OnViewVisibilityChange;
+import com.duan.musicoco.shared.OptionsAdapter;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
+import com.duan.musicoco.shared.PlayListAdapter;
 import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.util.DialogUtils;
 import com.duan.musicoco.util.FileUtils;
-import com.duan.musicoco.util.OptionsDialog;
+import com.duan.musicoco.shared.OptionsDialog;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.RealTimeBlurView;
@@ -578,12 +580,12 @@ public class BottomNavigationController implements
                                 removeFromPlayList(new Song(info.getData()));
                                 break;
                             case 3: {//彻底删除
-                                DialogManager manager = new DialogManager(activity);
+                                DialogProvider manager = new DialogProvider(activity);
                                 final Dialog dialog = manager.createPromptDialog(
                                         activity.getString(R.string.warning),
                                         activity.getString(R.string.delete_confirm)
                                 );
-                                manager.setOnPositiveButtonListener("确认", new DialogManager.OnClickListener() {
+                                manager.setOnPositiveButtonListener("确认", new DialogProvider.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
                                         deleteForever(info);
@@ -591,7 +593,7 @@ public class BottomNavigationController implements
                                     }
                                 });
 
-                                manager.setOnNegativeButtonListener("取消", new DialogManager.OnClickListener() {
+                                manager.setOnNegativeButtonListener("取消", new DialogProvider.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
                                         dialog.dismiss();
@@ -635,7 +637,7 @@ public class BottomNavigationController implements
         private void showSheetsDialog(final SongInfo info) {
             final Map<Integer, String[]> res = getSheetsData();
 
-            DialogManager manager = new DialogManager(activity);
+            DialogProvider manager = new DialogProvider(activity);
             ListView listView = new ListView(activity);
             listView.setDivider(new ColorDrawable(Color.TRANSPARENT));
             OptionsAdapter adapter = new OptionsAdapter(activity, null, res.get(0), res.get(1));

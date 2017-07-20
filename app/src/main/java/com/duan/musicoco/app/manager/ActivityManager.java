@@ -1,4 +1,4 @@
-package com.duan.musicoco.app;
+package com.duan.musicoco.app.manager;
 
 import android.content.Context;
 import android.content.Intent;

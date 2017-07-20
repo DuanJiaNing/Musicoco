@@ -14,10 +14,10 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.app.BroadcastManager;
+import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.db.DBMusicocoController;
-import com.duan.musicoco.app.DialogManager;
+import com.duan.musicoco.shared.DialogProvider;
 import com.duan.musicoco.view.TextInputHelper;
 
 /**
@@ -28,7 +28,7 @@ public class DialogUtils {
 
 
     public static void showDetailDialog(Activity activity, SongInfo info) {
-        DialogManager manager = new DialogManager(activity);
+        DialogProvider manager = new DialogProvider(activity);
 
         String[] infos = new String[7];
         infos[0] = "歌曲：" + info.getTitle();
@@ -69,7 +69,7 @@ public class DialogUtils {
 
 
     public static void showAddSheetDialog(final Activity activity, final DBMusicocoController dbMusicoco) {
-        DialogManager manager = new DialogManager(activity);
+        DialogProvider manager = new DialogProvider(activity);
         TextInputHelper inputHelper = new TextInputHelper(activity);
 
         String newSheet = activity.getString(R.string.new_sheet);
@@ -108,7 +108,7 @@ public class DialogUtils {
                 ll
         );
 
-        manager.setOnPositiveButtonListener("确定", new DialogManager.OnClickListener() {
+        manager.setOnPositiveButtonListener("确定", new DialogProvider.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String name = nameHolder.editText.getText().toString();
@@ -138,7 +138,7 @@ public class DialogUtils {
             }
         });
 
-        manager.setOnNegativeButtonListener("取消", new DialogManager.OnClickListener() {
+        manager.setOnNegativeButtonListener("取消", new DialogProvider.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();

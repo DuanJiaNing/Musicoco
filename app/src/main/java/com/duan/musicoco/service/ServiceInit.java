@@ -1,13 +1,11 @@
 package com.duan.musicoco.service;
 
-import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
-import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.PlayControlImpl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.MediaManager;
+import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.PlayPreference;
 

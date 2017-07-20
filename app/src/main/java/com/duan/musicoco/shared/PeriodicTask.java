@@ -1,4 +1,4 @@
-package com.duan.musicoco.util;
+package com.duan.musicoco.shared;
 
 import java.util.Timer;
 import java.util.TimerTask;

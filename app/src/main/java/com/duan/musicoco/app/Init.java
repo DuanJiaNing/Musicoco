@@ -2,14 +2,13 @@ package com.duan.musicoco.app;
 
 import android.app.Activity;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.cache.BitmapCache;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.image.BitmapBuilder;

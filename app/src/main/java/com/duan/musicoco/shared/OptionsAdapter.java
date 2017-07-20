@@ -1,4 +1,4 @@
-package com.duan.musicoco.play;
+package com.duan.musicoco.shared;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -12,7 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.util.StringUtils;
 
 /**
  * Created by DuanJiaNing on 2017/7/18.

@@ -4,8 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PersistableBundle;
@@ -17,17 +15,15 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.WindowManager;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.app.BroadcastManager;
-import com.duan.musicoco.app.PlayServiceManager;
+import com.duan.musicoco.app.manager.BroadcastManager;
+import com.duan.musicoco.app.manager.PlayServiceManager;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.play.PlayServiceConnection;
-import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.Theme;
 
 public class MainActivity extends RootActivity implements
@@ -81,6 +77,16 @@ public class MainActivity extends RootActivity implements
         }
 
         setContentView(R.layout.activity_main);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (bottomNavigationController.hasInitData()) {
+            bottomNavigationController.update(null, null);
+        }
+
 
     }
 

@@ -1,4 +1,4 @@
-package com.duan.musicoco.app;
+package com.duan.musicoco.app.manager;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,9 +9,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AlertDialog;
-import android.widget.Toast;
-
-import com.duan.musicoco.R;
 
 import static android.R.attr.targetSdkVersion;
 

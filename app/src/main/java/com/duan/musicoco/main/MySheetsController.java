@@ -10,7 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.app.MediaManager;
+import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnThemeChange;

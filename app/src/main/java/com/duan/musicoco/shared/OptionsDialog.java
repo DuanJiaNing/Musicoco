@@ -1,4 +1,4 @@
-package com.duan.musicoco.util;
+package com.duan.musicoco.shared;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -24,6 +24,7 @@ import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnViewVisibilityChange;
 import com.duan.musicoco.preference.Theme;
+import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.PullDownLinearLayout;
 
 /**

@@ -1,4 +1,4 @@
-package com.duan.musicoco.play;
+package com.duan.musicoco.shared;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -15,15 +15,14 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.ExceptionHandler;
-import com.duan.musicoco.app.MediaManager;
+import com.duan.musicoco.shared.ExceptionHandler;
+import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
-import com.duan.musicoco.util.ColorUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -203,12 +202,12 @@ public class PlayListAdapter extends BaseAdapter implements
 
     @Override
     public void themeChange(Theme theme, int[] colors) {
-
+        updateColors(theme, colors);
     }
 
     @Override
     public void update(Object obj, OnUpdateStatusChanged statusChanged) {
-        Log.i(TAG, "play list adapter: data update");
+        Log.d(TAG, "play list adapter: data update");
         try {
 
             List<Song> ss = control.getPlayList();
