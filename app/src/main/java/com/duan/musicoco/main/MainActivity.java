@@ -260,7 +260,6 @@ public class MainActivity extends RootActivity implements
         mySheetsController.initData(mServiceConnection.takeControl());
 
         update();
-        bottomNavigationController.update(null, null);
 
         Theme theme = appPreference.getTheme();
         themeChange(theme, null);
@@ -288,6 +287,7 @@ public class MainActivity extends RootActivity implements
     }
 
     private void update() {
+        bottomNavigationController.update(null, null);
         mostPlayController.update("历史最多播放", statusChanged);
         mainSheetsController.update(null, statusChanged);
         mySheetsController.update(null, statusChanged);

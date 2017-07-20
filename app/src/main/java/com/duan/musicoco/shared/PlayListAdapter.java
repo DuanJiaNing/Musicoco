@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.shared.ExceptionHandler;
+import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
@@ -41,36 +41,31 @@ public class PlayListAdapter extends BaseAdapter implements
 
     private final IPlayControl control;
     private final Context context;
+    private DBMusicocoController dbController;
 
     private View.OnClickListener removeClickListener;
     private View.OnClickListener itemClickListener;
 
     private final MediaManager mediaManager;
+    private SongController songController;
 
     private int colorMain;
     private int colorVic;
 
-    public PlayListAdapter(final Context context, final IPlayControl control) {
+    public PlayListAdapter(final Context context, final IPlayControl control,
+                           final DBMusicocoController dbMusicocoController,
+                           final SongController songController) {
         this.context = context;
         this.control = control;
+        this.dbController = dbMusicocoController;
+        this.songController = songController;
         this.mediaManager = MediaManager.getInstance(context);
 
         this.removeClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Song s = new Song((String) v.getTag(R.id.play_list_item_remove_path));
-
-                try {
-                    //如果移除当前正在播放曲目服务端会自动跳到下一首
-                    control.remove(s);
-                    //服务端会回调 onPlayListChange
-                    //update(null, null);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                    new ExceptionHandler().handleRemoteException(context,
-                            context.getString(R.string.exception_remote), null
-                    );
-                }
+                PlayListAdapter.this.songController.removeSongFromSheet(s);
             }
         };
 
@@ -142,9 +137,22 @@ public class PlayListAdapter extends BaseAdapter implements
         holder.name.setText(info.getTitle());
         holder.arts.setText(info.getArtist());
 
-        holder.remove.setTag(R.id.play_list_item_remove_position, position);
-        holder.remove.setTag(R.id.play_list_item_remove_path, info.getData());
-        holder.remove.setOnClickListener(removeClickListener);
+        try {
+            int sheetID = control.getPlayListId();
+            if (sheetID < 0) {
+                holder.remove.setEnabled(false);
+                holder.remove.setVisibility(View.INVISIBLE);
+            } else {
+                holder.remove.setEnabled(true);
+                holder.remove.setVisibility(View.VISIBLE);
+
+                holder.remove.setTag(R.id.play_list_item_remove_position, position);
+                holder.remove.setTag(R.id.play_list_item_remove_path, info.getData());
+                holder.remove.setOnClickListener(removeClickListener);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
 
         int index = 0;
         try {

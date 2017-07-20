@@ -160,7 +160,7 @@ public class PlayActivity extends RootActivity implements
     }
 
     /**
-     * 同步当前播放歌曲
+     * 同步
      */
     public void synchronize(@Nullable Song song, boolean isNext) {
 
@@ -599,6 +599,7 @@ public class PlayActivity extends RootActivity implements
                 updateData(0, 0, "", "");
             } else {
                 bottomNavigationController.initData(mServiceConnection.takeControl());
+                bottomNavigationController.update(null, null);
                 Song song = mServiceConnection.takeControl().currentSong();
                 int index = songs.indexOf(song);
                 //服务端在 onCreate 时会回调 songChanged ，PlayActivity 第一次绑定可能接收不到此次回调

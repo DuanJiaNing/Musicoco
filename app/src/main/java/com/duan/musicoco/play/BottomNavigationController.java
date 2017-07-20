@@ -6,10 +6,7 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.RemoteException;
@@ -18,7 +15,6 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -33,12 +29,10 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.DBSongInfo;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.Sheet;
-import com.duan.musicoco.shared.DialogProvider;
 import com.duan.musicoco.shared.ExceptionHandler;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
@@ -54,17 +48,12 @@ import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.shared.PlayListAdapter;
+import com.duan.musicoco.shared.SongController;
 import com.duan.musicoco.util.AnimationUtils;
-import com.duan.musicoco.util.DialogUtils;
-import com.duan.musicoco.util.FileUtils;
 import com.duan.musicoco.shared.OptionsDialog;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.RealTimeBlurView;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static com.duan.musicoco.preference.Theme.DARK;
 import static com.duan.musicoco.preference.Theme.WHITE;
@@ -101,6 +90,7 @@ public class BottomNavigationController implements
     private ListOption listOption;
     private SongOption songOption;
     private int currentDrawableColor;
+    private SongController songController;
 
     public BottomNavigationController(Activity activity, DBMusicocoController dbMusicoco, MediaManager mediaManager) {
         this.activity = activity;
@@ -138,9 +128,14 @@ public class BottomNavigationController implements
     public void initData(IPlayControl control) {
         this.control = control;
         songOption.initData();
+        songController = new SongController(activity, control, dbMusicoco);
 
         if (playListAdapter == null) {
-            playListAdapter = new PlayListAdapter(activity, control);
+            playListAdapter = new PlayListAdapter(
+                    activity,
+                    control,
+                    dbMusicoco,
+                    songController);
             mPlayList.setAdapter(playListAdapter);
         }
 
@@ -524,7 +519,7 @@ public class BottomNavigationController implements
                     mSheet.setText(name);
                 } else {
                     Sheet sheet = dbMusicoco.getSheet(id);
-                    String name = "歌单：" + sheet.name + " (" + sheet.count + ")";
+                    String name = "歌单：" + sheet.name + " (" + sheet.count + "首)";
                     mSheet.setText(name);
                 }
 
@@ -601,38 +596,20 @@ public class BottomNavigationController implements
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     final SongInfo info = mDialog.getSong();
+                    final Song song = new Song(info.getData());
                     if (info != null) {
                         switch (position) {
                             case 0:
-                                showSheetsDialog(info);
+                                songController.handleCollectToSheet(info);
                                 break;
                             case 1:
-                                new ActivityManager(activity).startSongDetailActivity(new Song(info.getData()));
+                                songController.checkSongDetail(info);
                                 break;
                             case 2: //从歌单中移除
-                                removeFromPlayList(new Song(info.getData()));
+                                songController.removeSongFromSheet(song);
                                 break;
                             case 3: {//彻底删除
-                                DialogProvider manager = new DialogProvider(activity);
-                                final Dialog dialog = manager.createPromptDialog(
-                                        activity.getString(R.string.warning),
-                                        activity.getString(R.string.delete_confirm)
-                                );
-                                manager.setOnPositiveButtonListener("确认", new DialogProvider.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        deleteForever(info);
-                                        dialog.dismiss();
-                                    }
-                                });
-
-                                manager.setOnNegativeButtonListener("取消", new DialogProvider.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        dialog.dismiss();
-                                    }
-                                });
-                                dialog.show();
+                                songController.deleteSongFromDisk(song);
                                 break;
                             }
                             default:
@@ -643,85 +620,6 @@ public class BottomNavigationController implements
                 }
             });
 
-        }
-
-        private void deleteForever(SongInfo info) {
-            Song song = new Song(info.getData());
-            removeFromPlayList(song);
-
-            String msg = activity.getString(R.string.error_delete_file_fail);
-            if (FileUtils.deleteFile(song.path)) {
-                dbMusicoco.removeSong(song);
-                msg = activity.getString(R.string.success_delete_file);
-            }
-
-            ToastUtils.showShortToast(activity, msg);
-        }
-
-        private void removeFromPlayList(Song song) {
-            try {
-                control.remove(song);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }
-
-        private void showSheetsDialog(final SongInfo info) {
-            final Map<Integer, String[]> res = getSheetsData();
-
-            DialogProvider manager = new DialogProvider(activity);
-            ListView listView = new ListView(activity);
-            listView.setDivider(new ColorDrawable(Color.TRANSPARENT));
-            OptionsAdapter adapter = new OptionsAdapter(activity, null, res.get(0), res.get(1));
-            adapter.setPaddingLeft(30);
-            listView.setAdapter(adapter);
-            final AlertDialog dialog = manager.createCustomInsiderDialog(
-                    activity.getString(R.string.song_collection_sheet),
-                    "歌曲：" + info.getTitle(),
-                    listView
-            );
-
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    if (position == (res.get(0).length - 1)) {
-                        DialogUtils.showAddSheetDialog(activity, dbMusicoco);
-                    } else {
-                        String sheetName = res.get(0)[position];
-                        Song song = new Song(info.getData());
-                        if (dbMusicoco.addSongToSheet(sheetName, song)) {
-                            String msg = activity.getString(R.string.success_add_to_sheet) + "[" + sheetName + "]";
-                            ToastUtils.showShortToast(activity, msg);
-                        } else {
-                            ToastUtils.showShortToast(activity, activity.getString(R.string.error_song_is_already_in_sheet));
-                        }
-                    }
-                    dialog.dismiss();
-                }
-            });
-
-            dialog.show();
-        }
-
-        private Map<Integer, String[]> getSheetsData() {
-            Map<Integer, String[]> res = new HashMap<>();
-            String[] names;
-            String[] counts;
-
-            List<Sheet> sheets = dbMusicoco.getSheets();
-            names = new String[sheets.size() + 1];
-            counts = new String[sheets.size() + 1];
-            for (int i = 0; i < sheets.size(); i++) {
-                Sheet s = sheets.get(i);
-                names[i] = s.name;
-                counts[i] = s.count + "首";
-            }
-            names[names.length - 1] = activity.getString(R.string.new_sheet) + " + ";
-            counts[names.length - 1] = "";
-
-            res.put(0, names);
-            res.put(1, counts);
-            return res;
         }
 
         @Override

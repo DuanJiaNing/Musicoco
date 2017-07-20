@@ -42,6 +42,7 @@ import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.service.PlayServiceCallback;
+import com.duan.musicoco.shared.SongController;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.shared.PeriodicTask;
@@ -183,7 +184,11 @@ public class BottomNavigationController implements
         mPlay.setEnabled(true);
         mShowList.setEnabled(true);
 
-        adapter = new PlayListAdapter(activity, mControl);
+        adapter = new PlayListAdapter(
+                activity,
+                mControl,
+                dbMusicocoController,
+                new SongController(activity, mControl, dbMusicocoController));
         mList.setAdapter(adapter);
 
         Theme theme = appPreference.getTheme();
@@ -199,6 +204,10 @@ public class BottomNavigationController implements
 
     @Override
     public void songChanged(Song song, int index, boolean isNext) {
+        if (song == null) {
+            return;
+        }
+
         SongInfo info = mediaManager.getSongInfo(song);
         mDuration = (int) info.getDuration();
 
@@ -279,7 +288,7 @@ public class BottomNavigationController implements
                 mSheet.setText(name);
             } else {
                 Sheet sheet = dbController.getSheet(id);
-                String name = "歌单：" + sheet.name + " (" + sheet.count + ")";
+                String name = "歌单：" + sheet.name + " (" + sheet.count + "首)";
                 mSheet.setText(name);
             }
 
@@ -318,6 +327,7 @@ public class BottomNavigationController implements
     @Override
     public void onPlayListChange(Song current, int index, int id) {
         adapter.update(null, null);
+        update(null, null);
         playPreference.updateSheet(id);
 
         BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED);

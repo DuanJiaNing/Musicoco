@@ -331,22 +331,28 @@ public class PlayController {
 
         mPlayer.reset();
 
-        String next = mPlayList.get(mCurrentSong).path;
-        try {
-            mPlayer.setDataSource(next);
-            mPlayer.prepare();
+        if (mPlayList.size() == 0) {
+            mCurrentSong = 0;
+            mNotifySongChanged.notify(null, -1, isNext);
+            return ERROR_NO_RESOURCE;
+        } else {
+            String next = mPlayList.get(mCurrentSong).path;
+            try {
+                mPlayer.setDataSource(next);
+                mPlayer.prepare();
 
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ERROR_DECODE;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return ERROR_DECODE;
+            }
+
+            if (mPlayState == STATUS_PLAYING) {
+                mPlayer.start();
+            }
+
+            mNotifySongChanged.notify(getCurrentSong(), mCurrentSong, isNext);
+            return 1;
         }
-
-        if (mPlayState == STATUS_PLAYING) {
-            mPlayer.start();
-        }
-
-        mNotifySongChanged.notify(getCurrentSong(), mCurrentSong, isNext);
-        return 1;
     }
 
     //用于提取频谱

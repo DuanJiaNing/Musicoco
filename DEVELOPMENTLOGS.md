@@ -192,3 +192,6 @@
 2 添加 MainSheethelper<br>
 3 使用广播同步创建歌单的播放状态，即歌单的切换<br>
 4 使服务器在移除歌曲时也回调 onPlayListChanged<br>
+5 添加 SongController，抽离对歌曲的操作<br>
+6 修复歌曲移除时 UI 同步问题<br>
+7 DBMusicocoController

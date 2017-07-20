@@ -22,6 +22,7 @@
             android:layout_height="match_parent" />
 
         <ImageButton
+            android:scaleType="fitCenter"
             android:src="@drawable/ic_location_searching_black_24dp"
             android:id="@+id/main_play_location"
             android:layout_width="wrap_content"
@@ -31,9 +32,10 @@
             android:background="?android:selectableItemBackground"
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/activity_default_padding_l_l"
-            android:paddingRight="@dimen/activity_default_padding_l_l" />
+            android:paddingRight="@dimen/activity_default_margin" />
 
         <ImageButton
+            android:scaleType="fitCenter"
             android:layout_toLeftOf="@id/main_play_location"
             android:src="@drawable/single_loop"
             android:id="@+id/main_play_mode"

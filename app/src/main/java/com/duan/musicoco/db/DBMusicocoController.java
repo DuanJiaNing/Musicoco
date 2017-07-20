@@ -6,16 +6,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.util.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.TreeSet;
 
 /**
  * Created by DuanJiaNing on 2017/7/1.
@@ -90,6 +90,7 @@ public class DBMusicocoController {
         database.update(TABLE_SONG, values, whereClause, whereArgs);
 
         addSheetCount(sheetID);
+        Log.i(TAG, "addSongToSheet: " + song.path + " sheet:" + sheetID);
         return true;
     }
 
@@ -251,7 +252,6 @@ public class DBMusicocoController {
             for (int i : shs) {
                 if (i == sheetID) {
                     isContain = true;
-                    Log.d(TAG, "getSongInfos: sheet " + sheetID + " contain:true " + info.path);
                 }
             }
 
@@ -301,14 +301,14 @@ public class DBMusicocoController {
         values.put(SONG_FAVORITE, favorite ? 1 : 0);
 
         database.insert(TABLE_SONG, null, values);
-        Log.d(TAG, "addSongInfo: insert " + path);
+        Log.i(TAG, "addSongInfo: " + song.path);
 
     }
 
     private String songSheetsIntArrayToString(int[] sheets) {
 
         StringBuilder builder = new StringBuilder();
-        builder.append("0 "); //任何一首歌都在 全部歌曲 歌单中
+        builder.append("");
         if (sheets != null && sheets.length > 0) {
             for (int i : sheets) {
                 builder.append(i).append(" ");
@@ -318,6 +318,9 @@ public class DBMusicocoController {
     }
 
     private int[] songSheetsStringToIntArray(String sheets) {
+        if (TextUtils.isEmpty(sheets)) {
+            return new int[]{};
+        }
         String[] strs = sheets.split(" ");
         int[] shs = new int[strs.length];
         for (int i = 0; i < shs.length; i++) {
@@ -343,6 +346,7 @@ public class DBMusicocoController {
         String whereClause = SONG_PATH + " like ?";
         String[] whereArgs = {song.path};
         database.update(TABLE_SONG, values, whereClause, whereArgs);
+        Log.i(TAG, "updateSongLastPlayTime: " + song.path + " time:" + StringUtils.getGenDateYMDHMS(time));
     }
 
     public void updateSongLastPlayTime(int songID, long time) {
@@ -351,6 +355,7 @@ public class DBMusicocoController {
         String whereClause = SONG_ID + " = ?";
         String[] whereArgs = {songID + ""};
         database.update(TABLE_SONG, values, whereClause, whereArgs);
+        Log.i(TAG, "updateSongLastPlayTime: id:" + songID + " time:" + StringUtils.getGenDateYMDHMS(time));
     }
 
     public void updateSongLastPlayTime(int songID) {
@@ -370,6 +375,7 @@ public class DBMusicocoController {
         String whereClause = SONG_PATH + " like ?";
         String[] whereArgs = {song.path + ""};
         database.update(TABLE_SONG, values, whereClause, whereArgs);
+        Log.i(TAG, "updateSongPlayTimes: " + song.path + " times:" + times);
 
     }
 
@@ -379,6 +385,7 @@ public class DBMusicocoController {
         String whereClause = SONG_ID + " = ?";
         String[] whereArgs = {songID + ""};
         database.update(TABLE_SONG, values, whereClause, whereArgs);
+        Log.i(TAG, "updateSongPlayTimes: id " + songID + " times:" + times);
     }
 
     public void updateSongPlayTimes(int songID) {
@@ -409,6 +416,7 @@ public class DBMusicocoController {
         String whereClause = SONG_PATH + " like ?";
         String[] whereArgs = {song.path};
         database.update(TABLE_SONG, values, whereClause, whereArgs);
+        Log.i(TAG, "updateSongRemark: " + song.path + " remark:" + remark);
     }
 
     public void updateSongFavorite(@NonNull Song song, boolean favorite) {
@@ -417,7 +425,17 @@ public class DBMusicocoController {
         String whereClause = SONG_PATH + " like ?";
         String[] whereArgs = {song.path};
         database.update(TABLE_SONG, values, whereClause, whereArgs);
-        Log.d(TAG, "updateSongFavorite: " + song.path + " favorite:" + favorite);
+        Log.i(TAG, "updateSongFavorite: " + song.path + " favorite:" + favorite);
+    }
+
+    public void updateSongSheet(Song song, int[] sheets) {
+        String ss = songSheetsIntArrayToString(sheets);
+        ContentValues values = new ContentValues();
+        values.put(SONG_SHEETS, ss);
+        String whereClause = SONG_PATH + " like ?";
+        String[] whereArgs = {song.path};
+        database.update(TABLE_SONG, values, whereClause, whereArgs);
+        Log.i(TAG, "updateSongSheet: " + song.path + " sheets:" + ss);
     }
 
     /**
@@ -427,22 +445,14 @@ public class DBMusicocoController {
     public void addSongPlayTimes(@NonNull Song song) {
         updateSongPlayTimes(song);
         updateSongLastPlayTime(song);
-
-        DBSongInfo info = getSongInfo(song);
-        if (info != null) {
-            Log.d(TAG, "addSongPlayTimes: song=" + info.path + " lastPlayTime=" + info.lastPlayTime + " times=" + info.playTimes);
-        }
-
     }
 
 
     public String addSheet(String name, String remark, int count) {
 
-        List<Sheet> sheets = getSheets();
-        for (Sheet s : sheets) {
-            if (s.name.equals(name)) {
-                return context.getString(R.string.error_sheet_already_exits);
-            }
+        Sheet sheet = getSheet(name);
+        if (sheet != null && sheet.name.equals(name)) {
+            return context.getString(R.string.error_sheet_already_exits);
         }
 
         String create = System.currentTimeMillis() + "";
@@ -453,7 +463,7 @@ public class DBMusicocoController {
         String sql = String.format(Locale.CHINESE, "insert into %s values(null,'%s','%s','%s',%d,%d)",
                 TABLE_SHEET, name, remark, create, 0, count);
         database.execSQL(sql);
-        Log.d(TAG, "addSheet: " + sql);
+        Log.d(TAG, "addSheet: " + name);
 
         return null;
     }
@@ -543,17 +553,20 @@ public class DBMusicocoController {
         String whereClause = SHEET_NAME + " like ?";
         String[] whereArgs = {sheetName};
         database.update(TABLE_SHEET, values, whereClause, whereArgs);
+        Log.i(TAG, "updateSheetPlayTimes: " + sheetName + " times:" + times);
     }
 
-    public void updateSheetCount(@NonNull String sheetName, int count) {
+    public int updateSheetCount(@NonNull String sheetName, int count) {
         if (count < 0) {
-            return;
+            return count;
         }
         ContentValues values = new ContentValues();
         values.put(SHEET_COUNT, count);
         String whereClause = SHEET_NAME + " like ?";
         String[] whereArgs = {sheetName};
         database.update(TABLE_SHEET, values, whereClause, whereArgs);
+        Log.i(TAG, "updateSheetCount: " + sheetName + " count:" + count);
+        return count;
     }
 
     public int updateSheetCount(int sheetID, int count) {
@@ -565,6 +578,7 @@ public class DBMusicocoController {
         String whereClause = SHEET_ID + " = ?";
         String[] whereArgs = {String.valueOf(sheetID)};
         database.update(TABLE_SHEET, values, whereClause, whereArgs);
+        Log.i(TAG, "updateSheetCount: id:" + sheetID + " count:" + count);
 
         return count;
     }
@@ -573,14 +587,16 @@ public class DBMusicocoController {
         String sql = "drop table " + table;
         database.execSQL(sql);
 
-        if (table.equals(TABLE_SHEET))
+        if (table.equals(TABLE_SHEET)) {
             createSheetTable(database);
-        else if (table.equals(TABLE_SONG))
+        } else if (table.equals(TABLE_SONG)) {
             createSongTable(database);
+        }
+        Log.i(TAG, "truncate: table:" + table);
 
     }
 
-    public boolean removeSong(Song song) {
+    public boolean removeSongInfoFromBothTable(Song song) {
         DBSongInfo info = getSongInfo(song);
         boolean r = false;
 
@@ -591,21 +607,78 @@ public class DBMusicocoController {
             for (int s : sheets) {
                 minusSheetCount(s);
             }
-            r = removeSongInfo(song);
+            r = removeSongInfoFromSongTableOnly(song);
 
             database.endTransaction();
         }
-
+        Log.i(TAG, "removeSongInfoFromBothTable: " + song.path);
         return r;
     }
 
-    public boolean removeSongInfo(Song song) {
+    public boolean removeSongInfoFromSongTableOnly(Song song) {
 
         String where = SONG_PATH + " like ? ";
         String[] whereArg = new String[]{song.path};
         database.delete(TABLE_SONG, where, whereArg);
-
+        Log.i(TAG, "removeSongInfoFromSongTableOnly: " + song.path);
         return true;
+    }
+
+    public boolean removeSongFromSheet(Song song, int sheetID) {
+
+        DBSongInfo info = getSongInfo(song);
+        if (info == null) {
+            return false;
+        }
+
+        Sheet sheet = getSheet(sheetID);
+        if (sheet == null) {
+            return false;
+        }
+
+        int[] sheets = info.sheets;
+        int index = -1;
+        for (int j = 0; j < sheets.length; j++) {
+            if (sheetID == sheets[j]) {
+                index = j;
+                break;
+            }
+        }
+
+        if (-1 == index) {
+            Log.e(TAG, "removeSongFromSheet: the sheet not contain the song " + song.path + " sheet:" + sheetID);
+            return true;
+        } else {
+            int i = 0;
+            int[] newSheets = new int[sheets.length - 1];
+            for (int j = 0; j < sheets.length; j++) {
+                if (index != j) {
+                    newSheets[i] = sheets[j];
+                    i++;
+                }
+            }
+
+            updateSongSheet(song, newSheets);
+            minusSheetCount(sheetID);
+            Log.i(TAG, "removeSongFromSheet:  " + song.path + " sheet:" + sheetID);
+            return true;
+        }
+    }
+
+
+    public boolean removeSongFromSheet(Song song, String sheetName) {
+
+        DBSongInfo info = getSongInfo(song);
+        if (info == null) {
+            return false;
+        }
+
+        Sheet sheet = getSheet(sheetName);
+        if (sheet != null) {
+            return removeSongFromSheet(song, sheet.id);
+        } else {
+            return false;
+        }
     }
 
 
