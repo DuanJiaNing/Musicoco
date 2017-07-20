@@ -10,12 +10,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.app.manager.MediaManager;
+import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
+import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
+import com.duan.musicoco.db.Sheet;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.DialogUtils;
@@ -44,7 +46,8 @@ public class MySheetsController implements
     private DBMusicocoController dbMusicoco;
     private MediaManager mediaManager;
     private MySheetsAdapter adapter;
-    private List<DBMusicocoController.Sheet> sheets;
+    private List<Sheet> sheets;
+    private IPlayControl control;
 
     private boolean hasInitData = false;
 
@@ -66,11 +69,13 @@ public class MySheetsController implements
 
     }
 
-    public void initData() {
+    public void initData(IPlayControl control) {
+        this.control = control;
 
-        adapter = new MySheetsAdapter(activity, sheets, dbMusicoco, mediaManager);
+        adapter = new MySheetsAdapter(activity, sheets, dbMusicoco, mediaManager, control);
         mListView.setAdapter(adapter);
         ((NestedScrollView) activity.findViewById(R.id.main_scroll)).smoothScrollTo(0, 0);
+
         hasInitData = true;
     }
 
@@ -82,7 +87,7 @@ public class MySheetsController implements
                 DialogUtils.showAddSheetDialog(activity, dbMusicoco);
                 break;
             case R.id.sheet_empty_add:
-
+                DialogUtils.showAddSheetDialog(activity, dbMusicoco);
                 break;
         }
     }
@@ -127,9 +132,9 @@ public class MySheetsController implements
     public void update(Object obj, OnUpdateStatusChanged completed) {
 
         //注意不能修改 sheets 的引用，否则 notifyDataSetChanged 失效
-        List<DBMusicocoController.Sheet> newData = dbMusicoco.getSheets();
+        List<Sheet> newData = dbMusicoco.getSheets();
         sheets.clear();
-        for (DBMusicocoController.Sheet s : newData) {
+        for (Sheet s : newData) {
             sheets.add(s);
         }
 

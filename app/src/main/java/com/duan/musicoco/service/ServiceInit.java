@@ -1,5 +1,6 @@
 package com.duan.musicoco.service;
 
+import android.content.Context;
 import android.os.RemoteException;
 import android.util.Log;
 
@@ -7,6 +8,8 @@ import com.duan.musicoco.aidl.PlayControlImpl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
+import com.duan.musicoco.db.DBSongInfo;
+import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.preference.PlayPreference;
 
 import java.util.ArrayList;
@@ -23,7 +26,10 @@ class ServiceInit {
     private final PlayPreference preference;
     private final DBMusicocoController dbController;
 
-    public ServiceInit(PlayControlImpl control, MediaManager manager, PlayPreference preference, DBMusicocoController dbController) {
+    private Context context;
+
+    public ServiceInit(Context context, PlayControlImpl control, MediaManager manager, PlayPreference preference, DBMusicocoController dbController) {
+        this.context = context;
         this.control = control;
         this.manager = manager;
         this.preference = preference;
@@ -89,27 +95,27 @@ class ServiceInit {
         try {
 
             int sheetID = preference.getSheetID();
-            if (sheetID == 0) { //全部歌曲
-                control.setPlayList(manager.getSongList(), 0, 0);
-
+            List<DBSongInfo> list;
+            if (sheetID < 0) {
+                MainSheetHelper msh = new MainSheetHelper(context, dbController);
+                list = msh.getMainSheetSongInfo(sheetID);
             } else {
-                List<DBMusicocoController.SongInfo> list = dbController.getSongInfos();
-                List<Song> songs = new ArrayList<>();
-                for (DBMusicocoController.SongInfo info : list) {
-                    inner:
-                    for (int i : info.sheets) {
-                        if (i == sheetID) {
-                            songs.add(new Song(info.path));
-                            break inner;
-                        }
-                    }
-                }
-                control.setPlayList(songs, 0, sheetID);
+                list = dbController.getSongInfos(sheetID);
             }
+            control.setPlayList(getSongs(list), 0, sheetID);
 
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    private List<Song> getSongs(List<DBSongInfo> dbSongInfos) {
+        List<Song> songs = new ArrayList<>();
+        for (DBSongInfo info : dbSongInfos) {
+            Song song = new Song(info.path);
+            songs.add(song);
+        }
+        return songs;
     }
 
     private void initData() {

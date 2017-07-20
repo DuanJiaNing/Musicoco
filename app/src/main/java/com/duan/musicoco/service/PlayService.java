@@ -25,7 +25,7 @@ public class PlayService extends RootService {
         super.onCreate();
 
         iBinder = new PlayServiceIBinder(getApplicationContext());
-        new ServiceInit(iBinder, mediaManager, playPreference, dbController).start();
+        new ServiceInit(this, iBinder, mediaManager, playPreference, dbController).start();
         iBinder.notifyDataIsReady();
 
     }

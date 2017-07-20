@@ -10,9 +10,8 @@ import android.content.IntentFilter;
  */
 public class BroadcastManager {
 
-    public static final String REFRESH_MAIN_ACTIVITY_DATA = "refresh_main_activity_data";
-
-    public static final String REFRESH_PLAY_ACTIVITY_DATA = "refresh_play_activity_data";
+    public static final String FILTER_MY_SHEET_CHANGED = "filter_my_sheet_changed";
+    public static final String FILTER_MAIN_SHEET_CHANGED = "filter_main_sheet_changed";
 
     /**
      * 注册广播接收器

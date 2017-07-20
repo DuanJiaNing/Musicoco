@@ -84,14 +84,7 @@ public class PlayActivity extends RootActivity implements
 
     private PlayServiceConnection mServiceConnection;
     private PeriodicTask periodicTask;
-    private final PlayPreference playPreference;
     private BottomNavigationController bottomNavigationController;
-
-    private BroadcastReceiver playListDataChangeReceiver;
-
-    public PlayActivity() {
-        playPreference = new PlayPreference(this);
-    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -106,10 +99,6 @@ public class PlayActivity extends RootActivity implements
         if (mServiceConnection.hasConnected) {
             mServiceConnection.unregisterListener();
             unbindService(mServiceConnection);
-        }
-
-        if (playListDataChangeReceiver != null) {
-            BroadcastManager.unregisterReceiver(this, playListDataChangeReceiver);
         }
     }
 
@@ -263,7 +252,7 @@ public class PlayActivity extends RootActivity implements
 
     @Override
     public void onPlayListChange(Song current, int index, int id) {
-
+        bottomNavigationController.update(null, null);
     }
 
     @Override
@@ -564,13 +553,6 @@ public class PlayActivity extends RootActivity implements
         visualizerPresenter.initData(null);
         lyricPresenter.initData(null);
 
-        playListDataChangeReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                bottomNavigationController.update(null, null);
-            }
-        };
-        BroadcastManager.registerBroadReceiver(this, playListDataChangeReceiver, BroadcastManager.REFRESH_PLAY_ACTIVITY_DATA);
     }
 
 

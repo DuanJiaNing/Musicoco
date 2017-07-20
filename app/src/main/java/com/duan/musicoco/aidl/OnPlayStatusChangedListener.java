@@ -4,7 +4,6 @@ import android.os.IBinder;
 
 /**
  * Created by DuanJiaNing on 2017/5/29.
- * 自动播放时的播放状态改变回调
  * 用户手动暂停，播放歌曲时回调
  */
 

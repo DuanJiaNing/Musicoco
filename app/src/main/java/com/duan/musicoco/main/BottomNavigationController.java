@@ -22,6 +22,11 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.manager.BroadcastManager;
+import com.duan.musicoco.db.DBMusicocoController;
+import com.duan.musicoco.db.MainSheetHelper;
+import com.duan.musicoco.db.Sheet;
+import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.shared.ExceptionHandler;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
@@ -79,21 +84,28 @@ public class BottomNavigationController implements
 
     private final MediaManager mediaManager;
     private final AppPreference appPreference;
+    private final PlayPreference playPreference;
     private BitmapBuilder builder;
 
     private final Dialog mDialog;
     private ListView mList;
     private View mLine;
-    private TextView mPlayMode;
-    private TextView mLocation;
+
+    private ImageButton mPlayMode;
+    private ImageButton mLocation;
+    private TextView mSheet;
+
     private PlayListAdapter adapter;
 
     private boolean hasInitData = false;
+    private DBMusicocoController dbController;
 
-    BottomNavigationController(Activity activity, MediaManager mediaManager, AppPreference appPreference) {
+    BottomNavigationController(Activity activity, MediaManager mediaManager,
+                               AppPreference appPreference, PlayPreference playPreference) {
         this.activity = activity;
         this.mediaManager = mediaManager;
         this.appPreference = appPreference;
+        this.playPreference = playPreference;
         this.builder = new BitmapBuilder(activity);
         this.mDialog = new Dialog(activity, R.style.BottomDialog);
 
@@ -119,27 +131,29 @@ public class BottomNavigationController implements
         mContainer = activity.findViewById(R.id.list_bottom_nav_container);
         mProgress = activity.findViewById(R.id.list_progress);
 
+        mContainer.setOnClickListener(this);
+        mShowList.setOnClickListener(this);
+        mPlay.setOnClickListener(this);
+
+        initPlayListDialog();
+
+    }
+
+    private void initPlayListDialog() {
         View contentView = activity.getLayoutInflater().inflate(R.layout.main_play_list, null);
         mList = (ListView) contentView.findViewById(R.id.main_play_list);
 
         mListContainer = (PullDownLinearLayout) contentView.findViewById(R.id.main_play_list_container);
         mListContainer.isListViewExist(true);
 
-        mLocation = (TextView) contentView.findViewById(R.id.main_play_location);
-        mPlayMode = (TextView) contentView.findViewById(R.id.main_play_mode);
+        mLocation = (ImageButton) contentView.findViewById(R.id.main_play_location);
+        mPlayMode = (ImageButton) contentView.findViewById(R.id.main_play_mode);
+        mSheet = (TextView) contentView.findViewById(R.id.main_play_sheet);
         mLine = contentView.findViewById(R.id.main_play_line);
 
-        mPlayMode.setCompoundDrawablePadding(8);
-        mLocation.setText("当前播放");
+
         Drawable drawable = activity.getResources().getDrawable(R.drawable.ic_location_searching_black_24dp);
-        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-        mLocation.setCompoundDrawablePadding(8);
-        mLocation.setCompoundDrawables(null, null, drawable, null);
-
-
-        mContainer.setOnClickListener(this);
-        mShowList.setOnClickListener(this);
-        mPlay.setOnClickListener(this);
+        mLocation.setImageDrawable(drawable);
 
         mLocation.setOnClickListener(this);
         mPlayMode.setOnClickListener(this);
@@ -161,8 +175,9 @@ public class BottomNavigationController implements
         Log.d(TAG, "dataIsReady: ");
     }
 
-    public void initData(IPlayControl control) {
+    public void initData(IPlayControl control, DBMusicocoController dbMusicocoController) {
         this.mControl = control;
+        this.dbController = dbMusicocoController;
 
         mContainer.setEnabled(true);
         mPlay.setEnabled(true);
@@ -188,15 +203,6 @@ public class BottomNavigationController implements
         mDuration = (int) info.getDuration();
 
         update(null, null);
-    }
-
-    @Override
-    public void startPlay(Song song, int index, int status) {
-        SongInfo info = mediaManager.getSongInfo(song);
-        mDuration = (int) info.getDuration();
-
-        task.start();
-
     }
 
     private void updateProgress() {
@@ -243,6 +249,7 @@ public class BottomNavigationController implements
             return;
         }
 
+        updateCurrentSheet();
         updatePlayMode();
 
         try {
@@ -264,6 +271,23 @@ public class BottomNavigationController implements
         }
     }
 
+    private void updateCurrentSheet() {
+        try {
+            int id = mControl.getPlayListId();
+            if (id < 0) {
+                String name = MainSheetHelper.getMainSheetName(activity, id);
+                mSheet.setText(name);
+            } else {
+                Sheet sheet = dbController.getSheet(id);
+                String name = "歌单：" + sheet.name + " (" + sheet.count + ")";
+                mSheet.setText(name);
+            }
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
     private boolean checkNull() {
         if (mControl == null) {
             return true;
@@ -273,13 +297,31 @@ public class BottomNavigationController implements
     }
 
     @Override
+    public void startPlay(Song song, int index, int status) {
+        SongInfo info = mediaManager.getSongInfo(song);
+        mDuration = (int) info.getDuration();
+
+        task.start();
+        mPlay.setChecked(true);
+
+        BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED);
+    }
+
+    @Override
     public void stopPlay(Song song, int index, int status) {
         task.stop();
+        mPlay.setChecked(false);
+
+        BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED);
     }
 
     @Override
     public void onPlayListChange(Song current, int index, int id) {
         adapter.update(null, null);
+        playPreference.updateSheet(id);
+
+        BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED);
+        Log.i(TAG, "onPlayListChange: main bottom");
     }
 
     @Override
@@ -379,31 +421,20 @@ public class BottomNavigationController implements
         mProgress.setBackgroundColor(mainTC);
         mList.setBackgroundColor(mainBC);
         mLine.setBackgroundColor(vicTC);
+        mSheet.setTextColor(mainTC);
 
-        mPlayMode.setTextColor(mainTC);
         mListContainer.setBackgroundColor(mainBC);
-        mLocation.setTextColor(mainTC);
-        for (Drawable d : mPlayMode.getCompoundDrawables()) {
-            if (d != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    d.setTint(vicTC);
-                }
-            }
-        }
-        for (Drawable d : mLocation.getCompoundDrawables()) {
-            if (d != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    d.setTint(vicTC);
-                }
-            }
-        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mShowList.getDrawable().setTint(mainTC);
+
+            mPlayMode.getDrawable().setTint(vicTC);
+            mLocation.getDrawable().setTint(vicTC);
+
         }
     }
 
-    int updatePlayMode() {
+    private int updatePlayMode() {
 
         Drawable drawable = null;
         StringBuilder builder = new StringBuilder();
@@ -438,8 +469,7 @@ public class BottomNavigationController implements
             drawable.setTint(adapter.getColorVic());
         }
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-        mPlayMode.setCompoundDrawables(drawable, null, null, null);
-        mPlayMode.setText(builder.toString());
+        mPlayMode.setImageDrawable(drawable);
 
         return mode;
     }

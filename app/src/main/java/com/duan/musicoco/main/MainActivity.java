@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -39,7 +40,9 @@ public class MainActivity extends RootActivity implements
     private RecentMostPlayController mostPlayController;
     private MainSheetsController mainSheetsController;
     private MySheetsController mySheetsController;
-    private BroadcastReceiver refreshDataReceiver;
+
+    private BroadcastReceiver mySheetDataChangedReceiver;
+    private BroadcastReceiver mainSheetDataChangedReceiver;
 
     private OnUpdateStatusChanged statusChanged = new OnUpdateStatusChanged() {
         @Override
@@ -61,7 +64,7 @@ public class MainActivity extends RootActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bottomNavigationController = new BottomNavigationController(this, mediaManager, appPreference);
+        bottomNavigationController = new BottomNavigationController(this, mediaManager, appPreference, playPreference);
         mostPlayController = new RecentMostPlayController(this, mediaManager);
         mainSheetsController = new MainSheetsController(this, mediaManager);
         mySheetsController = new MySheetsController(this, dbMusicoco, mediaManager);
@@ -87,19 +90,34 @@ public class MainActivity extends RootActivity implements
             bottomNavigationController.update(null, null);
         }
 
-
+        if (mySheetsController.hasInitData()) {
+            mySheetsController.update(null, null);
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        unbindService();
+        unregisterReceiver();
+
+    }
+
+    private void unregisterReceiver() {
+
+        if (mySheetDataChangedReceiver != null) {
+            BroadcastManager.unregisterReceiver(this, mySheetDataChangedReceiver);
+        }
+        if (mainSheetDataChangedReceiver != null) {
+            BroadcastManager.unregisterReceiver(this, mainSheetDataChangedReceiver);
+        }
+    }
+
+    private void unbindService() {
         if (mServiceConnection != null && mServiceConnection.hasConnected) {
             mServiceConnection.unregisterListener();
             unbindService(mServiceConnection);
-        }
-
-        if (refreshDataReceiver != null) {
-            BroadcastManager.unregisterReceiver(this, refreshDataReceiver);
         }
     }
 
@@ -211,22 +229,35 @@ public class MainActivity extends RootActivity implements
     public void onConnected(ComponentName name, IBinder service) {
 
         initSelfData();
+        initBroadcastReceivers();
 
-        refreshDataReceiver = new BroadcastReceiver() {
+    }
+
+    private void initBroadcastReceivers() {
+        mySheetDataChangedReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                update();
+                mySheetsController.update(null, null);
             }
         };
-        BroadcastManager.registerBroadReceiver(this, refreshDataReceiver, BroadcastManager.REFRESH_MAIN_ACTIVITY_DATA);
+        mainSheetDataChangedReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(TAG, "onReceive: mainSheetDataChangedReceiver");
+                mainSheetsController.update(null, null);
+            }
+        };
+
+        BroadcastManager.registerBroadReceiver(this, mySheetDataChangedReceiver, BroadcastManager.FILTER_MY_SHEET_CHANGED);
+        BroadcastManager.registerBroadReceiver(this, mainSheetDataChangedReceiver, BroadcastManager.FILTER_MAIN_SHEET_CHANGED);
     }
 
     private void initSelfData() {
 
-        bottomNavigationController.initData(mServiceConnection.takeControl());
+        bottomNavigationController.initData(mServiceConnection.takeControl(), dbMusicoco);
         mostPlayController.initData(dbMusicoco, "历史最多播放");
         mainSheetsController.initData(dbMusicoco);
-        mySheetsController.initData();
+        mySheetsController.initData(mServiceConnection.takeControl());
 
         update();
         bottomNavigationController.update(null, null);

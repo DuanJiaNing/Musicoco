@@ -185,3 +185,10 @@
 3 歌曲选项的添加到歌单改用 DialogManager，不使用 AlertDialog<br>
 4 歌曲详情 Activity 可以调用系统图片查看功能查看图片，可以将图片保存到Download 目录下<br>
 5 播放页点击名字可直接查看详情<br>
+
+- 2017-07-20
+
+1 将 SongInfo 和 Sheet 从 DBMusicocoControler 中抽离<br>
+2 添加 MainSheethelper<br>
+3 使用广播同步创建歌单的播放状态，即歌单的切换<br>
+4 使服务器在移除歌曲时也回调 onPlayListChanged<br>

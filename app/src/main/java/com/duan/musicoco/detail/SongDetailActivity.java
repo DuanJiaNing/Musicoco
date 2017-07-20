@@ -23,6 +23,8 @@ import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.db.DBMusicocoController;
+import com.duan.musicoco.db.DBSongInfo;
+import com.duan.musicoco.db.Sheet;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.FileUtils;
@@ -102,7 +104,7 @@ public class SongDetailActivity extends AppCompatActivity implements View.OnClic
         String dateAdded = StringUtils.getGenDateYMDHMS(info.getDate_added());
         String mimeType = info.getMime_type();
 
-        DBMusicocoController.SongInfo songInfo = dbMusicocoController.getSongInfo(new Song(path));
+        DBSongInfo songInfo = dbMusicocoController.getSongInfo(new Song(path));
         String playTimes = songInfo.playTimes + "次";
         String remark = songInfo.remark;
         String lastPlayTime = StringUtils.getGenDateYMDHMS(songInfo.lastPlayTime);
@@ -111,7 +113,7 @@ public class SongDetailActivity extends AppCompatActivity implements View.OnClic
         int[] ss = songInfo.sheets;
         StringBuilder sheets = new StringBuilder();
         for (int i = 0; i < ss.length; i++) {
-            DBMusicocoController.Sheet s = dbMusicocoController.getSheet(ss[i]);
+            Sheet s = dbMusicocoController.getSheet(ss[i]);
             if (s != null) {
                 sheets.append(s.name);
                 if (i != ss.length - 2) {

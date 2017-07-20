@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.os.RemoteException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,15 +16,22 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.aidl.IPlayControl;
+import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.db.DBMusicocoController;
+import com.duan.musicoco.db.DBSongInfo;
+import com.duan.musicoco.db.Sheet;
 import com.duan.musicoco.preference.Theme;
+import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.util.BitmapUtils;
+import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.view.media.PlayView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -40,7 +48,7 @@ public class MySheetsAdapter extends BaseAdapter implements
         OnThemeChange {
 
     private Context context;
-    private List<DBMusicocoController.Sheet> sheets;
+    private List<Sheet> sheets;
     private DBMusicocoController dbMusicoco;
     private MediaManager mediaManager;
 
@@ -52,17 +60,19 @@ public class MySheetsAdapter extends BaseAdapter implements
 
     private View.OnClickListener moreClickListener;
     private PlayView.OnCheckedChangeListener playCheckChangeListener;
+    private IPlayControl control;
 
-    public MySheetsAdapter(final Context context, List<DBMusicocoController.Sheet> sheets, DBMusicocoController dbMusicoco, MediaManager mediaManager) {
+    public MySheetsAdapter(final Context context, List<Sheet> sheets, DBMusicocoController dbMusicoco, MediaManager mediaManager, final IPlayControl control) {
         this.context = context;
         this.sheets = sheets;
+        this.control = control;
         this.dbMusicoco = dbMusicoco;
         this.mediaManager = mediaManager;
 
         moreClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DBMusicocoController.Sheet sheet = (DBMusicocoController.Sheet) v.getTag();
+                Sheet sheet = (Sheet) v.getTag();
                 Toast.makeText(context, "OnClickListener sheet more " + sheet.name, Toast.LENGTH_SHORT).show();
             }
         };
@@ -70,10 +80,43 @@ public class MySheetsAdapter extends BaseAdapter implements
         playCheckChangeListener = new PlayView.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(PlayView view, boolean checked) {
-                DBMusicocoController.Sheet sheet = (DBMusicocoController.Sheet) view.getTag();
-                Toast.makeText(context, "check status change " + sheet.name + " checked=" + checked, Toast.LENGTH_SHORT).show();
+
+                Sheet sheet = (Sheet) view.getTag();
+                IPlayControl con = MySheetsAdapter.this.control;
+                DBMusicocoController db = MySheetsAdapter.this.dbMusicoco;
+
+                try {
+
+                    int sheetID = con.getPlayListId();
+                    if (checked && sheet.id != sheetID) { // 播放状态且当前播放歌单不是目标歌单
+                        changePlayList(sheet);
+                    } else if (checked && sheet.id == sheetID) { //播放状态且当前歌单是目标歌单
+                        con.resume();
+                    } else if (!checked) { // 停止播放
+                        con.pause();
+                    }
+                    notifyDataSetChanged();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
         };
+    }
+
+    private void changePlayList(Sheet sheet) throws RemoteException {
+        List<DBSongInfo> songInfos = MySheetsAdapter.this.dbMusicoco.getSongInfos(sheet.id);
+        if (songInfos.size() > 0) {
+            List<Song> songs = new ArrayList<>();
+            for (DBSongInfo s : songInfos) {
+                Song song = new Song(s.path);
+                songs.add(song);
+            }
+
+            control.setPlayList(songs, 0, sheet.id);
+            control.playByIndex(0);
+        } else {
+            ToastUtils.showShortToast(context, context.getString(R.string.error_empty_sheet));
+        }
     }
 
     @Override
@@ -114,7 +157,7 @@ public class MySheetsAdapter extends BaseAdapter implements
             holder = (ViewHolder) convertView.getTag();
         }
 
-        DBMusicocoController.Sheet sheet = (DBMusicocoController.Sheet) getItem(position);
+        Sheet sheet = (Sheet) getItem(position);
         String name = sheet.name;
         String remark = sheet.remark;
         int count = sheet.count;
@@ -133,6 +176,17 @@ public class MySheetsAdapter extends BaseAdapter implements
         holder.play.setPauseLineColor(colorMainB);
         holder.play.setOnCheckedChangeListener(playCheckChangeListener);
 
+        try {
+            if (control.getPlayListId() == sheet.id &&
+                    control.status() == PlayController.STATUS_PLAYING) {
+                holder.play.setChecked(true);
+            } else {
+                holder.play.setChecked(false);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
         holder.name.setTextColor(colorMain);
         holder.name.setText(name);
 
@@ -148,15 +202,15 @@ public class MySheetsAdapter extends BaseAdapter implements
         return convertView;
     }
 
-    private void bindImage(final ViewHolder holder, final DBMusicocoController.Sheet sheet) {
+    private void bindImage(final ViewHolder holder, final Sheet sheet) {
         Observable.just(sheet.id)
                 .map(new Func1<Integer, Bitmap>() {
                     @Override
                     public Bitmap call(Integer integer) {
                         //Java.util.ConcurrentModificationException
                         //FIXME 多线程导致迭代时修改错误
-                        List<DBMusicocoController.SongInfo> infos = dbMusicoco.getSongInfos(integer);
-//                        TreeSet<DBMusicocoController.SongInfo> treeSet = dbMusicoco.descSortByLastPlayTime(infos);
+                        List<DBSongInfo> infos = dbMusicoco.getSongInfos(integer);
+//                        TreeSet<DBMusicocoController.DBSongInfo> treeSet = dbMusicoco.descSortByLastPlayTime(infos);
                         Bitmap bitmap = findBitmap(infos, holder.image);
                         if (bitmap == null) {
                             bitmap = defaultBitmap;
@@ -175,14 +229,13 @@ public class MySheetsAdapter extends BaseAdapter implements
                         drawable.setAlpha(100);
                         holder.play.setBackground(drawable);
 
-                        AnimationUtils.startAlphaAnim(holder.image, 400, null, 0.5f, 1.0f);
                     }
                 });
     }
 
-    private Bitmap findBitmap(List<DBMusicocoController.SongInfo> treeSet, ImageView image) {
+    private Bitmap findBitmap(List<DBSongInfo> treeSet, ImageView image) {
         Bitmap bitmap = null;
-        for (DBMusicocoController.SongInfo s : treeSet) {
+        for (DBSongInfo s : treeSet) {
             SongInfo info = mediaManager.getSongInfo(s.path);
             bitmap = BitmapUtils.bitmapResizeFromFile(info.getAlbum_path(), image.getWidth(), image.getHeight());
             if (bitmap != null) {

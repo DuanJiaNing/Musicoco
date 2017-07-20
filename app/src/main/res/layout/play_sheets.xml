@@ -15,9 +15,7 @@
             android:layout_centerInParent="true"
             android:id="@+id/my_sheet_line"
             android:layout_width="1dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_height="match_parent"
+            android:layout_height="15dp"
             android:background="@color/dark" />
 
         <TextView
@@ -36,10 +34,11 @@
             android:layout_toRightOf="@id/my_sheet_line"
             android:scaleX="0.8"
             android:scaleY="0.8"
+            android:scaleType="fitStart"
             android:id="@+id/my_sheet_add"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?android:selectableItemBackgroundBorderless"
+            android:background="?android:selectableItemBackground"
             android:src="@drawable/ic_action_add" />
     </RelativeLayout>
 

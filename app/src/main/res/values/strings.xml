@@ -41,16 +41,17 @@
     <string name="new_sheet_input_remark">输入备注信息</string>
     <string name="new_sheet_input_message">输入歌单名和备注，备注可以为空</string>
 
-    <string name="error_song_is_already_in_sheet">歌曲已在歌单中</string>
-    <string name="error_text_count_out_of_limit">字数超出限制啦!</string>
-    <string name="error_name_required">名称不能为空</string>
-    <string name="error_sheet_already_exits">歌单已存在</string>
-    <string name="error_delete_file_fail">文件删除失败</string>
-    <string name="error_no_album_image">没有专辑图片</string>
+    <string name="error_song_is_already_in_sheet">歌曲已在歌单中 :(</string>
+    <string name="error_text_count_out_of_limit">字数超出限制啦 :(</string>
+    <string name="error_name_required">名称不能为空 :(</string>
+    <string name="error_sheet_already_exits">歌单已存在 :(</string>
+    <string name="error_delete_file_fail">文件删除失败 :(</string>
+    <string name="error_no_album_image">没有专辑图片 :(</string>
+    <string name="error_empty_sheet">歌单是空的 :(</string>
 
-    <string name="success_create_sheet">成功创建歌单</string>
-    <string name="success_add_to_sheet">成功添加到歌单</string>
-    <string name="success_delete_file">成功删除文件</string>
+    <string name="success_create_sheet">成功创建歌单 :)</string>
+    <string name="success_add_to_sheet">成功添加到歌单 :)</string>
+    <string name="success_delete_file">成功删除文件 :)</string>
 
     <string name="warning">警告</string>
     <string name="delete_confirm">确认删除</string>

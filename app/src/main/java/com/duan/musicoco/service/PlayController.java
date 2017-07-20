@@ -355,8 +355,9 @@ public class PlayController {
     }
 
     public void remove(Song song) {
-        if (song == null)
+        if (song == null) {
             return;
+        }
 
         int index = mPlayList.indexOf(song);
         if (index != -1) {
@@ -373,6 +374,7 @@ public class PlayController {
                     mCurrentSong--;
                 }
             }
+            mNotifyPlayListChanged.notify(mPlayList.get(mCurrentSong), mCurrentSong, mPlayListId);
         }
     }
 

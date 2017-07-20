@@ -63,7 +63,8 @@ public class PlayListAdapter extends BaseAdapter implements
                 try {
                     //如果移除当前正在播放曲目服务端会自动跳到下一首
                     control.remove(s);
-                    update(null, null);
+                    //服务端会回调 onPlayListChange
+                    //update(null, null);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                     new ExceptionHandler().handleRemoteException(context,

@@ -17,6 +17,8 @@ import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.interfaces.SubscriberAbstract;
 import com.duan.musicoco.db.DBMusicocoController;
+import com.duan.musicoco.db.DBSongInfo;
+import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 
@@ -58,6 +60,8 @@ public class MainSheetsController implements
     private DBMusicocoController dbController;
     private final MediaManager mediaManager;
 
+    private MainSheetHelper mainSheetHelper;
+
     private boolean hasInitData = false;
 
     public MainSheetsController(Activity activity, MediaManager mediaManager) {
@@ -89,6 +93,7 @@ public class MainSheetsController implements
 
     public void initData(DBMusicocoController controller) {
         this.dbController = controller;
+        this.mainSheetHelper = new MainSheetHelper(activity, dbController);
 
         mContainerAll.setClickable(true);
         mContainerRecent.setClickable(true);
@@ -137,7 +142,7 @@ public class MainSheetsController implements
 
         Observable.just(Data.ALL, Data.RECENT, Data.FAVORITE)
                 .map(new Func1<Integer, Data>() {
-                    List<DBMusicocoController.SongInfo> all = dbController.getSongInfos();
+                    List<DBSongInfo> all = mainSheetHelper.getAllSongInfo();
 
                     @Override
                     public Data call(Integer integer) {
@@ -202,50 +207,27 @@ public class MainSheetsController implements
                 });
     }
 
-    private Data getBitmapForFavorite(List<DBMusicocoController.SongInfo> all) {
+    private Data getBitmapForFavorite(List<DBSongInfo> all) {
         Data data = new Data();
-        Bitmap bitmap;
-        int count;
-        List<DBMusicocoController.SongInfo> favorite = new ArrayList<>();
-        for (DBMusicocoController.SongInfo i : all) {
-            if (i.favorite) {
-                favorite.add(i);
-            }
-        }
-
-        count = favorite.size();
-        TreeSet<DBMusicocoController.SongInfo> treeSet = dbController.descSortByLastPlayTime(favorite);
-        bitmap = findBitmap(treeSet);
-
-        data.bitmap = bitmap;
-        data.count = count;
+        List<DBSongInfo> favorite = mainSheetHelper.getFavoriteSongInfo();
+        List<DBSongInfo> list = DBSongInfo.descSortByLastPlayTime(favorite);
+        data.bitmap = findBitmap(list, list.size());
+        data.count = favorite.size();
         return data;
     }
 
-    private Data getBitmapForRecent(List<DBMusicocoController.SongInfo> all) {
+    private Data getBitmapForRecent(List<DBSongInfo> all) {
         Data data = new Data();
-        Bitmap bitmap;
-        TreeSet<DBMusicocoController.SongInfo> treeSet = dbController.descSortByLastPlayTime(all);
-        bitmap = findBitmap(treeSet);
-
+        List<DBSongInfo> list = DBSongInfo.descSortByLastPlayTime(all);
         int count = activity.getResources().getInteger(R.integer.sheet_recent_count);
-        data.bitmap = bitmap;
+        data.bitmap = findBitmap(list, count);
         data.count = count;
         return data;
     }
 
-    private Data getBitmapForAll(List<DBMusicocoController.SongInfo> all) {
+    private Data getBitmapForAll(List<DBSongInfo> all) {
         Data data = new Data();
-        Bitmap bitmap = null;
-        for (DBMusicocoController.SongInfo i : all) {
-            SongInfo info = mediaManager.getSongInfo(i.path);
-            bitmap = BitmapUtils.bitmapResizeFromFile(info.getAlbum_path(), mImageAll.getWidth(), mImageAll.getHeight());
-            if (bitmap != null) {
-                break;
-            }
-        }
-
-        data.bitmap = bitmap;
+        data.bitmap = findBitmap(all, all.size());
         data.count = all.size();
         return data;
     }
@@ -268,15 +250,22 @@ public class MainSheetsController implements
         updateTextAndColor(mTextAll, data.count, mCountAll, data.colors);
     }
 
-    private Bitmap findBitmap(TreeSet<DBMusicocoController.SongInfo> treeSet) {
+    private Bitmap findBitmap(List<DBSongInfo> list, int limit) {
         Bitmap bitmap = null;
-        for (DBMusicocoController.SongInfo s : treeSet) {
-            SongInfo info = mediaManager.getSongInfo(s.path);
+        limit = limit > list.size() ? list.size() : limit;
+        for (int i = 0; i < limit; i++) {
+            DBSongInfo d = list.get(i);
+            SongInfo info = mediaManager.getSongInfo(d.path);
             bitmap = BitmapUtils.bitmapResizeFromFile(info.getAlbum_path(), mImageRecent.getWidth(), mImageRecent.getHeight());
             if (bitmap != null) {
                 break;
             }
         }
+
+        if (bitmap == null) {
+            bitmap = BitmapUtils.getDefaultAlbumPicture(activity, mImageRecent.getWidth(), mImageRecent.getHeight());
+        }
+
         return bitmap;
     }
 

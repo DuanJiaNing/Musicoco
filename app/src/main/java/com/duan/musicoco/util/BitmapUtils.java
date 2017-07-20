@@ -160,6 +160,7 @@ public class BitmapUtils {
         return bitmapResizeFromResource(context.getResources(), R.drawable.default_album, reqWidth, reqHeight);
     }
 
+
 }
 
 

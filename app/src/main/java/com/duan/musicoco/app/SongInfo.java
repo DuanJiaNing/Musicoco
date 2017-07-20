@@ -71,7 +71,7 @@ final public class SongInfo implements MediaStore.Audio.AudioColumns {
 
     @Override
     public String toString() {
-        return "SongInfo{" +
+        return "DBSongInfo{" +
                 "title_key='" + title_key + '\'' +
                 ", artist_key='" + artist_key + '\'' +
                 ", album_key='" + album_key + '\'' +

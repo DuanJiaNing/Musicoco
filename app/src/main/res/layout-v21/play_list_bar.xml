@@ -13,6 +13,15 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <TextView
+                android:id="@+id/play_sheet"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/activity_default_margin"
+                android:gravity="center_vertical|start"
+                android:text="歌单："
+                android:textSize="@dimen/text_middle_s" />
+
             <ImageButton
                 android:id="@+id/play_location"
                 android:layout_width="wrap_content"
@@ -29,10 +38,10 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:id="@+id/play_list_hide_bar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/play_mode"
@@ -54,8 +63,6 @@
                 android:src="@drawable/ic_format_list_bulleted_black_24dp" />
 
             <ImageButton
-                android:scaleX="1.2"
-                android:scaleY="1.2"
                 android:id="@+id/play_favorite"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -63,8 +70,10 @@
                 android:background="@android:color/transparent"
                 android:gravity="center"
                 android:padding="@dimen/activity_default_padding_2x"
-                android:tint="@color/dark"
-                android:src="@drawable/ic_favorite" />
+                android:scaleX="1.2"
+                android:scaleY="1.2"
+                android:src="@drawable/ic_favorite"
+                android:tint="@color/dark" />
 
             <ImageButton
                 android:id="@+id/play_list_hide"
@@ -73,8 +82,8 @@
                 android:layout_weight="0.5"
                 android:background="?android:selectableItemBackground"
                 android:padding="@dimen/activity_default_padding_2x"
-                android:tint="@color/dark"
-                android:src="@drawable/ic_unfold_less" />
+                android:src="@drawable/ic_unfold_less"
+                android:tint="@color/dark" />
 
             <ImageButton
                 android:id="@+id/play_show_more"

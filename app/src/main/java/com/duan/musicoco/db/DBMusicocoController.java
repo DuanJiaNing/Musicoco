@@ -75,7 +75,7 @@ public class DBMusicocoController {
     }
 
     public boolean addSongToSheet(int sheetID, Song song) {
-        SongInfo info = getSongInfo(song);
+        DBSongInfo info = getSongInfo(song);
         if (info == null) {
             return false;
         }
@@ -120,82 +120,6 @@ public class DBMusicocoController {
         return addSongToSheet(sheet.id, song);
     }
 
-    public static class SongInfo {
-        public int id;
-        public String path;
-        public long lastPlayTime;
-        public int playTimes;
-        public String remark;
-        public long create;
-        public int[] sheets;
-        public boolean favorite;
-
-        public SongInfo() {
-        }
-
-        public SongInfo(String path, long lastPlayTime, int playTimes, String remark, long create, int[] sheets, boolean favorite) {
-            this.path = path;
-            this.lastPlayTime = lastPlayTime;
-            this.playTimes = playTimes;
-            this.remark = remark;
-            this.create = create;
-            this.sheets = sheets;
-            this.favorite = favorite;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            SongInfo info = (SongInfo) o;
-
-            return path.equals(info.path);
-
-        }
-
-        @Override
-        public int hashCode() {
-            return path.hashCode();
-        }
-    }
-
-    public static class Sheet {
-        public int id;
-        public String name;
-        public String remark;
-        public long create;
-        public int playTimes;
-        public int count;
-
-        public Sheet() {
-        }
-
-        public Sheet(String name, String remark, int count) {
-            this.name = name;
-            this.remark = remark;
-            this.count = count;
-            this.create = System.currentTimeMillis();
-            this.playTimes = 0;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            Sheet sheet = (Sheet) o;
-
-            return name.equals(sheet.name);
-
-        }
-
-        @Override
-        public int hashCode() {
-            return name.hashCode();
-        }
-    }
-
     /**
      * 在使用结束时应调用{@link #close()}关闭数据库连接
      */
@@ -216,11 +140,11 @@ public class DBMusicocoController {
     }
 
     @Nullable
-    public SongInfo getSongInfo(int songId) {
+    public DBSongInfo getSongInfo(int songId) {
         String sql = "select * from " + TABLE_SONG + " where " + SONG_ID + " = " + songId;
         Cursor cursor = database.rawQuery(sql, null);
 
-        SongInfo info = new SongInfo();
+        DBSongInfo info = new DBSongInfo();
         while (cursor.moveToNext()) {
             info.id = cursor.getInt(cursor.getColumnIndex(SONG_ID));
             info.path = cursor.getString(cursor.getColumnIndex(SONG_PATH));
@@ -247,13 +171,13 @@ public class DBMusicocoController {
     }
 
     @Nullable
-    public SongInfo getSongInfo(@NonNull Song song) {
+    public DBSongInfo getSongInfo(@NonNull Song song) {
         String sql = "select * from " + TABLE_SONG + " where " + SONG_PATH + " like '" + song.path + "'";
         Cursor cursor = database.rawQuery(sql, null);
 
-        SongInfo info = null;
+        DBSongInfo info = null;
         while (cursor.moveToNext()) {
-            info = new SongInfo();
+            info = new DBSongInfo();
 
             info.id = cursor.getInt(cursor.getColumnIndex(SONG_ID));
             info.path = cursor.getString(cursor.getColumnIndex(SONG_PATH));
@@ -278,13 +202,13 @@ public class DBMusicocoController {
         return info;
     }
 
-    public List<SongInfo> getSongInfos() {
+    public List<DBSongInfo> getSongInfos() {
         String sql = "select * from " + TABLE_SONG;
         Cursor cursor = database.rawQuery(sql, null);
 
-        List<SongInfo> infos = new ArrayList<>();
+        List<DBSongInfo> infos = new ArrayList<>();
         while (cursor.moveToNext()) {
-            SongInfo info = new SongInfo();
+            DBSongInfo info = new DBSongInfo();
             info.id = cursor.getInt(cursor.getColumnIndex(SONG_ID));
             info.path = cursor.getString(cursor.getColumnIndex(SONG_PATH));
 
@@ -310,15 +234,15 @@ public class DBMusicocoController {
         return infos;
     }
 
-    public List<SongInfo> getSongInfos(int sheetID) {
+    public List<DBSongInfo> getSongInfos(int sheetID) {
 
         String sql = "select * from " + TABLE_SONG;
         Cursor cursor = database.rawQuery(sql, null);
 
-        List<SongInfo> infos = new ArrayList<>();
+        List<DBSongInfo> infos = new ArrayList<>();
 
         while (cursor.moveToNext()) {
-            SongInfo info = new SongInfo();
+            DBSongInfo info = new DBSongInfo();
 
             String sh = cursor.getString(cursor.getColumnIndex(SONG_SHEETS));
             int[] shs = songSheetsStringToIntArray(sh);
@@ -458,7 +382,7 @@ public class DBMusicocoController {
     }
 
     public void updateSongPlayTimes(int songID) {
-        SongInfo info = getSongInfo(songID);
+        DBSongInfo info = getSongInfo(songID);
         if (info == null) {
             return;
         }
@@ -468,7 +392,7 @@ public class DBMusicocoController {
     }
 
     public void updateSongPlayTimes(@NonNull Song song) {
-        SongInfo info = getSongInfo(song);
+        DBSongInfo info = getSongInfo(song);
         if (info == null)
             return;
 
@@ -504,7 +428,7 @@ public class DBMusicocoController {
         updateSongPlayTimes(song);
         updateSongLastPlayTime(song);
 
-        SongInfo info = getSongInfo(song);
+        DBSongInfo info = getSongInfo(song);
         if (info != null) {
             Log.d(TAG, "addSongPlayTimes: song=" + info.path + " lastPlayTime=" + info.lastPlayTime + " times=" + info.playTimes);
         }
@@ -656,33 +580,8 @@ public class DBMusicocoController {
 
     }
 
-
-    private TreeSet<DBMusicocoController.SongInfo> treeSet = new TreeSet<>(new Comparator<SongInfo>() {
-        @Override
-        public int compare(DBMusicocoController.SongInfo o1, DBMusicocoController.SongInfo o2) {
-            int rs = 0;
-            if (o1.lastPlayTime > o2.lastPlayTime) {
-                rs = -1;
-            } else if (o1.lastPlayTime < o2.lastPlayTime) {
-                rs = 1;
-            }
-            return rs;
-        }
-    });
-
-    /**
-     * 按最后播放时间降序排序
-     */
-    public TreeSet<SongInfo> descSortByLastPlayTime(List<SongInfo> list) {
-        treeSet.clear();
-        for (DBMusicocoController.SongInfo s : list) {
-            treeSet.add(s);
-        }
-        return treeSet;
-    }
-
     public boolean removeSong(Song song) {
-        SongInfo info = getSongInfo(song);
+        DBSongInfo info = getSongInfo(song);
         boolean r = false;
 
         if (info != null) {

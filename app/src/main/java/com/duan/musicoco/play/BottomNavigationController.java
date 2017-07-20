@@ -18,6 +18,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -27,12 +28,16 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
+import com.duan.musicoco.db.DBSongInfo;
+import com.duan.musicoco.db.MainSheetHelper;
+import com.duan.musicoco.db.Sheet;
 import com.duan.musicoco.shared.DialogProvider;
 import com.duan.musicoco.shared.ExceptionHandler;
 import com.duan.musicoco.app.manager.MediaManager;
@@ -389,6 +394,7 @@ public class BottomNavigationController implements
     @Override
     public void update(Object obj, OnUpdateStatusChanged completed) {
         playListAdapter.update(obj, completed);
+        listOption.update(obj, completed);
     }
 
     public void updatePlayMode() {
@@ -410,7 +416,7 @@ public class BottomNavigationController implements
         try {
             Song song = control.currentSong();
             if (song != null) {
-                DBMusicocoController.SongInfo info = dbMusicoco.getSongInfo(song);
+                DBSongInfo info = dbMusicoco.getSongInfo(song);
                 boolean isFavorite = info != null && info.favorite;
                 if (isFavorite) {
                     songOption.updateCurrentFavorite(song, true, true);
@@ -471,18 +477,21 @@ public class BottomNavigationController implements
     private class ListOption implements
             View.OnClickListener,
             OnViewVisibilityChange,
-            OnThemeChange {
+            OnThemeChange,
+            OnContentUpdate {
 
         private ViewGroup container;
-        private ImageButton location;
+        private ImageButton mLocation;
+        private TextView mSheet;
 
         public ListOption(Activity activity) {
 
             container = (ViewGroup) activity.findViewById(R.id.play_list_show_bar);
-            location = (ImageButton) activity.findViewById(R.id.play_location);
+            mLocation = (ImageButton) activity.findViewById(R.id.play_location);
+            mSheet = (TextView) activity.findViewById(R.id.play_sheet);
 
             container.setOnClickListener(this);
-            location.setOnClickListener(this);
+            mLocation.setOnClickListener(this);
         }
 
         @Override
@@ -507,6 +516,23 @@ public class BottomNavigationController implements
             }
         }
 
+        private void updateCurrentSheet() {
+            try {
+                int id = control.getPlayListId();
+                if (id < 0) {
+                    String name = MainSheetHelper.getMainSheetName(activity, id);
+                    mSheet.setText(name);
+                } else {
+                    Sheet sheet = dbMusicoco.getSheet(id);
+                    String name = "歌单：" + sheet.name + " (" + sheet.count + ")";
+                    mSheet.setText(name);
+                }
+
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+
         @Override
         public void show() {
             container.setVisibility(View.VISIBLE);
@@ -520,14 +546,21 @@ public class BottomNavigationController implements
 
         public void updateColors() {
 
+            mSheet.setTextColor(currentDrawableColor);
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                location.getDrawable().setTint(currentDrawableColor);
+                mLocation.getDrawable().setTint(currentDrawableColor);
             }
         }
 
         @Override
         public void themeChange(Theme theme, int[] colors) {
 
+        }
+
+        @Override
+        public void update(Object obj, OnUpdateStatusChanged statusChanged) {
+            updateCurrentSheet();
         }
     }
 
@@ -628,7 +661,6 @@ public class BottomNavigationController implements
         private void removeFromPlayList(Song song) {
             try {
                 control.remove(song);
-                BroadcastManager.sendMyBroadcast(activity, BroadcastManager.REFRESH_PLAY_ACTIVITY_DATA);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
@@ -676,11 +708,11 @@ public class BottomNavigationController implements
             String[] names;
             String[] counts;
 
-            List<DBMusicocoController.Sheet> sheets = dbMusicoco.getSheets();
+            List<Sheet> sheets = dbMusicoco.getSheets();
             names = new String[sheets.size() + 1];
             counts = new String[sheets.size() + 1];
             for (int i = 0; i < sheets.size(); i++) {
-                DBMusicocoController.Sheet s = sheets.get(i);
+                Sheet s = sheets.get(i);
                 names[i] = s.name;
                 counts[i] = s.count + "首";
             }
@@ -738,7 +770,7 @@ public class BottomNavigationController implements
                     try {
                         Song song = control.currentSong();
                         if (song != null) {
-                            DBMusicocoController.SongInfo info = dbMusicoco.getSongInfo(song);
+                            DBSongInfo info = dbMusicoco.getSongInfo(song);
                             boolean isFavorite = info.favorite;
                             updateCurrentFavorite(song, !isFavorite, true);
                         }
@@ -883,6 +915,8 @@ public class BottomNavigationController implements
             }
 
             dbMusicoco.updateSongFavorite(song, favorite);
+            //广播通知 MainActivity 更新 MainSheetsController
+            BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MAIN_SHEET_CHANGED);
         }
 
         private void startFavoriteSwitchAnim(int colorFrom, int colorTo) {

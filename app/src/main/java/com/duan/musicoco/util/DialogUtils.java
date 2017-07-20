@@ -132,7 +132,7 @@ public class DialogUtils {
                 } else {
                     String msg = activity.getString(R.string.success_create_sheet) + "[" + name + "]";
                     ToastUtils.showShortToast(activity, msg);
-                    BroadcastManager.sendMyBroadcast(activity, BroadcastManager.REFRESH_MAIN_ACTIVITY_DATA);
+                    BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED);
                     dialog.dismiss();
                 }
             }

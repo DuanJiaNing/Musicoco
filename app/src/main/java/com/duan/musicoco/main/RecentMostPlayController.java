@@ -21,6 +21,7 @@ import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.db.DBMusicocoController;
+import com.duan.musicoco.db.DBSongInfo;
 import com.duan.musicoco.image.BitmapBuilder;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.util.BitmapUtils;
@@ -155,11 +156,11 @@ public class RecentMostPlayController implements
             @Override
             public void call(Subscriber<? super Data> subscriber) {
 
-                List<DBMusicocoController.SongInfo> list = dbMusicoco.getSongInfos();
+                List<DBSongInfo> list = dbMusicoco.getSongInfos();
                 int maxPlayTime = 0;
                 String path = "";
                 String remark = "";
-                for (DBMusicocoController.SongInfo s : list) {
+                for (DBSongInfo s : list) {
                     int time = s.playTimes;
                     if (time > maxPlayTime) {
                         maxPlayTime = time;

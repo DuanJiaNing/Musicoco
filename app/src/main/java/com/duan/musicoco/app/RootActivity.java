@@ -15,6 +15,7 @@ import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.manager.PermissionManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.AppPreference;
+import com.duan.musicoco.preference.PlayPreference;
 
 /**
  * Created by DuanJiaNing on 2017/3/21.
@@ -27,12 +28,14 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
 
     protected MediaManager mediaManager;
     protected final AppPreference appPreference;
+    protected final PlayPreference playPreference;
     protected DBMusicocoController dbMusicoco;
 
     private boolean isGranted = false;
 
     public RootActivity() {
         appPreference = new AppPreference(this);
+        playPreference = new PlayPreference(this);
     }
 
     @Override

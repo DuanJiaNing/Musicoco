@@ -13,9 +13,7 @@ public abstract class SubscriberAbstract<T> extends Subscriber<T> {
     private OnUpdateStatusChanged statusChanged = null;
 
     public SubscriberAbstract(@Nullable OnUpdateStatusChanged statusChanged) {
-        if (statusChanged != null) {
-            this.statusChanged = statusChanged;
-        }
+        this.statusChanged = statusChanged;
     }
 
     @Override

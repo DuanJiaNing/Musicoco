@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.service.PlayController;
 
 import static android.content.Context.MODE_WORLD_READABLE;
@@ -116,7 +117,7 @@ public class PlayPreference {
      */
     public int getSheetID() {
         check();
-        return preferences.getInt(KEY_SHEET, 0);
+        return preferences.getInt(KEY_SHEET, MainSheetHelper.SHEET_ALL);
     }
 
     public static class CurrentSong {
