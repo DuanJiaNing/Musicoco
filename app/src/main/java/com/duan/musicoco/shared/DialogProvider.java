@@ -102,7 +102,7 @@ public class DialogProvider {
         this.context = context;
 
         buttonTextSize = context.getResources().getDimensionPixelSize(R.dimen.text_dialog_button);
-        buttonPadding = context.getResources().getDimensionPixelSize(R.dimen.activity_default_padding_l);
+        buttonPadding = context.getResources().getDimensionPixelSize(R.dimen.dialog_padding);
 
         rootView = LayoutInflater.from(context).inflate(R.layout.dialog, null);
         mFirstOuter = (LinearLayout) rootView.findViewById(R.id.dialog_layout_outermost);
@@ -152,7 +152,7 @@ public class DialogProvider {
 
         mNeuterButton.setEnabled(true);
         mNeuterButton.setTextSize(buttonTextSize);
-        mNeuterButton.setPadding(buttonPadding, buttonPadding, buttonPadding, buttonPadding);
+        mNeuterButton.setPadding(buttonPadding + 1, buttonPadding, buttonPadding + 1, buttonPadding);
         mNeuterButton.setText(text);
         mNeuterButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,7 +175,7 @@ public class DialogProvider {
 
         mNegativeButton.setEnabled(true);
         mNegativeButton.setTextSize(buttonTextSize);
-        mNegativeButton.setPadding(buttonPadding, buttonPadding, buttonPadding, buttonPadding);
+        mNegativeButton.setPadding(buttonPadding + 1, buttonPadding, buttonPadding + 1, buttonPadding);
         mNegativeButton.setText(text);
         mNegativeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -198,7 +198,7 @@ public class DialogProvider {
 
         mPositiveButton.setEnabled(true);
         mPositiveButton.setTextSize(buttonTextSize);
-        mPositiveButton.setPadding(buttonPadding, buttonPadding, buttonPadding, buttonPadding);
+        mPositiveButton.setPadding(buttonPadding + 1, buttonPadding, buttonPadding + 1, buttonPadding);
         mPositiveButton.setText(text);
         mPositiveButton.setOnClickListener(new View.OnClickListener() {
             @Override

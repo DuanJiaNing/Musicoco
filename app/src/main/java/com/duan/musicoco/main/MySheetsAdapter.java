@@ -1,14 +1,17 @@
 package com.duan.musicoco.main;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.RemoteException;
+import android.test.MoreAsserts;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -26,6 +29,9 @@ import com.duan.musicoco.db.DBSongInfo;
 import com.duan.musicoco.db.Sheet;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
+import com.duan.musicoco.shared.DialogProvider;
+import com.duan.musicoco.shared.OptionsAdapter;
+import com.duan.musicoco.shared.OptionsDialog;
 import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ToastUtils;
@@ -45,9 +51,11 @@ import rx.schedulers.Schedulers;
  */
 
 public class MySheetsAdapter extends BaseAdapter implements
-        OnThemeChange {
+        OnThemeChange,
+        AdapterView.OnItemClickListener,
+        PlayView.OnCheckedChangeListener {
 
-    private Context context;
+    private Activity activity;
     private List<Sheet> sheets;
     private DBMusicocoController dbMusicoco;
     private MediaManager mediaManager;
@@ -55,52 +63,42 @@ public class MySheetsAdapter extends BaseAdapter implements
     private int colorMain;
     private int colorVic;
     private int colorMainB;
+    private final OptionsDialog mDialog;
+    private OptionsAdapter moreOptionsAdapter;
 
     private Bitmap defaultBitmap;
 
     private View.OnClickListener moreClickListener;
-    private PlayView.OnCheckedChangeListener playCheckChangeListener;
     private IPlayControl control;
 
-    public MySheetsAdapter(final Context context, List<Sheet> sheets, DBMusicocoController dbMusicoco, MediaManager mediaManager, final IPlayControl control) {
-        this.context = context;
+    public MySheetsAdapter(final Activity activity, List<Sheet> sheets, DBMusicocoController dbMusicoco, MediaManager mediaManager, final IPlayControl control) {
+        this.activity = activity;
         this.sheets = sheets;
         this.control = control;
         this.dbMusicoco = dbMusicoco;
         this.mediaManager = mediaManager;
+        this.mDialog = new OptionsDialog(activity);
+
+        mDialog.setOnItemClickListener(this);
+        moreOptionsAdapter = new OptionsAdapter(activity, getIconsID(), getTexts(), null);
+        mDialog.setAdapter(moreOptionsAdapter);
 
         moreClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Sheet sheet = (Sheet) v.getTag();
-                Toast.makeText(context, "OnClickListener sheet more " + sheet.name, Toast.LENGTH_SHORT).show();
+
             }
         };
 
-        playCheckChangeListener = new PlayView.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(PlayView view, boolean checked) {
+    }
 
-                Sheet sheet = (Sheet) view.getTag();
-                IPlayControl con = MySheetsAdapter.this.control;
-                DBMusicocoController db = MySheetsAdapter.this.dbMusicoco;
+    private String[] getTexts() {
+        return new String[0];
+    }
 
-                try {
-
-                    int sheetID = con.getPlayListId();
-                    if (checked && sheet.id != sheetID) { // 播放状态且当前播放歌单不是目标歌单
-                        changePlayList(sheet);
-                    } else if (checked && sheet.id == sheetID) { //播放状态且当前歌单是目标歌单
-                        con.resume();
-                    } else if (!checked) { // 停止播放
-                        con.pause();
-                    }
-                    notifyDataSetChanged();
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
+    private int[] getIconsID() {
+        return new int[0];
     }
 
     private void changePlayList(Sheet sheet) throws RemoteException {
@@ -115,7 +113,7 @@ public class MySheetsAdapter extends BaseAdapter implements
             control.setPlayList(songs, 0, sheet.id);
             control.playByIndex(0);
         } else {
-            ToastUtils.showShortToast(context, context.getString(R.string.error_empty_sheet));
+            ToastUtils.showShortToast(activity, activity.getString(R.string.error_empty_sheet));
         }
     }
 
@@ -138,7 +136,7 @@ public class MySheetsAdapter extends BaseAdapter implements
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.my_sheet_list_item, null);
+            convertView = LayoutInflater.from(activity).inflate(R.layout.my_sheet_list_item, null);
             holder = new ViewHolder();
             holder.image = (ImageView) convertView.findViewById(R.id.sheets_item_image);
             holder.play = (PlayView) convertView.findViewById(R.id.sheets_item_play);
@@ -149,7 +147,7 @@ public class MySheetsAdapter extends BaseAdapter implements
             holder.more = (ImageButton) convertView.findViewById(R.id.sheets_item_more);
 
             if (defaultBitmap == null) {
-                defaultBitmap = BitmapUtils.bitmapResizeFromResource(context.getResources(), R.drawable.default_sheet, holder.image.getWidth(), holder.image.getHeight());
+                defaultBitmap = BitmapUtils.bitmapResizeFromResource(activity.getResources(), R.drawable.default_sheet, holder.image.getWidth(), holder.image.getHeight());
 
             }
             convertView.setTag(holder);
@@ -174,7 +172,7 @@ public class MySheetsAdapter extends BaseAdapter implements
         holder.play.setTag(sheet);
         holder.play.setTriangleColor(colorMainB);
         holder.play.setPauseLineColor(colorMainB);
-        holder.play.setOnCheckedChangeListener(playCheckChangeListener);
+        holder.play.setOnCheckedChangeListener(this);
 
         try {
             if (control.getPlayListId() == sheet.id &&
@@ -253,6 +251,31 @@ public class MySheetsAdapter extends BaseAdapter implements
         colorMainB = colors[2];
 
         notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+    }
+
+    @Override
+    public void onCheckedChanged(PlayView view, boolean checked) {
+        Sheet sheet = (Sheet) view.getTag();
+
+        try {
+
+            int sheetID = control.getPlayListId();
+            if (checked && sheet.id != sheetID) { // 播放状态且当前播放歌单不是目标歌单
+                changePlayList(sheet);
+            } else if (checked && sheet.id == sheetID) { //播放状态且当前歌单是目标歌单
+                control.resume();
+            } else if (!checked) { // 停止播放
+                control.pause();
+            }
+            notifyDataSetChanged();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     private class ViewHolder {

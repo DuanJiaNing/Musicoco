@@ -25,45 +25,39 @@
                 android:layout_marginTop="40dp"
                 android:src="@drawable/default_album" />
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="@dimen/activity_default_margin"
+                android:layout_marginRight="@dimen/activity_default_margin"
                 android:layout_marginTop="10dp">
 
                 <TextView
                     android:marqueeRepeatLimit="marquee_forever"
                     android:ellipsize="marquee"
                     android:lines="1"
+                    android:text="sdffdsdsf"
+                    android:textSize="@dimen/text_middle_l"
                     android:id="@+id/song_detail_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_toLeftOf="@+id/song_detail_ns_line"
-                    android:layout_toStartOf="@+id/song_detail_ns_line"
                     android:gravity="center" />
 
-                <View
-                    android:id="@+id/song_detail_ns_line"
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:layout_centerInParent="true"
-                    android:layout_margin="@dimen/activity_default_margin_s"
-                    android:background="#6c6c6c" />
-
                 <TextView
+                    android:layout_marginTop="10dp"
+                    android:textSize="@dimen/text_middle_s"
+                    android:text="dsfdaf"
                     android:marqueeRepeatLimit="marquee_forever"
                     android:ellipsize="marquee"
                     android:lines="1"
                     android:id="@+id/song_detail_arts"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_toEndOf="@+id/song_detail_ns_line"
-                    android:layout_toRightOf="@+id/song_detail_ns_line"
+                    android:paddingRight="@dimen/activity_default_padding"
+                    android:paddingLeft="@dimen/play_album_padding"
                     android:gravity="center" />
-            </RelativeLayout>
+            </LinearLayout>
 
             <View
                 android:id="@+id/song_detail_ni_line"

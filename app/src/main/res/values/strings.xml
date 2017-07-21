@@ -31,15 +31,20 @@
     <string name="my_sheet_title">创建的歌单</string>
     <string name="my_sheet_click_here_for_new_sheet">点击这里创建歌单</string>
 
-    <string name="song_collection_sheet">收藏到歌单</string>
-    <string name="song_detail">歌曲详情</string>
-    <string name="remove_song_from_play_list">从歌单中移除歌曲</string>
-    <string name="delete_song">彻底删除歌曲</string>
+    <string name="song_operation_collection_sheet">收藏到歌单</string>
+    <string name="song_operation_detail">歌曲详情</string>
+    <string name="song_operation_remove_from_play_list">从歌单中移除歌曲</string>
+    <string name="song_operation_delete">彻底删除歌曲</string>
 
     <string name="new_sheet">新建歌单</string>
-    <string name="new_sheet_input_name">输入歌单名</string>
-    <string name="new_sheet_input_remark">输入备注信息</string>
-    <string name="new_sheet_input_message">输入歌单名和备注，备注可以为空</string>
+    <string name="sheet_name">歌单名</string>
+    <string name="sheet_remark">描述</string>
+    <string name="new_sheet_input_message">输入歌单名和描述，描述可以为空</string>
+
+    <string name="sheet_operation_modify">编辑歌单信息</string>
+    <string name="sheet_operation_delete">删除</string>
+
+    <string name="modify_sheet">编辑歌单</string>
 
     <string name="error_song_is_already_in_sheet">歌曲已在歌单中 :(</string>
     <string name="error_text_count_out_of_limit">字数超出限制啦 :(</string>
@@ -48,13 +53,15 @@
     <string name="error_delete_file_fail">文件删除失败 :(</string>
     <string name="error_no_album_image">没有专辑图片 :(</string>
     <string name="error_empty_sheet">歌单是空的 :(</string>
+    <string name="error_non_sheet_existent">歌单不存在 :(</string>
 
-    <string name="success_create_sheet">成功创建歌单 :)</string>
+    <string name="success_create_sheet">创建歌单 :)</string>
+    <string name="success_modify_sheet">歌单信息已修改 :)</string>
     <string name="success_add_to_sheet">成功添加到歌单 :)</string>
     <string name="success_delete_file">成功删除文件 :)</string>
 
     <string name="warning">警告</string>
+    <string name="not_modify">未修改</string>
     <string name="delete_confirm">确认删除</string>
-    <string name="title_activity_main2">Main2Activity</string>
 
 </resources>

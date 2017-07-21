@@ -81,6 +81,12 @@ public class DBMusicocoController {
         }
 
         int[] sheets = info.sheets;
+        for (int i : sheets) {
+            if (sheetID == i) {
+                return false;
+            }
+        }
+
         String ss = songSheetsIntArrayToString(sheets) + sheetID + " ";
 
         ContentValues values = new ContentValues();
@@ -682,4 +688,33 @@ public class DBMusicocoController {
     }
 
 
+    public String updateSheet(int sheetID, String newName, String newRemark) {
+
+        if (TextUtils.isEmpty(newName)) {
+            return context.getString(R.string.error_name_required);
+        }
+
+        Sheet sheet = getSheet(sheetID);
+        if (sheet == null) {
+            return context.getString(R.string.error_non_sheet_existent);
+        }
+
+        List<Sheet> list = getSheets();
+        for (Sheet s : list) {
+            if (s.id != sheetID && s.name.equals(newName)) {
+                return context.getString(R.string.error_sheet_already_exits);
+            }
+        }
+
+        newRemark = TextUtils.isEmpty(newRemark) ? "" : newRemark;
+
+        ContentValues values = new ContentValues();
+        values.put(SHEET_NAME, newName);
+        values.put(SHEET_REMARK, newRemark);
+        String whereClause = SHEET_ID + " = ?";
+        String[] whereArgs = {sheetID + ""};
+        database.update(TABLE_SHEET, values, whereClause, whereArgs);
+        Log.i(TAG, "updateSheet: " + sheet.name + " " + newName + " " + newRemark);
+        return null;
+    }
 }

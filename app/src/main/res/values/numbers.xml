@@ -10,5 +10,6 @@
 
     <integer name="sheet_name_text_limit">13</integer>
     <integer name="sheet_remark_text_limit">50</integer>
+    <integer name="sheet_remark_input_max_lines">5</integer>
 
 </resources>

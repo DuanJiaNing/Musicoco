@@ -48,7 +48,7 @@ import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.shared.PlayListAdapter;
-import com.duan.musicoco.shared.SongController;
+import com.duan.musicoco.shared.SongOperation;
 import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.shared.OptionsDialog;
 import com.duan.musicoco.util.ToastUtils;
@@ -90,7 +90,7 @@ public class BottomNavigationController implements
     private ListOption listOption;
     private SongOption songOption;
     private int currentDrawableColor;
-    private SongController songController;
+    private SongOperation songOperation;
 
     public BottomNavigationController(Activity activity, DBMusicocoController dbMusicoco, MediaManager mediaManager) {
         this.activity = activity;
@@ -128,14 +128,14 @@ public class BottomNavigationController implements
     public void initData(IPlayControl control) {
         this.control = control;
         songOption.initData();
-        songController = new SongController(activity, control, dbMusicoco);
+        songOperation = new SongOperation(activity, control, dbMusicoco);
 
         if (playListAdapter == null) {
             playListAdapter = new PlayListAdapter(
                     activity,
                     control,
                     dbMusicoco,
-                    songController);
+                    songOperation);
             mPlayList.setAdapter(playListAdapter);
         }
 
@@ -562,7 +562,8 @@ public class BottomNavigationController implements
     private class SongOption implements
             View.OnClickListener,
             OnViewVisibilityChange,
-            OnThemeChange {
+            OnThemeChange,
+            AdapterView.OnItemClickListener {
 
         private ViewGroup container;
         private final OptionsDialog mDialog;
@@ -592,34 +593,7 @@ public class BottomNavigationController implements
             playShowMore.setOnClickListener(this);
 
             this.mDialog = new OptionsDialog(activity);
-            mDialog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    final SongInfo info = mDialog.getSong();
-                    final Song song = new Song(info.getData());
-                    if (info != null) {
-                        switch (position) {
-                            case 0:
-                                songController.handleCollectToSheet(info);
-                                break;
-                            case 1:
-                                songController.checkSongDetail(info);
-                                break;
-                            case 2: //从歌单中移除
-                                songController.removeSongFromSheet(song);
-                                break;
-                            case 3: {//彻底删除
-                                songController.deleteSongFromDisk(song);
-                                break;
-                            }
-                            default:
-                                break;
-                        }
-                    }
-                    mDialog.hide();
-                }
-            });
-
+            mDialog.setOnItemClickListener(this);
         }
 
         @Override
@@ -869,6 +843,32 @@ public class BottomNavigationController implements
             ids[3] = R.drawable.ic_delete_forever_black_24dp;
 
             return ids;
+        }
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            final SongInfo info = mDialog.getSong();
+            final Song song = new Song(info.getData());
+            if (info != null) {
+                switch (position) {
+                    case 0:
+                        songOperation.handleCollectToSheet(info);
+                        break;
+                    case 1:
+                        songOperation.checkSongDetail(info);
+                        break;
+                    case 2: //从歌单中移除
+                        songOperation.removeSongFromSheet(song);
+                        break;
+                    case 3: {//彻底删除
+                        songOperation.deleteSongFromDisk(song);
+                        break;
+                    }
+                    default:
+                        break;
+                }
+            }
+            mDialog.hide();
         }
     }
 }

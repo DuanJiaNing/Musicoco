@@ -1,9 +1,12 @@
 package com.duan.musicoco.main;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Build;
 import android.support.v4.widget.NestedScrollView;
+import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -15,12 +18,17 @@ import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
+import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.Sheet;
 import com.duan.musicoco.preference.Theme;
+import com.duan.musicoco.shared.DialogProvider;
+import com.duan.musicoco.shared.MySheetsOperation;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.DialogUtils;
+import com.duan.musicoco.util.ToastUtils;
+import com.duan.musicoco.view.TextInputHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +56,7 @@ public class MySheetsController implements
     private MySheetsAdapter adapter;
     private List<Sheet> sheets;
     private IPlayControl control;
+    private MySheetsOperation mySheetsOperation;
 
     private boolean hasInitData = false;
 
@@ -76,6 +85,8 @@ public class MySheetsController implements
         mListView.setAdapter(adapter);
         ((NestedScrollView) activity.findViewById(R.id.main_scroll)).smoothScrollTo(0, 0);
 
+        mySheetsOperation = new MySheetsOperation(activity, control, dbMusicoco);
+
         hasInitData = true;
     }
 
@@ -84,10 +95,10 @@ public class MySheetsController implements
 
         switch (v.getId()) {
             case R.id.my_sheet_add:
-                DialogUtils.showAddSheetDialog(activity, dbMusicoco);
+                mySheetsOperation.handleAddSheet();
                 break;
             case R.id.sheet_empty_add:
-                DialogUtils.showAddSheetDialog(activity, dbMusicoco);
+                mySheetsOperation.handleAddSheet();
                 break;
         }
     }
@@ -156,4 +167,5 @@ public class MySheetsController implements
     public boolean hasInitData() {
         return hasInitData;
     }
+
 }

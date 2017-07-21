@@ -47,25 +47,25 @@ public class PlayListAdapter extends BaseAdapter implements
     private View.OnClickListener itemClickListener;
 
     private final MediaManager mediaManager;
-    private SongController songController;
+    private SongOperation songOperation;
 
     private int colorMain;
     private int colorVic;
 
     public PlayListAdapter(final Context context, final IPlayControl control,
                            final DBMusicocoController dbMusicocoController,
-                           final SongController songController) {
+                           final SongOperation songOperation) {
         this.context = context;
         this.control = control;
         this.dbController = dbMusicocoController;
-        this.songController = songController;
+        this.songOperation = songOperation;
         this.mediaManager = MediaManager.getInstance(context);
 
         this.removeClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Song s = new Song((String) v.getTag(R.id.play_list_item_remove_path));
-                PlayListAdapter.this.songController.removeSongFromSheet(s);
+                PlayListAdapter.this.songOperation.removeSongFromSheet(s);
             }
         };
 

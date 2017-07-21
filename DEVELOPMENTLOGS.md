@@ -194,4 +194,8 @@
 4 使服务器在移除歌曲时也回调 onPlayListChanged<br>
 5 添加 SongController，抽离对歌曲的操作<br>
 6 修复歌曲移除时 UI 同步问题<br>
-7 DBMusicocoController
+
+- 2017-07-21
+
+1 添加 MySheetOperation <br>
+2 向 DBMusicocoController 中添加 updateSheet 方法<br>

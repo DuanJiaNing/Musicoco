@@ -17,7 +17,6 @@ import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.Sheet;
-import com.duan.musicoco.util.DialogUtils;
 import com.duan.musicoco.util.FileUtils;
 import com.duan.musicoco.util.ToastUtils;
 
@@ -29,13 +28,13 @@ import java.util.Map;
  * Created by DuanJiaNing on 2017/7/20.
  */
 
-public class SongController {
+public class SongOperation {
 
     private Activity activity;
     private IPlayControl control;
     private DBMusicocoController dbMusicoco;
 
-    public SongController(Activity activity, IPlayControl control, DBMusicocoController dbMusicoco) {
+    public SongOperation(Activity activity, IPlayControl control, DBMusicocoController dbMusicoco) {
         this.activity = activity;
         this.control = control;
         this.dbMusicoco = dbMusicoco;
@@ -72,7 +71,7 @@ public class SongController {
         adapter.setPaddingLeft(30);
         listView.setAdapter(adapter);
         final AlertDialog dialog = manager.createCustomInsiderDialog(
-                activity.getString(R.string.song_collection_sheet),
+                activity.getString(R.string.song_operation_collection_sheet),
                 "歌曲：" + info.getTitle(),
                 listView
         );
@@ -81,12 +80,12 @@ public class SongController {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == (res.get(0).length - 1)) {
-                    DialogUtils.showAddSheetDialog(activity, dbMusicoco);
+                    new MySheetsOperation(activity, control, dbMusicoco).handleAddSheet();
                 } else {
                     String sheetName = res.get(0)[position];
                     Song song = new Song(info.getData());
                     if (dbMusicoco.addSongToSheet(sheetName, song)) {
-                        String msg = activity.getString(R.string.success_add_to_sheet) + "[" + sheetName + "]";
+                        String msg = activity.getString(R.string.success_add_to_sheet) + " [" + sheetName + "]";
                         ToastUtils.showShortToast(activity, msg);
                     } else {
                         ToastUtils.showShortToast(activity, activity.getString(R.string.error_song_is_already_in_sheet));

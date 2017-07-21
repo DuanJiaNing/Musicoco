@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/my_sheet_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="@dimen/activity_default_margin_s_s"
-    android:id="@+id/my_sheet_container"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -12,33 +12,30 @@
         android:gravity="center_vertical">
 
         <View
-            android:layout_centerInParent="true"
             android:id="@+id/my_sheet_line"
             android:layout_width="1dp"
             android:layout_height="15dp"
+            android:layout_centerInParent="true"
             android:background="@color/dark" />
 
         <TextView
-            android:layout_toLeftOf="@id/my_sheet_line"
             android:id="@+id/my_sheet_title"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center_vertical|start"
             android:layout_marginRight="@dimen/activity_default_margin"
+            android:layout_toLeftOf="@id/my_sheet_line"
+            android:gravity="center_vertical|start"
             android:text="@string/my_sheet_title"
             android:textSize="@dimen/text_small"
             android:textStyle="bold" />
 
         <ImageButton
+            android:id="@+id/my_sheet_add"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/activity_default_margin"
             android:layout_toRightOf="@id/my_sheet_line"
-            android:scaleX="0.8"
-            android:scaleY="0.8"
-            android:scaleType="fitStart"
-            android:id="@+id/my_sheet_add"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?android:selectableItemBackground"
+            android:background="?android:selectableItemBackgroundBorderless"
             android:src="@drawable/ic_action_add" />
     </RelativeLayout>
 

@@ -42,7 +42,7 @@ import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.service.PlayServiceCallback;
-import com.duan.musicoco.shared.SongController;
+import com.duan.musicoco.shared.SongOperation;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.shared.PeriodicTask;
@@ -188,7 +188,7 @@ public class BottomNavigationController implements
                 activity,
                 mControl,
                 dbMusicocoController,
-                new SongController(activity, mControl, dbMusicocoController));
+                new SongOperation(activity, mControl, dbMusicocoController));
         mList.setAdapter(adapter);
 
         Theme theme = appPreference.getTheme();

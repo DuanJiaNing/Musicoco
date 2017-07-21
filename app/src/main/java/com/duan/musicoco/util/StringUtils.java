@@ -49,4 +49,9 @@ public class StringUtils {
         return format.format(new Date(time));
     }
 
+    public static String getGenDateYMD(long time) {
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        return format.format(new Date(time));
+    }
+
 }

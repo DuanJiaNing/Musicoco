@@ -23,7 +23,6 @@
         android:orientation="vertical">
 
         <TextView
-            android:text="fasd"
             android:textStyle="bold"
             android:id="@+id/dialog_title"
             android:layout_width="match_parent"
@@ -41,7 +40,6 @@
             android:layout_below="@+id/dialog_title" />
 
         <TextView
-            android:text="fsad"
             android:textSize="@dimen/text_middle"
             android:id="@+id/dialog_message"
             android:layout_width="match_parent"

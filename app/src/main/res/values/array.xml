@@ -2,10 +2,10 @@
 <resources>
 
     <string-array name="song_options_titles">
-        <item>@string/song_collection_sheet</item>
-        <item>@string/song_detail</item>
-        <item>@string/remove_song_from_play_list</item>
-        <item>@string/delete_song</item>
+        <item>@string/song_operation_collection_sheet</item>
+        <item>@string/song_operation_detail</item>
+        <item>@string/song_operation_remove_from_play_list</item>
+        <item>@string/song_operation_delete</item>
     </string-array>
 
 </resources>

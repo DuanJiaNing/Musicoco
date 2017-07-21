@@ -41,9 +41,8 @@ public class SongDetailActivity extends AppCompatActivity implements View.OnClic
     private FloatingActionButton mSaveImage;
     private ImageView mImage;
     private TextView mName;
-    private View mNsLine;
     private TextView mArts;
-    private View mNiLine;
+    private View mLine;
     private TextView mInfos;
     private View container;
 
@@ -116,8 +115,8 @@ public class SongDetailActivity extends AppCompatActivity implements View.OnClic
             Sheet s = dbMusicocoController.getSheet(ss[i]);
             if (s != null) {
                 sheets.append(s.name);
-                if (i != ss.length - 2) {
-                    sheets.append("，");
+                if (i != ss.length - 1) {
+                    sheets.append("、");
                 }
             }
         }
@@ -170,8 +169,7 @@ public class SongDetailActivity extends AppCompatActivity implements View.OnClic
                 new int[]{mainBC, vicBC});
         container.setBackground(dm);
 
-        mNiLine.setBackgroundColor(vicTC);
-        mNsLine.setBackgroundColor(mainTC);
+        mLine.setBackgroundColor(vicTC);
         mClose.getDrawable().setTint(mainTC);
 
         mSaveImage.setBackgroundTintList(ColorStateList.valueOf(mainBC));
@@ -193,9 +191,8 @@ public class SongDetailActivity extends AppCompatActivity implements View.OnClic
 
         mImage = (ImageView) findViewById(R.id.song_detail_image);
         mName = (TextView) findViewById(R.id.song_detail_name);
-        mNsLine = findViewById(R.id.song_detail_ns_line);
         mArts = (TextView) findViewById(R.id.song_detail_arts);
-        mNiLine = findViewById(R.id.song_detail_ni_line);
+        mLine = findViewById(R.id.song_detail_ni_line);
         mInfos = (TextView) findViewById(R.id.song_detail_infos);
 
         mImage.setOnClickListener(this);

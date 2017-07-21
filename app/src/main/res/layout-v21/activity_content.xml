@@ -35,7 +35,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/l001">
 
-                    <include layout="@layout/play_sheets" />
+                    <include layout="@layout/main_my_sheets" />
 
                 </LinearLayout>
 

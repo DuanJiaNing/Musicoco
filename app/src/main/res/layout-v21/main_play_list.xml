@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="200dp"
     android:layout_marginLeft="@dimen/activity_default_margin_s_s"
-    android:layout_marginRight="@dimen/activity_default_margin_s_s"
     android:background="#fff"
     android:orientation="vertical">
 
@@ -31,7 +30,7 @@
             android:layout_alignParentRight="true"
             android:background="?android:selectableItemBackground"
             android:gravity="center_vertical"
-            android:paddingLeft="@dimen/activity_default_padding_l_l"
+            android:paddingLeft="@dimen/activity_default_margin"
             android:paddingRight="@dimen/activity_default_margin" />
 
         <ImageButton
@@ -43,8 +42,8 @@
             android:layout_height="match_parent"
             android:background="?android:selectableItemBackground"
             android:gravity="center_vertical"
-            android:paddingLeft="@dimen/activity_default_padding_l_l"
-            android:paddingRight="@dimen/activity_default_padding_l_l" />
+            android:paddingLeft="@dimen/activity_default_margin"
+            android:paddingRight="@dimen/activity_default_margin" />
 
     </RelativeLayout>
 

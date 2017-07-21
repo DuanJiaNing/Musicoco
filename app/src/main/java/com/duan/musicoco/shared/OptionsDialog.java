@@ -2,28 +2,19 @@ package com.duan.musicoco.shared;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
-import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.SongInfo;
-import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnViewVisibilityChange;
-import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.PullDownLinearLayout;
 
@@ -75,7 +66,7 @@ public class OptionsDialog implements
         }
     }
 
-    public void setAdapter(ListAdapter adapter) {
+    public void setAdapter(OptionsAdapter adapter) {
         listView.setAdapter(adapter);
         listView.post(new Runnable() {
             @Override
@@ -120,7 +111,7 @@ public class OptionsDialog implements
     }
 
     public void setSong(SongInfo info) {
-        String title = activity.getString(R.string.song_detail);
+        String title = activity.getString(R.string.song_operation_detail);
         if (info != null) {
             title = "歌曲：" + info.getTitle();
             this.song = info;
