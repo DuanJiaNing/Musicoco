@@ -17,6 +17,12 @@ import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.view.TextInputHelper;
 
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+
 /**
  * Created by DuanJiaNing on 2017/7/21.
  */
@@ -212,7 +218,7 @@ public class MySheetsOperation {
         dialog.show();
     }
 
-    public void deleteSheet(final int sheetID) {
+    public void deleteSheet(final Sheet sheet) {
         DialogProvider provider = new DialogProvider(activity);
         final Dialog dialog = provider.createPromptDialog(
                 activity.getString(R.string.warning),
@@ -221,9 +227,75 @@ public class MySheetsOperation {
         provider.setOnPositiveButtonListener(activity.getString(R.string.ensure), new DialogProvider.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dbMusicoco.removeSheet(sheetID);
+                handleDelete(sheet);
+                dialog.hide();
             }
         });
+        provider.setOnNegativeButtonListener(activity.getString(R.string.cancel), new DialogProvider.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.hide();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void handleDelete(final Sheet sheet) {
+
+        Observable.OnSubscribe<Boolean> onSubscribe = new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                subscriber.onStart();
+                dbMusicoco.removeSheet(sheet.id);
+                try {
+                    Thread.sleep(6000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                subscriber.onNext(true);
+                subscriber.onCompleted();
+            }
+        };
+
+        DialogProvider provider = new DialogProvider(activity);
+        final Dialog dialog = provider.createProgressDialog(activity.getString(R.string.deleting));
+        dialog.setCancelable(false);
+
+        Observable.create(onSubscribe)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+
+                    @Override
+                    public void onStart() {
+                        dialog.show();
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        dialog.dismiss();
+                        String msg = activity.getString(R.string.unknown);
+                        ToastUtils.showShortToast(activity, msg);
+                    }
+
+                    @Override
+                    public void onNext(Boolean s) {
+                        if (s) {
+                            String msg = activity.getString(R.string.success_delete_sheet) + " [" + sheet.name + "]";
+                            ToastUtils.showShortToast(activity, msg);
+                        } else {
+                            String msg = activity.getString(R.string.error_delete_sheet_fail);
+                            ToastUtils.showShortToast(activity, msg);
+                        }
+                    }
+                });
     }
 
 }

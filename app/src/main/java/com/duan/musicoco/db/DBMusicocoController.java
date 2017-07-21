@@ -669,7 +669,7 @@ public class DBMusicocoController {
 
             updateSongSheet(song, newSheets);
             minusSheetCount(sheetID);
-            Log.i(TAG, "removeSongInfoFromSheet:  " + song.path + " sheet:" + sheetID);
+            Log.i(TAG, "removeSongInfoFromSheet:  " + song.path + " sheet:" + sheet.name);
             return true;
         }
     }
@@ -726,6 +726,7 @@ public class DBMusicocoController {
         Sheet sheet = getSheet(sheetID);
         if (sheet != null) {
             database.beginTransaction();
+
             List<DBSongInfo> infos = getSongInfos();
             Song song = new Song("");
             for (DBSongInfo d : infos) {
@@ -737,8 +738,8 @@ public class DBMusicocoController {
                     }
                 }
             }
-
             removeSheetFromSheetTableOnly(sheetID);
+
             database.endTransaction();
             return true;
         } else {

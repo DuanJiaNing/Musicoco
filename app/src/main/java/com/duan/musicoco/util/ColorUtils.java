@@ -392,4 +392,35 @@ public class ColorUtils {
                 activity.getColor(R.color.white_d_d_d)
         };
     }
+
+    /**
+     * 0 主背景色<br>
+     * 1 主字体色<br>
+     * 2 辅字体色<br>
+     * 3 线条颜色<br>
+     */
+    public static int[] get4DarkDialogThemeColors(Context context) {
+        int[] colors = new int[4];
+        colors[0] = context.getColor(R.color.theme_dark_dialog_bg);
+        colors[1] = context.getColor(R.color.theme_dark_dialog_main_text);
+        colors[2] = context.getColor(R.color.theme_dark_dialog_vic_text);
+        colors[3] = context.getColor(R.color.theme_dark_dialog_line);
+        return colors;
+    }
+
+
+    /**
+     * 0 主背景色<br>
+     * 1 主字体色<br>
+     * 2 辅字体色<br>
+     * 3 线条颜色<br>
+     */
+    public static int[] get4WhiteDialogThemeColors(Context context) {
+        int[] colors = new int[4];
+        colors[0] = context.getColor(R.color.theme_white_dialog_bg);
+        colors[1] = context.getColor(R.color.theme_white_dialog_main_text);
+        colors[2] = context.getColor(R.color.theme_white_dialog_vic_text);
+        colors[3] = context.getColor(R.color.theme_white_dialog_line);
+        return colors;
+    }
 }

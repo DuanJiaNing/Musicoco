@@ -201,3 +201,4 @@
 2 向 DBMusicocoController 中添加 updateSheet 方法<br>
 3 修改 OptionsAdapter ，可以通过添加 Option 的方式增加列表项<br>
 4 修改 TextInputHelper，添加错误信息闪动提示<br>
+5 从 Github 添加 RotateLoading 到项目，作为进度条<br>

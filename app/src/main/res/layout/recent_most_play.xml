@@ -67,11 +67,11 @@
                     android:lines="1"
                     android:paddingLeft="@dimen/activity_default_margin"
                     android:paddingRight="@dimen/activity_default_margin"
-                    android:shadowColor="@color/white_d"
+                    android:shadowColor="@color/white"
                     android:shadowDx="0"
                     android:shadowDy="0"
                     android:shadowRadius="20"
-                    android:textColor="@color/white_d"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/text_large_l_l_l"
                     android:textStyle="bold" />
 
@@ -109,7 +109,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:textColor="@color/white_d"
+                android:textColor="@color/white"
                 android:textSize="@dimen/text_small" />
         </RelativeLayout>
 

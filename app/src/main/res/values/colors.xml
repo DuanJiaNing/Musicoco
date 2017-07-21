@@ -12,7 +12,7 @@
     <color name="default_play_text_color">#d6d6d6</color>
 
     <color name="white">#ffffff</color>
-    <color name="white_d">#e2e2e2</color>
+    <color name="white_d">#f9f9f9</color>
     <color name="white_d_d">#c1c0c0</color>
     <color name="white_d_d_d">#a1a1a1</color>
     <color name="white_d_d_d_d">#818181</color>
@@ -30,26 +30,37 @@
     <color name="dsb_ripple_color_pressed">#77939393</color>
     <color name="dsb_ripple_color_focused">#99999999</color>
 
-    <color name="theme_white_primary">#ffffff</color>
-    <color name="theme_white_primary_dark">#f1f1f1</color>
+    <color name="gold_primary">#332c2f</color>
+    <color name="gold_primary_dark">#2d2729</color>
+    <color name="gold_main_text">#C0A057</color>
+    <color name="gold_vic_text">#635339</color>
+
+    <color name="red">#e42d2d</color>
+
+
+    <color name="theme_white_primary">@color/white</color>
+    <color name="theme_white_primary_dark">@color/white_d</color>
     <color name="theme_white_vic_text">@color/white_d_d_d_d</color>
     <color name="theme_white_main_text">@color/dark_l_l_l_l_l</color>
 
-    <color name="theme_dark_primary">#332c2f</color>
-    <color name="theme_dark_primary_dark">#2d2729</color>
-    <color name="theme_dark_main_text">#C0A057</color>
-    <color name="theme_dark_vic_text">#635339</color>
+    <color name="theme_dark_primary">@color/gold_primary</color>
+    <color name="theme_dark_primary_dark">@color/gold_primary_dark</color>
+    <color name="theme_dark_main_text">@color/gold_main_text</color>
+    <color name="theme_dark_vic_text">@color/gold_vic_text</color>
 
-    <color name="list_blue">#177d84</color>
-    <color name="list_white">#ffffff</color>
-    <color name="list_white_d">#f5f5f5</color>
-    <color name="list_white_d_d">#e7e7e7</color>
+    <color name="rmp_image_default_bg">@color/dark_l_l_l</color>
+    <color name="main_rmp_image_filter">@color/white_d_d</color>
 
-    <color name="rmp_info_bg">#5f000000</color>
-    <color name="rmp_image_default_bg">#2d2d2d</color>
+    <color name="favorite">@color/red</color>
 
-    <color name="favorite">#dc1e1e</color>
+    <color name="theme_dark_dialog_bg">@color/gold_primary_dark</color>
+    <color name="theme_dark_dialog_main_text">@color/gold_main_text</color>
+    <color name="theme_dark_dialog_vic_text">@color/gold_vic_text</color>
+    <color name="theme_dark_dialog_line">@color/gold_main_text</color>
 
-    <color name="main_rmp_image_filter">#bebebe</color>
+    <color name="theme_white_dialog_bg">@color/white</color>
+    <color name="theme_white_dialog_main_text">@color/dark_l_l_l</color>
+    <color name="theme_white_dialog_vic_text">@color/dark_l_l_l_l</color>
+    <color name="theme_white_dialog_line">@color/colorPrimary</color>
 
 </resources>

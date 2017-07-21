@@ -48,8 +48,7 @@
         android:id="@+id/ll003"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/list_white_d">
+        android:layout_alignParentBottom="true">
 
         <include layout="@layout/play_bottom_navigation" />
     </LinearLayout>

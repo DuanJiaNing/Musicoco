@@ -1,17 +1,24 @@
 package com.duan.musicoco.shared;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.app.App;
+import com.duan.musicoco.preference.Theme;
+import com.duan.musicoco.util.ColorUtils;
+import com.victor.loading.rotate.RotateLoading;
 
 /**
  * 对话框通用功能管理。传入上下文以初始出固定模板的对话框，
@@ -97,8 +104,13 @@ public class DialogProvider {
     private final int buttonTextSize;
     private final int buttonPadding;
 
-    public DialogProvider(Context context) {
+    private Theme theme;
+    int backgroundColor;
+    int mainTextColor;
+    int vicTextColor;
+    int lineAndButtonColor;
 
+    public DialogProvider(Context context) {
         this.context = context;
 
         buttonTextSize = context.getResources().getDimensionPixelSize(R.dimen.text_dialog_button);
@@ -130,6 +142,41 @@ public class DialogProvider {
 
         builder = new AlertDialog.Builder(context);
 
+        theme = ((App) context.getApplicationContext()).appPreference.getTheme();
+        updateTheme();
+
+    }
+
+    public void setTheme(Theme theme) {
+        this.theme = theme;
+        updateTheme();
+    }
+
+    private void updateTheme() {
+        int[] colors;
+        switch (theme) {
+            case DARK:
+                colors = ColorUtils.get4DarkDialogThemeColors(context);
+                break;
+            case WHITE:
+            default:
+                colors = ColorUtils.get4WhiteDialogThemeColors(context);
+                break;
+        }
+
+        backgroundColor = colors[0];
+        mainTextColor = colors[1];
+        vicTextColor = colors[2];
+        lineAndButtonColor = colors[3];
+
+        mTitle.setTextColor(mainTextColor);
+        mLine1.setBackgroundColor(lineAndButtonColor);
+        mLine2.setBackgroundColor(lineAndButtonColor);
+        mMessage.setTextColor(vicTextColor);
+        mNeuterButton.setTextColor(lineAndButtonColor);
+        mPositiveButton.setTextColor(lineAndButtonColor);
+        mNegativeButton.setTextColor(lineAndButtonColor);
+        mFirstOuter.setBackgroundColor(backgroundColor);
     }
 
     /**
@@ -296,23 +343,39 @@ public class DialogProvider {
     }
 
 
-    public View getTopLine() {
-        return mLine1;
+    public Dialog createProgressDialog(String title) {
+        View view = LayoutInflater.from(context).inflate(R.layout.progress, null);
+        TextView titleT = (TextView) view.findViewById(R.id.progress_title);
+        titleT.setText(title);
+        titleT.setTextColor(mainTextColor);
+
+        final RotateLoading progressBar = (RotateLoading) view.findViewById(R.id.progress_rotate_loading);
+        progressBar.setLoadingColor(lineAndButtonColor);
+
+        createCustomSecondOuterDialog(view);
+        Dialog dialog = getDialog();
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                progressBar.start();
+            }
+        });
+        return dialog;
     }
 
-    public View getMessageLine() {
-        return mLine2;
+    public int getBackgroundColor() {
+        return backgroundColor;
     }
 
-    public TextView getTitleTextView() {
-        return mTitle;
+    public int getMainTextColor() {
+        return mainTextColor;
     }
 
-    public TextView getMessageTextView() {
-        return mMessage;
+    public int getVicTextColor() {
+        return vicTextColor;
     }
 
-    public View getRootView() {
-        return rootView;
+    public int getLineAndButtonColor() {
+        return lineAndButtonColor;
     }
 }

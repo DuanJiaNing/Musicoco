@@ -123,7 +123,7 @@ public class MySheetsAdapter extends BaseAdapter implements
         delete.clickListener = new OptionsAdapter.OptionClickListener() {
             @Override
             public void onClick(OptionsAdapter.ViewHolder holder, int position) {
-                mySheetsOperation.deleteSheet(currentClickMoreOperationItem.id);
+                mySheetsOperation.deleteSheet(currentClickMoreOperationItem);
                 mDialog.hide();
             }
         };
