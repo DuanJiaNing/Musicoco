@@ -1,6 +1,8 @@
 package com.duan.musicoco.view;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -45,6 +47,7 @@ public class PullDownLinearLayout extends LinearLayout {
         this(context, attrs, defStyleAttr, 0);
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public PullDownLinearLayout(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();

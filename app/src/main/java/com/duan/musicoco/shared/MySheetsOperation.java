@@ -247,13 +247,16 @@ public class MySheetsOperation {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
                 subscriber.onStart();
-                dbMusicoco.removeSheet(sheet.id);
+
+                boolean res = dbMusicoco.removeSheet(sheet.id);
+
                 try {
-                    Thread.sleep(6000);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                subscriber.onNext(true);
+
+                subscriber.onNext(res);
                 subscriber.onCompleted();
             }
         };
@@ -275,6 +278,7 @@ public class MySheetsOperation {
                     @Override
                     public void onCompleted() {
                         dialog.dismiss();
+                        BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED);
                     }
 
                     @Override
@@ -283,6 +287,7 @@ public class MySheetsOperation {
                         dialog.dismiss();
                         String msg = activity.getString(R.string.unknown);
                         ToastUtils.showShortToast(activity, msg);
+                        BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED);
                     }
 
                     @Override

@@ -17,13 +17,19 @@ public class MainSheetHelper {
     public static final int SHEET_RECENT = -20;
     public static final int SHEET_FAVORITE = -30;
 
-    private final List<DBSongInfo> all;
+    private List<DBSongInfo> all;
+    private DBMusicocoController dbController;
     private final int recentCount;
 
     public MainSheetHelper(Context context, DBMusicocoController dbController) {
-        all = dbController.getSongInfos();
-        recentCount = context.getResources().getInteger(R.integer.sheet_recent_count);
+        this.recentCount = context.getResources().getInteger(R.integer.sheet_recent_count);
+        this.dbController = dbController;
+        refreshData();
 
+    }
+
+    private void refreshData() {
+        all = dbController.getSongInfos();
     }
 
     public static String getMainSheetName(Context context, int which) {
@@ -47,21 +53,22 @@ public class MainSheetHelper {
             case SHEET_ALL:
             default:
                 return getAllSongInfo();
-
         }
     }
 
     public List<DBSongInfo> getAllSongInfo() {
+        refreshData();
         return all;
     }
 
     public List<DBSongInfo> getRecentSongInfo() {
+        refreshData();
         List<DBSongInfo> recent = DBSongInfo.descSortByLastPlayTime(all);
         return recent.subList(0, recentCount);
     }
 
     public List<DBSongInfo> getFavoriteSongInfo() {
-
+        refreshData();
         List<DBSongInfo> favorite = new ArrayList<>();
         for (DBSongInfo i : all) {
             if (i.favorite) {

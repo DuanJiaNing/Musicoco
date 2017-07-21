@@ -45,7 +45,7 @@
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.57"
+        android:layout_weight="0.56"
         android:orientation="vertical">
 
         <TextView
@@ -99,11 +99,12 @@
     </RelativeLayout>
 
     <ImageButton
+        android:paddingRight="10dp"
         android:id="@+id/sheets_item_more"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
-        android:layout_weight="0.13"
+        android:layout_weight="0.14"
         android:background="?android:selectableItemBackgroundBorderless"
         app:srcCompat="@drawable/ic_more_vert_black_24dp" />
 

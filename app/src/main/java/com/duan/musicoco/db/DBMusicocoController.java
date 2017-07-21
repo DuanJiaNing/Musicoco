@@ -11,7 +11,6 @@ import android.util.Log;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.util.StringUtils;
 
 import java.util.ArrayList;
@@ -312,6 +311,7 @@ public class DBMusicocoController {
 
     }
 
+    @NonNull
     private String songSheetsIntArrayToString(int[] sheets) {
 
         StringBuilder builder = new StringBuilder();
@@ -338,15 +338,17 @@ public class DBMusicocoController {
 
     public void addSongInfo(List<Song> songs) {
         if (songs != null && songs.size() > 0) {
+            database.beginTransaction();
+
             for (Song song : songs) {
                 addSongInfo(song, 0, null, null, false);
             }
+
+            database.setTransactionSuccessful();
+            database.endTransaction();
         }
     }
 
-    /**
-     * 更新歌曲最后播放时间
-     */
     public void updateSongLastPlayTime(@NonNull Song song, long time) {
         ContentValues values = new ContentValues();
         values.put(SONG_LASTPLAYTIME, time + "");
@@ -373,9 +375,6 @@ public class DBMusicocoController {
         updateSongLastPlayTime(song, System.currentTimeMillis());
     }
 
-    /**
-     * 更新歌曲播放次数
-     */
     public void updateSongPlayTimes(@NonNull Song song, int times) {
         ContentValues values = new ContentValues();
         values.put(SONG_PLAYTIMES, times);
@@ -414,9 +413,6 @@ public class DBMusicocoController {
         updateSongPlayTimes(song, times);
     }
 
-    /**
-     * 更新歌曲备注
-     */
     public void updateSongRemark(@NonNull Song song, @NonNull String remark) {
         ContentValues values = new ContentValues();
         values.put(SONG_REMARK, remark);
@@ -453,7 +449,6 @@ public class DBMusicocoController {
         updateSongPlayTimes(song);
         updateSongLastPlayTime(song);
     }
-
 
     public String addSheet(String name, String remark, int count) {
 
@@ -615,24 +610,28 @@ public class DBMusicocoController {
             for (int s : sheets) {
                 minusSheetCount(s);
             }
-            r = removeSongInfoFromSongTableOnly(song);
+            r = removeSongInfoFromSongTable(song);
 
+            database.setTransactionSuccessful();
             database.endTransaction();
         }
         Log.i(TAG, "removeSongInfo: " + song.path);
         return r;
     }
 
-    public boolean removeSongInfoFromSongTableOnly(Song song) {
+    // 这将使歌曲信息从歌曲表中删除，只应在【彻底删除歌曲】时调用
+    public boolean removeSongInfoFromSongTable(Song song) {
 
         String where = SONG_PATH + " like ? ";
         String[] whereArg = new String[]{song.path};
         database.delete(TABLE_SONG, where, whereArg);
-        Log.i(TAG, "removeSongInfoFromSongTableOnly: " + song.path);
+        Log.i(TAG, "removeSongInfoFromSongTable: " + song.path);
         return true;
     }
 
     //从歌单中移除该歌曲
+    // 1 将此歌单的 id 从歌曲的歌单字段中移除
+    // 2 让歌单的歌曲数字段减一
     public boolean removeSongInfoFromSheet(Song song, int sheetID) {
 
         DBSongInfo info = getSongInfo(song);
@@ -674,7 +673,6 @@ public class DBMusicocoController {
         }
     }
 
-
     public boolean removeSongInfoFromSheet(Song song, String sheetName) {
 
         DBSongInfo info = getSongInfo(song);
@@ -689,7 +687,6 @@ public class DBMusicocoController {
             return false;
         }
     }
-
 
     public String updateSheet(int sheetID, String newName, String newRemark) {
 
@@ -738,15 +735,16 @@ public class DBMusicocoController {
                     }
                 }
             }
+
             removeSheetFromSheetTableOnly(sheetID);
 
+            database.setTransactionSuccessful();
             database.endTransaction();
             return true;
         } else {
             return false;
         }
     }
-
 
     public void removeSheetFromSheetTableOnly(int sheetID) {
         Sheet sheet = getSheet(sheetID);
@@ -755,7 +753,9 @@ public class DBMusicocoController {
         }
 
         String where = SHEET_ID + " = ?";
-        String[] whereArg = new String[]{sheetID + ""};
+        String[] whereArg = new String[]{String.valueOf(sheetID)};
         database.delete(TABLE_SHEET, where, whereArg);
+
+        Log.i(TAG, "removeSheetFromSheetTableOnly: " + sheet.name);
     }
 }

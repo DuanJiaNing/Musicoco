@@ -1,9 +1,6 @@
 package com.duan.musicoco.play;
 
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
@@ -23,15 +20,13 @@ import android.widget.ViewSwitcher;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.manager.ActivityManager;
-import com.duan.musicoco.app.manager.BroadcastManager;
-import com.duan.musicoco.shared.ExceptionHandler;
+import com.duan.musicoco.app.RootActivity;
+import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.PlayServiceManager;
-import com.duan.musicoco.app.RootActivity;
-import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.play.album.VisualizerFragment;
 import com.duan.musicoco.play.album.VisualizerPresenter;
 import com.duan.musicoco.play.lyric.LyricFragment;
@@ -40,8 +35,9 @@ import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.service.PlayServiceCallback;
-import com.duan.musicoco.util.AnimationUtils;
+import com.duan.musicoco.shared.ExceptionHandler;
 import com.duan.musicoco.shared.PeriodicTask;
+import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.view.discreteseekbar.DiscreteSeekBar;
 import com.duan.musicoco.view.media.PlayView;
@@ -161,6 +157,8 @@ public class PlayActivity extends RootActivity implements
 
     /**
      * 同步
+     * onResume null true
+     * songChanged -- --
      */
     public void synchronize(@Nullable Song song, boolean isNext) {
 

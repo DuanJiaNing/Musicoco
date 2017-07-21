@@ -123,6 +123,7 @@ public class PlayListAdapter extends BaseAdapter implements
             convertView = LayoutInflater.from(context).inflate(R.layout.play_list_item, null);
             holder = new ViewHolder();
             holder.name = (TextView) convertView.findViewById(R.id.play_list_item_name);
+            holder.number = (TextView) convertView.findViewById(R.id.play_list_item_number);
             holder.arts = (TextView) convertView.findViewById(R.id.play_list_item_arts);
             holder.remove = (ImageButton) convertView.findViewById(R.id.play_list_item_remove);
             convertView.setTag(holder);
@@ -136,6 +137,7 @@ public class PlayListAdapter extends BaseAdapter implements
         SongInfo info = (SongInfo) getItem(position);
         holder.name.setText(info.getTitle());
         holder.arts.setText(info.getArtist());
+        holder.number.setText(String.valueOf(getItemId(position) + 1));
 
         try {
             int sheetID = control.getPlayListId();
@@ -172,6 +174,8 @@ public class PlayListAdapter extends BaseAdapter implements
 
         holder.name.setTextColor(colorMain);
         holder.arts.setTextColor(colorVic);
+        holder.number.setTextColor(colorVic);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             holder.remove.getDrawable().setTint(colorVic);
         }
@@ -237,6 +241,7 @@ public class PlayListAdapter extends BaseAdapter implements
     private final class ViewHolder {
         TextView name;
         TextView arts;
+        TextView number;
         ImageButton remove;
     }
 

@@ -2,6 +2,7 @@ package com.duan.musicoco.main;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -67,7 +68,6 @@ public class BottomNavigationController implements
     private IPlayControl mControl;
     private final static String TAG = "BottomNavigationController";
 
-    public final static String CURRENT_POSITION = "current_position";
     private int currentPosition;
 
     private View mContainer;
@@ -169,6 +169,20 @@ public class BottomNavigationController implements
         mDialog.getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
         mDialog.setCanceledOnTouchOutside(true);
 
+        //位置恢复
+        mDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                currentPosition = mList.getFirstVisiblePosition();
+            }
+        });
+        mDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                mList.setSelection(currentPosition);
+            }
+        });
+
     }
 
     @Override
@@ -190,6 +204,16 @@ public class BottomNavigationController implements
                 dbMusicocoController,
                 new SongOperation(activity, mControl, dbMusicocoController));
         mList.setAdapter(adapter);
+
+        try {
+            int index = mControl.currentSongIndex();
+            if (index < adapter.getCount() - 1) {
+                currentPosition = index;
+                mList.setSelection(currentPosition);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
 
         Theme theme = appPreference.getTheme();
         themeChange(theme, null);
@@ -491,7 +515,6 @@ public class BottomNavigationController implements
             return;
         } else {
             mDialog.show();
-            mList.setSelection(currentPosition);
         }
     }
 
@@ -499,9 +522,7 @@ public class BottomNavigationController implements
     public void hide() {
         if (mDialog.isShowing()) {
             mDialog.dismiss();
-            currentPosition = mList.getFirstVisiblePosition();
         }
-
     }
 
     @Override
@@ -509,14 +530,6 @@ public class BottomNavigationController implements
         mContainer.setEnabled(false);
         mPlay.setEnabled(false);
         mShowList.setEnabled(false);
-    }
-
-    public int getCurrentPosition() {
-        return currentPosition;
-    }
-
-    public void setCurrentPosition(int currentPosition) {
-        this.currentPosition = currentPosition;
     }
 
 }

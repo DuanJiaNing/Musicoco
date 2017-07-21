@@ -380,17 +380,28 @@ public class ColorUtils {
     }
 
     public static int[] get2ColorWhiteThemeForPlayOptions(Activity activity) {
-        return new int[]{
-                activity.getColor(R.color.dark_l_l_l_l),
-                activity.getColor(R.color.white_d_d_d)
-        };
+        int[] colors = new int[2];
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            colors[0] = activity.getColor(R.color.dark_l_l_l_l);
+            colors[1] = activity.getColor(R.color.white_d_d_d);
+        } else {
+            colors[0] = activity.getResources().getColor(R.color.dark_l_l_l_l);
+            colors[1] = activity.getResources().getColor(R.color.white_d_d_d);
+        }
+        return colors;
     }
 
     public static int[] get2ColorDarkThemeForPlayOptions(Activity activity) {
-        return new int[]{
-                activity.getColor(R.color.white_d_d),
-                activity.getColor(R.color.white_d_d_d)
-        };
+
+        int[] colors = new int[2];
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            colors[0] = activity.getColor(R.color.white_d_d);
+            colors[1] = activity.getColor(R.color.white_d_d_d);
+        } else {
+            colors[0] = activity.getResources().getColor(R.color.white_d_d);
+            colors[1] = activity.getResources().getColor(R.color.white_d_d_d);
+        }
+        return colors;
     }
 
     /**
@@ -400,11 +411,20 @@ public class ColorUtils {
      * 3 线条颜色<br>
      */
     public static int[] get4DarkDialogThemeColors(Context context) {
+
         int[] colors = new int[4];
-        colors[0] = context.getColor(R.color.theme_dark_dialog_bg);
-        colors[1] = context.getColor(R.color.theme_dark_dialog_main_text);
-        colors[2] = context.getColor(R.color.theme_dark_dialog_vic_text);
-        colors[3] = context.getColor(R.color.theme_dark_dialog_line);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            colors[0] = context.getColor(R.color.theme_dark_dialog_bg);
+            colors[1] = context.getColor(R.color.theme_dark_dialog_main_text);
+            colors[2] = context.getColor(R.color.theme_dark_dialog_vic_text);
+            colors[3] = context.getColor(R.color.theme_dark_dialog_line);
+        } else {
+            colors[0] = context.getResources().getColor(R.color.theme_dark_dialog_bg);
+            colors[1] = context.getResources().getColor(R.color.theme_dark_dialog_main_text);
+            colors[2] = context.getResources().getColor(R.color.theme_dark_dialog_vic_text);
+            colors[3] = context.getResources().getColor(R.color.theme_dark_dialog_line);
+        }
+
         return colors;
     }
 
@@ -416,11 +436,20 @@ public class ColorUtils {
      * 3 线条颜色<br>
      */
     public static int[] get4WhiteDialogThemeColors(Context context) {
+
         int[] colors = new int[4];
-        colors[0] = context.getColor(R.color.theme_white_dialog_bg);
-        colors[1] = context.getColor(R.color.theme_white_dialog_main_text);
-        colors[2] = context.getColor(R.color.theme_white_dialog_vic_text);
-        colors[3] = context.getColor(R.color.theme_white_dialog_line);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            colors[0] = context.getColor(R.color.theme_white_dialog_bg);
+            colors[1] = context.getColor(R.color.theme_white_dialog_main_text);
+            colors[2] = context.getColor(R.color.theme_white_dialog_vic_text);
+            colors[3] = context.getColor(R.color.theme_white_dialog_line);
+        } else {
+            colors[0] = context.getResources().getColor(R.color.theme_white_dialog_bg);
+            colors[1] = context.getResources().getColor(R.color.theme_white_dialog_main_text);
+            colors[2] = context.getResources().getColor(R.color.theme_white_dialog_vic_text);
+            colors[3] = context.getResources().getColor(R.color.theme_white_dialog_line);
+        }
+
         return colors;
     }
 }

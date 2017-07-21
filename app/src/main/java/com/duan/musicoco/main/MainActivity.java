@@ -155,22 +155,6 @@ public class MainActivity extends RootActivity implements
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-
-        outState.putInt(BottomNavigationController.CURRENT_POSITION, bottomNavigationController.getCurrentPosition());
-
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        int listPos = savedInstanceState.getInt(BottomNavigationController.CURRENT_POSITION);
-        bottomNavigationController.setCurrentPosition(listPos);
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -237,6 +221,7 @@ public class MainActivity extends RootActivity implements
         mySheetDataChangedReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                Log.d(TAG, "onReceive: mySheetDataChangedReceiver");
                 mySheetsController.update(null, null);
             }
         };
@@ -287,7 +272,7 @@ public class MainActivity extends RootActivity implements
     }
 
     private void update() {
-        bottomNavigationController.update(null, null);
+        bottomNavigationController.update(null, statusChanged);
         mostPlayController.update("历史最多播放", statusChanged);
         mainSheetsController.update(null, statusChanged);
         mySheetsController.update(null, statusChanged);

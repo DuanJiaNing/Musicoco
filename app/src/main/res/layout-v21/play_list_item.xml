@@ -14,42 +14,53 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="0dp"
-        android:layout_marginLeft="16dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginRight="24dp"
+
         android:layout_marginTop="8dp"
-
         android:drawableTint="@android:color/black"
-
-        android:fontFamily="serif"
         android:gravity="center_vertical|start"
         android:lines="1"
-        android:textSize="@dimen/text_middle_s"
+        android:textSize="@dimen/text_middle"
         android:textStyle="bold"
         android:typeface="normal"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline3"
         app:layout_constraintRight_toLeftOf="@+id/play_list_item_remove"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.497" />
+
+    <TextView
+        android:textStyle="bold"
+        android:id="@+id/play_list_item_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:lines="1"
+        android:maxEms="2"
+        android:ellipsize="end"
+        android:textSize="@dimen/text_middle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/guideline3"
+        android:layout_marginRight="8dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView
         android:id="@+id/play_list_item_arts"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
-        android:layout_marginLeft="16dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-
-
         android:layout_marginTop="0dp"
 
         android:gravity="center_vertical|start"
         android:lines="1"
         android:textSize="@dimen/text_small_s"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline3"
         app:layout_constraintRight_toLeftOf="@+id/guideline2"
         app:layout_constraintTop_toTopOf="@+id/guideline" />
 
@@ -60,10 +71,10 @@
         android:layout_marginBottom="8dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="8dp"
-        android:padding="5dp"
         android:background="?android:selectableItemBackgroundBorderless"
-
         android:clickable="true"
+
+        android:padding="5dp"
         android:scaleX="0.9"
         android:scaleY="0.9"
         android:src="@drawable/ic_clear_black_24dp"
@@ -88,5 +99,12 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.1" />
 
 </android.support.constraint.ConstraintLayout>

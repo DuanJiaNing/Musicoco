@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -158,7 +159,7 @@ public class MainSheetsController implements
                                     data = getBitmapForRecent(all);
                                     break;
                                 case Data.FAVORITE:
-                                    data = getBitmapForFavorite(all);
+                                    data = getBitmapForFavorite();
                                     break;
                                 default: {
                                     data.count = 0;
@@ -205,7 +206,7 @@ public class MainSheetsController implements
                 });
     }
 
-    private Data getBitmapForFavorite(List<DBSongInfo> all) {
+    private Data getBitmapForFavorite() {
         Data data = new Data();
         List<DBSongInfo> favorite = mainSheetHelper.getFavoriteSongInfo();
         List<DBSongInfo> list = DBSongInfo.descSortByLastPlayTime(favorite);

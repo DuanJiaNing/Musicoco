@@ -2,6 +2,7 @@ package com.duan.musicoco.shared;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -125,7 +126,9 @@ public class OptionsAdapter extends BaseAdapter {
 
         if (iconID != -1) {
             holder.icon.setImageResource(iconID);
-            holder.icon.getDrawable().setTint(iconColor);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                holder.icon.getDrawable().setTint(iconColor);
+            }
         } else if (holder.icon.getDrawable() != null) {
             //复用时防止图标错乱
             holder.icon.setImageDrawable(null);

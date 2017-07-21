@@ -413,11 +413,8 @@ public class BottomNavigationController implements
             if (song != null) {
                 DBSongInfo info = dbMusicoco.getSongInfo(song);
                 boolean isFavorite = info != null && info.favorite;
-                if (isFavorite) {
-                    songOption.updateCurrentFavorite(song, true, true);
-                } else {
-                    songOption.updateCurrentFavorite(song, false, false);
-                }
+                songOption.updateCurrentFavorite(isFavorite, false);
+
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -600,55 +597,22 @@ public class BottomNavigationController implements
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.play_mode:
-                    try {
-                        int mode = control.getPlayMode();
-                        mode = ((mode - 21) + 1) % 3 + 21;
-                        control.setPlayMode(mode);
-
-                        mode = updatePlayMode();
-                        StringBuilder builder = new StringBuilder();
-                        switch (mode) {
-                            case PlayController.MODE_LIST_LOOP:
-                                builder.append(activity.getString(R.string.play_mode_list_loop));
-                                break;
-
-                            case PlayController.MODE_SINGLE_LOOP:
-                                builder.append(activity.getString(R.string.play_mode_single_loop));
-                                break;
-
-                            case PlayController.MODE_RANDOM:
-                                builder.append(activity.getString(R.string.play_mode_random));
-                                break;
-                        }
-                        ToastUtils.showShortToast(activity, builder.toString());
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                        new ExceptionHandler().handleRemoteException(activity,
-                                activity.getString(R.string.exception_remote), null
-                        );
-                    }
+                    handlePlayModeChange();
                     break;
-
                 case R.id.play_list_hide_bar:
-                    if (isListShowing)
+                    if (isListShowing) {
                         BottomNavigationController.this.hide();
-                    else BottomNavigationController.this.show();
+                    } else {
+                        BottomNavigationController.this.show();
+                    }
                     break;
                 case R.id.play_list_hide:
-                    if (!isListTitleHide)
+                    if (!isListTitleHide) {
                         hidePlayListTitle();
+                    }
                     break;
                 case R.id.play_favorite:
-                    try {
-                        Song song = control.currentSong();
-                        if (song != null) {
-                            DBSongInfo info = dbMusicoco.getSongInfo(song);
-                            boolean isFavorite = info.favorite;
-                            updateCurrentFavorite(song, !isFavorite, true);
-                        }
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
+                    handleFavoriteStatusChange();
                     break;
                 case R.id.play_show_list:
                     if (isListShowing()) {
@@ -658,21 +622,74 @@ public class BottomNavigationController implements
                     }
                     break;
                 case R.id.play_show_more:
-                    if (mDialog.isShowing()) {
-                        mDialog.hide();
-                    } else {
-                        Song s = null;
-                        try {
-                            s = control.currentSong();
-                        } catch (RemoteException e) {
-                            e.printStackTrace();
-                        }
-                        SongInfo info = mediaManager.getSongInfo(s);
-                        String title = activity.getString(R.string.song) + ": " + info.getTitle();
-                        mDialog.setTitle(title);
-                        mDialog.show();
-                    }
+                    handleShowMore();
                     break;
+            }
+        }
+
+        private void handleShowMore() {
+            if (mDialog.isShowing()) {
+                mDialog.hide();
+            } else {
+                Song s = null;
+                try {
+                    s = control.currentSong();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                SongInfo info = mediaManager.getSongInfo(s);
+                String title = activity.getString(R.string.song) + ": " + info.getTitle();
+                mDialog.setTitle(title);
+                mDialog.show();
+            }
+        }
+
+        private void handleFavoriteStatusChange() {
+            try {
+                Song song = control.currentSong();
+                if (song != null) {
+                    DBSongInfo info = dbMusicoco.getSongInfo(song);
+                    boolean isFavorite = info.favorite;
+                    boolean reverse = !isFavorite;
+                    updateCurrentFavorite(reverse, true);
+
+                    dbMusicoco.updateSongFavorite(song, reverse);
+                    //广播通知 MainActivity 更新 MainSheetsController
+                    BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MAIN_SHEET_CHANGED);
+
+                }
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void handlePlayModeChange() {
+            try {
+                int mode = control.getPlayMode();
+                mode = ((mode - 21) + 1) % 3 + 21;
+                control.setPlayMode(mode);
+
+                mode = updatePlayMode();
+                StringBuilder builder = new StringBuilder();
+                switch (mode) {
+                    case PlayController.MODE_LIST_LOOP:
+                        builder.append(activity.getString(R.string.play_mode_list_loop));
+                        break;
+
+                    case PlayController.MODE_SINGLE_LOOP:
+                        builder.append(activity.getString(R.string.play_mode_single_loop));
+                        break;
+
+                    case PlayController.MODE_RANDOM:
+                        builder.append(activity.getString(R.string.play_mode_random));
+                        break;
+                }
+                ToastUtils.showShortToast(activity, builder.toString());
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                new ExceptionHandler().handleRemoteException(activity,
+                        activity.getString(R.string.exception_remote), null
+                );
             }
         }
 
@@ -770,8 +787,15 @@ public class BottomNavigationController implements
             return currentDrawableColor;
         }
 
-        private void updateCurrentFavorite(Song song, boolean favorite, boolean useAnim) {
-            int color = activity.getResources().getColor(R.color.favorite);
+        private void updateCurrentFavorite(boolean favorite, boolean useAnim) {
+
+            int color = 0;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                color = activity.getColor(R.color.favorite);
+            } else {
+                color = activity.getResources().getColor(R.color.favorite);
+            }
+
             int from = getCurrentDrawableColor();
             int to = color;
             if (!favorite) {
@@ -787,10 +811,6 @@ public class BottomNavigationController implements
                     playFavorite.getDrawable().setTint(to);
                 }
             }
-
-            dbMusicoco.updateSongFavorite(song, favorite);
-            //广播通知 MainActivity 更新 MainSheetsController
-            BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MAIN_SHEET_CHANGED);
         }
 
         private void startFavoriteSwitchAnim(int colorFrom, int colorTo) {
@@ -847,6 +867,7 @@ public class BottomNavigationController implements
             return ids;
         }
 
+        //歌曲更多操作底部弹出对话框内项目的点击事件
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 

@@ -274,7 +274,13 @@ public class RecentMostPlayController implements
         mContainer.setBackground(drawable);
 
         drawable.setAlpha(170);
-        int colorFilter = activity.getColor(R.color.main_rmp_image_filter);
+        int colorFilter = 0;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            colorFilter = activity.getColor(R.color.main_rmp_image_filter);
+        } else {
+            colorFilter = activity.getResources().getColor(R.color.main_rmp_image_filter);
+        }
+
         drawable.setColorFilter(colorFilter, PorterDuff.Mode.MULTIPLY);
         mInfoContainer.setBackground(drawable);
 

@@ -170,10 +170,14 @@ public class SongDetailActivity extends AppCompatActivity implements View.OnClic
         container.setBackground(dm);
 
         mLine.setBackgroundColor(vicTC);
-        mClose.getDrawable().setTint(mainTC);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mClose.getDrawable().setTint(mainTC);
+        }
 
         mSaveImage.setBackgroundTintList(ColorStateList.valueOf(mainBC));
-        mSaveImage.getDrawable().setTint(vicTC);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mSaveImage.getDrawable().setTint(vicTC);
+        }
         mSaveImage.setRippleColor(vicTC);
 
         mName.setTextColor(mainTC);
