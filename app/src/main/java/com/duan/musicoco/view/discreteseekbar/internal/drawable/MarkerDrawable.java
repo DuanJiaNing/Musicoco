@@ -238,7 +238,7 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
 
 
     /**
-     * A listener interface to porpagate animation events
+     * A clickListener interface to porpagate animation events
      * This is the "poor's man" AnimatorListener for this Drawable
      */
     public interface MarkerAnimationListener {

@@ -50,7 +50,7 @@ public class PopupIndicator {
     private final WindowManager mWindowManager;
     private boolean mShowing;
     private Floater mPopupView;
-    //Outside listener for the DiscreteSeekBar to get MarkerDrawable animation events.
+    //Outside clickListener for the DiscreteSeekBar to get MarkerDrawable animation events.
     //The whole chain of events goes this way:
     //MarkerDrawable->Marker->Floater->mListener->DiscreteSeekBar....
     //... phew!

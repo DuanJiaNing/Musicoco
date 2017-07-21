@@ -13,6 +13,9 @@ import android.widget.TextView;
 
 import com.duan.musicoco.R;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by DuanJiaNing on 2017/7/18.
  */
@@ -21,9 +24,7 @@ public class OptionsAdapter extends BaseAdapter {
 
     private Context context;
 
-    private int[] iconsID;
-    private String[] texts;
-    private String[] msgs;
+    private List<Option> options;
 
     private int iconColor;
     private int textColor;
@@ -31,24 +32,50 @@ public class OptionsAdapter extends BaseAdapter {
 
     private int mPaddingLeft = 0;
 
-    public OptionsAdapter(Context context, @Nullable int[] iconsID, @NonNull String[] texts, @Nullable String[] msgs) {
+    public OptionsAdapter(Context context) {
         this.context = context;
-        this.iconsID = iconsID;
-        this.msgs = msgs;
-        this.texts = texts;
+        this.iconColor = this.textColor = Color.DKGRAY;
+        this.msgColor = Color.GRAY;
+        this.options = new ArrayList<>();
+    }
+
+    public OptionsAdapter(Context context, List<Option> options) {
+        this.context = context;
+        this.iconColor = this.textColor = Color.DKGRAY;
+        this.msgColor = Color.GRAY;
+        this.options = options;
+    }
+
+    public OptionsAdapter(Context context, @Nullable int[] iconsID, @NonNull String[] texts, @Nullable String[] msgs, @Nullable OptionClickListener[] listener) {
+        this.context = context;
         this.iconColor = this.textColor = Color.DKGRAY;
         this.msgColor = Color.GRAY;
 
+        this.options = new ArrayList<>();
+        for (int i = 0; i < texts.length; i++) {
+            Option option = new Option(
+                    texts[i],
+                    msgs == null ? null : msgs[i],
+                    iconsID == null ? -1 : iconsID[i],
+                    listener == null ? null : listener[i]
+            );
+            options.add(option);
+        }
+    }
+
+    public void addOption(Option option) {
+        options.add(option);
+        notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return texts.length;
+        return options.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return texts[position];
+        return options.get(position);
     }
 
     @Override
@@ -57,8 +84,15 @@ public class OptionsAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
+    public View getView(final int position, View convertView, ViewGroup parent) {
+        final ViewHolder holder;
+        final Option option = (Option) getItem(position);
+
+        final String text = option.text;
+        final String msg = option.msg == null ? "" : option.msg;
+        final int iconID = option.iconID;
+        final OptionClickListener listener = option.clickListener;
+
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.simple_list_item_image_text, null);
             holder = new ViewHolder();
@@ -66,7 +100,7 @@ public class OptionsAdapter extends BaseAdapter {
             holder.text = (TextView) convertView.findViewById(R.id.simple_list_item_text);
             holder.msg = (TextView) convertView.findViewById(R.id.simple_list_item_msg);
 
-            if (iconsID != null) {
+            if (iconID != -1) {
                 mPaddingLeft = mPaddingLeft == 0 ?
                         context.getResources().getDimensionPixelSize(R.dimen.activity_default_margin_s) :
                         mPaddingLeft;
@@ -86,17 +120,29 @@ public class OptionsAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.text.setText(texts[position]);
+        holder.text.setText(text);
         holder.text.setTextColor(textColor);
 
-        if (iconsID != null) {
-            holder.icon.setImageResource(iconsID[position]);
+        if (iconID != -1) {
+            holder.icon.setImageResource(iconID);
             holder.icon.getDrawable().setTint(iconColor);
+        } else if (holder.icon.getDrawable() != null) {
+            //复用时防止图标错乱
+            holder.icon.setImageDrawable(null);
         }
 
-        if (msgs != null) {
-            holder.msg.setText(msgs[position]);
-            holder.msg.setTextColor(msgColor);
+        holder.msg.setText(msg);
+        holder.msg.setTextColor(msgColor);
+
+        if (listener != null) {
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onClick(holder, position);
+                }
+            });
+        } else {
+            convertView.setClickable(false);
         }
 
         return convertView;
@@ -123,9 +169,39 @@ public class OptionsAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    private class ViewHolder {
-        ImageView icon;
-        TextView text;
-        TextView msg;
+    public class ViewHolder {
+        public ImageView icon;
+        public TextView text;
+        public TextView msg;
+    }
+
+    /**
+     * 可以选择以 OptionClickListener 的方式为每一个选项指定点击事件，这样代码更清晰，也可选择为 ListView etc 添加
+     * ItemClickListener 处理选项点击,同时设置时 OptionClickListener 优先
+     */
+    public interface OptionClickListener {
+        void onClick(ViewHolder holder, int position);
+    }
+
+    public static class Option {
+        public String text;
+        public String msg;
+        public int iconID = -1;
+
+        public OptionClickListener clickListener;
+
+        public Option(String text) {
+            this.text = text;
+        }
+
+        /**
+         * @param iconID 没有时为 -1
+         */
+        public Option(@NonNull String text, @Nullable String msg, int iconID, @Nullable OptionClickListener clickListener) {
+            this.text = text;
+            this.msg = msg == null ? "" : msg;
+            this.iconID = iconID;
+            this.clickListener = clickListener;
+        }
     }
 }

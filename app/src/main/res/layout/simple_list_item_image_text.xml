@@ -2,38 +2,39 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/activity_default_margin"
+    android:background="?android:selectableItemBackground"
     android:paddingBottom="@dimen/activity_default_margin"
-    android:paddingRight="@dimen/activity_default_margin">
+    android:paddingRight="@dimen/activity_default_margin"
+    android:paddingTop="@dimen/activity_default_margin">
 
     <ImageView
-        android:scaleType="centerInside"
-        android:layout_centerInParent="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:id="@+id/simple_list_item_image"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerInParent="true"
+        android:scaleType="centerInside" />
 
     <TextView
-        android:paddingLeft="@dimen/activity_default_margin_s"
-        android:layout_centerInParent="true"
-        android:textSize="@dimen/text_middle"
-        android:gravity="center_vertical|start"
         android:id="@+id/simple_list_item_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_toEndOf="@+id/simple_list_item_image"
         android:layout_toRightOf="@+id/simple_list_item_image"
-        android:layout_toEndOf="@+id/simple_list_item_image" />
+        android:gravity="center_vertical|start"
+        android:paddingLeft="@dimen/activity_default_margin_s"
+        android:textSize="@dimen/text_middle" />
 
     <TextView
         android:id="@+id/simple_list_item_msg"
-        android:textSize="@dimen/text_small_s"
-        android:layout_marginLeft="@dimen/activity_default_margin_s"
-        android:gravity="start|bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/simple_list_item_text"
+        android:layout_marginLeft="@dimen/activity_default_margin_s"
         android:layout_toEndOf="@id/simple_list_item_text"
-        android:layout_toRightOf="@id/simple_list_item_text" />
+        android:layout_toRightOf="@id/simple_list_item_text"
+        android:gravity="start|bottom"
+        android:textSize="@dimen/text_small_s" />
 </RelativeLayout>

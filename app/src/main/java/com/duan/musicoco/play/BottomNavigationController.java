@@ -658,7 +658,7 @@ public class BottomNavigationController implements
                     }
                     break;
                 case R.id.play_show_more:
-                    if (mDialog.getDialog().isShowing()) {
+                    if (mDialog.isShowing()) {
                         mDialog.hide();
                     } else {
                         Song s = null;
@@ -667,7 +667,9 @@ public class BottomNavigationController implements
                         } catch (RemoteException e) {
                             e.printStackTrace();
                         }
-                        mDialog.setSong(mediaManager.getSongInfo(s));
+                        SongInfo info = mediaManager.getSongInfo(s);
+                        String title = activity.getString(R.string.song) + ": " + info.getTitle();
+                        mDialog.setTitle(title);
                         mDialog.show();
                     }
                     break;
@@ -721,8 +723,8 @@ public class BottomNavigationController implements
             mDialog.setDivideColor(vicTC);
             mDialog.setTitleTextColor(mainTC);
 
-            moreOptionsAdapter.setTextColor(vicTC);
-            moreOptionsAdapter.setIconColor(mainTC);
+            moreOptionsAdapter.setTextColor(mainTC);
+            moreOptionsAdapter.setIconColor(vicTC);
         }
 
         int updatePlayMode() {
@@ -826,7 +828,7 @@ public class BottomNavigationController implements
         }
 
         public void initData() {
-            moreOptionsAdapter = new OptionsAdapter(activity, getIconsID(), getTexts(), null);
+            moreOptionsAdapter = new OptionsAdapter(activity, getIconsID(), getTexts(), null, null);
             mDialog.setAdapter(moreOptionsAdapter);
         }
 
@@ -847,28 +849,35 @@ public class BottomNavigationController implements
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            final SongInfo info = mDialog.getSong();
-            final Song song = new Song(info.getData());
-            if (info != null) {
-                switch (position) {
-                    case 0:
-                        songOperation.handleCollectToSheet(info);
-                        break;
-                    case 1:
-                        songOperation.checkSongDetail(info);
-                        break;
-                    case 2: //从歌单中移除
-                        songOperation.removeSongFromSheet(song);
-                        break;
-                    case 3: {//彻底删除
-                        songOperation.deleteSongFromDisk(song);
-                        break;
+
+            try {
+                Song song = control.currentSong();
+                SongInfo info = mediaManager.getSongInfo(song);
+                if (info != null) {
+                    switch (position) {
+                        case 0:
+                            songOperation.handleCollectToSheet(info);
+                            break;
+                        case 1:
+                            songOperation.checkSongDetail(song);
+                            break;
+                        case 2: //从歌单中移除
+                            songOperation.removeSongFromSheet(song);
+                            break;
+                        case 3: {//彻底删除
+                            songOperation.deleteSongFromDisk(song);
+                            break;
+                        }
+                        default:
+                            break;
                     }
-                    default:
-                        break;
                 }
+                mDialog.hide();
+
+            } catch (RemoteException e) {
+                e.printStackTrace();
             }
-            mDialog.hide();
+
         }
     }
 }

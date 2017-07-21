@@ -3,6 +3,7 @@ package com.duan.musicoco.view;
 import android.content.Context;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
@@ -85,6 +86,18 @@ public class TextInputHelper {
             holder.editText.setText(text);
         }
         return holder;
+    }
+
+    //错误信息闪烁
+    public static void textInputErrorTwinkle(TextInputLayout il, String str) {
+        String error = (String) il.getError();
+        if (TextUtils.isEmpty(error)) {
+            error = TextUtils.isEmpty(str) ? "!" : str;
+        }
+
+        il.setErrorEnabled(false);
+        il.setError(error);
+        il.setErrorEnabled(true);
     }
 
     public class ViewHolder {

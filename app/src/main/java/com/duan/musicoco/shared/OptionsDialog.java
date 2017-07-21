@@ -13,7 +13,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnViewVisibilityChange;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.PullDownLinearLayout;
@@ -33,7 +32,6 @@ public class OptionsDialog implements
     private ListView listView;
 
     private Activity activity;
-    private SongInfo song;
 
     public OptionsDialog(Activity activity) {
         this.activity = activity;
@@ -110,19 +108,6 @@ public class OptionsDialog implements
         return listView;
     }
 
-    public void setSong(SongInfo info) {
-        String title = activity.getString(R.string.song_operation_detail);
-        if (info != null) {
-            title = "歌曲：" + info.getTitle();
-            this.song = info;
-        }
-        titleText.setText(title);
-    }
-
-    public SongInfo getSong() {
-        return song;
-    }
-
     public void setTitleTextColor(int color) {
         titleText.setTextColor(color);
     }
@@ -151,5 +136,13 @@ public class OptionsDialog implements
         if (mDialog.isShowing()) {
             mDialog.dismiss();
         }
+    }
+
+    public boolean isShowing() {
+        return mDialog.isShowing();
+    }
+
+    public void setTitle(String title) {
+        titleText.setText(title);
     }
 }

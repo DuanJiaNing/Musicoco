@@ -81,11 +81,11 @@ public class MySheetsController implements
     public void initData(IPlayControl control) {
         this.control = control;
 
-        adapter = new MySheetsAdapter(activity, sheets, dbMusicoco, mediaManager, control);
+        mySheetsOperation = new MySheetsOperation(activity, control, dbMusicoco);
+
+        adapter = new MySheetsAdapter(activity, sheets, dbMusicoco, mediaManager, control, mySheetsOperation);
         mListView.setAdapter(adapter);
         ((NestedScrollView) activity.findViewById(R.id.main_scroll)).smoothScrollTo(0, 0);
-
-        mySheetsOperation = new MySheetsOperation(activity, control, dbMusicoco);
 
         hasInitData = true;
     }
@@ -115,11 +115,12 @@ public class MySheetsController implements
                 cs = ColorUtils.get4WhiteThemeColors(activity);
                 break;
         }
-        int mainTC = cs[1];
-        int vicTC = cs[3];
         int mainBC = cs[0];
+        int mainTC = cs[1];
+        int vicBC = cs[2];
+        int vicTC = cs[3];
 
-        adapter.themeChange(theme, new int[]{mainTC, vicTC, mainBC});
+        adapter.themeChange(theme, cs);
 
         mTitle.setTextColor(mainTC);
         mTitleLine.setBackgroundColor(vicTC);

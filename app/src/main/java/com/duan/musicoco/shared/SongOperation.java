@@ -46,15 +46,13 @@ public class SongOperation {
         String[] counts;
 
         List<Sheet> sheets = dbMusicoco.getSheets();
-        names = new String[sheets.size() + 1];
-        counts = new String[sheets.size() + 1];
+        names = new String[sheets.size()];
+        counts = new String[sheets.size()];
         for (int i = 0; i < sheets.size(); i++) {
             Sheet s = sheets.get(i);
             names[i] = s.name;
             counts[i] = s.count + "首";
         }
-        names[names.length - 1] = activity.getString(R.string.new_sheet) + " + ";
-        counts[names.length - 1] = "";
 
         res.put(0, names);
         res.put(1, counts);
@@ -67,7 +65,8 @@ public class SongOperation {
         DialogProvider manager = new DialogProvider(activity);
         ListView listView = new ListView(activity);
         listView.setDivider(new ColorDrawable(Color.TRANSPARENT));
-        OptionsAdapter adapter = new OptionsAdapter(activity, null, res.get(0), res.get(1));
+        OptionsAdapter adapter = new OptionsAdapter(activity, null, res.get(0), res.get(1), null);
+
         adapter.setPaddingLeft(30);
         listView.setAdapter(adapter);
         final AlertDialog dialog = manager.createCustomInsiderDialog(
@@ -76,20 +75,18 @@ public class SongOperation {
                 listView
         );
 
+        addNewSheetOption(adapter, dialog);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == (res.get(0).length - 1)) {
-                    new MySheetsOperation(activity, control, dbMusicoco).handleAddSheet();
+                String sheetName = res.get(0)[position];
+                Song song = new Song(info.getData());
+                if (dbMusicoco.addSongToSheet(sheetName, song)) {
+                    String msg = activity.getString(R.string.success_add_to_sheet) + " [" + sheetName + "]";
+                    ToastUtils.showShortToast(activity, msg);
                 } else {
-                    String sheetName = res.get(0)[position];
-                    Song song = new Song(info.getData());
-                    if (dbMusicoco.addSongToSheet(sheetName, song)) {
-                        String msg = activity.getString(R.string.success_add_to_sheet) + " [" + sheetName + "]";
-                        ToastUtils.showShortToast(activity, msg);
-                    } else {
-                        ToastUtils.showShortToast(activity, activity.getString(R.string.error_song_is_already_in_sheet));
-                    }
+                    ToastUtils.showShortToast(activity, activity.getString(R.string.error_song_is_already_in_sheet));
                 }
                 dialog.dismiss();
             }
@@ -98,8 +95,23 @@ public class SongOperation {
         dialog.show();
     }
 
-    public void checkSongDetail(SongInfo info) {
-        new ActivityManager(activity).startSongDetailActivity(new Song(info.getData()));
+    private void addNewSheetOption(OptionsAdapter optionsAdapter, final AlertDialog dialog) {
+        OptionsAdapter.Option newSheet = new OptionsAdapter.Option(activity.getString(R.string.new_sheet));
+        newSheet.clickListener = new OptionsAdapter.OptionClickListener() {
+            @Override
+            public void onClick(OptionsAdapter.ViewHolder holder, int position) {
+                new MySheetsOperation(activity, control, dbMusicoco).handleAddSheet();
+                dialog.hide();
+            }
+        };
+        newSheet.iconID = R.drawable.ic_action_add;
+
+        optionsAdapter.addOption(newSheet);
+        optionsAdapter.notifyDataSetChanged();
+    }
+
+    public void checkSongDetail(Song song) {
+        new ActivityManager(activity).startSongDetailActivity(song);
     }
 
     public void deleteSongFromDisk(final Song song) {
@@ -130,7 +142,7 @@ public class SongOperation {
 
         String msg = activity.getString(R.string.error_delete_file_fail);
         if (FileUtils.deleteFile(song.path)) {
-            dbMusicoco.removeSongInfoFromBothTable(song);
+            dbMusicoco.removeSongInfo(song);
             msg = activity.getString(R.string.success_delete_file);
         }
 
@@ -141,7 +153,7 @@ public class SongOperation {
         try {
             //需要在服务器移除前修改数据库
             int sheetID = control.getPlayListId();
-            dbMusicoco.removeSongFromSheet(song, sheetID);
+            dbMusicoco.removeSongInfoFromSheet(song, sheetID);
 
             control.remove(song);
         } catch (RemoteException e) {

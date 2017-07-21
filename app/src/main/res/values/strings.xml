@@ -9,6 +9,9 @@
     <string name="title_play_list">播放列表</string>
     <string name="title_lyric">歌词</string>
 
+    <string name="song">歌曲</string>
+    <string name="sheet">歌单</string>
+
     <string name="permission_required">应用需要这些权限以读取歌曲文件，否则程序将无法正常工作并退出！</string>
     <string name="permission_media_read">媒体文件读取权限</string>
 
@@ -61,7 +64,9 @@
     <string name="success_delete_file">成功删除文件 :)</string>
 
     <string name="warning">警告</string>
+    <string name="ensure">确认</string>
+    <string name="cancel">取消</string>
     <string name="not_modify">未修改</string>
-    <string name="delete_confirm">确认删除</string>
+    <string name="delete_confirm">确认删除，删除后将无法恢复！</string>
 
 </resources>

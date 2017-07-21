@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.util.StringUtils;
 
 import java.util.ArrayList;
@@ -602,7 +603,8 @@ public class DBMusicocoController {
 
     }
 
-    public boolean removeSongInfoFromBothTable(Song song) {
+    //removeSongInfoFromBothTable
+    public boolean removeSongInfo(Song song) {
         DBSongInfo info = getSongInfo(song);
         boolean r = false;
 
@@ -617,7 +619,7 @@ public class DBMusicocoController {
 
             database.endTransaction();
         }
-        Log.i(TAG, "removeSongInfoFromBothTable: " + song.path);
+        Log.i(TAG, "removeSongInfo: " + song.path);
         return r;
     }
 
@@ -630,7 +632,8 @@ public class DBMusicocoController {
         return true;
     }
 
-    public boolean removeSongFromSheet(Song song, int sheetID) {
+    //从歌单中移除该歌曲
+    public boolean removeSongInfoFromSheet(Song song, int sheetID) {
 
         DBSongInfo info = getSongInfo(song);
         if (info == null) {
@@ -652,7 +655,7 @@ public class DBMusicocoController {
         }
 
         if (-1 == index) {
-            Log.e(TAG, "removeSongFromSheet: the sheet not contain the song " + song.path + " sheet:" + sheetID);
+            Log.e(TAG, "removeSongInfoFromSheet: the sheet not contain the song " + song.path + " sheet:" + sheetID);
             return true;
         } else {
             int i = 0;
@@ -666,13 +669,13 @@ public class DBMusicocoController {
 
             updateSongSheet(song, newSheets);
             minusSheetCount(sheetID);
-            Log.i(TAG, "removeSongFromSheet:  " + song.path + " sheet:" + sheetID);
+            Log.i(TAG, "removeSongInfoFromSheet:  " + song.path + " sheet:" + sheetID);
             return true;
         }
     }
 
 
-    public boolean removeSongFromSheet(Song song, String sheetName) {
+    public boolean removeSongInfoFromSheet(Song song, String sheetName) {
 
         DBSongInfo info = getSongInfo(song);
         if (info == null) {
@@ -681,7 +684,7 @@ public class DBMusicocoController {
 
         Sheet sheet = getSheet(sheetName);
         if (sheet != null) {
-            return removeSongFromSheet(song, sheet.id);
+            return removeSongInfoFromSheet(song, sheet.id);
         } else {
             return false;
         }
@@ -716,5 +719,42 @@ public class DBMusicocoController {
         database.update(TABLE_SHEET, values, whereClause, whereArgs);
         Log.i(TAG, "updateSheet: " + sheet.name + " " + newName + " " + newRemark);
         return null;
+    }
+
+    public boolean removeSheet(int sheetID) {
+
+        Sheet sheet = getSheet(sheetID);
+        if (sheet != null) {
+            database.beginTransaction();
+            List<DBSongInfo> infos = getSongInfos();
+            Song song = new Song("");
+            for (DBSongInfo d : infos) {
+                int[] ss = d.sheets;
+                for (int i : ss) {
+                    if (sheetID == i) {
+                        song.path = d.path;
+                        removeSongInfoFromSheet(song, sheetID);
+                    }
+                }
+            }
+
+            removeSheetFromSheetTableOnly(sheetID);
+            database.endTransaction();
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    public void removeSheetFromSheetTableOnly(int sheetID) {
+        Sheet sheet = getSheet(sheetID);
+        if (sheet == null) {
+            return;
+        }
+
+        String where = SHEET_ID + " = ?";
+        String[] whereArg = new String[]{sheetID + ""};
+        database.delete(TABLE_SHEET, where, whereArg);
     }
 }

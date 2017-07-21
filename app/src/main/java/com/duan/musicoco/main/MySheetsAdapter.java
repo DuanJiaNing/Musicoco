@@ -1,13 +1,11 @@
 package com.duan.musicoco.main;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.RemoteException;
-import android.test.MoreAsserts;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +14,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
@@ -29,10 +26,9 @@ import com.duan.musicoco.db.DBSongInfo;
 import com.duan.musicoco.db.Sheet;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
-import com.duan.musicoco.shared.DialogProvider;
+import com.duan.musicoco.shared.MySheetsOperation;
 import com.duan.musicoco.shared.OptionsAdapter;
 import com.duan.musicoco.shared.OptionsDialog;
-import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.view.media.PlayView;
@@ -52,53 +48,87 @@ import rx.schedulers.Schedulers;
 
 public class MySheetsAdapter extends BaseAdapter implements
         OnThemeChange,
-        AdapterView.OnItemClickListener,
         PlayView.OnCheckedChangeListener {
 
-    private Activity activity;
-    private List<Sheet> sheets;
-    private DBMusicocoController dbMusicoco;
-    private MediaManager mediaManager;
+    private final Activity activity;
+    private final List<Sheet> sheets;
+    private final DBMusicocoController dbMusicoco;
+    private final MediaManager mediaManager;
+    private final MySheetsOperation mySheetsOperation;
+    private final IPlayControl control;
 
-    private int colorMain;
-    private int colorVic;
-    private int colorMainB;
+    private int mainTC;
+    private int mainBC;
+    private int vicTC;
+    private int vicBC;
     private final OptionsDialog mDialog;
     private OptionsAdapter moreOptionsAdapter;
 
     private Bitmap defaultBitmap;
 
     private View.OnClickListener moreClickListener;
-    private IPlayControl control;
 
-    public MySheetsAdapter(final Activity activity, List<Sheet> sheets, DBMusicocoController dbMusicoco, MediaManager mediaManager, final IPlayControl control) {
+    private Sheet currentClickMoreOperationItem;
+
+    public MySheetsAdapter(Activity activity, List<Sheet> sheets,
+                           DBMusicocoController dbMusicoco, MediaManager mediaManager,
+                           IPlayControl control, MySheetsOperation mySheetsOperation) {
         this.activity = activity;
         this.sheets = sheets;
         this.control = control;
         this.dbMusicoco = dbMusicoco;
         this.mediaManager = mediaManager;
+        this.mySheetsOperation = mySheetsOperation;
         this.mDialog = new OptionsDialog(activity);
 
-        mDialog.setOnItemClickListener(this);
-        moreOptionsAdapter = new OptionsAdapter(activity, getIconsID(), getTexts(), null);
+        moreOptionsAdapter = new OptionsAdapter(activity);
+        initAdapterData();
         mDialog.setAdapter(moreOptionsAdapter);
 
         moreClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Sheet sheet = (Sheet) v.getTag();
-
+                if (mDialog.isShowing()) {
+                    mDialog.hide();
+                } else {
+                    Sheet sheet = (Sheet) v.getTag();
+                    currentClickMoreOperationItem = sheet;
+                    String title = MySheetsAdapter.this.activity.getString(R.string.sheet) + ": " + sheet.name;
+                    mDialog.setTitle(title);
+                    mDialog.show();
+                }
             }
         };
 
     }
 
-    private String[] getTexts() {
-        return new String[0];
-    }
+    private void initAdapterData() {
+        String mt = activity.getString(R.string.sheet_operation_modify);
+        int mi = R.drawable.ic_poll;
+        OptionsAdapter.Option modify = new OptionsAdapter.Option(mt);
+        modify.iconID = mi;
+        modify.clickListener = new OptionsAdapter.OptionClickListener() {
+            @Override
+            public void onClick(OptionsAdapter.ViewHolder holder, int position) {
+                mySheetsOperation.handleModifySheet(currentClickMoreOperationItem);
+                mDialog.hide();
+            }
+        };
+        moreOptionsAdapter.addOption(modify);
 
-    private int[] getIconsID() {
-        return new int[0];
+        String dt = activity.getString(R.string.sheet_operation_delete);
+        int di = R.drawable.ic_delete_forever_black_24dp;
+        OptionsAdapter.Option delete = new OptionsAdapter.Option(dt);
+        delete.iconID = di;
+        delete.clickListener = new OptionsAdapter.OptionClickListener() {
+            @Override
+            public void onClick(OptionsAdapter.ViewHolder holder, int position) {
+                mySheetsOperation.deleteSheet(currentClickMoreOperationItem.id);
+                mDialog.hide();
+            }
+        };
+        moreOptionsAdapter.addOption(delete);
+
     }
 
     private void changePlayList(Sheet sheet) throws RemoteException {
@@ -166,12 +196,12 @@ public class MySheetsAdapter extends BaseAdapter implements
         holder.more.setTag(sheet);
         holder.more.setOnClickListener(moreClickListener);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            holder.more.getDrawable().setTint(colorVic);
+            holder.more.getDrawable().setTint(vicTC);
         }
 
         holder.play.setTag(sheet);
-        holder.play.setTriangleColor(colorMainB);
-        holder.play.setPauseLineColor(colorMainB);
+        holder.play.setTriangleColor(mainBC);
+        holder.play.setPauseLineColor(mainBC);
         holder.play.setOnCheckedChangeListener(this);
 
         try {
@@ -185,16 +215,16 @@ public class MySheetsAdapter extends BaseAdapter implements
             e.printStackTrace();
         }
 
-        holder.name.setTextColor(colorMain);
+        holder.name.setTextColor(mainTC);
         holder.name.setText(name);
 
-        holder.remark.setTextColor(colorVic);
+        holder.remark.setTextColor(vicTC);
         holder.remark.setText(remark);
 
-        holder.count.setTextColor(colorVic);
+        holder.count.setTextColor(vicTC);
         holder.count.setText(count + "首");
 
-        holder.playTimes.setTextColor(colorVic);
+        holder.playTimes.setTextColor(vicTC);
         holder.playTimes.setText(playTimes + "次");
 
         return convertView;
@@ -246,16 +276,20 @@ public class MySheetsAdapter extends BaseAdapter implements
     @Override
     public void themeChange(Theme theme, int[] colors) {
 
-        colorMain = colors[0];
-        colorVic = colors[1];
-        colorMainB = colors[2];
+        mainBC = colors[0];
+        mainTC = colors[1];
+        vicBC = colors[2];
+        vicTC = colors[3];
+
+        mDialog.setTitleBarBgColor(vicBC);
+        mDialog.setContentBgColor(mainBC);
+        mDialog.setDivideColor(vicTC);
+        mDialog.setTitleTextColor(mainTC);
+
+        moreOptionsAdapter.setTextColor(mainTC);
+        moreOptionsAdapter.setIconColor(vicTC);
 
         notifyDataSetChanged();
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
     }
 
     @Override

@@ -411,10 +411,10 @@ public class DiscreteSeekBar extends View {
     }
 
     /**
-     * Sets a listener to receive notifications of changes to the DiscreteSeekBar's progress level. Also
+     * Sets a clickListener to receive notifications of changes to the DiscreteSeekBar's progress level. Also
      * provides notifications of when the DiscreteSeekBar shows/hides the bubble indicator.
      *
-     * @param listener The seek bar notification listener
+     * @param listener The seek bar notification clickListener
      * @see OnProgressChangeListener
      */
     public void setOnProgressChangeListener(@Nullable OnProgressChangeListener listener) {

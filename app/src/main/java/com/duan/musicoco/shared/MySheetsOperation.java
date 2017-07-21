@@ -2,6 +2,7 @@ package com.duan.musicoco.shared;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,7 +74,7 @@ public class MySheetsOperation {
                 ll
         );
 
-        manager.setOnPositiveButtonListener("确定", new DialogProvider.OnClickListener() {
+        manager.setOnPositiveButtonListener(activity.getString(R.string.ensure), new DialogProvider.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String name = nameHolder.editText.getText().toString();
@@ -85,9 +86,14 @@ public class MySheetsOperation {
                     String remark = remarkHolder.editText.getText().toString();
                     remark = TextUtils.isEmpty(remark) ? "" : remark;
 
-                    String res = dbMusicoco.addSheet(name, remark, 0);
-                    if (res != null) {
-                        error = res;
+                    if (nameHolder.textInputLayout.isErrorEnabled()) {
+                        TextInputHelper.textInputErrorTwinkle(nameHolder.textInputLayout, "!");
+                        return;
+                    } else {
+                        String res = dbMusicoco.addSheet(name, remark, 0);
+                        if (res != null) {
+                            error = res;
+                        }
                     }
                 }
 
@@ -95,7 +101,7 @@ public class MySheetsOperation {
                     nameHolder.textInputLayout.setError(error);
                     nameHolder.textInputLayout.setErrorEnabled(true);
                 } else {
-                    String msg = activity.getString(R.string.success_create_sheet) + "[" + name + "]";
+                    String msg = activity.getString(R.string.success_create_sheet) + " [" + name + "]";
                     ToastUtils.showShortToast(activity, msg);
                     BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED);
                     dialog.dismiss();
@@ -103,7 +109,7 @@ public class MySheetsOperation {
             }
         });
 
-        manager.setOnNegativeButtonListener("取消", new DialogProvider.OnClickListener() {
+        manager.setOnNegativeButtonListener(activity.getString(R.string.cancel), new DialogProvider.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
@@ -152,11 +158,11 @@ public class MySheetsOperation {
         ll.addView(remarkHolder.view);
         final AlertDialog dialog = manager.createCustomInsiderDialog(
                 newSheet,
-                "歌单：" + oldName + " (" + StringUtils.getGenDateYMD(sheet.create) + ")",
+                activity.getString(R.string.sheet) + ": " + oldName + " (" + StringUtils.getGenDateYMD(sheet.create) + ")",
                 ll
         );
 
-        manager.setOnPositiveButtonListener("确定", new DialogProvider.OnClickListener() {
+        manager.setOnPositiveButtonListener(activity.getString(R.string.ensure), new DialogProvider.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String newName = nameHolder.editText.getText().toString();
@@ -173,9 +179,14 @@ public class MySheetsOperation {
                 } else {
                     newRemark = TextUtils.isEmpty(newRemark) ? "" : newRemark;
 
-                    String res = dbMusicoco.updateSheet(sheet.id, newName, newRemark);
-                    if (res != null) {
-                        error = res;
+                    if (nameHolder.textInputLayout.isErrorEnabled()) {
+                        TextInputHelper.textInputErrorTwinkle(nameHolder.textInputLayout, "!");
+                        return;
+                    } else {
+                        String res = dbMusicoco.updateSheet(sheet.id, newName, newRemark);
+                        if (res != null) {
+                            error = res;
+                        }
                     }
                 }
 
@@ -183,7 +194,7 @@ public class MySheetsOperation {
                     nameHolder.textInputLayout.setError(error);
                     nameHolder.textInputLayout.setErrorEnabled(true);
                 } else {
-                    String msg = activity.getString(R.string.success_modify_sheet) + "[" + newName + "]";
+                    String msg = activity.getString(R.string.success_modify_sheet) + " [" + newName + "]";
                     ToastUtils.showShortToast(activity, msg);
                     BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED);
                     dialog.dismiss();
@@ -191,7 +202,7 @@ public class MySheetsOperation {
             }
         });
 
-        manager.setOnNegativeButtonListener("取消", new DialogProvider.OnClickListener() {
+        manager.setOnNegativeButtonListener(activity.getString(R.string.cancel), new DialogProvider.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
@@ -201,8 +212,18 @@ public class MySheetsOperation {
         dialog.show();
     }
 
-    public void deleteSheet(int sheetID) {
+    public void deleteSheet(final int sheetID) {
+        DialogProvider provider = new DialogProvider(activity);
+        final Dialog dialog = provider.createPromptDialog(
+                activity.getString(R.string.warning),
+                activity.getString(R.string.delete_confirm));
 
+        provider.setOnPositiveButtonListener(activity.getString(R.string.ensure), new DialogProvider.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dbMusicoco.removeSheet(sheetID);
+            }
+        });
     }
 
 }
