@@ -206,6 +206,7 @@ public class PlayListAdapter extends BaseAdapter implements
     }
 
     public void updateColors(Theme theme, int[] colors) {
+        Log.d("update", "PlayListAdapter updateColors");
 
         colorMain = colors[0];
         colorVic = colors[1];
@@ -220,7 +221,7 @@ public class PlayListAdapter extends BaseAdapter implements
 
     @Override
     public void update(Object obj, OnUpdateStatusChanged statusChanged) {
-        Log.d(TAG, "play list adapter: data update");
+        Log.d("update", "PlayListAdapter update");
         try {
 
             List<Song> ss = control.getPlayList();

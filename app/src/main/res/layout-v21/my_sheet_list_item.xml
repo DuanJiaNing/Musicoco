@@ -30,6 +30,7 @@
                 android:src="@drawable/default_album" />
 
             <com.duan.musicoco.view.media.PlayView
+                android:background="@color/my_sheet_play_bg"
                 android:id="@+id/sheets_item_play"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

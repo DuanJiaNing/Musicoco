@@ -15,6 +15,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -388,11 +389,13 @@ public class BottomNavigationController implements
 
     @Override
     public void update(Object obj, OnUpdateStatusChanged completed) {
+        Log.d("update", "play/BottomNavigationController update");
         playListAdapter.update(obj, completed);
         listOption.update(obj, completed);
     }
 
     public void updatePlayMode() {
+        Log.d("update", "play/BottomNavigationController updatePlayMode");
         if (songOption != null) {
             songOption.updatePlayMode();
         }
@@ -408,6 +411,7 @@ public class BottomNavigationController implements
     }
 
     public void updateFavorite() {
+        Log.d("update", "play/BottomNavigationController updateFavorite");
         try {
             Song song = control.currentSong();
             if (song != null) {
@@ -422,6 +426,7 @@ public class BottomNavigationController implements
     }
 
     public void updateColors(int color, boolean isVarying) {
+        Log.d("update", "play/BottomNavigationController updateColors");
         int alpha = activity.getResources().getInteger(R.integer.play_list_bg_alpha);
         int colorA = ColorUtils.setAlphaComponent(color, alpha);
 
@@ -509,6 +514,7 @@ public class BottomNavigationController implements
         }
 
         private void updateCurrentSheet() {
+            Log.d("update", "play/BottomNavigationController updateCurrentSheet");
             try {
                 int id = control.getPlayListId();
                 if (id < 0) {
@@ -537,6 +543,7 @@ public class BottomNavigationController implements
         }
 
         public void updateColors() {
+            Log.d("update", "play/BottomNavigationController ListOption#updateColors");
 
             mSheet.setTextColor(currentDrawableColor);
 
@@ -552,6 +559,7 @@ public class BottomNavigationController implements
 
         @Override
         public void update(Object obj, OnUpdateStatusChanged statusChanged) {
+            Log.d("update", "play/BottomNavigationController ListOption#update");
             updateCurrentSheet();
         }
     }
@@ -655,7 +663,7 @@ public class BottomNavigationController implements
 
                     dbMusicoco.updateSongFavorite(song, reverse);
                     //广播通知 MainActivity 更新 MainSheetsController
-                    BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MAIN_SHEET_CHANGED);
+                    BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MAIN_SHEET_CHANGED, null);
 
                 }
             } catch (RemoteException e) {
@@ -705,6 +713,7 @@ public class BottomNavigationController implements
         }
 
         public void updateColors() {
+            Log.d("update", "play/BottomNavigationController SongOption#updateColors");
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 hidePlayListBar.getDrawable().setTint(currentDrawableColor);
@@ -745,6 +754,7 @@ public class BottomNavigationController implements
         }
 
         int updatePlayMode() {
+            Log.d("update", "play/BottomNavigationController SongOption#updatePlayMode");
 
             Drawable drawable = null;
             int mode = PlayController.MODE_LIST_LOOP;
@@ -788,6 +798,7 @@ public class BottomNavigationController implements
         }
 
         private void updateCurrentFavorite(boolean favorite, boolean useAnim) {
+            Log.d("update", "play/BottomNavigationController SongOption#updateCurrentFavorite");
 
             int color = 0;
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {

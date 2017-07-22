@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 
 /**
  * 管理广播
@@ -24,8 +26,11 @@ public class BroadcastManager {
     /**
      * 发送广播
      */
-    static public void sendMyBroadcast(Context context, String identity) {
+    static public void sendMyBroadcast(Context context, String identity, @Nullable Bundle extras) {
         Intent intent = new Intent();
+        if (extras != null) {
+            intent.putExtras(extras);
+        }
         intent.setAction(identity);
         context.sendBroadcast(intent);
     }

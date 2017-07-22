@@ -1,0 +1,72 @@
+应用数据加载（更新）路径记录
+以打印 log 的方式记录，前缀：
+07-22 13:55:07.664 6407-6407/com.duan.musicoco D/update:
+
+
+MainActivity 启动时的更新路径
+    MainActivity#update
+      1 - BottomNavigationController#update
+            - updateCurrentSheet
+            - updatePlayMode
+            - updateProgress
+            - updateSongInfo
+      2 - RecentMostPlayController#update  (rxjava 异步)
+            - updateText
+            - updateImage
+            - updateColors
+      3 - MainSheetController#update  (rxjava 异步)
+            - updateAll
+            - updateTextAndColor
+            - updateRecent
+            - updateTextAndColor
+            - updateFavorite
+      4 - MySheetController update  (同步)
+
+
+PlayActivity 启动时的更新路径
+  1 RootActivity#permissionGranted#initChildViews
+    PlayActivity#initViews
+        - themeChange
+            - updateColors
+                - BottomNavigationController#updateColors
+                    - ListOption#updateColors
+                    - SongOption#updateColors
+
+  2 PlayActivity#onConnected#initSelfData
+        - BottomNavigationController#initData
+            - PlayListAdapter#init(构造函数)
+                - update
+            - themeChange
+                - updateColors
+                    - PlayListAdapter#updateColors
+                    - ListOption#updateColors
+                    - SongOption#updateColors
+            - SongOption#updatePlayMode
+        - BottomNavigationController#update
+            - PlayListAdapter#update
+            - ListOption#update
+                - updateCurrentSheet
+        - PlayActivity#songChanged
+            - synchronize
+                - updateData
+                - updateStatus
+                    - BottomNavigationController#updatePlayMode
+                        - SongOption#updatePlayMode
+                - updateColors
+                    - BottomNavigationController#updateColors
+                        - PlayListAdapter#updateColors
+                        - ListOption#updateColors
+                        - SongOption#updateColors
+                - BottomNavigationController updateFavorite
+                    - SongOption#updateCurrentFavorite
+
+
+
+
+
+
+
+
+
+
+

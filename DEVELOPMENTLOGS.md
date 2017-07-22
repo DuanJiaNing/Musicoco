@@ -205,3 +205,7 @@
 6 android studio 的 lint 提示 call new method on old api ，设置回<br>
 7 修复 MainSheetHelper 获取数据时未实时更新的问题<br>
 8 为 PlayList 的 item 添加 编号，主界面的播放列表显示的时候滚动到当前曲目<br>
+
+- 2017-07-22
+
+1播放列表切换逻辑完善

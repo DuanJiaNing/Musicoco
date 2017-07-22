@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PersistableBundle;
+import android.os.RemoteException;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -18,14 +19,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.aidl.IPlayControl;
+import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.app.manager.PlayServiceManager;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
+import com.duan.musicoco.db.DBMusicocoController;
+import com.duan.musicoco.db.DBSongInfo;
+import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.play.PlayServiceConnection;
 import com.duan.musicoco.preference.Theme;
+import com.duan.musicoco.shared.MySheetsOperation;
+import com.duan.musicoco.util.SongUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends RootActivity implements
         NavigationView.OnNavigationItemSelectedListener,
@@ -223,24 +234,53 @@ public class MainActivity extends RootActivity implements
             public void onReceive(Context context, Intent intent) {
                 Log.d(TAG, "onReceive: mySheetDataChangedReceiver");
                 mySheetsController.update(null, null);
+                isNeedUpdatePlayList(intent);
             }
         };
-        mainSheetDataChangedReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.d(TAG, "onReceive: mainSheetDataChangedReceiver");
-                mainSheetsController.update(null, null);
-            }
-        };
+
+        mainSheetDataChangedReceiver = new
+
+                BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        Log.d(TAG, "onReceive: mainSheetDataChangedReceiver");
+                        mainSheetsController.update(null, null);
+                    }
+                }
+
+        ;
 
         BroadcastManager.registerBroadReceiver(this, mySheetDataChangedReceiver, BroadcastManager.FILTER_MY_SHEET_CHANGED);
         BroadcastManager.registerBroadReceiver(this, mainSheetDataChangedReceiver, BroadcastManager.FILTER_MAIN_SHEET_CHANGED);
     }
 
+    private void isNeedUpdatePlayList(Intent intent) {
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            int sheetID = extras.getInt(MySheetsOperation.DELETEL_SHEET_ID, Integer.MAX_VALUE);
+            try {
+                IPlayControl control = mServiceConnection.takeControl();
+                int cursid = control.getPlayListId();
+                if (sheetID == cursid) {
+
+                    //当前播放歌单属于被删除歌单时需将播放列表置为【全部歌单】
+                    MainSheetHelper helper = new MainSheetHelper(this, dbMusicoco);
+                    List<DBSongInfo> list = helper.getAllSongInfo();
+                    List<Song> songs = SongUtils.DBSongInfoListToSongList(list);
+                    control.setPlayList(songs, 0, MainSheetHelper.SHEET_ALL);
+                    control.pause();
+                }
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
     private void initSelfData() {
 
         bottomNavigationController.initData(mServiceConnection.takeControl(), dbMusicoco);
-        mostPlayController.initData(dbMusicoco, "历史最多播放");
+        mostPlayController.initData(dbMusicoco, getString(R.string.rmp_history));
         mainSheetsController.initData(dbMusicoco);
         mySheetsController.initData(mServiceConnection.takeControl());
 
@@ -272,8 +312,9 @@ public class MainActivity extends RootActivity implements
     }
 
     private void update() {
+        Log.d("update", "MainActivity update");
         bottomNavigationController.update(null, statusChanged);
-        mostPlayController.update("历史最多播放", statusChanged);
+        mostPlayController.update(getString(R.string.rmp_history), statusChanged);
         mainSheetsController.update(null, statusChanged);
         mySheetsController.update(null, statusChanged);
     }

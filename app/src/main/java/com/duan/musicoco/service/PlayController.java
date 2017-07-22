@@ -36,6 +36,10 @@ public class PlayController {
     private boolean isNext = true;
     private int mPlayListId;
 
+    // MediaPlayer 是否调用过 setDataSource，
+    // 否则第一次调用 changeSong 里的 _.reset 方法时 MediaPlayer 会抛 IllegalStateException
+    private boolean hasMediaPlayerInit = false;
+
     public int getPlayListId() {
         return mPlayListId;
     }
@@ -144,11 +148,11 @@ public class PlayController {
         this.mPlayList = songs;
         this.mPlayListId = id;
 
-        Song currentS = songs.get(mCurrentSong);
-        mNotifyPlayListChanged.notify(currentS, current, id);
-
         mCurrentSong = current;
         changeSong();
+
+        Song currentS = songs.get(mCurrentSong);
+        mNotifyPlayListChanged.notify(currentS, current, id);
 
         return currentS;
     }
@@ -329,7 +333,9 @@ public class PlayController {
             mPlayer.stop();
         }
 
-        mPlayer.reset();
+        if (hasMediaPlayerInit) {
+            mPlayer.reset();
+        }
 
         if (mPlayList.size() == 0) {
             mCurrentSong = 0;
@@ -339,6 +345,9 @@ public class PlayController {
             String next = mPlayList.get(mCurrentSong).path;
             try {
                 mPlayer.setDataSource(next);
+                if (!hasMediaPlayerInit) {
+                    hasMediaPlayerInit = true;
+                }
                 mPlayer.prepare();
 
             } catch (IOException e) {

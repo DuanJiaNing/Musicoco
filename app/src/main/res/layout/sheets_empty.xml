@@ -6,11 +6,13 @@
     android:gravity="center">
 
     <TextView
+        android:padding="8dp"
+        android:background="?android:selectableItemBackground"
         android:layout_marginTop="@dimen/activity_default_margin_2x"
-        android:drawableTint="@color/white_d_d_d"
-        android:textColor="@color/white_d_d_d_d"
         android:id="@+id/sheet_empty_add"
         android:clickable="true"
+        android:drawablePadding="3dp"
+        android:drawableBottom="@drawable/line"
         android:drawableTop="@drawable/ic_action_add"
         android:textSize="@dimen/text_middle_s"
         android:text="@string/my_sheet_click_here_for_new_sheet"

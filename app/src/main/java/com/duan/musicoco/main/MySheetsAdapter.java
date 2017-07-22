@@ -30,6 +30,7 @@ import com.duan.musicoco.shared.MySheetsOperation;
 import com.duan.musicoco.shared.OptionsAdapter;
 import com.duan.musicoco.shared.OptionsDialog;
 import com.duan.musicoco.util.BitmapUtils;
+import com.duan.musicoco.util.SongUtils;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.view.media.PlayView;
 
@@ -131,22 +132,6 @@ public class MySheetsAdapter extends BaseAdapter implements
 
     }
 
-    private void changePlayList(Sheet sheet) throws RemoteException {
-        List<DBSongInfo> songInfos = MySheetsAdapter.this.dbMusicoco.getSongInfos(sheet.id);
-        if (songInfos.size() > 0) {
-            List<Song> songs = new ArrayList<>();
-            for (DBSongInfo s : songInfos) {
-                Song song = new Song(s.path);
-                songs.add(song);
-            }
-
-            control.setPlayList(songs, 0, sheet.id);
-            control.playByIndex(0);
-        } else {
-            ToastUtils.showShortToast(activity, activity.getString(R.string.error_empty_sheet));
-        }
-    }
-
     @Override
     public int getCount() {
         return sheets.size();
@@ -165,6 +150,8 @@ public class MySheetsAdapter extends BaseAdapter implements
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
+        Sheet sheet = (Sheet) getItem(position);
+
         if (convertView == null) {
             convertView = LayoutInflater.from(activity).inflate(R.layout.my_sheet_list_item, null);
             holder = new ViewHolder();
@@ -180,18 +167,19 @@ public class MySheetsAdapter extends BaseAdapter implements
                 defaultBitmap = BitmapUtils.bitmapResizeFromResource(activity.getResources(), R.drawable.default_sheet, holder.image.getWidth(), holder.image.getHeight());
 
             }
+
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        Sheet sheet = (Sheet) getItem(position);
         String name = sheet.name;
         String remark = sheet.remark;
         int count = sheet.count;
         int playTimes = sheet.playTimes;
 
-        bindImage(holder, sheet);
+        holder.image.setTag(sheet.name);
+        bindImage(holder.image, sheet);
 
         holder.more.setTag(sheet);
         holder.more.setOnClickListener(moreClickListener);
@@ -230,7 +218,7 @@ public class MySheetsAdapter extends BaseAdapter implements
         return convertView;
     }
 
-    private void bindImage(final ViewHolder holder, final Sheet sheet) {
+    private void bindImage(final ImageView image, final Sheet sheet) {
         Observable.just(sheet.id)
                 .map(new Func1<Integer, Bitmap>() {
                     @Override
@@ -239,7 +227,7 @@ public class MySheetsAdapter extends BaseAdapter implements
                         //FIXME 多线程导致迭代时修改错误
                         List<DBSongInfo> infos = dbMusicoco.getSongInfos(integer);
 //                        TreeSet<DBMusicocoController.DBSongInfo> treeSet = dbMusicoco.descSortByLastPlayTime(infos);
-                        Bitmap bitmap = findBitmap(infos, holder.image);
+                        Bitmap bitmap = findBitmap(infos, image);
                         if (bitmap == null) {
                             bitmap = defaultBitmap;
                         }
@@ -251,12 +239,11 @@ public class MySheetsAdapter extends BaseAdapter implements
                 .subscribe(new Action1<Bitmap>() {
                     @Override
                     public void call(Bitmap bitmap) {
-                        holder.image.setImageBitmap(bitmap);
-
-                        ColorDrawable drawable = new ColorDrawable(Color.BLACK);
-                        drawable.setAlpha(100);
-                        holder.play.setBackground(drawable);
-
+                        if (((String) image.getTag()).equals(sheet.name)) {
+                            image.setImageBitmap(bitmap);
+                        } else {
+                            image.setImageBitmap(defaultBitmap);
+                        }
                     }
                 });
     }
@@ -309,6 +296,19 @@ public class MySheetsAdapter extends BaseAdapter implements
             notifyDataSetChanged();
         } catch (RemoteException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void changePlayList(Sheet sheet) throws RemoteException {
+        List<DBSongInfo> songInfos = dbMusicoco.getSongInfos(sheet.id);
+        if (songInfos.size() > 0) {
+            List<Song> songs = SongUtils.DBSongInfoListToSongList(songInfos);
+
+            //BottomNavigationController#onPlayListChange 被回调，在那里更新 PlayListAdapter
+            control.setPlayList(songs, 0, sheet.id);
+            control.resume();
+        } else {
+            ToastUtils.showShortToast(activity, activity.getString(R.string.error_empty_sheet));
         }
     }
 

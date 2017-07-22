@@ -132,6 +132,11 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
 
     @Override
     public Song setPlayList(List<Song> songs, int current, int id) throws RemoteException {
+
+        if (songs.size() <= 0) {
+            return null;
+        }
+
         int cu = 0;
         if (current >= 0 && current < songs.size()) {
             cu = current;

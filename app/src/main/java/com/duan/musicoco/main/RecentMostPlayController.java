@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.GradientDrawable;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.ImageView;
@@ -150,6 +151,7 @@ public class RecentMostPlayController implements
 
     @Override
     public void update(Object obj, OnUpdateStatusChanged completed) {
+        Log.d("update", "RecentMostPlayController update");
 
         final Object ob = obj;
         Observable.OnSubscribe<Data> onSubscribe = new Observable.OnSubscribe<Data>() {
@@ -235,6 +237,7 @@ public class RecentMostPlayController implements
     }
 
     private void updateImage(@NonNull Bitmap bitmap) {
+        Log.d("update", "RecentMostPlayController updateImage");
         mImage.setImageBitmap(bitmap);
         AlphaAnimation anim = new AlphaAnimation(0.4f, 1.0f);
         anim.setDuration(1000);
@@ -242,6 +245,7 @@ public class RecentMostPlayController implements
     }
 
     private void updateText(SongInfo info, String remark, int maxPlayTime, String type) {
+        Log.d("update", "RecentMostPlayController updateText");
 
         String name = info.getTitle();
         String arts = info.getArtist();
@@ -264,6 +268,7 @@ public class RecentMostPlayController implements
     }
 
     private void updateColors(@NonNull int[] colors) {
+        Log.d("update", "RecentMostPlayController updateColors");
 
         int startC = colors[0];
         int endC = colors[2];

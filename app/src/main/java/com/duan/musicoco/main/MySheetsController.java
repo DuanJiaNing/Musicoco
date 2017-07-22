@@ -2,9 +2,12 @@ package com.duan.musicoco.main;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v4.database.DatabaseUtilsCompat;
 import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -44,6 +47,7 @@ public class MySheetsController implements
         OnEmptyMediaLibrary {
 
     private static final int EMPTY_VIEW = 0x1;
+    private static final int EMPTY_VIEW_INDEX = 2;
     private TextView mTitle;
     private ImageButton mAddSheet;
     private View mTitleLine;
@@ -54,7 +58,7 @@ public class MySheetsController implements
     private DBMusicocoController dbMusicoco;
     private MediaManager mediaManager;
     private MySheetsAdapter adapter;
-    private List<Sheet> sheets;
+    private final List<Sheet> sheets;
     private IPlayControl control;
     private MySheetsOperation mySheetsOperation;
 
@@ -120,7 +124,11 @@ public class MySheetsController implements
         int vicBC = cs[2];
         int vicTC = cs[3];
 
-        adapter.themeChange(theme, cs);
+        if (isEmptyViewVisible()) {
+            emptyViewThemeChange(cs);
+        } else {
+            adapter.themeChange(theme, cs);
+        }
 
         mTitle.setTextColor(mainTC);
         mTitleLine.setBackgroundColor(vicTC);
@@ -130,18 +138,43 @@ public class MySheetsController implements
 
     }
 
+    private void emptyViewThemeChange(int[] colors) {
+
+        int mainBC = colors[0];
+        int mainTC = colors[1];
+        int vicBC = colors[2];
+        int vicTC = colors[3];
+
+        View v = mContainer.getChildAt(EMPTY_VIEW_INDEX);
+        TextView text = (TextView) v.findViewById(R.id.sheet_empty_add);
+
+        text.setTextColor(mainTC);
+        Drawable[] drawables = text.getCompoundDrawables();
+        for (Drawable d : drawables) {
+            if (d != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    d.setTint(vicTC);
+                }
+            }
+        }
+
+    }
+
     @Override
     public void emptyMediaLibrary() {
-        View view = activity.getLayoutInflater().inflate(R.layout.sheets_empty, null);
-        TextView add = (TextView) view.findViewById(R.id.sheet_empty_add);
-        add.setOnClickListener(this);
+        if (!isEmptyViewVisible()) {
+            View view = activity.getLayoutInflater().inflate(R.layout.sheets_empty, null);
+            TextView add = (TextView) view.findViewById(R.id.sheet_empty_add);
+            add.setOnClickListener(this);
 
-        view.setTag(EMPTY_VIEW);
-        mContainer.addView(view, 2);
+            view.setTag(EMPTY_VIEW);
+            mContainer.addView(view, EMPTY_VIEW_INDEX);
+        }
     }
 
     @Override
     public void update(Object obj, OnUpdateStatusChanged completed) {
+        Log.d("update", "MySheetController update");
 
         //注意不能修改 sheets 的引用，否则 notifyDataSetChanged 失效
         List<Sheet> newData = dbMusicoco.getSheets();
@@ -156,12 +189,20 @@ public class MySheetsController implements
             emptyMediaLibrary();
             mTitle.setText(title + "(0)");
         } else {
-            View v = mContainer.getChildAt(2);
-            if (v != null && ((int) v.getTag()) == EMPTY_VIEW) {
-                mContainer.removeView(v);
+            if (isEmptyViewVisible()) {
+                mContainer.removeViewAt(EMPTY_VIEW_INDEX);
             }
             mTitle.setText(title + "(" + sheets.size() + ")");
             adapter.notifyDataSetChanged();
+        }
+    }
+
+    private boolean isEmptyViewVisible() {
+        View v = mContainer.getChildAt(EMPTY_VIEW_INDEX);
+        if (v != null && ((int) v.getTag()) == EMPTY_VIEW) {
+            return true;
+        } else {
+            return false;
         }
     }
 

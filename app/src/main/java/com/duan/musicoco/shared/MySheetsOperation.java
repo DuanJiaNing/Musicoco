@@ -3,6 +3,7 @@ package com.duan.musicoco.shared;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,6 @@ import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.view.TextInputHelper;
 
 import rx.Observable;
-import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -28,6 +28,8 @@ import rx.schedulers.Schedulers;
  */
 
 public class MySheetsOperation {
+
+    public static final String DELETEL_SHEET_ID = "deletel_sheet_id";
 
     private Activity activity;
     private IPlayControl control;
@@ -109,7 +111,7 @@ public class MySheetsOperation {
                 } else {
                     String msg = activity.getString(R.string.success_create_sheet) + " [" + name + "]";
                     ToastUtils.showShortToast(activity, msg);
-                    BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED);
+                    BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
                     dialog.dismiss();
                 }
             }
@@ -202,7 +204,7 @@ public class MySheetsOperation {
                 } else {
                     String msg = activity.getString(R.string.success_modify_sheet) + " [" + newName + "]";
                     ToastUtils.showShortToast(activity, msg);
-                    BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED);
+                    BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
                     dialog.dismiss();
                 }
             }
@@ -251,7 +253,7 @@ public class MySheetsOperation {
                 boolean res = dbMusicoco.removeSheet(sheet.id);
 
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(300);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -278,7 +280,6 @@ public class MySheetsOperation {
                     @Override
                     public void onCompleted() {
                         dialog.dismiss();
-                        BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED);
                     }
 
                     @Override
@@ -287,7 +288,7 @@ public class MySheetsOperation {
                         dialog.dismiss();
                         String msg = activity.getString(R.string.unknown);
                         ToastUtils.showShortToast(activity, msg);
-                        BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED);
+                        BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
                     }
 
                     @Override
@@ -295,12 +296,20 @@ public class MySheetsOperation {
                         if (s) {
                             String msg = activity.getString(R.string.success_delete_sheet) + " [" + sheet.name + "]";
                             ToastUtils.showShortToast(activity, msg);
+                            sendBroadcast(sheet);
                         } else {
                             String msg = activity.getString(R.string.error_delete_sheet_fail);
                             ToastUtils.showShortToast(activity, msg);
+                            BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
                         }
                     }
                 });
+    }
+
+    private void sendBroadcast(Sheet sheet) {
+        Bundle extras = new Bundle();
+        extras.putInt(DELETEL_SHEET_ID, sheet.id);
+        BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED, extras);
     }
 
 }

@@ -83,13 +83,11 @@ class ServiceInit {
         }
     }
 
-    //设置循环模式
     private void initPlayMode() {
         int cm = preference.getPlayMode();
         control.setPlayMode(cm);
     }
 
-    //设置播放列表
     // 配置文件无法跨进程共享，同步工作由客户端负责，服务端只在首次启动时读取
     private void initPlayList() {
         try {
@@ -102,7 +100,12 @@ class ServiceInit {
             } else {
                 list = dbController.getSongInfos(sheetID);
             }
-            control.setPlayList(getSongs(list), 0, sheetID);
+            Song s = control.setPlayList(getSongs(list), 0, sheetID);
+            if (s == null) {
+                //歌单设置失败，重置为【全部歌曲】歌单
+                preference.updateSheet(MainSheetHelper.SHEET_ALL);
+                initPlayList();
+            }
 
         } catch (RemoteException e) {
             e.printStackTrace();

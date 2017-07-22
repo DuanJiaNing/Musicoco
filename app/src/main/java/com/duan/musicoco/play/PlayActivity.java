@@ -11,6 +11,7 @@ import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextSwitcher;
@@ -210,6 +211,7 @@ public class PlayActivity extends RootActivity implements
     }
 
     private void updateStatus(Song song, boolean isNext) {
+        Log.d("update", "PlayActivity updateStatus");
 
         IPlayControl control = mServiceConnection.takeControl();
         try {
@@ -273,6 +275,7 @@ public class PlayActivity extends RootActivity implements
      * 3 暗的柔和颜色 对应适合的字体颜色 辅字体色<br>
      */
     private void updateColors(int[] colors) {
+        Log.d("update", "PlayActivity updateColors");
         if (colors.length != 4) {
             return;
         }
@@ -328,6 +331,7 @@ public class PlayActivity extends RootActivity implements
      * 3 歌曲名，艺术家<br>
      */
     private void updateData(int duration, int progress, String title, String arts) {
+        Log.d("update", "PlayActivity updateData");
 
         tvDuration.setText(StringUtils.getGenTimeMS(duration));
         tvPlayProgress.setText(StringUtils.getGenTimeMS(progress));

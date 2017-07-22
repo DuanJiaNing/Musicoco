@@ -229,6 +229,7 @@ public class BottomNavigationController implements
     @Override
     public void songChanged(Song song, int index, boolean isNext) {
         if (song == null) {
+            //播放列表是空的
             return;
         }
 
@@ -239,6 +240,7 @@ public class BottomNavigationController implements
     }
 
     private void updateProgress() {
+        Log.d("update", "main/BottomNavigationController updateProgress");
         int progress;
         final float phoneWidth = Utils.getMetrics(activity).widthPixels;
 
@@ -256,6 +258,7 @@ public class BottomNavigationController implements
     }
 
     private void updateSongInfo(SongInfo info) {
+        Log.d("update", "main/BottomNavigationController updateSongInfo");
         String name = info.getTitle();
         String arts = info.getArtist();
         builder.reset();
@@ -278,10 +281,12 @@ public class BottomNavigationController implements
 
     @Override
     public void update(@Nullable Object obj, OnUpdateStatusChanged completed) {
-        if (checkNull()) {
+        Log.d("update", "main/BottomNavigationController update");
+        if (!hasInitData()) {
             return;
         }
 
+        adapter.update(obj, completed);
         updateCurrentSheet();
         updatePlayMode();
 
@@ -305,6 +310,7 @@ public class BottomNavigationController implements
     }
 
     private void updateCurrentSheet() {
+        Log.d("update", "main/BottomNavigationController updateCurrentSheet");
         try {
             int id = mControl.getPlayListId();
             if (id < 0) {
@@ -312,20 +318,17 @@ public class BottomNavigationController implements
                 mSheet.setText(name);
             } else {
                 Sheet sheet = dbController.getSheet(id);
-                String name = "歌单：" + sheet.name + " (" + sheet.count + "首)";
+                String name;
+                if (sheet == null) {
+                    name = activity.getString(R.string.error_non_sheet_existent);
+                } else {
+                    name = activity.getString(R.string.sheet) + ": " + sheet.name + " (" + sheet.count + "首)";
+                }
                 mSheet.setText(name);
             }
 
         } catch (RemoteException e) {
             e.printStackTrace();
-        }
-    }
-
-    private boolean checkNull() {
-        if (mControl == null) {
-            return true;
-        } else {
-            return false;
         }
     }
 
@@ -337,7 +340,7 @@ public class BottomNavigationController implements
         task.start();
         mPlay.setChecked(true);
 
-        BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED);
+        BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
     }
 
     @Override
@@ -345,17 +348,20 @@ public class BottomNavigationController implements
         task.stop();
         mPlay.setChecked(false);
 
-        BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED);
+        BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
     }
 
     @Override
     public void onPlayListChange(Song current, int index, int id) {
+        //更新播放列表
         adapter.update(null, null);
+
         update(null, null);
         playPreference.updateSheet(id);
 
-        BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED);
-        Log.i(TAG, "onPlayListChange: main bottom");
+        //发送广播通知 MySheetController 更新列表（列表的选中播放状态）
+        //主要针对【移除】操作
+        BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
     }
 
     @Override
@@ -469,6 +475,7 @@ public class BottomNavigationController implements
     }
 
     private int updatePlayMode() {
+        Log.d("update", "main/BottomNavigationController updatePlayMode");
 
         Drawable drawable = null;
         StringBuilder builder = new StringBuilder();
@@ -514,6 +521,7 @@ public class BottomNavigationController implements
         if (mDialog.isShowing()) {
             return;
         } else {
+            adapter.update(null, null);
             mDialog.show();
         }
     }

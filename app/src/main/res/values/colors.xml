@@ -37,6 +37,8 @@
 
     <color name="red">#e42d2d</color>
 
+    <color name="my_sheet_play_bg">#2b000000</color>
+
 
     <color name="theme_white_primary">@color/white</color>
     <color name="theme_white_primary_dark">@color/white_d</color>

@@ -103,9 +103,6 @@ public class PlayPreference {
      */
     public void updateSheet(int sheetID) {
         check();
-        if (sheetID < 0) {
-            return;
-        }
 
         editor = preferences.edit();
         editor.putInt(KEY_SHEET, sheetID);
