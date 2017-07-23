@@ -13,6 +13,7 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.app.interfaces.PermissionRequestCallback;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.manager.PermissionManager;
+import com.duan.musicoco.app.manager.PlayServiceManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.PlayPreference;
@@ -30,6 +31,8 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
     protected final AppPreference appPreference;
     protected final PlayPreference playPreference;
     protected DBMusicocoController dbMusicoco;
+    private PermissionManager permissionManager;
+    protected PlayServiceManager playServiceManager;
 
     private boolean isGranted = false;
 
@@ -43,6 +46,8 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        playServiceManager = PlayServiceManager.getInstance(this);
+        permissionManager = PermissionManager.getInstance(this);
         mediaManager = MediaManager.getInstance(getApplicationContext());
         dbMusicoco = new DBMusicocoController(this, true);
 
@@ -69,13 +74,18 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
                 Manifest.permission.RECORD_AUDIO
         };
 
-        if (!PermissionManager.checkPermission(this, ps)) {
+        if (!permissionManager.checkPermission(ps)) {
             PermissionManager.PerMap perMap = new PermissionManager.PerMap(
                     getString(R.string.permission_media_read),
                     getResources().getString(R.string.permission_required),
                     PermissionManager.PerMap.CATEGORY_MEDIA_READ,
                     ps);
-            PermissionManager.requestPermission(perMap, this);
+            permissionManager.showPermissionRequestTip(perMap, this, new PermissionManager.OnPermissionRequestRefuse() {
+                @Override
+                public void onRefuse() {
+                    finish();
+                }
+            });
         } else {
             isGranted = true;
         }

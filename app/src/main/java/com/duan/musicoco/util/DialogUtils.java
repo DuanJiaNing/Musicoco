@@ -1,30 +1,17 @@
 package com.duan.musicoco.util;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.app.App;
-import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.app.SongInfo;
-import com.duan.musicoco.db.DBMusicocoController;
-import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.shared.DialogProvider;
-import com.duan.musicoco.view.TextInputHelper;
 
 /**
  * Created by DuanJiaNing on 2017/7/17.
@@ -59,7 +46,7 @@ public class DialogUtils {
                 imageView.getWidth(),
                 imageView.getHeight());
         if (b == null) {
-            b = BitmapUtils.getDefaultAlbumPicture(activity, imageView.getWidth(), imageView.getHeight());
+            b = BitmapUtils.getDefaultPictureForAlbum(activity, imageView.getWidth(), imageView.getHeight());
         }
 
         if (b != null) {

@@ -23,11 +23,13 @@ public class DBSongInfo {
     private static TreeSet<DBSongInfo> sTREESET = new TreeSet<>(new Comparator<DBSongInfo>() {
         @Override
         public int compare(DBSongInfo o1, DBSongInfo o2) {
-            int rs = 0;
+            int rs;
             if (o1.lastPlayTime > o2.lastPlayTime) {
                 rs = -1;
             } else if (o1.lastPlayTime < o2.lastPlayTime) {
                 rs = 1;
+            } else {
+                rs = -1; // equals set 不能重复，会丢失数据
             }
             return rs;
         }

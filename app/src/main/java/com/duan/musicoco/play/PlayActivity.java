@@ -27,7 +27,6 @@ import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.manager.ActivityManager;
-import com.duan.musicoco.app.manager.PlayServiceManager;
 import com.duan.musicoco.play.album.VisualizerFragment;
 import com.duan.musicoco.play.album.VisualizerPresenter;
 import com.duan.musicoco.play.lyric.LyricFragment;
@@ -348,7 +347,7 @@ public class PlayActivity extends RootActivity implements
         super.permissionGranted(requestCode);
 
         mServiceConnection = new PlayServiceConnection(this, this, this);
-        PlayServiceManager.bindService(this, mServiceConnection);
+        playServiceManager.bindService(mServiceConnection);
     }
 
     @Override
@@ -537,7 +536,7 @@ public class PlayActivity extends RootActivity implements
             case R.id.play_name:
                 try {
                     Song song = mServiceConnection.takeControl().currentSong();
-                    new ActivityManager(this).startSongDetailActivity(song);
+                    ActivityManager.getInstance(this).startSongDetailActivity(song);
 
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -619,7 +618,7 @@ public class PlayActivity extends RootActivity implements
     public void disConnected(ComponentName name) {
         mServiceConnection = null;
         mServiceConnection = new PlayServiceConnection(this, this, this);
-        PlayServiceManager.bindService(this, mServiceConnection);
+        playServiceManager.bindService(mServiceConnection);
     }
 
     @Override

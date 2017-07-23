@@ -65,5 +65,7 @@
     <dimen name="song_detail_image_height">230dp</dimen>
 
     <dimen name="dialog_padding">12dp</dimen>
+    <dimen name="app_bar_height">280dp</dimen>
+    <dimen name="text_margin">16dp</dimen>
 
 </resources>

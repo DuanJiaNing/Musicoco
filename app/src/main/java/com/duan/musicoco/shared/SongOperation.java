@@ -111,7 +111,7 @@ public class SongOperation {
     }
 
     public void checkSongDetail(Song song) {
-        new ActivityManager(activity).startSongDetailActivity(song);
+        ActivityManager.getInstance(activity).startSongDetailActivity(song);
     }
 
     public void deleteSongFromDisk(final Song song) {

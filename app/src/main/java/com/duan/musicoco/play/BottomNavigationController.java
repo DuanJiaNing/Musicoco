@@ -121,7 +121,6 @@ public class BottomNavigationController implements
         mViewRoot.setY(metrics.heightPixels - marginB);
         mViewRoot.setLayoutParams(params);
 
-        //TODO 下拉时隐藏
         mPlayListContainer = (LinearLayout) activity.findViewById(R.id.play_nav_container);
 
     }
@@ -663,7 +662,7 @@ public class BottomNavigationController implements
 
                     dbMusicoco.updateSongFavorite(song, reverse);
                     //广播通知 MainActivity 更新 MainSheetsController
-                    BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MAIN_SHEET_CHANGED, null);
+                    BroadcastManager.getInstance(activity).sendMyBroadcast(BroadcastManager.FILTER_MAIN_SHEET_CHANGED, null);
 
                 }
             } catch (RemoteException e) {

@@ -15,10 +15,25 @@ public class BroadcastManager {
     public static final String FILTER_MY_SHEET_CHANGED = "filter_my_sheet_changed";
     public static final String FILTER_MAIN_SHEET_CHANGED = "filter_main_sheet_changed";
 
+    private Context context;
+
+    private static BroadcastManager mInstance;
+
+    private BroadcastManager(Context context) {
+        this.context = context;
+    }
+
+    public static BroadcastManager getInstance(Context context) {
+        if (mInstance == null) {
+            mInstance = new BroadcastManager(context);
+        }
+        return mInstance;
+    }
+
     /**
      * 注册广播接收器
      */
-    static public void registerBroadReceiver(Context context, BroadcastReceiver receiver, String identity) {
+    public void registerBroadReceiver(BroadcastReceiver receiver, String identity) {
         IntentFilter filter = new IntentFilter(identity);
         context.registerReceiver(receiver, filter);
     }
@@ -26,7 +41,7 @@ public class BroadcastManager {
     /**
      * 发送广播
      */
-    static public void sendMyBroadcast(Context context, String identity, @Nullable Bundle extras) {
+    public void sendMyBroadcast(String identity, @Nullable Bundle extras) {
         Intent intent = new Intent();
         if (extras != null) {
             intent.putExtras(extras);
@@ -38,7 +53,8 @@ public class BroadcastManager {
     /**
      * 注销广播接收者
      */
-    static public void unregisterReceiver(Context context, BroadcastReceiver receiver) {
+    public void unregisterReceiver(BroadcastReceiver receiver) {
         context.unregisterReceiver(receiver);
     }
+
 }

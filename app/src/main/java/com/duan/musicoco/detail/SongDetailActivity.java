@@ -12,7 +12,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,6 +29,7 @@ import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.FileUtils;
 import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.util.ToastUtils;
+import com.duan.musicoco.util.Utils;
 
 /**
  * Created by DuanJiaNing on 2017/7/19.
@@ -57,16 +57,12 @@ public class SongDetailActivity extends AppCompatActivity implements View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.song_detail_activity);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
-        }
+        Utils.transitionStatusBar(this);
 
         initViews();
 
         Intent intent = getIntent();
-        String path = intent.getExtras().get(ActivityManager.SONG_DETAIL).toString();
+        String path = intent.getExtras().get(ActivityManager.SONG_DETAIL_PATH).toString();
         Song song = new Song(path);
 
         mediaManager = MediaManager.getInstance(this);
@@ -150,7 +146,7 @@ public class SongDetailActivity extends AppCompatActivity implements View.OnClic
         }
 
         if (bitmap == null) {
-            bitmap = BitmapUtils.getDefaultAlbumPicture(this, mImage.getWidth(), mImage.getHeight());
+            bitmap = BitmapUtils.getDefaultPictureForAlbum(this, mImage.getWidth(), mImage.getHeight());
             haveAlbumImage = false;
         }
 
@@ -225,7 +221,7 @@ public class SongDetailActivity extends AppCompatActivity implements View.OnClic
             case R.id.song_detail_image: {
                 if (haveAlbumImage) {
                     String path = info.getAlbum_path();
-                    new ActivityManager(this).startImageCheckActivity(path);
+                    ActivityManager.getInstance(this).startImageCheckActivity(path);
                 } else {
                     ToastUtils.showShortToast(this, getString(R.string.error_no_album_image));
                 }

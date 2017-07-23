@@ -14,7 +14,7 @@
 
         <android.support.v7.widget.Toolbar
             android:elevation="10dp"
-            android:id="@+id/toolbar"
+            android:id="@+id/sheet_detail_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@android:color/transparent"

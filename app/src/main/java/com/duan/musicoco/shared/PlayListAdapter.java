@@ -1,6 +1,7 @@
 package com.duan.musicoco.shared;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.RemoteException;
@@ -174,7 +175,6 @@ public class PlayListAdapter extends BaseAdapter implements
 
         holder.name.setTextColor(colorMain);
         holder.arts.setTextColor(colorVic);
-        holder.number.setTextColor(colorVic);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             holder.remove.getDrawable().setTint(colorVic);
@@ -194,15 +194,17 @@ public class PlayListAdapter extends BaseAdapter implements
         } else {
             drawable = context.getResources().getDrawable(R.drawable.ic_volume_up_black_24dp);
         }
+
         if (drawable != null) {
             drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-            holder.name.setCompoundDrawables(drawable, null, null, null);
+            holder.number.setCompoundDrawables(drawable, null, null, null);
+            holder.number.setText("");
         }
 
     }
 
     private void setNormalItem(ViewHolder holder) {
-        holder.name.setCompoundDrawables(null, null, null, null);
+        holder.number.setCompoundDrawables(null, null, null, null);
     }
 
     public void updateColors(Theme theme, int[] colors) {

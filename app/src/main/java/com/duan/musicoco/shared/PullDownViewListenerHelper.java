@@ -14,7 +14,7 @@ import com.duan.musicoco.view.PullDownLinearLayout;
 
 public abstract class PullDownViewListenerHelper implements PullDownLinearLayout.OnPullDownListener {
 
-    private static final String TAG = "main";
+    private static final String TAG = "menu_main";
     private View container;
     private int originalY;
     private int distance;

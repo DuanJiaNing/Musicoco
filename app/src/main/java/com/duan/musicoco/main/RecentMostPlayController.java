@@ -98,7 +98,6 @@ public class RecentMostPlayController implements
         mContainer = activity.findViewById(R.id.rmp_container);
 
         mShowMore.setOnClickListener(this);
-        mInfoContainer.setOnClickListener(this);
     }
 
     public void initData(@NonNull DBMusicocoController dbMusicoco, @NonNull String title) {
@@ -106,8 +105,6 @@ public class RecentMostPlayController implements
 
         mShowMore.setEnabled(true);
         mShowMore.setClickable(true);
-        mInfoContainer.setEnabled(true);
-        mInfoContainer.setClickable(true);
 
         hasInitData = true;
     }
@@ -119,11 +116,7 @@ public class RecentMostPlayController implements
         switch (v.getId()) {
             case R.id.rmp_see_more:
                 break;
-            case R.id.rmp_info_container:
-
-                break;
         }
-
     }
 
     @Override
@@ -131,8 +124,6 @@ public class RecentMostPlayController implements
 
         mShowMore.setEnabled(true);
         mShowMore.setClickable(true);
-        mInfoContainer.setEnabled(true);
-        mInfoContainer.setClickable(true);
 
         mName.setText("");
         mArts.setText("");

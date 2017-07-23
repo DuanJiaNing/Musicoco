@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.PersistableBundle;
 import android.os.RemoteException;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -21,13 +20,11 @@ import android.view.MenuItem;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.manager.BroadcastManager;
-import com.duan.musicoco.app.manager.PlayServiceManager;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
-import com.duan.musicoco.db.DBMusicocoController;
+import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.DBSongInfo;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.play.PlayServiceConnection;
@@ -35,7 +32,6 @@ import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.shared.MySheetsOperation;
 import com.duan.musicoco.util.SongUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends RootActivity implements
@@ -54,6 +50,7 @@ public class MainActivity extends RootActivity implements
 
     private BroadcastReceiver mySheetDataChangedReceiver;
     private BroadcastReceiver mainSheetDataChangedReceiver;
+    private BroadcastManager broadcastManager;
 
     private OnUpdateStatusChanged statusChanged = new OnUpdateStatusChanged() {
         @Override
@@ -75,6 +72,7 @@ public class MainActivity extends RootActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        broadcastManager = BroadcastManager.getInstance(this);
         bottomNavigationController = new BottomNavigationController(this, mediaManager, appPreference, playPreference);
         mostPlayController = new RecentMostPlayController(this, mediaManager);
         mainSheetsController = new MainSheetsController(this, mediaManager);
@@ -118,10 +116,10 @@ public class MainActivity extends RootActivity implements
     private void unregisterReceiver() {
 
         if (mySheetDataChangedReceiver != null) {
-            BroadcastManager.unregisterReceiver(this, mySheetDataChangedReceiver);
+            broadcastManager.unregisterReceiver(mySheetDataChangedReceiver);
         }
         if (mainSheetDataChangedReceiver != null) {
-            BroadcastManager.unregisterReceiver(this, mainSheetDataChangedReceiver);
+            broadcastManager.unregisterReceiver(mainSheetDataChangedReceiver);
         }
     }
 
@@ -142,7 +140,7 @@ public class MainActivity extends RootActivity implements
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.main_swipe_refresh);
         refreshLayout.setOnRefreshListener(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.sheet_detail_toolbar);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -167,7 +165,7 @@ public class MainActivity extends RootActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -211,7 +209,7 @@ public class MainActivity extends RootActivity implements
         super.permissionGranted(requestCode);
 
         mServiceConnection = new PlayServiceConnection(bottomNavigationController, this, this);
-        PlayServiceManager.bindService(this, mServiceConnection);
+        playServiceManager.bindService(mServiceConnection);
 
     }
 
@@ -250,8 +248,8 @@ public class MainActivity extends RootActivity implements
 
         ;
 
-        BroadcastManager.registerBroadReceiver(this, mySheetDataChangedReceiver, BroadcastManager.FILTER_MY_SHEET_CHANGED);
-        BroadcastManager.registerBroadReceiver(this, mainSheetDataChangedReceiver, BroadcastManager.FILTER_MAIN_SHEET_CHANGED);
+        broadcastManager.registerBroadReceiver(mySheetDataChangedReceiver, BroadcastManager.FILTER_MY_SHEET_CHANGED);
+        broadcastManager.registerBroadReceiver(mainSheetDataChangedReceiver, BroadcastManager.FILTER_MAIN_SHEET_CHANGED);
     }
 
     private void isNeedUpdatePlayList(Intent intent) {
@@ -291,12 +289,11 @@ public class MainActivity extends RootActivity implements
 
     }
 
-
     @Override
     public void disConnected(ComponentName name) {
         mServiceConnection = null;
         mServiceConnection = new PlayServiceConnection(bottomNavigationController, this, this);
-        PlayServiceManager.bindService(this, mServiceConnection);
+        playServiceManager.bindService(mServiceConnection);
     }
 
     @Override

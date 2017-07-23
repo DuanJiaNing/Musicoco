@@ -65,6 +65,7 @@ public class BottomNavigationController implements
         OnThemeChange {
 
     private final Activity activity;
+    private final BroadcastManager broadcastManager;
     private IPlayControl mControl;
     private final static String TAG = "BottomNavigationController";
 
@@ -108,6 +109,7 @@ public class BottomNavigationController implements
         this.appPreference = appPreference;
         this.playPreference = playPreference;
         this.builder = new BitmapBuilder(activity);
+        this.broadcastManager = BroadcastManager.getInstance(activity);
         this.mDialog = new Dialog(activity, R.style.BottomDialog);
 
         task = new PeriodicTask(new PeriodicTask.Task() {
@@ -240,7 +242,7 @@ public class BottomNavigationController implements
     }
 
     private void updateProgress() {
-        Log.d("update", "main/BottomNavigationController updateProgress");
+        Log.d("update", "menu_main/BottomNavigationController updateProgress");
         int progress;
         final float phoneWidth = Utils.getMetrics(activity).widthPixels;
 
@@ -258,7 +260,7 @@ public class BottomNavigationController implements
     }
 
     private void updateSongInfo(SongInfo info) {
-        Log.d("update", "main/BottomNavigationController updateSongInfo");
+        Log.d("update", "menu_main/BottomNavigationController updateSongInfo");
         String name = info.getTitle();
         String arts = info.getArtist();
         builder.reset();
@@ -268,7 +270,7 @@ public class BottomNavigationController implements
                 .getBitmap();
 
         if (b == null) {
-            b = BitmapUtils.getDefaultAlbumPicture(activity,
+            b = BitmapUtils.getDefaultPictureForAlbum(activity,
                     mAlbum.getWidth(),
                     mAlbum.getHeight());
         }
@@ -281,7 +283,7 @@ public class BottomNavigationController implements
 
     @Override
     public void update(@Nullable Object obj, OnUpdateStatusChanged completed) {
-        Log.d("update", "main/BottomNavigationController update");
+        Log.d("update", "menu_main/BottomNavigationController update");
         if (!hasInitData()) {
             return;
         }
@@ -310,7 +312,7 @@ public class BottomNavigationController implements
     }
 
     private void updateCurrentSheet() {
-        Log.d("update", "main/BottomNavigationController updateCurrentSheet");
+        Log.d("update", "menu_main/BottomNavigationController updateCurrentSheet");
         try {
             int id = mControl.getPlayListId();
             if (id < 0) {
@@ -340,7 +342,7 @@ public class BottomNavigationController implements
         task.start();
         mPlay.setChecked(true);
 
-        BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
+        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
     }
 
     @Override
@@ -348,7 +350,7 @@ public class BottomNavigationController implements
         task.stop();
         mPlay.setChecked(false);
 
-        BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
+        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
     }
 
     @Override
@@ -361,7 +363,7 @@ public class BottomNavigationController implements
 
         //发送广播通知 MySheetController 更新列表（列表的选中播放状态）
         //主要针对【移除】操作
-        BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
+        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
     }
 
     @Override
@@ -475,7 +477,7 @@ public class BottomNavigationController implements
     }
 
     private int updatePlayMode() {
-        Log.d("update", "main/BottomNavigationController updatePlayMode");
+        Log.d("update", "menu_main/BottomNavigationController updatePlayMode");
 
         Drawable drawable = null;
         StringBuilder builder = new StringBuilder();

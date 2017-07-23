@@ -1,6 +1,7 @@
 package com.duan.musicoco.app.manager;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -9,7 +10,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.PermissionChecker;
 import android.support.v7.app.AlertDialog;
+import android.view.View;
 
+import com.duan.musicoco.R;
+import com.duan.musicoco.shared.DialogProvider;
+
+import static android.R.attr.dial;
 import static android.R.attr.targetSdkVersion;
 
 /**
@@ -17,6 +23,21 @@ import static android.R.attr.targetSdkVersion;
  */
 
 public final class PermissionManager {
+
+    private Context context;
+
+    private static PermissionManager mInstance;
+
+    private PermissionManager(Context context) {
+        this.context = context;
+    }
+
+    public static PermissionManager getInstance(Context context) {
+        if (mInstance == null) {
+            mInstance = new PermissionManager(context);
+        }
+        return mInstance;
+    }
 
     public static final class PerMap {
 
@@ -50,11 +71,8 @@ public final class PermissionManager {
         }
     }
 
-    private PermissionManager() {
-    }
-
     //检查权限是否获取
-    public static boolean checkPermission(Context context, String permission) {
+    public boolean checkPermission(String permission) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int re = ContextCompat.checkSelfPermission(context, permission);
             return re == PackageManager.PERMISSION_GRANTED;
@@ -63,7 +81,7 @@ public final class PermissionManager {
     }
 
     //检查权限是否获取
-    public static boolean checkPermission(Context context, String... permission) {
+    public boolean checkPermission(String... permission) {
 
         boolean nr = true;
 
@@ -91,37 +109,41 @@ public final class PermissionManager {
 
     //检查权限是否获取
 
-    public static boolean checkPermission(Context context, PerMap perMap) {
-        return PermissionManager.checkPermission(context, perMap.permissions);
+    public boolean checkPermission(PerMap perMap) {
+        return checkPermission(perMap.permissions);
+    }
+
+    public interface OnPermissionRequestRefuse {
+        void onRefuse();
     }
 
     //请求权限
-    public static void requestPermission(final PerMap perMap, final Activity activity) {
+    public void showPermissionRequestTip(final PerMap perMap, final Activity activity, final OnPermissionRequestRefuse refuse) {
 
-        if (!checkPermission(activity, perMap)) {
-            new AlertDialog.Builder(activity)
-                    .setTitle(perMap.name)
-                    .setMessage(perMap.des)
-                    .setPositiveButton("继续", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            ActivityCompat.requestPermissions(activity, perMap.permissions, perMap.category);
-                        }
-                    })
-                    .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            switch (perMap.category) {
-                                case PerMap.CATEGORY_MEDIA_READ:
-                                    activity.finish();
+        if (!checkPermission(perMap)) {
 
-                            }
-                        }
-                    }).setCancelable(false).show();
+            DialogProvider provider = new DialogProvider(activity);
+            final Dialog dialog = provider.createPromptDialog(
+                    perMap.name,
+                    perMap.des
+            );
+            provider.setOnPositiveButtonListener(activity.getString(R.string.continue_), new DialogProvider.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                    ActivityCompat.requestPermissions(activity, perMap.permissions, perMap.category);
+                }
+            });
+            provider.setOnNegativeButtonListener(activity.getString(R.string.cancel), new DialogProvider.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                    refuse.onRefuse();
+                }
+            });
+            dialog.setCancelable(false);
+            dialog.show();
         }
-
     }
 
 }

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.duan.musicoco.detail.SheetDetailActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/sheet_detail_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/app_bar_height"
+        android:fitsSystemWindows="true"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/sheet_detail_toolbar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
+            app:statusBarScrim="?attr/colorPrimaryDark">
+
+
+            <ImageView
+                android:id="@+id/sheet_detail_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/default_album" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/activity_default_margin_2x"
+                android:layout_marginLeft="@dimen/activity_default_margin"
+                android:layout_marginRight="@dimen/activity_default_margin"
+                android:layout_marginTop="@dimen/activity_default_margin"
+                android:gravity="bottom">
+
+
+                <TextView
+                    android:id="@+id/sheet_detail_create_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:text="创建时间：" />
+
+                <TextView
+                    android:id="@+id/sheet_detail_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@id/sheet_detail_create_time"
+                    android:layout_marginBottom="@dimen/activity_default_margin_s"
+                    android:ellipsize="middle"
+                    android:lineSpacingExtra="5dp"
+                    android:maxEms="7"
+                    android:maxLines="2"
+                    android:text="创发送端撒旦发送端阿斯蒂芬撒旦法士大夫法撒旦法建时间："
+                    android:textSize="@dimen/text_large_l_l_l"
+                    android:textStyle="bold"
+                    android:typeface="monospace" />
+
+            </RelativeLayout>
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/sheet_detail_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <include layout="@layout/content_sheet_detail" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/sheet_detail_play_all"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_anchor="@id/sheet_detail_app_bar"
+        app:layout_anchorGravity="bottom|end"
+        app:srcCompat="@drawable/ic_play_arrow_white_48dp" />
+
+</android.support.design.widget.CoordinatorLayout>

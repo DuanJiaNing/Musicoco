@@ -1,0 +1,23 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.duan.musicoco.detail.SheetDetailActivity">
+    <item
+        android:id="@+id/sheet_detail_search"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:orderInCategory="200"
+        android:title="@string/search"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/sheet_detail_action_collection"
+        android:icon="@drawable/ic_action_heart"
+        android:orderInCategory="100"
+        android:title="@string/sheet_collection_all"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/sheet_detail_action_modify"
+        android:icon="@drawable/ic_mode_edit_black_24dp"
+        android:orderInCategory="300"
+        android:title="@string/modify_sheet"
+        app:showAsAction="ifRoom" />
+</menu>

@@ -16,6 +16,7 @@ import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.interfaces.SubscriberAbstract;
+import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.DBSongInfo;
@@ -103,17 +104,16 @@ public class MainSheetsController implements
 
     @Override
     public void onClick(View v) {
-
-        //TODO
+        ActivityManager manager = ActivityManager.getInstance(activity);
         switch (v.getId()) {
             case R.id.sheet_all_container:
-
+                manager.startSheetDetailActivity(MainSheetHelper.SHEET_ALL);
                 break;
             case R.id.sheet_recent_container:
-
+                manager.startSheetDetailActivity(MainSheetHelper.SHEET_RECENT);
                 break;
             case R.id.sheet_favorite_container:
-
+                manager.startSheetDetailActivity(MainSheetHelper.SHEET_FAVORITE);
                 break;
         }
     }
@@ -266,7 +266,7 @@ public class MainSheetsController implements
         }
 
         if (bitmap == null) {
-            bitmap = BitmapUtils.getDefaultAlbumPicture(activity, mImageRecent.getWidth(), mImageRecent.getHeight());
+            bitmap = BitmapUtils.getDefaultPictureForAlbum(activity, mImageRecent.getWidth(), mImageRecent.getHeight());
         }
 
         return bitmap;

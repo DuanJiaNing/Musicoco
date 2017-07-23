@@ -2,9 +2,12 @@ package com.duan.musicoco.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.db.DBSongInfo;
@@ -26,4 +29,12 @@ public class Utils {
         return metrics;
     }
 
+
+    public static void transitionStatusBar(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            activity.getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
+    }
 }

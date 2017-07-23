@@ -34,11 +34,14 @@ public class MySheetsOperation {
     private Activity activity;
     private IPlayControl control;
     private DBMusicocoController dbMusicoco;
+    private BroadcastManager broadcastManager;
 
     public MySheetsOperation(Activity activity, IPlayControl control, DBMusicocoController dbMusicoco) {
         this.activity = activity;
         this.control = control;
         this.dbMusicoco = dbMusicoco;
+        this.broadcastManager = BroadcastManager.getInstance(activity);
+
     }
 
     public void handleAddSheet() {
@@ -111,7 +114,7 @@ public class MySheetsOperation {
                 } else {
                     String msg = activity.getString(R.string.success_create_sheet) + " [" + name + "]";
                     ToastUtils.showShortToast(activity, msg);
-                    BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
+                    broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
                     dialog.dismiss();
                 }
             }
@@ -204,7 +207,7 @@ public class MySheetsOperation {
                 } else {
                     String msg = activity.getString(R.string.success_modify_sheet) + " [" + newName + "]";
                     ToastUtils.showShortToast(activity, msg);
-                    BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
+                    broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
                     dialog.dismiss();
                 }
             }
@@ -288,7 +291,7 @@ public class MySheetsOperation {
                         dialog.dismiss();
                         String msg = activity.getString(R.string.unknown);
                         ToastUtils.showShortToast(activity, msg);
-                        BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
+                        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
                     }
 
                     @Override
@@ -300,7 +303,7 @@ public class MySheetsOperation {
                         } else {
                             String msg = activity.getString(R.string.error_delete_sheet_fail);
                             ToastUtils.showShortToast(activity, msg);
-                            BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
+                            broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
                         }
                     }
                 });
@@ -309,7 +312,7 @@ public class MySheetsOperation {
     private void sendBroadcast(Sheet sheet) {
         Bundle extras = new Bundle();
         extras.putInt(DELETEL_SHEET_ID, sheet.id);
-        BroadcastManager.sendMyBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_CHANGED, extras);
+        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, extras);
     }
 
 }

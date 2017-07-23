@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -21,6 +22,7 @@ import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
+import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
@@ -42,6 +44,7 @@ import java.util.List;
 
 public class MySheetsController implements
         View.OnClickListener,
+        AdapterView.OnItemClickListener,
         OnThemeChange,
         OnContentUpdate,
         OnEmptyMediaLibrary {
@@ -79,6 +82,7 @@ public class MySheetsController implements
         mContainer = (LinearLayout) activity.findViewById(R.id.my_sheet_container);
 
         mAddSheet.setOnClickListener(this);
+        mListView.setOnItemClickListener(this);
 
     }
 
@@ -99,8 +103,6 @@ public class MySheetsController implements
 
         switch (v.getId()) {
             case R.id.my_sheet_add:
-                mySheetsOperation.handleAddSheet();
-                break;
             case R.id.sheet_empty_add:
                 mySheetsOperation.handleAddSheet();
                 break;
@@ -210,4 +212,9 @@ public class MySheetsController implements
         return hasInitData;
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Sheet sheet = (Sheet) adapter.getItem(position);
+        ActivityManager.getInstance(activity).startSheetDetailActivity(sheet.id);
+    }
 }

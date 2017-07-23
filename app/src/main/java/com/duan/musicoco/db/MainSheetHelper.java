@@ -18,6 +18,7 @@ public class MainSheetHelper {
     public static final int SHEET_FAVORITE = -30;
 
     private List<DBSongInfo> all;
+    private Context context;
     private DBMusicocoController dbController;
     private final int recentCount;
 
@@ -64,7 +65,7 @@ public class MainSheetHelper {
     public List<DBSongInfo> getRecentSongInfo() {
         refreshData();
         List<DBSongInfo> recent = DBSongInfo.descSortByLastPlayTime(all);
-        return recent.subList(0, recentCount);
+        return recent.subList(0, recentCount >= all.size() ? all.size() - 1 : recentCount);
     }
 
     public List<DBSongInfo> getFavoriteSongInfo() {

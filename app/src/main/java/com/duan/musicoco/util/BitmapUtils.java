@@ -156,8 +156,20 @@ public class BitmapUtils {
         return BitmapFactory.decodeFile(filePath, options);
     }
 
-    public static Bitmap getDefaultAlbumPicture(Context context, int reqWidth, int reqHeight) {
+    public static Bitmap getDefaultPictureForAlbum(Context context, int reqWidth, int reqHeight) {
         return bitmapResizeFromResource(context.getResources(), R.drawable.default_album, reqWidth, reqHeight);
+    }
+
+    public static Bitmap getDefaultPictureForRecentSheet(Context context, int reqWidth, int reqHeight) {
+        return bitmapResizeFromResource(context.getResources(), R.drawable.default_sheet_recent, reqWidth, reqHeight);
+    }
+
+    public static Bitmap getDefaultPictureForAllSheet(Context context, int reqWidth, int reqHeight) {
+        return bitmapResizeFromResource(context.getResources(), R.drawable.default_sheet_all, reqWidth, reqHeight);
+    }
+
+    public static Bitmap getDefaultPictureForFavoriteSheet(Context context, int reqWidth, int reqHeight) {
+        return bitmapResizeFromResource(context.getResources(), R.drawable.default_sheet_favorite, reqWidth, reqHeight);
     }
 
 
