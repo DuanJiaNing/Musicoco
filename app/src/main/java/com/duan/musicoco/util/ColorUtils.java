@@ -452,4 +452,14 @@ public class ColorUtils {
 
         return colors;
     }
+
+    public static boolean isBrightSeriesColor(int color) {
+
+        double d = android.support.v4.graphics.ColorUtils.calculateLuminance(color);
+        if (d - 0.400 > 0.000001) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

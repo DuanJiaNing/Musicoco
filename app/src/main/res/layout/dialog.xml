@@ -23,7 +23,6 @@
         android:orientation="vertical">
 
         <TextView
-            android:textStyle="bold"
             android:id="@+id/dialog_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

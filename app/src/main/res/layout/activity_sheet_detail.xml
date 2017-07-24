@@ -18,51 +18,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:contentScrim="?attr/colorPrimary"
+            app:expandedTitleGravity="bottom|start"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:statusBarScrim="?attr/colorPrimaryDark">
 
-
             <ImageView
-                android:id="@+id/sheet_detail_image"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
+                app:layout_collapseMode="parallax"
+                android:id="@+id/sheet_detail_image_bg"
                 android:scaleType="centerCrop"
-                android:src="@drawable/default_album" />
-
-            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/activity_default_margin_2x"
-                android:layout_marginLeft="@dimen/activity_default_margin"
-                android:layout_marginRight="@dimen/activity_default_margin"
-                android:layout_marginTop="@dimen/activity_default_margin"
-                android:gravity="bottom">
-
-
-                <TextView
-                    android:id="@+id/sheet_detail_create_time"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:text="创建时间：" />
-
-                <TextView
-                    android:id="@+id/sheet_detail_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_above="@id/sheet_detail_create_time"
-                    android:layout_marginBottom="@dimen/activity_default_margin_s"
-                    android:ellipsize="middle"
-                    android:lineSpacingExtra="5dp"
-                    android:maxEms="7"
-                    android:maxLines="2"
-                    android:text="创发送端撒旦发送端阿斯蒂芬撒旦法士大夫法撒旦法建时间："
-                    android:textSize="@dimen/text_large_l_l_l"
-                    android:textStyle="bold"
-                    android:typeface="monospace" />
-
-            </RelativeLayout>
+                android:fitsSystemWindows="true" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/sheet_detail_toolbar"
@@ -70,6 +36,75 @@
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_marginRight="@dimen/activity_default_margin"
+                android:layout_marginTop="@dimen/activity_default_margin"
+                android:layout_marginBottom="@dimen/activity_default_margin"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:translationY="-12dp"
+                    android:elevation="15dp"
+                    android:layout_centerVertical="true"
+                    android:background="#0f0"
+                    android:id="@+id/sheet_detail_image"
+                    android:layout_width="130dp"
+                    android:layout_height="130dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_marginBottom="8dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="24dp"
+                    app:layout_constraintLeft_toLeftOf="parent" />
+
+                <TextView
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:textSize="@dimen/text_large"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/sheet_detail_name"
+                    app:layout_constraintLeft_toLeftOf="@+id/guideline4"
+                    app:layout_constraintBottom_toTopOf="@+id/sheet_detail_remark" />
+
+                <TextView
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:paddingBottom="@dimen/activity_default_padding"
+                    android:paddingTop="@dimen/activity_default_padding"
+                    android:textSize="@dimen/text_small"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="@+id/guideline4"
+                    android:id="@+id/sheet_detail_remark"
+                    app:layout_constraintVertical_bias="0.504"
+                    android:layout_marginBottom="4dp" />
+
+                <TextView
+                    android:ellipsize="none"
+                    android:lines="1"
+                    android:textSize="@dimen/text_small"
+                    android:id="@+id/sheet_detail_create_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintLeft_toLeftOf="@+id/guideline4"
+                    app:layout_constraintTop_toBottomOf="@+id/sheet_detail_remark"
+                    android:layout_marginTop="4dp" />
+
+                <android.support.constraint.Guideline
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/guideline4"
+                    app:layout_constraintGuide_percent="0.58"
+                    android:orientation="vertical" />
+
+            </android.support.constraint.ConstraintLayout>
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>

@@ -15,12 +15,12 @@
         android:background="@color/colorAccent" />
 
     <RelativeLayout
+        android:layout_toLeftOf="@+id/list_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/list_progress"
         android:layout_marginBottom="@dimen/activity_default_margin_s_s"
         android:layout_marginLeft="@dimen/activity_default_margin_s_s"
-        android:layout_marginRight="@dimen/activity_default_margin"
         android:layout_marginTop="@dimen/activity_default_margin_s_s">
 
         <ImageView
@@ -29,28 +29,12 @@
             android:layout_height="match_parent"
             android:src="@mipmap/default_album" />
 
-        <ImageButton
-            android:id="@+id/list_list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="?android:selectableItemBackgroundBorderless"
-            android:rotation="180"
-
-            android:padding="3dp"
-            android:scaleX="0.7"
-            android:scaleY="0.8"
-            android:src="@drawable/ic_play_list"
-            android:tint="@color/white_d_d" />
-
         <com.duan.musicoco.view.media.PlayView
             android:id="@+id/list_play"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
             android:layout_marginRight="10dp"
-            android:layout_toLeftOf="@id/list_list"
             android:rotation="180"
             app:radius="20dp" />
 
@@ -81,4 +65,18 @@
         </LinearLayout>
 
     </RelativeLayout>
+
+
+    <ImageButton
+        android:layout_alignParentEnd="true"
+        android:id="@+id/list_list"
+        android:layout_width="60dp"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:background="?android:selectableItemBackgroundBorderless"
+        android:scaleX="0.7"
+        android:scaleY="0.8"
+        android:src="@drawable/ic_play_list"
+        android:tint="@color/white_d_d" />
+
 </RelativeLayout>

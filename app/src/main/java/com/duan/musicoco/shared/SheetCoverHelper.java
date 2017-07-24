@@ -2,6 +2,7 @@ package com.duan.musicoco.shared;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.Nullable;
 
 import com.duan.musicoco.app.SongInfo;
@@ -9,6 +10,7 @@ import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.DBSongInfo;
 import com.duan.musicoco.db.MainSheetHelper;
+import com.duan.musicoco.db.Sheet;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.SongUtils;
 
@@ -30,15 +32,10 @@ public class SheetCoverHelper {
     private DBMusicocoController dbController;
     private MediaManager mediaManager;
 
-    private int requestHeight;
-    private int requestWidth;
-
-    public SheetCoverHelper(Context context, DBMusicocoController dbController, MediaManager mediaManager, int requestHeight, int requestWidth) {
+    public SheetCoverHelper(Context context, DBMusicocoController dbController, MediaManager mediaManager) {
         this.context = context;
         this.dbController = dbController;
         this.mediaManager = mediaManager;
-        this.requestHeight = requestHeight;
-        this.requestWidth = requestWidth;
     }
 
     public void findCoverForSheetAll(OnFindCompleted completed) {
@@ -60,58 +57,46 @@ public class SheetCoverHelper {
     }
 
     public interface OnFindCompleted {
-        void completed(Bitmap bitmap);
+        void completed(@Nullable SongInfo info);
     }
 
     public void find(final OnFindCompleted completed, final int sheetID) {
-        Observable.create(new Observable.OnSubscribe<Bitmap>() {
+        Observable.create(new Observable.OnSubscribe<SongInfo>() {
             @Override
-            public void call(Subscriber<? super Bitmap> subscriber) {
+            public void call(Subscriber<? super SongInfo> subscriber) {
 
                 MainSheetHelper helper = new MainSheetHelper(context, dbController);
-                Bitmap bitmap = null;
+                SongInfo songInfo = null;
                 if (sheetID < 0) {
                     switch (sheetID) {
                         case MainSheetHelper.SHEET_ALL: {
                             List<SongInfo> infos = SongUtils.DBSongInfoToSongInfoList(helper.getAllSongInfo(), mediaManager);
-                            bitmap = find(infos);
-                            if (bitmap == null) {
-                                bitmap = BitmapUtils.getDefaultPictureForAllSheet(context, requestWidth, requestHeight);
-                            }
+                            songInfo = find(infos);
                             break;
                         }
                         case MainSheetHelper.SHEET_RECENT: {
                             List<SongInfo> infos = SongUtils.DBSongInfoToSongInfoList(helper.getRecentSongInfo(), mediaManager);
-                            bitmap = find(infos);
-                            if (bitmap == null) {
-                                bitmap = BitmapUtils.getDefaultPictureForRecentSheet(context, requestWidth, requestHeight);
-                            }
+                            songInfo = find(infos);
                             break;
                         }
                         case MainSheetHelper.SHEET_FAVORITE: {
                             List<SongInfo> infos = SongUtils.DBSongInfoToSongInfoList(helper.getFavoriteSongInfo(), mediaManager);
-                            bitmap = find(infos);
-                            if (bitmap == null) {
-                                bitmap = BitmapUtils.getDefaultPictureForFavoriteSheet(context, requestWidth, requestHeight);
-                            }
+                            songInfo = find(infos);
                             break;
                         }
                     }
                 } else {
-                    List<DBSongInfo> is = dbController.getSongInfos(sheetID);
-                    List<SongInfo> infos = SongUtils.DBSongInfoToSongInfoList(is, mediaManager);
-                    bitmap = find(infos);
-                    if (bitmap == null) {
-                        bitmap = BitmapUtils.getDefaultPictureForAlbum(context, requestWidth, requestHeight);
-                    }
+                    List<DBSongInfo> ss = dbController.getSongInfos(sheetID);
+                    List<SongInfo> infos = SongUtils.DBSongInfoToSongInfoList(ss, mediaManager);
+                    songInfo = find(infos);
                 }
-                subscriber.onNext(bitmap);
+                subscriber.onNext(songInfo);
                 subscriber.onCompleted();
             }
         })
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Bitmap>() {
+                .subscribe(new Subscriber<SongInfo>() {
                     @Override
                     public void onCompleted() {
 
@@ -123,23 +108,24 @@ public class SheetCoverHelper {
                     }
 
                     @Override
-                    public void onNext(Bitmap bitmap) {
-                        completed.completed(bitmap);
+                    public void onNext(SongInfo SongInfo) {
+                        completed.completed(SongInfo);
                     }
                 });
     }
 
     @Nullable
-    private Bitmap find(List<SongInfo> infos) {
-        Bitmap bitmap = null;
+    public static SongInfo find(List<SongInfo> infos) {
+        SongInfo si = null;
         for (int i = 0; i < infos.size(); i++) {
-            SongInfo info = infos.get(i);
-            bitmap = BitmapUtils.bitmapResizeFromFile(info.getAlbum_path(), requestWidth, requestHeight);
+            si = infos.get(i);
+            String path = si.getAlbum_path();
+            Bitmap bitmap = BitmapFactory.decodeFile(path);
             if (bitmap != null) {
                 break;
             }
         }
-        return bitmap;
+        return si;
     }
 
 }

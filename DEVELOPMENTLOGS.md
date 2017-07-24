@@ -214,3 +214,7 @@
 
 1 将 Manager 都改为单例模式<br>
 2 添加歌单详情 SheetDetaiilActivity <br>
+
+- 2017-07-24
+
+1 歌单详情页顶部歌单信息展示开发完成

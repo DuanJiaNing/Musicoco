@@ -68,7 +68,8 @@ public class SheetDetailActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        sheetInfoController.initData(isMainSheet, sheet, sheetID, dbController, mediaManager);
+
+        sheetInfoController.initData(sheetID, sheet, dbController, mediaManager);
     }
 
     @Override

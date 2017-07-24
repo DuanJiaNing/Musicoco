@@ -31,6 +31,7 @@ import com.duan.musicoco.play.PlayServiceConnection;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.shared.MySheetsOperation;
 import com.duan.musicoco.util.SongUtils;
+import com.duan.musicoco.util.Utils;
 
 import java.util.List;
 
@@ -72,6 +73,9 @@ public class MainActivity extends RootActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Utils.transitionStatusBar(this);
+
         broadcastManager = BroadcastManager.getInstance(this);
         bottomNavigationController = new BottomNavigationController(this, mediaManager, appPreference, playPreference);
         mostPlayController = new RecentMostPlayController(this, mediaManager);
