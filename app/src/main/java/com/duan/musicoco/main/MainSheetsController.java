@@ -266,7 +266,7 @@ public class MainSheetsController implements
         }
 
         if (bitmap == null) {
-            bitmap = BitmapUtils.getDefaultPictureForAlbum(activity, mImageRecent.getWidth(), mImageRecent.getHeight());
+            bitmap = BitmapUtils.getDefaultPictureForAlbum(mImageRecent.getWidth(), mImageRecent.getHeight());
         }
 
         return bitmap;

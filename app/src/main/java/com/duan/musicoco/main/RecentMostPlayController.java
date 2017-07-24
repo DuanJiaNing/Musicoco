@@ -298,7 +298,7 @@ public class RecentMostPlayController implements
 
         switch (theme) {
             case DARK: {
-                cs = ColorUtils.get4DarkThemeColors(activity);
+                cs = ColorUtils.get4DarkThemeColors();
                 int mainTC = cs[1];
                 int vicTC = cs[3];
                 mName.setTextColor(mainTC);
@@ -312,7 +312,7 @@ public class RecentMostPlayController implements
             }
             case WHITE:
             default: {
-                cs = ColorUtils.get4WhiteThemeColors(activity);
+                cs = ColorUtils.get4WhiteThemeColors();
                 int mainBC = cs[0];
                 int vicBC = cs[2];
                 mName.setTextColor(mainBC);

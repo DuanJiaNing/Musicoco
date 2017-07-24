@@ -628,13 +628,13 @@ public class PlayActivity extends RootActivity implements
 
         switch (theme) {
             case WHITE:
-                cs = com.duan.musicoco.util.ColorUtils.get4WhiteThemeColors(this);
+                cs = com.duan.musicoco.util.ColorUtils.get4WhiteThemeColors();
                 break;
             case VARYING:
                 break;
             case DARK:
             default:
-                cs = com.duan.musicoco.util.ColorUtils.get4DarkThemeColors(this);
+                cs = com.duan.musicoco.util.ColorUtils.get4DarkThemeColors();
                 break;
         }
         updateColors(cs);

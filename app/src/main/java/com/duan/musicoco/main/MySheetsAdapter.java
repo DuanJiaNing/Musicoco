@@ -2,14 +2,11 @@ package com.duan.musicoco.main;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.RemoteException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -34,7 +31,6 @@ import com.duan.musicoco.util.SongUtils;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.view.media.PlayView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -308,7 +304,7 @@ public class MySheetsAdapter extends BaseAdapter implements
             control.setPlayList(songs, 0, sheet.id);
             control.resume();
         } else {
-            ToastUtils.showShortToast(activity, activity.getString(R.string.error_empty_sheet));
+            ToastUtils.showShortToast(activity.getString(R.string.error_empty_sheet));
         }
     }
 

@@ -78,7 +78,7 @@ public class BitmapBuilder {
     }
 
     public BitmapBuilder jpg2png() {
-        bitM = BitmapUtils.jpgTopng(bitM, context);
+        bitM = BitmapUtils.jpgToPng(bitM);
         return this;
     }
 

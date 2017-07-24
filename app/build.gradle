@@ -35,9 +35,10 @@ dependencies {
     compile 'com.android.support:design:26.0.0-alpha1'
     compile 'io.reactivex:rxjava:1.0.14'
     compile 'io.reactivex:rxandroid:1.0.1'
-    compile 'com.github.bumptech.glide:glide:4.0.0-RC1'
     testCompile 'junit:junit:4.12'
     compile 'com.victor:lib:1.0.4'
+    compile 'com.github.bumptech.glide:glide:4.0.0-RC1'
+    compile 'com.android.support:support-v4:26.0.0-alpha1'
 }
 repositories {
     mavenCentral()

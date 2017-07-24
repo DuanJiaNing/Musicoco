@@ -113,7 +113,7 @@ public class MySheetsOperation {
                     nameHolder.textInputLayout.setErrorEnabled(true);
                 } else {
                     String msg = activity.getString(R.string.success_create_sheet) + " [" + name + "]";
-                    ToastUtils.showShortToast(activity, msg);
+                    ToastUtils.showShortToast(msg);
                     broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
                     dialog.dismiss();
                 }
@@ -180,7 +180,7 @@ public class MySheetsOperation {
                 String newRemark = remarkHolder.editText.getText().toString();
 
                 if (newName.equals(oldName) && newRemark.equals(oldRemark)) {
-                    ToastUtils.showShortToast(activity, activity.getString(R.string.not_modify));
+                    ToastUtils.showShortToast(activity.getString(R.string.not_modify));
                     dialog.dismiss();
                 }
 
@@ -206,7 +206,7 @@ public class MySheetsOperation {
                     nameHolder.textInputLayout.setErrorEnabled(true);
                 } else {
                     String msg = activity.getString(R.string.success_modify_sheet) + " [" + newName + "]";
-                    ToastUtils.showShortToast(activity, msg);
+                    ToastUtils.showShortToast(msg);
                     broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
                     dialog.dismiss();
                 }
@@ -290,7 +290,7 @@ public class MySheetsOperation {
                         e.printStackTrace();
                         dialog.dismiss();
                         String msg = activity.getString(R.string.unknown);
-                        ToastUtils.showShortToast(activity, msg);
+                        ToastUtils.showShortToast(msg);
                         broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
                     }
 
@@ -298,11 +298,11 @@ public class MySheetsOperation {
                     public void onNext(Boolean s) {
                         if (s) {
                             String msg = activity.getString(R.string.success_delete_sheet) + " [" + sheet.name + "]";
-                            ToastUtils.showShortToast(activity, msg);
+                            ToastUtils.showShortToast(msg);
                             sendBroadcast(sheet);
                         } else {
                             String msg = activity.getString(R.string.error_delete_sheet_fail);
-                            ToastUtils.showShortToast(activity, msg);
+                            ToastUtils.showShortToast(msg);
                             broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
                         }
                     }

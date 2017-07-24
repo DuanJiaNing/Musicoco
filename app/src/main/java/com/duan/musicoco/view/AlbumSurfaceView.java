@@ -83,7 +83,7 @@ public class AlbumSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 //        cache = new BitmapCache(context);
 
 //        Bitmap defaultPic = BitmapUtils.bitmapResizeFromResource(context.getResources(), R.mipmap.default_album_pic, mPicWidth, mPicWidth);
-//        Bitmap br = BitmapUtils.jpgTopng(defaultPic, context);
+//        Bitmap br = BitmapUtils.jpgToPng(defaultPic, context);
 //        mCurrentPic = BitmapUtils.getCircleBitmap(br);
 //        cache.add(StringUtils.stringToMd5(DEFAULT_PIC), mCurrentPic);
 
@@ -157,7 +157,7 @@ public class AlbumSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 
             if (result == null) { //处理
                 Bitmap b = BitmapUtils.bitmapResizeFromFile(mCurrentSong.getAlbum_path(), mPicWidth, mPicWidth);
-                Bitmap bm = BitmapUtils.jpgTopng(b, context);
+                Bitmap bm = BitmapUtils.jpgToPng(b);
                 result = BitmapUtils.getCircleBitmap(bm);
             } else {
                 mCurrentPic = result;

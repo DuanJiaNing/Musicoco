@@ -57,7 +57,7 @@ public class SheetDetailActivity extends AppCompatActivity {
             } else {
                 sheet = dbController.getSheet(si);
                 if (sheet == null) {
-                    ToastUtils.showShortToast(this, getString(R.string.error_load_sheet_fail));
+                    ToastUtils.showShortToast(getString(R.string.error_load_sheet_fail));
                     finish();
                 } else {
                     sheetID = si;
@@ -100,7 +100,7 @@ public class SheetDetailActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id) {
             case R.id.sheet_detail_search:
-                ToastUtils.showShortToast(this, "search");
+                ToastUtils.showShortToast("search");
                 break;
             case R.id.sheet_detail_action_collection:
 

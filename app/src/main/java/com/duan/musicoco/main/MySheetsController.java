@@ -1,15 +1,11 @@
 package com.duan.musicoco.main;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.v4.database.DatabaseUtilsCompat;
 import android.support.v4.widget.NestedScrollView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -23,17 +19,12 @@ import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.manager.ActivityManager;
-import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.Sheet;
 import com.duan.musicoco.preference.Theme;
-import com.duan.musicoco.shared.DialogProvider;
 import com.duan.musicoco.shared.MySheetsOperation;
 import com.duan.musicoco.util.ColorUtils;
-import com.duan.musicoco.util.DialogUtils;
-import com.duan.musicoco.util.ToastUtils;
-import com.duan.musicoco.view.TextInputHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,11 +105,11 @@ public class MySheetsController implements
         int[] cs;
         switch (theme) {
             case DARK:
-                cs = ColorUtils.get4DarkThemeColors(activity);
+                cs = ColorUtils.get4DarkThemeColors();
                 break;
             case WHITE:
             default:
-                cs = ColorUtils.get4WhiteThemeColors(activity);
+                cs = ColorUtils.get4WhiteThemeColors();
                 break;
         }
         int mainBC = cs[0];

@@ -1,6 +1,7 @@
 package com.duan.musicoco.app;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.duan.musicoco.preference.AppPreference;
 
@@ -11,6 +12,7 @@ import com.duan.musicoco.preference.AppPreference;
 public class App extends Application {
 
     public final AppPreference appPreference;
+    private static Context sCONTEXT;
 
     public App() {
         appPreference = new AppPreference(this);
@@ -19,8 +21,11 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        sCONTEXT = this;
     }
 
+    public static Context getContext() {
+        return sCONTEXT;
+    }
 
 }

@@ -5,6 +5,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.app.App;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,7 +19,8 @@ import java.io.InputStream;
 
 public class FileUtils {
 
-    public static File getDiskCacheDirFile(Context context, String uniqueName) {
+    public static File getDiskCacheDirFile(String uniqueName) {
+        Context context = App.getContext();
         String cachePath;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
                 || !Environment.isExternalStorageRemovable()) {
@@ -45,7 +47,8 @@ public class FileUtils {
         return d;
     }
 
-    public static String saveAlbumPicture(Context context, String imagePath) {
+    public static String saveAlbumPicture(String imagePath) {
+        Context context = App.getContext();
         File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         StringBuilder builder = new StringBuilder();
         builder.append(file.getAbsoluteFile())

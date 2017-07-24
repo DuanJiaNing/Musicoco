@@ -372,13 +372,13 @@ public class BottomNavigationController implements
 
         switch (theme) {
             case DARK: {
-                updateColors(com.duan.musicoco.util.ColorUtils.get4DarkThemeColors(activity)[2], false);
+                updateColors(com.duan.musicoco.util.ColorUtils.get4DarkThemeColors()[2], false);
                 break;
             }
             case VARYING:
             case WHITE:
             default:
-                updateColors(com.duan.musicoco.util.ColorUtils.get4WhiteThemeColors(activity)[2], false);
+                updateColors(com.duan.musicoco.util.ColorUtils.get4WhiteThemeColors()[2], false);
                 break;
         }
 
@@ -444,18 +444,18 @@ public class BottomNavigationController implements
         switch (t) {
             case WHITE: {
                 if (isVarying) {
-                    cs = com.duan.musicoco.util.ColorUtils.get2ColorWhiteThemeForPlayOptions(BottomNavigationController.this.activity);
+                    cs = com.duan.musicoco.util.ColorUtils.get2ColorWhiteThemeForPlayOptions();
                 } else {
-                    cs = com.duan.musicoco.util.ColorUtils.get2WhiteThemeTextColor(BottomNavigationController.this.activity);
+                    cs = com.duan.musicoco.util.ColorUtils.get2WhiteThemeTextColor();
                 }
                 break;
             }
             case DARK:
             default: {
                 if (isVarying) {
-                    cs = com.duan.musicoco.util.ColorUtils.get2ColorDarkThemeForPlayOptions(BottomNavigationController.this.activity);
+                    cs = com.duan.musicoco.util.ColorUtils.get2ColorDarkThemeForPlayOptions();
                 } else {
-                    cs = com.duan.musicoco.util.ColorUtils.get2DarkThemeTextColor(BottomNavigationController.this.activity);
+                    cs = com.duan.musicoco.util.ColorUtils.get2DarkThemeTextColor();
                 }
                 break;
             }
@@ -691,7 +691,7 @@ public class BottomNavigationController implements
                         builder.append(activity.getString(R.string.play_mode_random));
                         break;
                 }
-                ToastUtils.showShortToast(activity, builder.toString());
+                ToastUtils.showShortToast(builder.toString());
             } catch (RemoteException e) {
                 e.printStackTrace();
                 new ExceptionHandler().handleRemoteException(activity,
@@ -728,13 +728,13 @@ public class BottomNavigationController implements
             int[] cs;
             switch (theme) {
                 case DARK: {
-                    cs = com.duan.musicoco.util.ColorUtils.get4DarkThemeColors(activity);
+                    cs = com.duan.musicoco.util.ColorUtils.get4DarkThemeColors();
                     break;
                 }
                 case VARYING:
                 case WHITE:
                 default:
-                    cs = com.duan.musicoco.util.ColorUtils.get4WhiteThemeColors(activity);
+                    cs = com.duan.musicoco.util.ColorUtils.get4WhiteThemeColors();
                     break;
             }
 

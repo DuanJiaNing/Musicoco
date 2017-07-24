@@ -11,7 +11,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
-import android.text.BoringLayout;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,6 +23,8 @@ import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.Sheet;
 import com.duan.musicoco.shared.SheetCoverHelper;
+import com.duan.musicoco.util.AnimationUtils;
+import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.view.AppBarStateChangeListener;
@@ -61,10 +62,8 @@ public class SheetInfoController {
         this.onFindCompleted = new SheetCoverHelper.OnFindCompleted() {
             @Override
             public void completed(SongInfo info) {
-                if (info != null) {
-                    initImages(info.getAlbum_path());
-                    initColor(info.getAlbum_path());
-                }
+                initImages(info);
+                initColor();
             }
         };
         barStateChangeListener = new AppBarStateChangeListener() {
@@ -83,11 +82,6 @@ public class SheetInfoController {
                 }
             }
         };
-    }
-
-    private void initImages(String path) {
-        Glide.with(activity).load(path).into(imageView);
-        Glide.with(activity).load(path).into(imageViewBG);
     }
 
     public void initView() {
@@ -140,12 +134,51 @@ public class SheetInfoController {
         sheetCoverHelper.find(onFindCompleted, sheetID);
     }
 
-    private void initColor(String path) {
+    private void initImages(SongInfo info) {
+        Bitmap ib = null;
+        Bitmap ibg = null;
+        if (info != null) {
+            ib = BitmapUtils.bitmapResizeFromFile(info.getAlbum_path(), imageView.getWidth(), imageView.getHeight());
+            ibg = BitmapUtils.bitmapResizeFromFile(info.getAlbum_path(), imageViewBG.getWidth(), imageViewBG.getHeight());
+        }
+
+        if (ib == null) {
+            if (sheetID < 0) {
+                switch (sheetID) {
+                    case MainSheetHelper.SHEET_ALL:
+                        ib = BitmapUtils.getDefaultPictureForAllSheet(imageViewBG.getWidth(), imageViewBG.getHeight());
+                        break;
+                    case MainSheetHelper.SHEET_RECENT:
+                        ib = BitmapUtils.getDefaultPictureForRecentSheet(imageViewBG.getWidth(), imageViewBG.getHeight());
+                        break;
+                    case MainSheetHelper.SHEET_FAVORITE:
+                        ib = BitmapUtils.getDefaultPictureForFavoriteSheet(imageViewBG.getWidth(), imageViewBG.getHeight());
+                        break;
+                }
+            } else {
+                ib = BitmapUtils.getDefaultPictureForAlbum(imageViewBG.getWidth(), imageViewBG.getHeight());
+            }
+            ibg = ib;
+        }
+
+        imageView.setImageBitmap(ib);
+        imageViewBG.setImageBitmap(ibg);
+
+        AnimationUtils.startAlphaAnim(
+                collapsingToolbarLayout,
+                activity.getResources().getInteger(R.integer.anim_default_duration),
+                null,
+                0.0f, 1.0f
+        );
+
+    }
+
+    private void initColor() {
 
         BitmapDrawable bd = (BitmapDrawable) imageViewBG.getDrawable();
         Bitmap bitmap;
         if (bd == null) {
-            bitmap = BitmapFactory.decodeFile(path);
+            bitmap = BitmapUtils.getDefaultPictureForAlbum(imageView.getWidth(), imageView.getHeight());
         } else {
             bitmap = bd.getBitmap();
         }

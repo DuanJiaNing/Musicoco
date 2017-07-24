@@ -270,7 +270,7 @@ public class BottomNavigationController implements
                 .getBitmap();
 
         if (b == null) {
-            b = BitmapUtils.getDefaultPictureForAlbum(activity,
+            b = BitmapUtils.getDefaultPictureForAlbum(
                     mAlbum.getWidth(),
                     mAlbum.getHeight());
         }
@@ -411,7 +411,7 @@ public class BottomNavigationController implements
                             builder.append(activity.getString(R.string.play_mode_random));
                             break;
                     }
-                    ToastUtils.showShortToast(activity, builder.toString());
+                    ToastUtils.showShortToast(builder.toString());
                 } catch (RemoteException e) {
                     e.printStackTrace();
                     new ExceptionHandler().handleRemoteException(activity,
@@ -438,9 +438,9 @@ public class BottomNavigationController implements
 
         int[] cs = new int[4];
         if (theme == Theme.DARK) {
-            cs = ColorUtils.get4DarkThemeColors(activity);
+            cs = ColorUtils.get4DarkThemeColors();
         } else if (theme == Theme.WHITE) {
-            cs = ColorUtils.get4WhiteThemeColors(activity);
+            cs = ColorUtils.get4WhiteThemeColors();
         } else return;
 
         int mainBC = cs[0];

@@ -146,7 +146,7 @@ public class SongDetailActivity extends AppCompatActivity implements View.OnClic
         }
 
         if (bitmap == null) {
-            bitmap = BitmapUtils.getDefaultPictureForAlbum(this, mImage.getWidth(), mImage.getHeight());
+            bitmap = BitmapUtils.getDefaultPictureForAlbum(mImage.getWidth(), mImage.getHeight());
             haveAlbumImage = false;
         }
 
@@ -211,10 +211,10 @@ public class SongDetailActivity extends AppCompatActivity implements View.OnClic
             case R.id.song_detail_save_image: {
                 if (haveAlbumImage) {
                     String path = info.getAlbum_path();
-                    String to = FileUtils.saveAlbumPicture(this, path);
-                    ToastUtils.showLongToast(this, to);
+                    String to = FileUtils.saveAlbumPicture(path);
+                    ToastUtils.showLongToast(to);
                 } else {
-                    ToastUtils.showShortToast(this, getString(R.string.error_no_album_image));
+                    ToastUtils.showShortToast(getString(R.string.error_no_album_image));
                 }
                 break;
             }
@@ -223,7 +223,7 @@ public class SongDetailActivity extends AppCompatActivity implements View.OnClic
                     String path = info.getAlbum_path();
                     ActivityManager.getInstance(this).startImageCheckActivity(path);
                 } else {
-                    ToastUtils.showShortToast(this, getString(R.string.error_no_album_image));
+                    ToastUtils.showShortToast(getString(R.string.error_no_album_image));
                 }
                 break;
             }

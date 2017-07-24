@@ -1,6 +1,5 @@
 package com.duan.musicoco.util;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -9,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.graphics.Palette;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.app.App;
 
 /**
  * Created by DuanJiaNing on 2017/4/2.
@@ -301,8 +301,8 @@ public class ColorUtils {
      * 2 辅背景色
      * 3 辅字体色
      */
-    public static int[] get4WhiteThemeColors(Context context) {
-
+    public static int[] get4WhiteThemeColors() {
+        Context context = App.getContext();
         int[] colors = new int[4];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             colors[0] = context.getColor(R.color.theme_white_primary); //主背景色
@@ -326,8 +326,8 @@ public class ColorUtils {
      * 2 辅背景色
      * 3 辅字体色
      */
-    public static int[] get4DarkThemeColors(Context context) {
-
+    public static int[] get4DarkThemeColors() {
+        Context context = App.getContext();
         int[] colors = new int[4];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             colors[0] = context.getColor(R.color.theme_dark_primary); //主背景色
@@ -348,7 +348,8 @@ public class ColorUtils {
      * 0 主字体颜色
      * 1 辅字体颜色
      */
-    public static int[] get2WhiteThemeTextColor(Context context) {
+    public static int[] get2WhiteThemeTextColor() {
+        Context context = App.getContext();
         int[] colors = new int[2];
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -366,7 +367,8 @@ public class ColorUtils {
      * 0 主字体颜色
      * 1 辅字体颜色
      */
-    public static int[] get2DarkThemeTextColor(Context context) {
+    public static int[] get2DarkThemeTextColor() {
+        Context context = App.getContext();
         int[] colors = new int[2];
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -379,27 +381,29 @@ public class ColorUtils {
         return colors;
     }
 
-    public static int[] get2ColorWhiteThemeForPlayOptions(Activity activity) {
+    public static int[] get2ColorWhiteThemeForPlayOptions() {
+        Context context = App.getContext();
         int[] colors = new int[2];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            colors[0] = activity.getColor(R.color.dark_l_l_l_l);
-            colors[1] = activity.getColor(R.color.white_d_d_d);
+            colors[0] = context.getColor(R.color.dark_l_l_l_l);
+            colors[1] = context.getColor(R.color.white_d_d_d);
         } else {
-            colors[0] = activity.getResources().getColor(R.color.dark_l_l_l_l);
-            colors[1] = activity.getResources().getColor(R.color.white_d_d_d);
+            colors[0] = context.getResources().getColor(R.color.dark_l_l_l_l);
+            colors[1] = context.getResources().getColor(R.color.white_d_d_d);
         }
         return colors;
     }
 
-    public static int[] get2ColorDarkThemeForPlayOptions(Activity activity) {
+    public static int[] get2ColorDarkThemeForPlayOptions() {
+        Context context = App.getContext();
 
         int[] colors = new int[2];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            colors[0] = activity.getColor(R.color.white_d_d);
-            colors[1] = activity.getColor(R.color.white_d_d_d);
+            colors[0] = context.getColor(R.color.white_d_d);
+            colors[1] = context.getColor(R.color.white_d_d_d);
         } else {
-            colors[0] = activity.getResources().getColor(R.color.white_d_d);
-            colors[1] = activity.getResources().getColor(R.color.white_d_d_d);
+            colors[0] = context.getResources().getColor(R.color.white_d_d);
+            colors[1] = context.getResources().getColor(R.color.white_d_d_d);
         }
         return colors;
     }
@@ -410,7 +414,8 @@ public class ColorUtils {
      * 2 辅字体色<br>
      * 3 线条颜色<br>
      */
-    public static int[] get4DarkDialogThemeColors(Context context) {
+    public static int[] get4DarkDialogThemeColors() {
+        Context context = App.getContext();
 
         int[] colors = new int[4];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -435,7 +440,8 @@ public class ColorUtils {
      * 2 辅字体色<br>
      * 3 线条颜色<br>
      */
-    public static int[] get4WhiteDialogThemeColors(Context context) {
+    public static int[] get4WhiteDialogThemeColors() {
+        Context context = App.getContext();
 
         int[] colors = new int[4];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

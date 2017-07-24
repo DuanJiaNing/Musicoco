@@ -11,6 +11,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.app.App;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -65,13 +66,13 @@ public class BitmapUtils {
     /**
      * 将 jpg 格式图片转成 png 格式
      */
-    public static Bitmap jpgTopng(Bitmap source, Context context) {
+    public static Bitmap jpgToPng(Bitmap source) {
 
         FileOutputStream fos = null;
         File file = null;
         try {
             String fileP = "temp" + File.separator + StringUtils.stringToMd5(source.toString());
-            file = FileUtils.getDiskCacheDirFile(context, fileP);
+            file = FileUtils.getDiskCacheDirFile(fileP);
             fos = new FileOutputStream(file);
             source.compress(Bitmap.CompressFormat.PNG, 100, fos);
 
@@ -156,19 +157,23 @@ public class BitmapUtils {
         return BitmapFactory.decodeFile(filePath, options);
     }
 
-    public static Bitmap getDefaultPictureForAlbum(Context context, int reqWidth, int reqHeight) {
+    public static Bitmap getDefaultPictureForAlbum(int reqWidth, int reqHeight) {
+        Context context = App.getContext();
         return bitmapResizeFromResource(context.getResources(), R.drawable.default_album, reqWidth, reqHeight);
     }
 
-    public static Bitmap getDefaultPictureForRecentSheet(Context context, int reqWidth, int reqHeight) {
+    public static Bitmap getDefaultPictureForRecentSheet(int reqWidth, int reqHeight) {
+        Context context = App.getContext();
         return bitmapResizeFromResource(context.getResources(), R.drawable.default_sheet_recent, reqWidth, reqHeight);
     }
 
-    public static Bitmap getDefaultPictureForAllSheet(Context context, int reqWidth, int reqHeight) {
+    public static Bitmap getDefaultPictureForAllSheet(int reqWidth, int reqHeight) {
+        Context context = App.getContext();
         return bitmapResizeFromResource(context.getResources(), R.drawable.default_sheet_all, reqWidth, reqHeight);
     }
 
-    public static Bitmap getDefaultPictureForFavoriteSheet(Context context, int reqWidth, int reqHeight) {
+    public static Bitmap getDefaultPictureForFavoriteSheet(int reqWidth, int reqHeight) {
+        Context context = App.getContext();
         return bitmapResizeFromResource(context.getResources(), R.drawable.default_sheet_favorite, reqWidth, reqHeight);
     }
 

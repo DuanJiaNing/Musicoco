@@ -4,13 +4,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -156,11 +154,11 @@ public class DialogProvider {
         int[] colors;
         switch (theme) {
             case DARK:
-                colors = ColorUtils.get4DarkDialogThemeColors(context);
+                colors = ColorUtils.get4DarkDialogThemeColors();
                 break;
             case WHITE:
             default:
-                colors = ColorUtils.get4WhiteDialogThemeColors(context);
+                colors = ColorUtils.get4WhiteDialogThemeColors();
                 break;
         }
 

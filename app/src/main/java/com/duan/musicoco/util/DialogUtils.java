@@ -46,7 +46,7 @@ public class DialogUtils {
                 imageView.getWidth(),
                 imageView.getHeight());
         if (b == null) {
-            b = BitmapUtils.getDefaultPictureForAlbum(activity, imageView.getWidth(), imageView.getHeight());
+            b = BitmapUtils.getDefaultPictureForAlbum(imageView.getWidth(), imageView.getHeight());
         }
 
         if (b != null) {

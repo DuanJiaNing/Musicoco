@@ -84,9 +84,9 @@ public class SongOperation {
                 Song song = new Song(info.getData());
                 if (dbMusicoco.addSongToSheet(sheetName, song)) {
                     String msg = activity.getString(R.string.success_add_to_sheet) + " [" + sheetName + "]";
-                    ToastUtils.showShortToast(activity, msg);
+                    ToastUtils.showShortToast(msg);
                 } else {
-                    ToastUtils.showShortToast(activity, activity.getString(R.string.error_song_is_already_in_sheet));
+                    ToastUtils.showShortToast(activity.getString(R.string.error_song_is_already_in_sheet));
                 }
                 dialog.dismiss();
             }
@@ -146,7 +146,7 @@ public class SongOperation {
             msg = activity.getString(R.string.success_delete_file);
         }
 
-        ToastUtils.showShortToast(activity, msg);
+        ToastUtils.showShortToast(msg);
     }
 
     public void removeSongFromSheet(Song song) {
