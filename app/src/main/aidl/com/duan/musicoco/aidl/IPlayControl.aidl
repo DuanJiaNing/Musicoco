@@ -44,6 +44,8 @@ interface IPlayControl {
        // 为该播放列表设置一个 id ，用于区分不同歌单
        Song setPlayList(in List<Song> songs,int current,int id);
 
+       Song setPlaySheet(int sheetID,int current);
+
        //获得播放列表
        List<Song> getPlayList();
 

@@ -3,9 +3,11 @@ package com.duan.musicoco.service;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.db.DBMusicocoController;
+import com.duan.musicoco.db.DBSongInfo;
+import com.duan.musicoco.db.MainSheetHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,10 +41,6 @@ public class PlayController {
     // MediaPlayer 是否调用过 setDataSource，
     // 否则第一次调用 changeSong 里的 _.reset 方法时 MediaPlayer 会抛 IllegalStateException
     private boolean hasMediaPlayerInit = false;
-
-    public int getPlayListId() {
-        return mPlayListId;
-    }
 
     public interface NotifyStatusChanged {
         void notify(Song song, int index, int status);
@@ -153,6 +151,42 @@ public class PlayController {
 
         Song currentS = songs.get(mCurrentSong);
         mNotifyPlayListChanged.notify(currentS, current, id);
+
+        return currentS;
+    }
+
+    public int getPlayListId() {
+        return mPlayListId;
+    }
+
+    public Song setPlaySheet(int sheetID, int current) {
+        DBMusicocoController dbController = new DBMusicocoController(context, false);
+        List<DBSongInfo> ds;
+        if (sheetID < 0) {
+            MainSheetHelper helper = new MainSheetHelper(context, dbController);
+            ds = helper.getMainSheetSongInfo(sheetID);
+        } else {
+            ds = dbController.getSongInfos(sheetID);
+        }
+
+        if (ds == null || ds.size() == 0) {
+            return null;
+        }
+
+        List<Song> list = new ArrayList<>();
+        for (DBSongInfo d : ds) {
+            Song song = new Song(d.path);
+            list.add(song);
+        }
+
+        mPlayList = list;
+        mPlayListId = sheetID;
+
+        mCurrentSong = current;
+        changeSong();
+
+        Song currentS = mPlayList.get(mCurrentSong);
+        mNotifyPlayListChanged.notify(currentS, current, sheetID);
 
         return currentS;
     }

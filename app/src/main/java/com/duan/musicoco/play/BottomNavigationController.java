@@ -896,7 +896,7 @@ public class BottomNavigationController implements
                             songOperation.removeSongFromSheet(song);
                             break;
                         case 3: {//彻底删除
-                            songOperation.deleteSongFromDisk(song);
+                            songOperation.handleDeleteSongForever(song);
                             break;
                         }
                         default:

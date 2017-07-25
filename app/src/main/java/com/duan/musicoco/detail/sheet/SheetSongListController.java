@@ -1,7 +1,6 @@
 package com.duan.musicoco.detail.sheet;
 
 import android.app.Activity;
-import android.os.RemoteException;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -10,21 +9,11 @@ import android.widget.TextView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
-import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
-import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
-import com.duan.musicoco.db.DBSongInfo;
-import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.main.MainActivity;
 import com.duan.musicoco.preference.Theme;
-import com.duan.musicoco.service.PlayController;
-import com.duan.musicoco.util.SongUtils;
-import com.duan.musicoco.util.ToastUtils;
-
-import java.util.List;
-import java.util.Random;
 
 /**
  * Created by DuanJiaNing on 2017/7/25.
@@ -91,36 +80,25 @@ public class SheetSongListController implements
 
     private void playAll(boolean isRandom) {
 
-        try {
-            List<Song> songs = null;
-            if (sheetID < 0) {
-                MainSheetHelper helper = new MainSheetHelper(activity, dbController);
-                List<DBSongInfo> info = helper.getMainSheetSongInfo(sheetID);
-                songs = SongUtils.DBSongInfoListToSongList(info);
-            } else {
-                List<DBSongInfo> infos = dbController.getSongInfos(sheetID);
-                songs = SongUtils.DBSongInfoListToSongList(infos);
-            }
+        //FIXME
 
-            if (songs != null && songs.size() > 0) {
-                if (isRandom) {
-                    control.setPlayMode(PlayController.MODE_RANDOM);
-                    Random random = new Random();
-                    control.setPlayList(songs, random.nextInt(songs.size()), sheetID);
-                } else {
-                    control.setPlayList(songs, 0, sheetID);
-                }
-                control.resume();
-
-                activity.finish();
-                ActivityManager.getInstance(activity).startPlayActivity();
-            } else {
-                ToastUtils.showShortToast(activity.getString(R.string.error_non_song_to_play));
-            }
-
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            if (isRandom) {
+//                control.setPlayMode(PlayController.MODE_RANDOM);
+//                Random random = new Random();
+//                control.setPlayList(songs, random.nextInt(songs.size()), sheetID);
+//            } else {
+//                control.setPlayList(songs, 0, sheetID);
+//            }
+//            control.resume();
+//
+//            activity.finish();
+//            ActivityManager.getInstance(activity).startPlayActivity();
+//            ToastUtils.showShortToast(activity.getString(R.string.error_non_song_to_play));
+//
+//        } catch (RemoteException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override

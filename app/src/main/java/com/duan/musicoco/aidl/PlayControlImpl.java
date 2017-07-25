@@ -147,6 +147,11 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
     }
 
     @Override
+    public Song setPlaySheet(int sheetID, int current) throws RemoteException {
+        return manager.setPlaySheet(sheetID, current);
+    }
+
+    @Override
     public List<Song> getPlayList() {
         return manager.getSongsList();
     }

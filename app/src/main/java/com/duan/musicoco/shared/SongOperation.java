@@ -114,7 +114,7 @@ public class SongOperation {
         ActivityManager.getInstance(activity).startSongDetailActivity(song);
     }
 
-    public void deleteSongFromDisk(final Song song) {
+    public void handleDeleteSongForever(final Song song) {
         DialogProvider manager = new DialogProvider(activity);
         final Dialog dialog = manager.createPromptDialog(
                 activity.getString(R.string.warning),
