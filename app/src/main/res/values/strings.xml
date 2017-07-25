@@ -58,6 +58,7 @@
     <string name="error_no_album_image">没有专辑图片 :(</string>
     <string name="error_empty_sheet">歌单是空的 :(</string>
     <string name="error_non_sheet_existent">歌单不存在 :(</string>
+    <string name="error_non_song_to_play">没有歌曲可以播放 :(</string>
     <string name="error_delete_sheet_fail">删除歌单失败 :(</string>
     <string name="error_load_sheet_fail">加载歌单失败 :(</string>
 
@@ -74,6 +75,8 @@
     <string name="continue_">继续</string>
     <string name="deleting">正在删除</string>
     <string name="cancel">取消</string>
+
+    <string name="play_all_song_random">随机播放 * 首歌曲</string>
 
     <string name="not_modify">未修改</string>
     <string name="create_time">创建时间</string>

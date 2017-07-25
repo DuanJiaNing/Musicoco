@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
@@ -370,7 +371,7 @@ public class BottomNavigationController implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.list_bottom_nav_container:
-                activity.startActivity(new Intent(activity, PlayActivity.class));
+                ActivityManager.getInstance(activity).startPlayActivity();
                 break;
             case R.id.list_play: {
                 boolean play = mPlay.isChecked();

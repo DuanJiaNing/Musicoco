@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.duan.musicoco.detail.SheetDetailActivity">
+    tools:context="com.duan.musicoco.detail.sheet.SheetDetailActivity">
     <item
         android:id="@+id/sheet_detail_search"
         android:icon="@drawable/ic_search_black_24dp"

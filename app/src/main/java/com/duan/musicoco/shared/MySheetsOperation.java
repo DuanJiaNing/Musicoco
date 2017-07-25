@@ -29,7 +29,8 @@ import rx.schedulers.Schedulers;
 
 public class MySheetsOperation {
 
-    public static final String DELETEL_SHEET_ID = "deletel_sheet_id";
+    public static final String DELETE_SHEET_ID = "deletel_sheet_id";
+    public static final String PLAY_SHEET_RANDOM = "play_sheet_random";
 
     private Activity activity;
     private IPlayControl control;
@@ -311,7 +312,7 @@ public class MySheetsOperation {
 
     private void sendBroadcast(Sheet sheet) {
         Bundle extras = new Bundle();
-        extras.putInt(DELETEL_SHEET_ID, sheet.id);
+        extras.putInt(DELETE_SHEET_ID, sheet.id);
         broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, extras);
     }
 

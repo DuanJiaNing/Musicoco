@@ -29,6 +29,8 @@
             android:theme="@style/AppTheme.Play" />
 
         <service
+            android:exported="true"
+            android:enabled="true"
             android:name=".service.PlayService"
             android:permission="com.duan.musicoco.permission.ACCESS_PLAY_SERVICE"
             android:process=":playService">
@@ -43,7 +45,7 @@
             android:name=".main.MainActivity"
             android:alwaysRetainTaskState="true"
             android:label="@string/app_name"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -52,10 +54,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".detail.SongDetailActivity"
+            android:launchMode="singleTask"
+            android:name=".detail.song.SongDetailActivity"
             android:theme="@style/AppTheme.Song.Detail" />
         <activity
-            android:name=".detail.SheetDetailActivity"
+            android:launchMode="singleTask"
+            android:name=".detail.sheet.SheetDetailActivity"
             android:theme="@style/AppTheme.Sheet.Detail">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

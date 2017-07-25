@@ -41,7 +41,7 @@ public class MainActivity extends RootActivity implements
         OnThemeChange,
         SwipeRefreshLayout.OnRefreshListener {
 
-    private PlayServiceConnection mServiceConnection;
+    private static PlayServiceConnection sSERVICECONNECTION;
     private SwipeRefreshLayout refreshLayout;
 
     private BottomNavigationController bottomNavigationController;
@@ -128,9 +128,9 @@ public class MainActivity extends RootActivity implements
     }
 
     private void unbindService() {
-        if (mServiceConnection != null && mServiceConnection.hasConnected) {
-            mServiceConnection.unregisterListener();
-            unbindService(mServiceConnection);
+        if (sSERVICECONNECTION != null && sSERVICECONNECTION.hasConnected) {
+            sSERVICECONNECTION.unregisterListener();
+            unbindService(sSERVICECONNECTION);
         }
     }
 
@@ -212,8 +212,8 @@ public class MainActivity extends RootActivity implements
     public void permissionGranted(int requestCode) {
         super.permissionGranted(requestCode);
 
-        mServiceConnection = new PlayServiceConnection(bottomNavigationController, this, this);
-        playServiceManager.bindService(mServiceConnection);
+        sSERVICECONNECTION = new PlayServiceConnection(bottomNavigationController, this, this);
+        playServiceManager.bindService(sSERVICECONNECTION);
 
     }
 
@@ -236,32 +236,33 @@ public class MainActivity extends RootActivity implements
             public void onReceive(Context context, Intent intent) {
                 Log.d(TAG, "onReceive: mySheetDataChangedReceiver");
                 mySheetsController.update(null, null);
-                isNeedUpdatePlayList(intent);
+                isNeedDeletePlayList(intent);
             }
         };
 
-        mainSheetDataChangedReceiver = new
+        mainSheetDataChangedReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(TAG, "onReceive: mainSheetDataChangedReceiver");
+                mainSheetsController.update(null, null);
+            }
+        };
 
-                BroadcastReceiver() {
-                    @Override
-                    public void onReceive(Context context, Intent intent) {
-                        Log.d(TAG, "onReceive: mainSheetDataChangedReceiver");
-                        mainSheetsController.update(null, null);
-                    }
-                }
-
-        ;
 
         broadcastManager.registerBroadReceiver(mySheetDataChangedReceiver, BroadcastManager.FILTER_MY_SHEET_CHANGED);
         broadcastManager.registerBroadReceiver(mainSheetDataChangedReceiver, BroadcastManager.FILTER_MAIN_SHEET_CHANGED);
     }
 
-    private void isNeedUpdatePlayList(Intent intent) {
+    private void isNeedDeletePlayList(Intent intent) {
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            int sheetID = extras.getInt(MySheetsOperation.DELETEL_SHEET_ID, Integer.MAX_VALUE);
+            int sheetID = extras.getInt(MySheetsOperation.DELETE_SHEET_ID, Integer.MAX_VALUE);
+            if (sheetID == Integer.MAX_VALUE) {
+                return;
+            }
+
             try {
-                IPlayControl control = mServiceConnection.takeControl();
+                IPlayControl control = sSERVICECONNECTION.takeControl();
                 int cursid = control.getPlayListId();
                 if (sheetID == cursid) {
 
@@ -281,10 +282,10 @@ public class MainActivity extends RootActivity implements
 
     private void initSelfData() {
 
-        bottomNavigationController.initData(mServiceConnection.takeControl(), dbMusicoco);
+        bottomNavigationController.initData(sSERVICECONNECTION.takeControl(), dbMusicoco);
         mostPlayController.initData(dbMusicoco, getString(R.string.rmp_history));
         mainSheetsController.initData(dbMusicoco);
-        mySheetsController.initData(mServiceConnection.takeControl());
+        mySheetsController.initData(sSERVICECONNECTION.takeControl());
 
         update();
 
@@ -295,9 +296,9 @@ public class MainActivity extends RootActivity implements
 
     @Override
     public void disConnected(ComponentName name) {
-        mServiceConnection = null;
-        mServiceConnection = new PlayServiceConnection(bottomNavigationController, this, this);
-        playServiceManager.bindService(mServiceConnection);
+        sSERVICECONNECTION = null;
+        sSERVICECONNECTION = new PlayServiceConnection(bottomNavigationController, this, this);
+        playServiceManager.bindService(sSERVICECONNECTION);
     }
 
     @Override
@@ -320,4 +321,7 @@ public class MainActivity extends RootActivity implements
         mySheetsController.update(null, statusChanged);
     }
 
+    public static IPlayControl getControl() {
+        return sSERVICECONNECTION.takeControl();
+    }
 }

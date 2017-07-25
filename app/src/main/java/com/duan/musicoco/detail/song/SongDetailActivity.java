@@ -1,4 +1,4 @@
-package com.duan.musicoco.detail;
+package com.duan.musicoco.detail.song;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;

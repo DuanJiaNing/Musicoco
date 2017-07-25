@@ -1,4 +1,4 @@
-package com.duan.musicoco.detail;
+package com.duan.musicoco.detail.sheet;
 
 import android.app.Activity;
 import android.content.res.ColorStateList;

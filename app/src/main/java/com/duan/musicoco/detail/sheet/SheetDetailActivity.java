@@ -1,4 +1,4 @@
-package com.duan.musicoco.detail;
+package com.duan.musicoco.detail.sheet;
 
 import android.content.Intent;
 import android.os.Build;
@@ -18,7 +18,9 @@ import com.duan.musicoco.util.Utils;
 
 public class SheetDetailActivity extends AppCompatActivity {
 
-    private SheetInfoController sheetInfoController;
+    private SheetInfoController infoController;
+    private SheetSongListController songListController;
+
     private DBMusicocoController dbController;
     private MediaManager mediaManager;
 
@@ -33,7 +35,9 @@ public class SheetDetailActivity extends AppCompatActivity {
 
         Utils.transitionStatusBar(this);
 
-        sheetInfoController = new SheetInfoController(this);
+        infoController = new SheetInfoController(this);
+        songListController = new SheetSongListController(this);
+
         dbController = new DBMusicocoController(this, true);
         mediaManager = MediaManager.getInstance(this);
 
@@ -69,7 +73,8 @@ public class SheetDetailActivity extends AppCompatActivity {
 
     private void initData() {
 
-        sheetInfoController.initData(sheetID, sheet, dbController, mediaManager);
+        infoController.initData(sheetID, sheet, dbController, mediaManager);
+        songListController.initData(sheetID, dbController, mediaManager);
     }
 
     @Override
@@ -116,7 +121,8 @@ public class SheetDetailActivity extends AppCompatActivity {
     private void initViews() {
 
         initSelfView();
-        sheetInfoController.initView();
+        infoController.initView();
+        songListController.initViews();
 
     }
 

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.duan.musicoco.detail.SheetDetailActivity">
+    tools:context="com.duan.musicoco.detail.sheet.SheetDetailActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/sheet_detail_app_bar"
@@ -49,7 +49,6 @@
                     android:translationY="-12dp"
                     android:elevation="15dp"
                     android:layout_centerVertical="true"
-                    android:background="#0f0"
                     android:id="@+id/sheet_detail_image"
                     android:layout_width="130dp"
                     android:layout_height="130dp"

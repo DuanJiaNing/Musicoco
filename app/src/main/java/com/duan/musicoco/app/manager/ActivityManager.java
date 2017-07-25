@@ -5,8 +5,9 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.detail.SheetDetailActivity;
-import com.duan.musicoco.detail.SongDetailActivity;
+import com.duan.musicoco.detail.sheet.SheetDetailActivity;
+import com.duan.musicoco.detail.song.SongDetailActivity;
+import com.duan.musicoco.play.PlayActivity;
 
 import java.io.File;
 
@@ -50,5 +51,9 @@ public class ActivityManager {
         Intent intent = new Intent(context, SheetDetailActivity.class);
         intent.putExtra(SHEET_DETAIL_ID, sheetID);
         context.startActivity(intent);
+    }
+
+    public void startPlayActivity() {
+        context.startActivity(new Intent(context, PlayActivity.class));
     }
 }
