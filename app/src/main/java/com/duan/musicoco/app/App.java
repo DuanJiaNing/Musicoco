@@ -11,21 +11,21 @@ import com.duan.musicoco.preference.AppPreference;
 
 public class App extends Application {
 
-    public final AppPreference appPreference;
+    public static AppPreference sAPPPREFERENCE;
     private static Context sCONTEXT;
-
-    public App() {
-        appPreference = new AppPreference(this);
-    }
 
     @Override
     public void onCreate() {
         super.onCreate();
         sCONTEXT = this;
+        sAPPPREFERENCE = new AppPreference(this);
     }
 
     public static Context getContext() {
         return sCONTEXT;
     }
 
+    public static AppPreference getAppPreference() {
+        return sAPPPREFERENCE;
+    }
 }

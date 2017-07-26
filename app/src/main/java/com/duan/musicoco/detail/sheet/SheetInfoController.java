@@ -57,6 +57,7 @@ public class SheetInfoController {
     private final AppBarStateChangeListener barStateChangeListener;
     private Sheet sheet;
 
+
     public SheetInfoController(Activity activity) {
         this.activity = activity;
         this.onFindCompleted = new SheetCoverHelper.OnFindCompleted() {
@@ -109,6 +110,7 @@ public class SheetInfoController {
 
         appBarLayout.addOnOffsetChangedListener(barStateChangeListener);
     }
+
 
     private void initTexts() {
         if (sheetID < 0) {

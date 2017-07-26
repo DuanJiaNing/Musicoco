@@ -52,6 +52,7 @@
             android:background="#000" />
 
         <android.support.v7.widget.RecyclerView
+            android:nestedScrollingEnabled="false"
             android:id="@+id/sheet_detail_songs_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

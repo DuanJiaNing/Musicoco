@@ -49,8 +49,9 @@ public class BitmapBuilder {
         return this;
     }
 
-    public void resizeForDefault(int reqWidth, int reqHeight, int resID) {
+    public BitmapBuilder resizeForDefault(int reqWidth, int reqHeight, int resID) {
         bitM = BitmapUtils.bitmapResizeFromResource(context.getResources(), resID, reqWidth, reqHeight);
+        return this;
     }
 
     /**
@@ -77,7 +78,7 @@ public class BitmapBuilder {
         return this;
     }
 
-    public BitmapBuilder jpg2png() {
+    public BitmapBuilder jpgToPng() {
         bitM = BitmapUtils.jpgToPng(bitM);
         return this;
     }

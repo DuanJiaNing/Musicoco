@@ -56,6 +56,9 @@ public class BitmapUtils {
             int top = (int) ((bitmap.getHeight() - radius * 2) / 2);
             canvas.drawBitmap(bitmap, -left, -top, paint);
 
+            bitmap.recycle();
+            bitmap = null;
+
             return circleBitmap;
 
         } catch (Exception e) {

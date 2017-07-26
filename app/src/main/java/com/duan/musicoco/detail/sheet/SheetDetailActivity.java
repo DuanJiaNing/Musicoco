@@ -3,16 +3,21 @@ package com.duan.musicoco.detail.sheet;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewTreeObserver;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.Sheet;
+import com.duan.musicoco.shared.ExceptionHandler;
+import com.duan.musicoco.shared.SheetCoverHelper;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
 
@@ -25,7 +30,6 @@ public class SheetDetailActivity extends AppCompatActivity {
     private MediaManager mediaManager;
 
     private Sheet sheet;
-    private boolean isMainSheet;
     private int sheetID;
 
     @Override
@@ -57,7 +61,6 @@ public class SheetDetailActivity extends AppCompatActivity {
             if (si < 0) {
                 sheetID = si;
                 sheet = null;
-                isMainSheet = true;
             } else {
                 sheet = dbController.getSheet(si);
                 if (sheet == null) {
@@ -65,7 +68,6 @@ public class SheetDetailActivity extends AppCompatActivity {
                     finish();
                 } else {
                     sheetID = si;
-                    isMainSheet = false;
                 }
             }
         }
@@ -74,7 +76,15 @@ public class SheetDetailActivity extends AppCompatActivity {
     private void initData() {
 
         infoController.initData(sheetID, sheet, dbController, mediaManager);
-        songListController.initData(sheetID, dbController, mediaManager);
+
+        //FIXME 启动 Activity 卡顿（阻塞）
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                songListController.initData(sheetID, dbController, mediaManager);
+            }
+        }, 300);
     }
 
     @Override

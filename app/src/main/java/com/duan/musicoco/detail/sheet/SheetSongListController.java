@@ -1,19 +1,41 @@
 package com.duan.musicoco.detail.sheet;
 
 import android.app.Activity;
+import android.os.RemoteException;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
+import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.App;
+import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
+import com.duan.musicoco.db.DBSongInfo;
+import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.main.MainActivity;
 import com.duan.musicoco.preference.Theme;
+import com.duan.musicoco.service.PlayController;
+import com.duan.musicoco.util.SongUtils;
+import com.duan.musicoco.util.ToastUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by DuanJiaNing on 2017/7/25.
@@ -32,14 +54,20 @@ public class SheetSongListController implements
     private FloatingActionButton fabPlayAll;
 
     private final Activity activity;
+    private SongAdapter songAdapter;
     private IPlayControl control;
 
     private int sheetID;
     private DBMusicocoController dbController;
     private MediaManager mediaManager;
 
+    private int currentIndex = 0;
+
+    private final List<SongAdapter.DataHolder> data;
+
     public SheetSongListController(Activity activity) {
         this.activity = activity;
+        this.data = new ArrayList<>();
     }
 
     public void initViews() {
@@ -62,6 +90,66 @@ public class SheetSongListController implements
 
         control = MainActivity.getControl();
 
+        songAdapter = new SongAdapter(activity, data);
+        songList.setLayoutManager(new LinearLayoutManager(activity));
+        songList.setAdapter(songAdapter);
+
+        themeChange(null, null);
+
+        update();
+
+    }
+
+
+    public void update() {
+
+        Observable.OnSubscribe<Boolean> onSubscribe = new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+
+                List<DBSongInfo> ds;
+                if (sheetID < 0) {
+                    MainSheetHelper helper = new MainSheetHelper(activity, dbController);
+                    ds = helper.getMainSheetSongInfo(sheetID);
+                } else {
+                    ds = dbController.getSongInfos(sheetID);
+                }
+                List<SongInfo> da = SongUtils.DBSongInfoToSongInfoList(ds, mediaManager);
+
+                data.clear();
+                for (int i = 0; i < da.size(); i++) {
+                    SongInfo info = da.get(i);
+                    boolean fa = ds.get(i).favorite;
+                    SongAdapter.DataHolder dh = new SongAdapter.DataHolder(info, fa);
+                    data.add(dh);
+                }
+
+                boolean isCurrentSheetPlaying = false;
+                try {
+                    int curID = control.getPlayListId();
+                    if (curID == sheetID) {
+                        isCurrentSheetPlaying = true;
+                        currentIndex = control.currentSongIndex();
+                    } else {
+                        isCurrentSheetPlaying = false;
+                    }
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+
+                subscriber.onNext(isCurrentSheetPlaying);
+            }
+        };
+
+        Observable.create(onSubscribe)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Boolean>() {
+                    @Override
+                    public void call(Boolean isCurrentSheetPlaying) {
+                        songAdapter.update(isCurrentSheetPlaying, currentIndex);
+                    }
+                });
     }
 
 
@@ -80,29 +168,39 @@ public class SheetSongListController implements
 
     private void playAll(boolean isRandom) {
 
-        //FIXME
+        try {
+            Song song = null;
+            if (isRandom) {
+                control.setPlayMode(PlayController.MODE_RANDOM);
+                Random random = new Random();
+                List<DBSongInfo> infos;
+                if (sheetID < 0) {
+                    MainSheetHelper helper = new MainSheetHelper(activity, dbController);
+                    infos = helper.getMainSheetSongInfo(sheetID);
+                } else {
+                    infos = dbController.getSongInfos(sheetID);
+                }
+                song = control.setPlaySheet(sheetID, random.nextInt(infos.size()));
+            } else {
+                song = control.setPlaySheet(sheetID, 0);
+            }
+            control.resume();
 
-//        try {
-//            if (isRandom) {
-//                control.setPlayMode(PlayController.MODE_RANDOM);
-//                Random random = new Random();
-//                control.setPlayList(songs, random.nextInt(songs.size()), sheetID);
-//            } else {
-//                control.setPlayList(songs, 0, sheetID);
-//            }
-//            control.resume();
-//
-//            activity.finish();
-//            ActivityManager.getInstance(activity).startPlayActivity();
-//            ToastUtils.showShortToast(activity.getString(R.string.error_non_song_to_play));
-//
-//        } catch (RemoteException e) {
-//            e.printStackTrace();
-//        }
+            if (song != null) {
+                activity.finish();
+                ActivityManager.getInstance(activity).startPlayActivity();
+            } else {
+                ToastUtils.showShortToast(activity.getString(R.string.error_non_song_to_play));
+            }
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void themeChange(Theme theme, int[] colors) {
-
+        Theme th = App.getAppPreference().getTheme();
+        songAdapter.themeChange(th, null);
     }
 }

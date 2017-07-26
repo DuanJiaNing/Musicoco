@@ -140,7 +140,7 @@ public class DialogProvider {
 
         builder = new AlertDialog.Builder(context);
 
-        theme = ((App) context.getApplicationContext()).appPreference.getTheme();
+        theme = App.getAppPreference().getTheme();
         updateTheme();
 
     }
