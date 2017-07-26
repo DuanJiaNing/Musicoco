@@ -25,7 +25,7 @@ import com.duan.musicoco.app.interfaces.OnServiceConnect;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.manager.BroadcastManager;
-import com.duan.musicoco.db.DBSongInfo;
+import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.play.PlayServiceConnection;
 import com.duan.musicoco.preference.Theme;
@@ -74,7 +74,7 @@ public class MainActivity extends RootActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Utils.transitionStatusBar(this);
+//        Utils.transitionStatusBar(this);
 
         broadcastManager = BroadcastManager.getInstance(this);
         bottomNavigationController = new BottomNavigationController(this, mediaManager, appPreference, playPreference);

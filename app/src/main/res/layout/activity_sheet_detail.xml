@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sheet_detail_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.duan.musicoco.detail.sheet.SheetDetailActivity">
@@ -17,18 +18,17 @@
             android:id="@+id/sheet_detail_toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:contentScrim="?attr/colorPrimary"
+            android:background="@color/dark"
             app:expandedTitleGravity="bottom|start"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-            app:statusBarScrim="?attr/colorPrimaryDark">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
             <ImageView
-                app:layout_collapseMode="parallax"
                 android:id="@+id/sheet_detail_image_bg"
-                android:scaleType="centerCrop"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fitsSystemWindows="true" />
+                android:fitsSystemWindows="true"
+                android:scaleType="centerCrop"
+                app:layout_collapseMode="parallax" />
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/sheet_detail_toolbar"
@@ -39,69 +39,69 @@
 
 
             <android.support.constraint.ConstraintLayout
-                android:layout_marginRight="@dimen/activity_default_margin"
-                android:layout_marginTop="@dimen/activity_default_margin"
-                android:layout_marginBottom="@dimen/activity_default_margin"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/activity_default_margin"
+                android:layout_marginRight="@dimen/activity_default_margin"
+                android:layout_marginTop="@dimen/activity_default_margin">
 
                 <ImageView
-                    android:translationY="-12dp"
-                    android:elevation="15dp"
-                    android:layout_centerVertical="true"
                     android:id="@+id/sheet_detail_image"
                     android:layout_width="130dp"
                     android:layout_height="130dp"
-                    android:scaleType="centerCrop"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:layout_centerVertical="true"
                     android:layout_marginBottom="8dp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginTop="8dp"
                     android:layout_marginLeft="24dp"
-                    app:layout_constraintLeft_toLeftOf="parent" />
+                    android:layout_marginTop="8dp"
+                    android:elevation="15dp"
+                    android:scaleType="centerCrop"
+                    android:translationY="-12dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
+                    android:id="@+id/sheet_detail_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:lines="1"
                     android:textSize="@dimen/text_large"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/sheet_detail_name"
-                    app:layout_constraintLeft_toLeftOf="@+id/guideline4"
-                    app:layout_constraintBottom_toTopOf="@+id/sheet_detail_remark" />
+                    app:layout_constraintBottom_toTopOf="@+id/sheet_detail_remark"
+                    app:layout_constraintLeft_toLeftOf="@+id/guideline4" />
 
                 <TextView
-                    android:maxLines="2"
+                    android:id="@+id/sheet_detail_remark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
                     android:ellipsize="end"
+                    android:maxLines="2"
                     android:paddingBottom="@dimen/activity_default_padding"
                     android:paddingTop="@dimen/activity_default_padding"
                     android:textSize="@dimen/text_small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="@+id/guideline4"
-                    android:id="@+id/sheet_detail_remark"
-                    app:layout_constraintVertical_bias="0.504"
-                    android:layout_marginBottom="4dp" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.504" />
 
                 <TextView
-                    android:ellipsize="none"
-                    android:lines="1"
-                    android:textSize="@dimen/text_small"
                     android:id="@+id/sheet_detail_create_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:ellipsize="none"
+                    android:lines="1"
+                    android:textSize="@dimen/text_small"
                     app:layout_constraintLeft_toLeftOf="@+id/guideline4"
-                    app:layout_constraintTop_toBottomOf="@+id/sheet_detail_remark"
-                    android:layout_marginTop="4dp" />
+                    app:layout_constraintTop_toBottomOf="@+id/sheet_detail_remark" />
 
                 <android.support.constraint.Guideline
+                    android:id="@+id/guideline4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/guideline4"
-                    app:layout_constraintGuide_percent="0.58"
-                    android:orientation="vertical" />
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.58" />
 
             </android.support.constraint.ConstraintLayout>
 
@@ -118,5 +118,16 @@
         app:layout_anchor="@id/sheet_detail_app_bar"
         app:layout_anchorGravity="bottom|end"
         app:srcCompat="@drawable/ic_play_arrow_white_48dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/sheet_detail_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:onClick="smoothScrollToTop"
+        android:rotation="90"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/ic_first_page_black_24dp" />
 
 </android.support.design.widget.CoordinatorLayout>

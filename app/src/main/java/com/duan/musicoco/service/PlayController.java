@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.db.DBMusicocoController;
-import com.duan.musicoco.db.DBSongInfo;
+import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.MainSheetHelper;
 
 import java.io.IOException;

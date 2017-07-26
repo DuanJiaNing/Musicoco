@@ -8,7 +8,7 @@ import com.duan.musicoco.aidl.PlayControlImpl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
-import com.duan.musicoco.db.DBSongInfo;
+import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.preference.PlayPreference;
 

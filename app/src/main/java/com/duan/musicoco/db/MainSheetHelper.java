@@ -3,6 +3,7 @@ package com.duan.musicoco.db;
 import android.content.Context;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.db.bean.DBSongInfo;
 
 import java.util.ArrayList;
 import java.util.List;

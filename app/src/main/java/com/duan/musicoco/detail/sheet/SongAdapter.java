@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,7 +95,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
         holder.duration.setText(durtion);
 
         bindStatAndColors(holder, position, dataHolder.isFavorite);
-
     }
 
     private void bindStatAndColors(ViewHolder holder, int position, boolean isFavorite) {
@@ -159,22 +159,19 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
 
     @Override
     public void themeChange(Theme theme, int[] colors) {
-        int[] tcs = new int[2];
         int ct;
         switch (theme) {
             case DARK:
-                tcs = ColorUtils.get2DarkThemeTextColor();
                 ct = context.getResources().getColor(R.color.colorPrimaryLight);
                 break;
             case WHITE:
             default:
-                tcs = ColorUtils.get2WhiteThemeTextColor();
                 ct = context.getResources().getColor(R.color.colorPrimary);
                 break;
         }
 
-        mainTC = tcs[0];
-        vicTC = tcs[1];
+        mainTC = colors[0];
+        vicTC = colors[1];
         choiceC = ct;
 
         notifyDataSetChanged();

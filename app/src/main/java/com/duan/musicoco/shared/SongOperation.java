@@ -16,7 +16,7 @@ import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.db.DBMusicocoController;
-import com.duan.musicoco.db.Sheet;
+import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.util.FileUtils;
 import com.duan.musicoco.util.ToastUtils;
 

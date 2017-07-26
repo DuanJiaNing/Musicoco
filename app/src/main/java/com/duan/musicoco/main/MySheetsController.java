@@ -21,7 +21,7 @@ import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
-import com.duan.musicoco.db.Sheet;
+import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.shared.MySheetsOperation;
 import com.duan.musicoco.util.ColorUtils;

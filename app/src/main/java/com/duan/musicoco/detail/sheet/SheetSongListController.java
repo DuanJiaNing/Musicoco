@@ -1,31 +1,35 @@
 package com.duan.musicoco.detail.sheet;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.RemoteException;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.App;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
-import com.duan.musicoco.db.DBSongInfo;
 import com.duan.musicoco.db.MainSheetHelper;
+import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.main.MainActivity;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
+import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.SongUtils;
 import com.duan.musicoco.util.ToastUtils;
+import com.duan.musicoco.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +49,6 @@ public class SheetSongListController implements
         View.OnClickListener,
         OnThemeChange {
 
-    private View container;
     private ImageView random;
     private TextView playAllRandom;
     private View line;
@@ -71,7 +74,6 @@ public class SheetSongListController implements
     }
 
     public void initViews() {
-        container = activity.findViewById(R.id.sheet_detail_song_list_container);
         random = (ImageView) activity.findViewById(R.id.sheet_detail_songs_icon);
         playAllRandom = (TextView) activity.findViewById(R.id.sheet_detail_songs_play_random);
         fabPlayAll = (FloatingActionButton) activity.findViewById(R.id.sheet_detail_play_all);
@@ -81,6 +83,30 @@ public class SheetSongListController implements
 
         randomContainer.setOnClickListener(this);
         fabPlayAll.setOnClickListener(this);
+
+        songList.post(new Runnable() {
+            @Override
+            public void run() {
+                calculateRecycleViewHeight();
+            }
+        });
+    }
+
+    //计算 RecycleView 高度，否则无法复用 item
+    private void calculateRecycleViewHeight() {
+        android.support.v7.app.ActionBar bar = ((AppCompatActivity) activity).getSupportActionBar();
+        if (bar != null) {
+            int actionH = bar.getHeight();
+            int randomCH = randomContainer.getHeight();
+            int statusH = Utils.getStatusBarHeight(activity);
+            int screenHeight = Utils.getMetrics(activity).heightPixels;
+            int height = screenHeight - actionH - statusH - randomCH;
+
+            ViewGroup.LayoutParams params = songList.getLayoutParams();
+            params.height = height;
+            songList.setLayoutParams(params);
+            Log.d("musicoco", "calculateRecycleViewHeight: height=" + height);
+        }
     }
 
     public void initData(int sheetID, DBMusicocoController dbController, MediaManager mediaManager) {
@@ -94,10 +120,13 @@ public class SheetSongListController implements
         songList.setLayoutManager(new LinearLayoutManager(activity));
         songList.setAdapter(songAdapter);
 
-        themeChange(null, null);
-
-        update();
-
+        //在 calculateRecycleViewHeight 之后再更新
+        songList.post(new Runnable() {
+            @Override
+            public void run() {
+                update();
+            }
+        });
     }
 
 
@@ -136,7 +165,6 @@ public class SheetSongListController implements
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
-
                 subscriber.onNext(isCurrentSheetPlaying);
             }
         };
@@ -200,7 +228,15 @@ public class SheetSongListController implements
 
     @Override
     public void themeChange(Theme theme, int[] colors) {
-        Theme th = App.getAppPreference().getTheme();
-        songAdapter.themeChange(th, null);
+
+        songAdapter.themeChange(theme, colors);
+
+        int mainTC = colors[0];
+        int vicTC = colors[1];
+        playAllRandom.setTextColor(mainTC);
+        line.setBackgroundColor(vicTC);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            random.getDrawable().setTint(vicTC);
+        }
     }
 }

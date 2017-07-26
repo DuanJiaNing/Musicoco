@@ -3,7 +3,7 @@ package com.duan.musicoco.detail.sheet;
 import android.app.Activity;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
@@ -11,17 +11,17 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.text.BoringLayout;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
-import com.duan.musicoco.db.Sheet;
+import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.shared.SheetCoverHelper;
 import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.util.BitmapUtils;
@@ -35,10 +35,8 @@ import com.duan.musicoco.view.AppBarStateChangeListener;
 
 public class SheetInfoController {
 
+    private final boolean isDarkThem;
     private Activity activity;
-    private CollapsingToolbarLayout collapsingToolbarLayout;
-    private AppBarLayout appBarLayout;
-    private Toolbar toolbar;
     private FloatingActionButton fabPlayAll;
     private ImageView imageViewBG;
     private ImageView imageView;
@@ -54,12 +52,12 @@ public class SheetInfoController {
     private String title;
 
     private final SheetCoverHelper.OnFindCompleted onFindCompleted;
-    private final AppBarStateChangeListener barStateChangeListener;
     private Sheet sheet;
 
 
-    public SheetInfoController(Activity activity) {
+    public SheetInfoController(Activity activity, boolean darkTheme) {
         this.activity = activity;
+        this.isDarkThem = darkTheme;
         this.onFindCompleted = new SheetCoverHelper.OnFindCompleted() {
             @Override
             public void completed(SongInfo info) {
@@ -67,29 +65,10 @@ public class SheetInfoController {
                 initColor();
             }
         };
-        barStateChangeListener = new AppBarStateChangeListener() {
-            @Override
-            public void onStateChanged(AppBarLayout appBarLayout, State state) {
-                switch (state) {
-                    case EXPANDED:
-                        collapsingToolbarLayout.setTitle(" ");
-                        break;
-                    case COLLAPSED:
-                        collapsingToolbarLayout.setTitle(title);
-                        break;
-                    case IDLE:
-                        collapsingToolbarLayout.setTitle(" ");
-                        break;
-                }
-            }
-        };
     }
 
     public void initView() {
 
-        appBarLayout = (AppBarLayout) activity.findViewById(R.id.sheet_detail_app_bar);
-        collapsingToolbarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.sheet_detail_toolbar_layout);
-        toolbar = (Toolbar) activity.findViewById(R.id.sheet_detail_toolbar);
         fabPlayAll = (FloatingActionButton) activity.findViewById(R.id.sheet_detail_play_all);
         imageViewBG = (ImageView) activity.findViewById(R.id.sheet_detail_image_bg);
         imageView = (ImageView) activity.findViewById(R.id.sheet_detail_image);
@@ -108,9 +87,11 @@ public class SheetInfoController {
         initTexts();
         initImageAndColor();
 
-        appBarLayout.addOnOffsetChangedListener(barStateChangeListener);
     }
 
+    public String getTitle() {
+        return title;
+    }
 
     private void initTexts() {
         if (sheetID < 0) {
@@ -166,6 +147,11 @@ public class SheetInfoController {
         imageView.setImageBitmap(ib);
         imageViewBG.setImageBitmap(ibg);
 
+        if (isDarkThem) {
+            imageViewBG.setAlpha(0.1f);
+        }
+
+        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.sheet_detail_toolbar_layout);
         AnimationUtils.startAlphaAnim(
                 collapsingToolbarLayout,
                 activity.getResources().getInteger(R.integer.anim_default_duration),

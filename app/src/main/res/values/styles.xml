@@ -72,7 +72,7 @@
 
     <style name="Theme.DARK" parent="AppTheme">
         <item name="android:windowBackground">@color/theme_dark_primary</item>
-        <item name="colorPrimary">@color/theme_dark_primary</item>
+        <item name="colorPrimary">@color/theme_dark_primary_dark</item>
         <item name="colorPrimaryDark">@color/theme_dark_primary_dark</item>
         <item name="colorAccent">@color/theme_dark_main_text</item>
         <item name="android:textColorPrimary">@color/theme_dark_main_text</item>
@@ -93,7 +93,6 @@
 
         <item name="android:colorControlActivated">@color/colorAccent</item>
         <item name="android:colorControlNormal">@color/colorAccentLight</item>
-
         <item name="android:navigationBarColor">@color/theme_white_main_text</item>
     </style>
 

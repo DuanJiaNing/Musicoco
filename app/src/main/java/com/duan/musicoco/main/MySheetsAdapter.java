@@ -19,8 +19,8 @@ import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.db.DBMusicocoController;
-import com.duan.musicoco.db.DBSongInfo;
-import com.duan.musicoco.db.Sheet;
+import com.duan.musicoco.db.bean.DBSongInfo;
+import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.shared.MySheetsOperation;
@@ -150,14 +150,7 @@ public class MySheetsAdapter extends BaseAdapter implements
 
         if (convertView == null) {
             convertView = LayoutInflater.from(activity).inflate(R.layout.my_sheet_list_item, null);
-            holder = new ViewHolder();
-            holder.image = (ImageView) convertView.findViewById(R.id.sheets_item_image);
-            holder.play = (PlayView) convertView.findViewById(R.id.sheets_item_play);
-            holder.name = (TextView) convertView.findViewById(R.id.sheets_item_name);
-            holder.remark = (TextView) convertView.findViewById(R.id.sheets_item_remark);
-            holder.count = (TextView) convertView.findViewById(R.id.sheets_item_song_count);
-            holder.playTimes = (TextView) convertView.findViewById(R.id.sheets_item_play_times);
-            holder.more = (ImageButton) convertView.findViewById(R.id.sheets_item_more);
+            holder = new ViewHolder(convertView);
 
             if (defaultBitmap == null) {
                 defaultBitmap = BitmapUtils.bitmapResizeFromResource(activity.getResources(), R.drawable.default_sheet, holder.image.getWidth(), holder.image.getHeight());
@@ -184,8 +177,8 @@ public class MySheetsAdapter extends BaseAdapter implements
         }
 
         holder.play.setTag(sheet);
-        holder.play.setTriangleColor(mainBC);
-        holder.play.setPauseLineColor(mainBC);
+        holder.play.setTriangleColor(vicTC);
+        holder.play.setPauseLineColor(vicTC);
         holder.play.setOnCheckedChangeListener(this);
 
         try {
@@ -210,6 +203,8 @@ public class MySheetsAdapter extends BaseAdapter implements
 
         holder.playTimes.setTextColor(vicTC);
         holder.playTimes.setText(playTimes + "次");
+
+        convertView.setBackgroundColor(vicBC);
 
         return convertView;
     }
@@ -316,5 +311,16 @@ public class MySheetsAdapter extends BaseAdapter implements
         TextView count;
         TextView playTimes;
         ImageButton more;
+
+        public ViewHolder(View convertView) {
+            image = (ImageView) convertView.findViewById(R.id.sheets_item_image);
+            play = (PlayView) convertView.findViewById(R.id.sheets_item_play);
+            name = (TextView) convertView.findViewById(R.id.sheets_item_name);
+            remark = (TextView) convertView.findViewById(R.id.sheets_item_remark);
+            count = (TextView) convertView.findViewById(R.id.sheets_item_song_count);
+            playTimes = (TextView) convertView.findViewById(R.id.sheets_item_play_times);
+            more = (ImageButton) convertView.findViewById(R.id.sheets_item_more);
+
+        }
     }
 }

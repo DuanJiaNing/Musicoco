@@ -22,7 +22,7 @@ import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.db.DBMusicocoController;
-import com.duan.musicoco.db.DBSongInfo;
+import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.image.BitmapBuilder;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.util.BitmapUtils;

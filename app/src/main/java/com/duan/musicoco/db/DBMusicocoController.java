@@ -11,6 +11,8 @@ import android.util.Log;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.db.bean.DBSongInfo;
+import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.util.StringUtils;
 
 import java.util.ArrayList;

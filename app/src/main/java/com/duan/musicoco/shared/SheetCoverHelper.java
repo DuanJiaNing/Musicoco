@@ -8,10 +8,8 @@ import android.support.annotation.Nullable;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
-import com.duan.musicoco.db.DBSongInfo;
+import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.MainSheetHelper;
-import com.duan.musicoco.db.Sheet;
-import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.SongUtils;
 
 import java.util.List;

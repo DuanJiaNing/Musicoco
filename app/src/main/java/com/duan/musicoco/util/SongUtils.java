@@ -3,7 +3,7 @@ package com.duan.musicoco.util;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.manager.MediaManager;
-import com.duan.musicoco.db.DBSongInfo;
+import com.duan.musicoco.db.bean.DBSongInfo;
 
 import java.util.ArrayList;
 import java.util.List;

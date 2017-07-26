@@ -3,7 +3,6 @@ package com.duan.musicoco.main;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -27,7 +26,7 @@ import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
-import com.duan.musicoco.db.Sheet;
+import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.shared.ExceptionHandler;
 import com.duan.musicoco.app.manager.MediaManager;
@@ -38,7 +37,6 @@ import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.image.BitmapBuilder;
-import com.duan.musicoco.play.PlayActivity;
 import com.duan.musicoco.shared.PlayListAdapter;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.Theme;
@@ -466,7 +464,7 @@ public class BottomNavigationController implements
         mLine.setBackgroundColor(vicTC);
         mSheet.setTextColor(mainTC);
 
-        mListContainer.setBackgroundColor(mainBC);
+        mListContainer.setBackgroundColor(vicBC);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mShowList.getDrawable().setTint(mainTC);

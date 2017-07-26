@@ -13,7 +13,7 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.DBMusicocoController;
-import com.duan.musicoco.db.Sheet;
+import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.view.TextInputHelper;

@@ -11,6 +11,7 @@ import com.duan.musicoco.preference.AppPreference;
 
 public class App extends Application {
 
+    //FIXME 内存泄漏
     public static AppPreference sAPPPREFERENCE;
     private static Context sCONTEXT;
 
