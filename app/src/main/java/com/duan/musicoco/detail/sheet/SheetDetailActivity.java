@@ -3,6 +3,7 @@ package com.duan.musicoco.detail.sheet;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,6 +36,7 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
 
     private SheetInfoController infoController;
     private SheetSongListController songListController;
+    private Toolbar toolbar;
 
     private DBMusicocoController dbController;
     private MediaManager mediaManager;
@@ -59,8 +61,6 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
         Utils.transitionStatusBar(this);
 
         appPreference = new AppPreference(this);
-
-        Theme theme = appPreference.getTheme();
 
         boolean darkTheme = appPreference.getTheme() == Theme.DARK;
         infoController = new SheetInfoController(this, darkTheme);
@@ -109,24 +109,33 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_sheet_detail, menu);
-        MenuItem heart = menu.findItem(R.id.sheet_detail_action_collection);
-        MenuItem search = menu.findItem(R.id.sheet_detail_search);
-        MenuItem edit = menu.findItem(R.id.sheet_detail_action_modify);
+        initOptionsMenuColors(menu);
+        return true;
+    }
 
-        int color;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            color = getColor(R.color.white_d);
-        } else {
-            color = getResources().getColor(R.color.white_d);
-        }
+    private void initOptionsMenuColors(Menu menu) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Theme th = appPreference.getTheme();
+            int color;
+            switch (th) {
+                case DARK:
+                    color = ColorUtils.get2DarkThemeTextColor()[0];
+                    break;
+                case WHITE:
+                default:
+                    color = Color.WHITE;
+                    break;
+            }
+
+            MenuItem heart = menu.findItem(R.id.sheet_detail_action_collection);
+            MenuItem search = menu.findItem(R.id.sheet_detail_search);
+            MenuItem edit = menu.findItem(R.id.sheet_detail_action_modify);
+
             heart.getIcon().setTint(color);
             search.getIcon().setTint(color);
             edit.getIcon().setTint(color);
         }
-
-        return true;
     }
 
     @Override
@@ -156,7 +165,7 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
     }
 
     private void initSelfView() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.sheet_detail_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.sheet_detail_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -193,7 +202,6 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
     }
 
     private void initToTopPos() {
-
         //FIXME view.post 和 addOnGlobalLayoutListener 都有获取为 0 的情况
         toTop.post(new Runnable() {
             @Override
@@ -230,6 +238,7 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
     public void themeChange(Theme theme, int[] colors) {
 
         Theme th = appPreference.getTheme();
+        updateFloatingBtColor(th);
         int[] cs = new int[4];
         //标题栏和状态栏颜色
         int topC;
@@ -252,15 +261,53 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
 
         songListController.themeChange(th, cs);
 
-        toTop.setRippleColor(vicTC);
-        toTop.setBackgroundTintList(ColorStateList.valueOf(mainTC));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toTop.getDrawable().setTint(mainBC);
-        }
+        int[] cos = {
+                th == Theme.DARK ? mainTC : mainBC, // 主字体色
+                th == Theme.DARK ? vicTC : vicBC, // 辅字体色
+        };
+        infoController.themeChange(th, cos);
 
-        container.setBackgroundColor(mainBC);
         collapsingToolbarLayout.setContentScrimColor(topC);
         collapsingToolbarLayout.setStatusBarScrimColor(topC);
+
+        container.setBackgroundColor(mainBC);
+        updateToolbarColor(th == Theme.DARK ? mainTC : mainBC);
+
+    }
+
+    private void updateToolbarColor(int textC) {
+        collapsingToolbarLayout.setCollapsedTitleTextColor(textC);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Drawable navD = toolbar.getNavigationIcon();
+            if (navD != null) {
+                navD.setTint(textC);
+            }
+        }
+    }
+
+    private void updateFloatingBtColor(Theme theme) {
+        int[] colors = new int[4];
+        switch (theme) {
+            case DARK:
+                colors = ColorUtils.get4DarkDialogThemeColors();
+                break;
+            case WHITE:
+            default:
+                colors = ColorUtils.get4WhiteDialogThemeColors();
+                break;
+        }
+
+        int tintC = colors[0];
+        int rippleC = colors[2];
+        int bgC = colors[3];
+
+        infoController.updateFloatingBtColor(new int[]{tintC, rippleC, bgC});
+
+        toTop.setRippleColor(rippleC);
+        toTop.setBackgroundTintList(ColorStateList.valueOf(bgC));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toTop.getDrawable().setTint(tintC);
+        }
 
     }
 }

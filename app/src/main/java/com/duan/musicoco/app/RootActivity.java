@@ -116,7 +116,6 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
         prepareData();
         initAppDataIfNeed();
         initChildViews();
-
     }
 
     private void prepareData() {

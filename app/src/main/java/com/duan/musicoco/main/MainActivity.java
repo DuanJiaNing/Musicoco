@@ -4,6 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -11,6 +14,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -30,6 +34,7 @@ import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.play.PlayServiceConnection;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.shared.MySheetsOperation;
+import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.SongUtils;
 import com.duan.musicoco.util.Utils;
 
@@ -40,6 +45,10 @@ public class MainActivity extends RootActivity implements
         OnServiceConnect,
         OnThemeChange,
         SwipeRefreshLayout.OnRefreshListener {
+
+    private Toolbar toolbar;
+    private ActionBarDrawerToggle toggle;
+    private Menu menu;
 
     private static PlayServiceConnection sSERVICECONNECTION;
     private SwipeRefreshLayout refreshLayout;
@@ -74,8 +83,6 @@ public class MainActivity extends RootActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-//        Utils.transitionStatusBar(this);
-
         broadcastManager = BroadcastManager.getInstance(this);
         bottomNavigationController = new BottomNavigationController(this, mediaManager, appPreference, playPreference);
         mostPlayController = new RecentMostPlayController(this, mediaManager);
@@ -83,7 +90,7 @@ public class MainActivity extends RootActivity implements
         mySheetsController = new MySheetsController(this, dbMusicoco, mediaManager);
 
         //FIXME test
-        appPreference.modifyTheme(Theme.WHITE);
+        appPreference.modifyTheme(Theme.DARK);
 
         Theme theme = appPreference.getTheme();
         if (theme == Theme.DARK) {
@@ -144,11 +151,12 @@ public class MainActivity extends RootActivity implements
         refreshLayout = (SwipeRefreshLayout) findViewById(R.id.main_swipe_refresh);
         refreshLayout.setOnRefreshListener(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.sheet_detail_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.activity_main_toolbar);
         setSupportActionBar(toolbar);
+        updateToolbarColors();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
@@ -170,14 +178,16 @@ public class MainActivity extends RootActivity implements
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        this.menu = menu;
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_main_settings) {
             return true;
         }
 
@@ -288,9 +298,7 @@ public class MainActivity extends RootActivity implements
         mySheetsController.initData(sSERVICECONNECTION.takeControl());
 
         update();
-
-        Theme theme = appPreference.getTheme();
-        themeChange(theme, null);
+        themeChange(null, null);
 
     }
 
@@ -302,10 +310,42 @@ public class MainActivity extends RootActivity implements
     }
 
     @Override
-    public void themeChange(Theme theme, int[] colors) {
+    public void themeChange(Theme t, int[] colors) {
+        Theme theme = appPreference.getTheme();
         bottomNavigationController.themeChange(theme, null);
         mostPlayController.themeChange(theme, null);
         mySheetsController.themeChange(theme, null);
+        updateToolbarColors();
+    }
+
+    // 文字和图标颜色
+    private void updateToolbarColors() {
+        if (toolbar == null || toggle == null) {
+            return;
+        }
+
+        Theme th = appPreference.getTheme();
+        int color;
+        switch (th) {
+            case DARK:
+                color = ColorUtils.get2DarkThemeTextColor()[0];
+                break;
+            case WHITE:
+            default:
+                color = Color.WHITE;
+                break;
+        }
+
+        toolbar.setTitleTextColor(color);
+        toggle.getDrawerArrowDrawable().setColor(color);
+
+        MenuItem search = menu.findItem(R.id.action_main_settings);
+        Drawable icon = search.getIcon();
+        if (icon != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                icon.setTint(color);
+            }
+        }
     }
 
     @Override

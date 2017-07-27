@@ -12,16 +12,22 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.text.BoringLayout;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.bean.Sheet;
+import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.shared.SheetCoverHelper;
 import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.util.BitmapUtils;
@@ -29,11 +35,16 @@ import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.view.AppBarStateChangeListener;
 
+import jp.wasabeef.glide.transformations.BlurTransformation;
+import jp.wasabeef.glide.transformations.gpu.ContrastFilterTransformation;
+import jp.wasabeef.glide.transformations.gpu.SepiaFilterTransformation;
+import jp.wasabeef.glide.transformations.gpu.VignetteFilterTransformation;
+
 /**
  * Created by DuanJiaNing on 2017/7/23.
  */
 
-public class SheetInfoController {
+public class SheetInfoController implements OnThemeChange {
 
     private final boolean isDarkThem;
     private Activity activity;
@@ -62,7 +73,6 @@ public class SheetInfoController {
             @Override
             public void completed(SongInfo info) {
                 initImages(info);
-                initColor();
             }
         };
     }
@@ -118,109 +128,75 @@ public class SheetInfoController {
     }
 
     private void initImages(SongInfo info) {
-        Bitmap ib = null;
-        Bitmap ibg = null;
-        if (info != null) {
-            ib = BitmapUtils.bitmapResizeFromFile(info.getAlbum_path(), imageView.getWidth(), imageView.getHeight());
-            ibg = BitmapUtils.bitmapResizeFromFile(info.getAlbum_path(), imageViewBG.getWidth(), imageViewBG.getHeight());
-        }
 
-        if (ib == null) {
-            if (sheetID < 0) {
-                switch (sheetID) {
-                    case MainSheetHelper.SHEET_ALL:
-                        ib = BitmapUtils.getDefaultPictureForAllSheet(imageViewBG.getWidth(), imageViewBG.getHeight());
-                        break;
-                    case MainSheetHelper.SHEET_RECENT:
-                        ib = BitmapUtils.getDefaultPictureForRecentSheet(imageViewBG.getWidth(), imageViewBG.getHeight());
-                        break;
-                    case MainSheetHelper.SHEET_FAVORITE:
-                        ib = BitmapUtils.getDefaultPictureForFavoriteSheet(imageViewBG.getWidth(), imageViewBG.getHeight());
-                        break;
-                }
-            } else {
-                ib = BitmapUtils.getDefaultPictureForAlbum(imageViewBG.getWidth(), imageViewBG.getHeight());
+        if (info != null && !TextUtils.isEmpty(info.getAlbum_path())) {
+            String path = info.getAlbum_path();
+
+            Glide.with(activity)
+                    .load(path)
+                    .into(imageView);
+
+            Glide.with(activity)
+                    .load(path)
+                    .bitmapTransform(new VignetteFilterTransformation(activity))
+                    .into(imageViewBG);
+        } else {
+            int id;
+            switch (sheetID) {
+                case MainSheetHelper.SHEET_RECENT:
+                    id = R.drawable.default_sheet_recent;
+                    break;
+                case MainSheetHelper.SHEET_FAVORITE:
+                    id = R.drawable.default_sheet_favorite;
+                    break;
+                case MainSheetHelper.SHEET_ALL:
+                default:
+                    id = R.drawable.default_sheet_all;
+                    break;
             }
-            ibg = ib;
+            Glide.with(activity)
+                    .load(id)
+                    .into(imageView);
+
+            Glide.with(activity)
+                    .load(id)
+                    .bitmapTransform(new VignetteFilterTransformation(activity))
+                    .into(imageViewBG);
         }
 
-        imageView.setImageBitmap(ib);
-        imageViewBG.setImageBitmap(ibg);
 
         if (isDarkThem) {
-            imageViewBG.setAlpha(0.1f);
+            imageViewBG.setAlpha(0.3f);
         }
-
-        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.sheet_detail_toolbar_layout);
-        AnimationUtils.startAlphaAnim(
-                collapsingToolbarLayout,
-                activity.getResources().getInteger(R.integer.anim_default_duration),
-                null,
-                0.0f, 1.0f
-        );
 
     }
 
-    private void initColor() {
+    @Override
+    public void themeChange(Theme theme, int[] colors) {
+        int mainTC = colors[0];
+        int vicTC = colors[1];
 
-        BitmapDrawable bd = (BitmapDrawable) imageViewBG.getDrawable();
-        Bitmap bitmap;
-        if (bd == null) {
-            bitmap = BitmapUtils.getDefaultPictureForAlbum(imageView.getWidth(), imageView.getHeight());
-        } else {
-            bitmap = bd.getBitmap();
-        }
+        name.setTextColor(mainTC);
+        name.setShadowLayer(20.0f, 0, 0, mainTC);
 
-        if (bitmap != null) {
+        remark.setTextColor(vicTC);
+        remark.setShadowLayer(8.0f, 0, 0, vicTC);
 
-            int[] colors = new int[4];
-            int dbc;
-            int dtc;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                dbc = activity.getColor(R.color.colorPrimary);
-                dtc = activity.getColor(R.color.white_d);
-            } else {
-                dbc = activity.getResources().getColor(R.color.colorPrimary);
-                dtc = activity.getResources().getColor(R.color.white_d);
-            }
+        createTime.setTextColor(vicTC);
+        createTime.setShadowLayer(8.0f, 0, 0, vicTC);
 
-            ColorUtils.get4LightColorWithTextFormBitmap(bitmap, dbc, dtc, colors);
-            int mainBC = colors[0];
-            int mainTC = colors[1];
-            int vicBC = colors[2];
-            int vicTC = colors[3];
-
-            fabPlayAll.setBackgroundTintList(ColorStateList.valueOf(mainBC));
-            fabPlayAll.setRippleColor(vicTC);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                fabPlayAll.getDrawable().setTint(mainTC);
-            }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                GradientDrawable gd = new GradientDrawable(
-                        GradientDrawable.Orientation.TL_BR,
-                        new int[]{mainBC, vicBC}
-                );
-                gd.setAlpha(245);
-                imageViewBG.setForeground(gd);
-            }
-
-            boolean lightBG = ColorUtils.isBrightSeriesColor(mainBC);
-            int mTC;
-            int vTC;
-            if (lightBG) {
-                vTC = activity.getResources().getColor(R.color.white);
-                mTC = activity.getResources().getColor(R.color.white_d);
-            } else {
-                vTC = activity.getResources().getColor(R.color.dark_l_l_l_l);
-                mTC = activity.getResources().getColor(R.color.dark_l_l_l);
-            }
-            name.setTextColor(mTC);
-            remark.setTextColor(vTC);
-            createTime.setTextColor(vTC);
-
-        }
     }
 
+    public void updateFloatingBtColor(int[] colors) {
+
+        int tintC = colors[0];
+        int rippleC = colors[1];
+        int bgC = colors[2];
+
+        fabPlayAll.setBackgroundTintList(ColorStateList.valueOf(bgC));
+        fabPlayAll.setRippleColor(rippleC);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            fabPlayAll.getDrawable().setTint(tintC);
+        }
+    }
 }
