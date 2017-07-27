@@ -37,8 +37,10 @@
 
     <string name="song_operation_collection_sheet">收藏到歌单</string>
     <string name="song_operation_detail">歌曲详情</string>
-    <string name="song_operation_remove_from_play_list">从歌单中移除歌曲</string>
+    <string name="song_operation_remove_from_sheet">从歌单中移除歌曲</string>
     <string name="song_operation_delete">彻底删除歌曲</string>
+    <string name="song_operation_add_to_favorite">收藏</string>
+    <string name="song_operation_remove_from_favorite">取消收藏</string>
 
     <string name="new_sheet">新建歌单</string>
     <string name="sheet_name">歌单名</string>
@@ -67,6 +69,7 @@
     <string name="success_add_to_sheet">成功添加到歌单 :)</string>
     <string name="success_delete_file">成功删除文件 :)</string>
     <string name="success_delete_sheet">成功删除歌单 :)</string>
+    <string name="success_remove_song_from_sheet">成功移除歌曲 :)</string>
 
     <string name="warning">警告</string>
     <string name="unknown">出错了 :O</string>

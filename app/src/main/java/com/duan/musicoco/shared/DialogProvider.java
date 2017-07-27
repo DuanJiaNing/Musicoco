@@ -26,7 +26,7 @@ import com.victor.loading.rotate.RotateLoading;
  * （2）.自定义视图替换外层（保留最外层框架）、
  * （3）.自定义视图替换内层（保留最外层框架、标题显示处、提示信息显示处，三个按钮）
  * 注意：只有在调用了show..显示对话框之后才可以getDialog()获得实例。在自定义并保留三个固有按钮时可在外部调用对
- * 应按钮的setOn...ButtonListener(String text, final OnClickListener OnClickListener)并实现接口实现点击事件监听。
+ * 应按钮的setOn...ButtonListener(String title, final OnClickListener OnClickListener)并实现接口实现点击事件监听。
  */
 public class DialogProvider {
 

@@ -39,20 +39,19 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
     private int vicTC;
     private int choiceC;
 
-    private View.OnClickListener moreClickListener;
-    private View.OnClickListener itemClickListener;
+    private OnMoreClickListener moreClickListener;
 
     public SongAdapter(Context context, List<DataHolder> data) {
         this.context = context;
         this.data = data;
     }
 
-    public void setOnMoreClickListener(View.OnClickListener moreClickListener) {
-        this.moreClickListener = moreClickListener;
+    public interface OnMoreClickListener {
+        void onMore(ViewHolder view, DataHolder data);
     }
 
-    public void setOnItemClickListener(View.OnClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
+    public void setOnMoreClickListener(OnMoreClickListener moreClickListener) {
+        this.moreClickListener = moreClickListener;
     }
 
     public DataHolder getItem(int pos) {
@@ -66,17 +65,18 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        DataHolder dataHolder = getItem(position);
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        final DataHolder dataHolder = getItem(position);
         SongInfo info = dataHolder.info;
 
-        if (itemClickListener != null) {
-            holder.itemView.setTag(info);
-            holder.itemView.setOnClickListener(itemClickListener);
-        }
         if (moreClickListener != null) {
             holder.more.setTag(info);
-            holder.more.setOnClickListener(moreClickListener);
+            holder.more.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    moreClickListener.onMore(holder, dataHolder);
+                }
+            });
         }
 
         Glide.with(context)

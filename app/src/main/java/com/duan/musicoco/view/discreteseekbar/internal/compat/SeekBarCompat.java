@@ -116,7 +116,7 @@ public class SeekBarCompat {
     }
 
     /**
-     * Sets the TextView text direction attribute when possible
+     * Sets the TextView title direction attribute when possible
      *
      * @param textView
      * @param textDirection

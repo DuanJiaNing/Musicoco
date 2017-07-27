@@ -1,7 +1,6 @@
 package com.duan.musicoco.shared;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.RemoteException;
@@ -66,7 +65,7 @@ public class PlayListAdapter extends BaseAdapter implements
             @Override
             public void onClick(View v) {
                 Song s = new Song((String) v.getTag(R.id.play_list_item_remove_path));
-                PlayListAdapter.this.songOperation.removeSongFromSheet(s);
+                PlayListAdapter.this.songOperation.removeSongFromCurrentSheet(s);
             }
         };
 

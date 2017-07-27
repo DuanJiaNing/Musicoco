@@ -19,7 +19,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="@dimen/activity_default_margin"
                 android:gravity="center_vertical|start"
-                android:text="歌单："
+                android:title="歌单："
                 android:textSize="@dimen/text_middle_s" />
 
             <ImageButton

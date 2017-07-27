@@ -91,7 +91,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="20dp"
                     android:lines="1"
-                    android:text="00:00"
+                    android:title="00:00"
                     android:textColor="@color/text_gray"
                     android:textSize="@dimen/text_small" />
 
@@ -105,7 +105,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="20dp"
                     android:lines="1"
-                    android:text="00:00"
+                    android:title="00:00"
                     android:textColor="@color/text_gray"
                     android:textSize="@dimen/text_small" />
 

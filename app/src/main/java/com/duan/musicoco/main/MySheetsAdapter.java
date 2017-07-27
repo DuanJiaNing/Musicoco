@@ -102,11 +102,11 @@ public class MySheetsAdapter extends BaseAdapter implements
     private void initAdapterData() {
         String mt = activity.getString(R.string.sheet_operation_modify);
         int mi = R.drawable.ic_poll;
-        OptionsAdapter.Option modify = new OptionsAdapter.Option(mt);
+        OptionsAdapter.Option modify = new OptionsAdapter.Option(mt, 0);
         modify.iconID = mi;
         modify.clickListener = new OptionsAdapter.OptionClickListener() {
             @Override
-            public void onClick(OptionsAdapter.ViewHolder holder, int position) {
+            public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
                 mySheetsOperation.handleModifySheet(currentClickMoreOperationItem);
                 mDialog.hide();
             }
@@ -115,11 +115,11 @@ public class MySheetsAdapter extends BaseAdapter implements
 
         String dt = activity.getString(R.string.sheet_operation_delete);
         int di = R.drawable.ic_delete_forever_black_24dp;
-        OptionsAdapter.Option delete = new OptionsAdapter.Option(dt);
+        OptionsAdapter.Option delete = new OptionsAdapter.Option(dt, 1);
         delete.iconID = di;
         delete.clickListener = new OptionsAdapter.OptionClickListener() {
             @Override
-            public void onClick(OptionsAdapter.ViewHolder holder, int position) {
+            public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
                 mySheetsOperation.deleteSheet(currentClickMoreOperationItem);
                 mDialog.hide();
             }

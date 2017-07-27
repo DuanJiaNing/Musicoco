@@ -58,7 +58,7 @@
             android:layout_marginBottom="@dimen/activity_default_margin_s_s"
             android:gravity="center_vertical|start"
             android:lines="1"
-            android:text="water under the bridgebertrddddd"
+            android:title="water under the bridgebertrddddd"
             android:textSize="@dimen/text_middle"
             android:textStyle="bold" />
 
@@ -71,7 +71,7 @@
             android:ellipsize="end"
             android:gravity="center_vertical|start"
             android:lines="1"
-            android:text="这首时阿萨德风口傅发送端"
+            android:title="这首时阿萨德风口傅发送端"
             android:textSize="@dimen/text_small" />
 
         <TextView
@@ -83,7 +83,7 @@
             android:layout_marginTop="@dimen/activity_default_margin_s_s"
             android:gravity="center_vertical|start"
             android:lines="1"
-            android:text="20首"
+            android:title="20首"
             android:textSize="@dimen/text_small_s" />
 
         <TextView
@@ -95,7 +95,7 @@
             android:layout_toEndOf="@id/sheets_item_song_count"
             android:gravity="center_vertical|start"
             android:lines="1"
-            android:text="1890次"
+            android:title="1890次"
             android:textSize="@dimen/text_small_s" />
 
     </RelativeLayout>

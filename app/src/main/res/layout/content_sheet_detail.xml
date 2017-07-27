@@ -39,8 +39,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="@dimen/activity_default_margin"
                 android:gravity="center_vertical|start"
-                android:lines="1"
-                android:text="随机播放 73 首歌曲" />
+                android:lines="1" />
         </LinearLayout>
 
         <View

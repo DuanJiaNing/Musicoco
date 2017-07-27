@@ -30,7 +30,6 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.bean.Sheet;
@@ -55,6 +54,8 @@ import com.duan.musicoco.shared.OptionsDialog;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.RealTimeBlurView;
+
+import java.util.Arrays;
 
 import static com.duan.musicoco.preference.Theme.DARK;
 import static com.duan.musicoco.preference.Theme.WHITE;
@@ -391,6 +392,7 @@ public class BottomNavigationController implements
         Log.d("update", "play/BottomNavigationController update");
         playListAdapter.update(obj, completed);
         listOption.update(obj, completed);
+        songOption.update(obj, completed);
     }
 
     public void updatePlayMode() {
@@ -567,7 +569,8 @@ public class BottomNavigationController implements
             View.OnClickListener,
             OnViewVisibilityChange,
             OnThemeChange,
-            AdapterView.OnItemClickListener {
+            AdapterView.OnItemClickListener,
+            OnContentUpdate {
 
         private ViewGroup container;
         private final OptionsDialog mDialog;
@@ -655,15 +658,8 @@ public class BottomNavigationController implements
             try {
                 Song song = control.currentSong();
                 if (song != null) {
-                    DBSongInfo info = dbMusicoco.getSongInfo(song);
-                    boolean isFavorite = info.favorite;
-                    boolean reverse = !isFavorite;
-                    updateCurrentFavorite(reverse, true);
-
-                    dbMusicoco.updateSongFavorite(song, reverse);
-                    //广播通知 MainActivity 更新 MainSheetsController
-                    BroadcastManager.getInstance(activity).sendMyBroadcast(BroadcastManager.FILTER_MAIN_SHEET_CHANGED, null);
-
+                    boolean after = songOperation.reverseSongFavoriteStatus(song);
+                    updateCurrentFavorite(after, true);
                 }
             } catch (RemoteException e) {
                 e.printStackTrace();
@@ -858,23 +854,62 @@ public class BottomNavigationController implements
         }
 
         public void initData() {
-            moreOptionsAdapter = new OptionsAdapter(activity, getIconsID(), getTexts(), null, null);
+            moreOptionsAdapter = new OptionsAdapter(activity);
             mDialog.setAdapter(moreOptionsAdapter);
         }
 
-        private String[] getTexts() {
-            String[] sts = activity.getResources().getStringArray(R.array.song_options_titles);
-            return sts;
+        private void updateDialogAdapter() {
+            moreOptionsAdapter.clearOptions();
+            moreOptionsAdapter.addOption(getIconsID(), null, getTexts(), null, null);
+            mDialog.reCalcuDialogHeight();
         }
 
         private int[] getIconsID() {
-            int[] ids = new int[4];
-            ids[0] = R.drawable.ic_create_new_folder_black_24dp;
-            ids[1] = R.drawable.ic_art_track_black_24dp;
-            ids[2] = R.drawable.ic_clear_black_24dp;
-            ids[3] = R.drawable.ic_delete_forever_black_24dp;
+            int[] res = {
+                    R.drawable.ic_create_new_folder_black_24dp,
+                    R.drawable.ic_art_track_black_24dp,
+                    R.drawable.ic_delete_forever_black_24dp,
+                    R.drawable.ic_clear_black_24dp
+            };
 
-            return ids;
+            try {
+                int sheetID = control.getPlayListId();
+                int[] ids;
+                if (sheetID < 0) {
+                    ids = Arrays.copyOf(res, 3);
+                } else {
+                    ids = res;
+                }
+                return ids;
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+            return res;
+        }
+
+        private String[] getTexts() {
+            String[] res = {
+                    activity.getString(R.string.song_operation_collection_sheet),
+                    activity.getString(R.string.song_operation_detail),
+                    activity.getString(R.string.song_operation_delete),
+                    activity.getString(R.string.song_operation_remove_from_sheet)
+            };
+
+            try {
+                int sheetID = control.getPlayListId();
+                String[] sts;
+                if (sheetID < 0) {
+                    sts = Arrays.copyOf(res, 3);
+                } else {
+                    sts = res;
+                }
+                return sts;
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+
+            return res;
         }
 
         //歌曲更多操作底部弹出对话框内项目的点击事件
@@ -886,17 +921,17 @@ public class BottomNavigationController implements
                 SongInfo info = mediaManager.getSongInfo(song);
                 if (info != null) {
                     switch (position) {
-                        case 0:
+                        case 0: // 收藏到歌单
                             songOperation.handleCollectToSheet(info);
                             break;
-                        case 1:
+                        case 1: // 查看详情
                             songOperation.checkSongDetail(song);
                             break;
-                        case 2: //从歌单中移除
-                            songOperation.removeSongFromSheet(song);
-                            break;
-                        case 3: {//彻底删除
+                        case 2: //彻底删除
                             songOperation.handleDeleteSongForever(song);
+                            break;
+                        case 3: {//从歌单中移除(非主歌单才有)
+                            songOperation.removeSongFromCurrentSheet(song);
                             break;
                         }
                         default:
@@ -910,5 +945,11 @@ public class BottomNavigationController implements
             }
 
         }
+
+        @Override
+        public void update(Object obj, OnUpdateStatusChanged statusChanged) {
+            updateDialogAdapter();
+        }
+
     }
 }

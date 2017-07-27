@@ -37,7 +37,7 @@
                     android:marqueeRepeatLimit="marquee_forever"
                     android:ellipsize="marquee"
                     android:lines="1"
-                    android:text="sdffdsdsf"
+                    android:title="sdffdsdsf"
                     android:textSize="@dimen/text_middle_l"
                     android:id="@+id/song_detail_name"
                     android:layout_width="match_parent"
@@ -47,7 +47,7 @@
                 <TextView
                     android:layout_marginTop="10dp"
                     android:textSize="@dimen/text_middle_s"
-                    android:text="dsfdaf"
+                    android:title="dsfdaf"
                     android:marqueeRepeatLimit="marquee_forever"
                     android:ellipsize="marquee"
                     android:lines="1"

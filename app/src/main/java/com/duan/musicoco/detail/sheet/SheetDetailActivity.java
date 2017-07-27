@@ -10,6 +10,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -207,8 +208,14 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
     }
 
     private float toTopY;
+    private boolean isToTopShowing = false;
 
     private void transToTopBt(boolean hide) {
+        if ((hide && !isToTopShowing) || (!hide && isToTopShowing)) {
+            return;
+        }
+
+        isToTopShowing = !hide;
         float from = toTopY;
         float to = Utils.getMetrics(this).heightPixels;
         if (!hide) {
@@ -222,9 +229,9 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
     @Override
     public void themeChange(Theme theme, int[] colors) {
 
-        //FIXME test
         Theme th = appPreference.getTheme();
         int[] cs = new int[4];
+        //标题栏和状态栏颜色
         int topC;
         switch (th) {
             case DARK:
@@ -243,7 +250,7 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
         int vicBC = cs[2];
         int vicTC = cs[3];
 
-        songListController.themeChange(th, new int[]{mainTC, vicTC});
+        songListController.themeChange(th, cs);
 
         toTop.setRippleColor(vicTC);
         toTop.setBackgroundTintList(ColorStateList.valueOf(mainTC));

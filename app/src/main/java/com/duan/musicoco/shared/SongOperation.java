@@ -15,7 +15,9 @@ import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.manager.ActivityManager;
+import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.DBMusicocoController;
+import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.util.FileUtils;
 import com.duan.musicoco.util.ToastUtils;
@@ -65,7 +67,7 @@ public class SongOperation {
         DialogProvider manager = new DialogProvider(activity);
         ListView listView = new ListView(activity);
         listView.setDivider(new ColorDrawable(Color.TRANSPARENT));
-        OptionsAdapter adapter = new OptionsAdapter(activity, null, res.get(0), res.get(1), null);
+        OptionsAdapter adapter = new OptionsAdapter(activity, null, null, res.get(0), res.get(1), null);
 
         adapter.setPaddingLeft(30);
         listView.setAdapter(adapter);
@@ -96,10 +98,10 @@ public class SongOperation {
     }
 
     private void addNewSheetOption(OptionsAdapter optionsAdapter, final AlertDialog dialog) {
-        OptionsAdapter.Option newSheet = new OptionsAdapter.Option(activity.getString(R.string.new_sheet));
+        OptionsAdapter.Option newSheet = new OptionsAdapter.Option(activity.getString(R.string.new_sheet), 0);
         newSheet.clickListener = new OptionsAdapter.OptionClickListener() {
             @Override
-            public void onClick(OptionsAdapter.ViewHolder holder, int position) {
+            public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
                 new MySheetsOperation(activity, control, dbMusicoco).handleAddSheet();
                 dialog.hide();
             }
@@ -138,7 +140,7 @@ public class SongOperation {
     }
 
     public void deleteSongFromDiskAndLibraryForever(Song song) {
-        removeSongFromSheet(song);
+        removeSongFromCurrentSheet(song);
 
         String msg = activity.getString(R.string.error_delete_file_fail);
         if (FileUtils.deleteFile(song.path)) {
@@ -149,16 +151,44 @@ public class SongOperation {
         ToastUtils.showShortToast(msg);
     }
 
-    public void removeSongFromSheet(Song song) {
+    public void removeSongFromCurrentSheet(Song song) {
         try {
             //需要在服务器移除前修改数据库
             int sheetID = control.getPlayListId();
             dbMusicoco.removeSongInfoFromSheet(song, sheetID);
-
             control.remove(song);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    public void removeSongFromSheet(Song song, int sheetID) {
+        try {
+            //需要在服务器移除前修改数据库
+            dbMusicoco.removeSongInfoFromSheet(song, sheetID);
+            control.remove(song);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    //反转歌曲收藏状态
+    public boolean reverseSongFavoriteStatus(Song song) {
+        if (song != null) {
+            DBSongInfo info = dbMusicoco.getSongInfo(song);
+            if (info != null) {
+                boolean isFavorite = info.favorite;
+                boolean reverse = !isFavorite;
+                dbMusicoco.updateSongFavorite(song, reverse);
+                //广播通知 MainActivity 更新 MainSheetsController
+                BroadcastManager.getInstance(activity).sendMyBroadcast(BroadcastManager.FILTER_MAIN_SHEET_CHANGED, null);
+
+                return reverse;
+            }
+        }
+
+        return false;
     }
 
 }

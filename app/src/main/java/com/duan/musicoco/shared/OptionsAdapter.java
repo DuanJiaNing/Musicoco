@@ -25,7 +25,7 @@ public class OptionsAdapter extends BaseAdapter {
 
     private Context context;
 
-    private List<Option> options;
+    private List<Option> options = new ArrayList<>();
 
     private int iconColor;
     private int textColor;
@@ -47,26 +47,21 @@ public class OptionsAdapter extends BaseAdapter {
         this.options = options;
     }
 
-    public OptionsAdapter(Context context, @Nullable int[] iconsID, @NonNull String[] texts, @Nullable String[] msgs, @Nullable OptionClickListener[] listener) {
+    public OptionsAdapter(Context context, @Nullable int[] iconsID, @Nullable int[] ids, @NonNull String[] texts, @Nullable String[] msgs, @Nullable OptionClickListener[] listener) {
         this.context = context;
         this.iconColor = this.textColor = Color.DKGRAY;
         this.msgColor = Color.GRAY;
 
-        this.options = new ArrayList<>();
         for (int i = 0; i < texts.length; i++) {
             Option option = new Option(
                     texts[i],
+                    ids == null ? 0 : (ids.length == texts.length ? ids[i] : 0),
                     msgs == null ? null : msgs[i],
                     iconsID == null ? -1 : iconsID[i],
                     listener == null ? null : listener[i]
             );
             options.add(option);
         }
-    }
-
-    public void addOption(Option option) {
-        options.add(option);
-        notifyDataSetChanged();
     }
 
     @Override
@@ -89,33 +84,14 @@ public class OptionsAdapter extends BaseAdapter {
         final ViewHolder holder;
         final Option option = (Option) getItem(position);
 
-        final String text = option.text;
+        final String text = option.title;
         final String msg = option.msg == null ? "" : option.msg;
         final int iconID = option.iconID;
         final OptionClickListener listener = option.clickListener;
 
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.simple_list_item_image_text, null);
-            holder = new ViewHolder();
-            holder.icon = (ImageView) convertView.findViewById(R.id.simple_list_item_image);
-            holder.text = (TextView) convertView.findViewById(R.id.simple_list_item_text);
-            holder.msg = (TextView) convertView.findViewById(R.id.simple_list_item_msg);
-
-            if (iconID != -1) {
-                mPaddingLeft = mPaddingLeft == 0 ?
-                        context.getResources().getDimensionPixelSize(R.dimen.activity_default_margin_s) :
-                        mPaddingLeft;
-                View v = holder.icon;
-                holder.icon.setPadding(mPaddingLeft, v.getTop(), v.getPaddingRight(), v.getPaddingBottom());
-            } else {
-
-                View vt = holder.text;
-                holder.text.setPadding(0, vt.getPaddingTop(), vt.getPaddingRight(), vt.getPaddingBottom());
-
-                View v = holder.icon;
-                holder.icon.setPadding(mPaddingLeft, v.getTop(), v.getPaddingRight(), v.getPaddingBottom());
-            }
-
+            holder = new ViewHolder(convertView, iconID != -1);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -141,7 +117,7 @@ public class OptionsAdapter extends BaseAdapter {
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    listener.onClick(holder, position);
+                    listener.onClick(holder, position, option);
                 }
             });
         } else {
@@ -172,10 +148,75 @@ public class OptionsAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    @Nullable
+    public Option getOption(int id) {
+        for (Option o : options) {
+            if (o.id == id) {
+                return o;
+            }
+        }
+        return null;
+    }
+
+    public void removeOption(int id) {
+        Option op = getOption(id);
+        if (op != null) {
+            int index = options.indexOf(op);
+            options.remove(index);
+            notifyDataSetChanged();
+        }
+    }
+
+    public void addOption(Option option) {
+        options.add(option);
+        notifyDataSetChanged();
+    }
+
+    public void addOption(@Nullable int[] iconsID, @Nullable int[] ids, @NonNull String[] texts, @Nullable String[] msgs, @Nullable OptionClickListener[] listener) {
+        for (int i = 0; i < texts.length; i++) {
+            Option option = new Option(
+                    texts[i],
+                    ids == null ? 0 : (ids.length == texts.length ? ids[i] : 0),
+                    msgs == null ? null : msgs[i],
+                    iconsID == null ? -1 : iconsID[i],
+                    listener == null ? null : listener[i]
+            );
+            options.add(option);
+        }
+        notifyDataSetChanged();
+    }
+
+    public void clearOptions() {
+        options.clear();
+        notifyDataSetChanged();
+    }
+
     public class ViewHolder {
         public ImageView icon;
         public TextView text;
         public TextView msg;
+
+        public ViewHolder(View convertView, boolean hasIcon) {
+            icon = (ImageView) convertView.findViewById(R.id.simple_list_item_image);
+            text = (TextView) convertView.findViewById(R.id.simple_list_item_text);
+            msg = (TextView) convertView.findViewById(R.id.simple_list_item_msg);
+
+            if (hasIcon) {
+                mPaddingLeft = mPaddingLeft == 0 ?
+                        context.getResources().getDimensionPixelSize(R.dimen.activity_default_margin_s) :
+                        mPaddingLeft;
+                View v = icon;
+                icon.setPadding(mPaddingLeft, v.getTop(), v.getPaddingRight(), v.getPaddingBottom());
+            } else {
+
+                View vt = text;
+                text.setPadding(0, vt.getPaddingTop(), vt.getPaddingRight(), vt.getPaddingBottom());
+
+                View v = icon;
+                icon.setPadding(mPaddingLeft, v.getTop(), v.getPaddingRight(), v.getPaddingBottom());
+            }
+
+        }
     }
 
     /**
@@ -183,28 +224,66 @@ public class OptionsAdapter extends BaseAdapter {
      * ItemClickListener 处理选项点击,同时设置时 OptionClickListener 优先
      */
     public interface OptionClickListener {
-        void onClick(ViewHolder holder, int position);
+        void onClick(ViewHolder holder, int position, Option option);
     }
 
     public static class Option {
-        public String text;
+        public String title;
         public String msg;
+        public int id;
         public int iconID = -1;
 
         public OptionClickListener clickListener;
 
-        public Option(String text) {
-            this.text = text;
+        public Option(int id) {
+            this("", id);
+        }
+
+        public Option(@NonNull String title, int id) {
+            this(title, id, null, -1, null);
         }
 
         /**
          * @param iconID 没有时为 -1
          */
-        public Option(@NonNull String text, @Nullable String msg, int iconID, @Nullable OptionClickListener clickListener) {
-            this.text = text;
+        public Option(@NonNull String title, int id, @Nullable String msg, int iconID, @Nullable OptionClickListener clickListener) {
+            this.title = title;
             this.msg = msg == null ? "" : msg;
             this.iconID = iconID;
+            this.id = id;
             this.clickListener = clickListener;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public void setMsg(String msg) {
+            this.msg = msg;
+        }
+
+        public void setIconID(int iconID) {
+            this.iconID = iconID;
+        }
+
+        public void setClickListener(OptionClickListener clickListener) {
+            this.clickListener = clickListener;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Option option = (Option) o;
+
+            return id == option.id;
+
+        }
+
+        @Override
+        public int hashCode() {
+            return id;
         }
     }
 }

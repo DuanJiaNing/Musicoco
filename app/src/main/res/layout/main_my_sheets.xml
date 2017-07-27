@@ -25,7 +25,7 @@
             android:layout_marginRight="@dimen/activity_default_margin"
             android:layout_toLeftOf="@id/my_sheet_line"
             android:gravity="center_vertical|start"
-            android:text="@string/my_sheet_title"
+            android:title="@string/my_sheet_title"
             android:textSize="@dimen/text_small"
             android:textStyle="bold" />
 

@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="@dimen/activity_default_padding_l"
-        android:text="正在删除"
+        android:title="正在删除"
         android:textSize="@dimen/text_middle_l" />
 
     <com.victor.loading.rotate.RotateLoading
