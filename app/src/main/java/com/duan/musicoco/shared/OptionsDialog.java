@@ -78,6 +78,7 @@ public class OptionsDialog implements
         setDialogHeight();
     }
 
+
     private void setDialogHeight() {
         if (listView == null) {
             return;
