@@ -1,5 +1,6 @@
 package com.duan.musicoco.shared;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -49,8 +50,9 @@ public class PlayListAdapter extends BaseAdapter implements
     private final MediaManager mediaManager;
     private SongOperation songOperation;
 
-    private int colorMain;
-    private int colorVic;
+    private int mainC;
+    private int vicC;
+    private final int choiceC;
 
     public PlayListAdapter(final Context context, final IPlayControl control,
                            final DBMusicocoController dbMusicocoController,
@@ -59,6 +61,7 @@ public class PlayListAdapter extends BaseAdapter implements
         this.control = control;
         this.dbController = dbMusicocoController;
         this.songOperation = songOperation;
+        this.choiceC = context.getResources().getColor(R.color.item_select_color);
         this.mediaManager = MediaManager.getInstance(context);
 
         this.removeClickListener = new View.OnClickListener() {
@@ -172,13 +175,6 @@ public class PlayListAdapter extends BaseAdapter implements
             setNormalItem(holder);
         }
 
-        holder.name.setTextColor(colorMain);
-        holder.arts.setTextColor(colorVic);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            holder.remove.getDrawable().setTint(colorVic);
-        }
-
         return convertView;
     }
 
@@ -188,7 +184,7 @@ public class PlayListAdapter extends BaseAdapter implements
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             drawable = context.getDrawable(R.drawable.ic_volume_up_black_24dp);
             if (drawable != null) {
-                drawable.setTint(colorMain);
+                drawable.setTint(choiceC);
             }
         } else {
             drawable = context.getResources().getDrawable(R.drawable.ic_volume_up_black_24dp);
@@ -200,18 +196,34 @@ public class PlayListAdapter extends BaseAdapter implements
             holder.number.setText("");
         }
 
+        holder.name.setTextColor(choiceC);
+        holder.arts.setTextColor(choiceC);
+        holder.number.setTextColor(choiceC);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            holder.remove.getDrawable().setTint(choiceC);
+        }
+
     }
 
     private void setNormalItem(ViewHolder holder) {
         holder.number.setCompoundDrawables(null, null, null, null);
+
+        holder.name.setTextColor(mainC);
+        holder.arts.setTextColor(vicC);
+        holder.number.setTextColor(vicC);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            holder.remove.getDrawable().setTint(vicC);
+        }
+
     }
 
     public void updateColors(Theme theme, int[] colors) {
         Log.d("update", "PlayListAdapter updateColors");
 
-        colorMain = colors[0];
-        colorVic = colors[1];
-
+        mainC = colors[0];
+        vicC = colors[1];
         notifyDataSetChanged();
     }
 
@@ -248,11 +260,11 @@ public class PlayListAdapter extends BaseAdapter implements
     }
 
     public int getColorMain() {
-        return colorMain;
+        return mainC;
     }
 
     public int getColorVic() {
-        return colorVic;
+        return vicC;
     }
 
     public void setOnRemoveClickListener(View.OnClickListener removeClickListener) {

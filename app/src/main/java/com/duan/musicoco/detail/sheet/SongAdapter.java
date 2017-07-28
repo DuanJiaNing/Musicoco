@@ -37,13 +37,14 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
 
     private int mainTC;
     private int vicTC;
-    private int choiceC;
+    private final int choiceC;
 
     private OnMoreClickListener moreClickListener;
 
     public SongAdapter(Context context, List<DataHolder> data) {
         this.context = context;
         this.data = data;
+        this.choiceC = context.getResources().getColor(R.color.item_select_color);
     }
 
     public interface OnMoreClickListener {
@@ -118,7 +119,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
             if (isFavorite) {
                 holder.favorite.getDrawable().setTint(choiceC);
             } else {
-                holder.favorite.getDrawable().setTint(vtc);
+                holder.favorite.getDrawable().setTint(vicTC);
             }
 
             holder.more.getDrawable().setTint(vtc);
@@ -159,20 +160,9 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
 
     @Override
     public void themeChange(Theme theme, int[] colors) {
-        int ct;
-        switch (theme) {
-            case DARK:
-                ct = context.getResources().getColor(R.color.colorPrimaryLight);
-                break;
-            case WHITE:
-            default:
-                ct = context.getResources().getColor(R.color.colorPrimary);
-                break;
-        }
 
         mainTC = colors[0];
         vicTC = colors[1];
-        choiceC = ct;
 
         notifyDataSetChanged();
     }

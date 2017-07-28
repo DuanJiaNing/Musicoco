@@ -8,6 +8,8 @@
     <color name="colorPrimaryLight">#ec4b42</color>
     <color name="text_gray">#ababab</color>
 
+    <color name="item_select_color">#ec4b42</color>
+
     <color name="default_play_bg_color">#3d3d3d</color>
     <color name="default_play_text_color">#d6d6d6</color>
 

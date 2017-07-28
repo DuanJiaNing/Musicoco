@@ -388,7 +388,15 @@ public class DialogProvider {
         return vicTextColor;
     }
 
-    public int getLineAndButtonColor() {
+    public int getAccentColor() {
         return accentColor;
+    }
+
+    public int getTopLineColor() {
+        return topLineColor;
+    }
+
+    public int getMiddleLineColor() {
+        return middleLineColor;
     }
 }

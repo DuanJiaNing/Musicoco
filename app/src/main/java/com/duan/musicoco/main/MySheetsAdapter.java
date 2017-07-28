@@ -2,6 +2,7 @@ package com.duan.musicoco.main;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.RemoteException;
 import android.view.LayoutInflater;
@@ -59,6 +60,7 @@ public class MySheetsAdapter extends BaseAdapter implements
     private int vicTC;
     private int vicBC;
     private int accentC;
+    private int itemBGC;
 
     private final OptionsDialog mDialog;
     private OptionsAdapter moreOptionsAdapter;
@@ -206,7 +208,7 @@ public class MySheetsAdapter extends BaseAdapter implements
         holder.playTimes.setTextColor(vicTC);
         holder.playTimes.setText(playTimes + "次");
 
-        convertView.setBackgroundColor(vicBC);
+        convertView.setBackgroundColor(itemBGC);
 
         return convertView;
     }
@@ -256,18 +258,20 @@ public class MySheetsAdapter extends BaseAdapter implements
     @Override
     public void themeChange(Theme theme, int[] colors) {
 
-        mainBC = colors[0];
-        mainTC = colors[1];
-        vicBC = colors[2];
-        vicTC = colors[3];
-        accentC = colors[4];
+        mainBC = colors[3];
+        mainTC = colors[5];
+        vicBC = colors[4];
+        vicTC = colors[6];
+        accentC = colors[2];
+
+        itemBGC = theme == Theme.WHITE ? Color.WHITE : vicBC;
 
         mDialog.setTitleBarBgColor(vicBC);
         mDialog.setContentBgColor(mainBC);
         mDialog.setDivideColor(vicTC);
         mDialog.setTitleTextColor(mainTC);
 
-        moreOptionsAdapter.setTextColor(mainTC);
+        moreOptionsAdapter.setTitleColor(mainTC);
         moreOptionsAdapter.setIconColor(accentC);
 
         notifyDataSetChanged();

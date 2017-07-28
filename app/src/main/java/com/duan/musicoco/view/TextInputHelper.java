@@ -40,7 +40,7 @@ public class TextInputHelper {
             holder.editText.setText(text);
         }
 
-        holder.textView.setText(holder.editText.getText().length() + "/" + limit);
+        holder.textViewLimit.setText(holder.editText.getText().length() + "/" + limit);
         holder.editText.addTextChangedListener(new TextWatcher() {
 
             /**
@@ -61,7 +61,7 @@ public class TextInputHelper {
              */
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                holder.textView.setText(s.length() + "/" + limit);
+                holder.textViewLimit.setText(s.length() + "/" + limit);
             }
 
             @Override
@@ -104,13 +104,13 @@ public class TextInputHelper {
         public View view;
         public TextInputLayout textInputLayout;
         public EditText editText;
-        public TextView textView;
+        public TextView textViewLimit;
 
         public ViewHolder(Context context) {
             this.view = View.inflate(context, R.layout.text_input, null);
             this.textInputLayout = (TextInputLayout) view.findViewById(R.id.TextInputLayout);
             this.editText = textInputLayout.getEditText();
-            this.textView = (TextView) view.findViewById(R.id.text_input_text);
+            this.textViewLimit = (TextView) view.findViewById(R.id.text_input_text);
         }
     }
 

@@ -41,10 +41,6 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.Play" parent="AppTheme">
-        <item name="android:windowFullscreen">true</item>
-    </style>
-
     <style name="AppTheme.Song.Detail" parent="AppTheme">
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowTranslucentStatus">true</item>
@@ -56,18 +52,22 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
-
-
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:textColorPrimary">@color/theme_white_main_text</item>
-        <item name="android:textColorSecondary">@color/theme_white_vic_text</item>
-
-        <item name="android:colorControlActivated">@color/colorAccent</item>
-        <item name="android:colorControlNormal">@color/colorAccentLight</item>
-        <item name="android:navigationBarColor">@color/theme_white_main_text</item>
     </style>
+
+    <style name="Theme.Sheet.Detail.DARK" parent="AppTheme.Sheet.Detail">
+        <item name="android:colorControlActivated">@color/theme_dark_accent</item>
+        <item name="android:colorControlHighlight">@color/theme_dark_vic_text</item>
+        <item name="android:colorControlNormal">@color/theme_dark_vic_text</item>
+        <item name="android:navigationBarColor">@color/theme_dark_primary_dark</item>
+    </style>
+
+    <style name="Theme.Sheet.Detail.WHITE" parent="AppTheme.Sheet.Detail">
+        <item name="android:colorControlActivated">@color/theme_white_accent</item>
+        <item name="android:colorControlHighlight">@color/theme_white_vic_text</item>
+        <item name="android:colorControlNormal">@color/theme_white_vic_text</item>
+        <item name="android:navigationBarColor">@color/theme_dark_primary_dark</item>
+    </style>
+
 
     <style name="Theme.DARK" parent="AppTheme">
         <item name="android:windowBackground">@color/theme_dark_main_bg</item>

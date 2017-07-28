@@ -127,11 +127,11 @@ public class MySheetsController implements
         if (isEmptyViewVisible()) {
             emptyViewThemeChange(new int[]{mainTC, vicTC});
         } else {
-            adapter.themeChange(theme, new int[]{mainBC, mainTC, vicBC, vicTC, accentC});
+            adapter.themeChange(theme, cs);
         }
 
         mTitle.setTextColor(mainTC);
-        mTitleLine.setBackgroundColor(vicTC);
+        mTitleLine.setBackgroundColor(accentC);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mAddSheet.getDrawable().setTint(mainTC);
         }

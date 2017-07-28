@@ -68,12 +68,15 @@ public class SongOperation {
         ListView listView = new ListView(activity);
         listView.setDivider(new ColorDrawable(Color.TRANSPARENT));
         OptionsAdapter adapter = new OptionsAdapter(activity, null, null, res.get(0), res.get(1), null);
+        adapter.setIconColor(manager.getAccentColor());
+        adapter.setTitleColor(manager.getMainTextColor());
+        adapter.setMsgColor(manager.getVicTextColor());
 
         adapter.setPaddingLeft(30);
         listView.setAdapter(adapter);
         final AlertDialog dialog = manager.createCustomInsiderDialog(
                 activity.getString(R.string.song_operation_collection_sheet),
-                "歌曲：" + info.getTitle(),
+                activity.getString(R.string.song) + ": " + info.getTitle(),
                 listView
         );
 
@@ -122,7 +125,7 @@ public class SongOperation {
                 activity.getString(R.string.warning),
                 activity.getString(R.string.delete_confirm)
         );
-        manager.setOnPositiveButtonListener("确认", new DialogProvider.OnClickListener() {
+        manager.setOnPositiveButtonListener(activity.getString(R.string.ensure), new DialogProvider.OnClickListener() {
             @Override
             public void onClick(View view) {
                 deleteSongFromDiskAndLibraryForever(song);
@@ -130,7 +133,7 @@ public class SongOperation {
             }
         });
 
-        manager.setOnNegativeButtonListener("取消", new DialogProvider.OnClickListener() {
+        manager.setOnNegativeButtonListener(activity.getString(R.string.cancel), new DialogProvider.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();

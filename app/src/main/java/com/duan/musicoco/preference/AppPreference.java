@@ -46,6 +46,7 @@ public class AppPreference {
         return Theme.valueOf(pa);
     }
 
+
     public int appOpenTimes() {
         check();
         int times = preferences.getInt(KEY_OPEN_TIMES, 0);

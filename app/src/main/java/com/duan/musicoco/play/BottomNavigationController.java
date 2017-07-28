@@ -734,7 +734,7 @@ public class BottomNavigationController implements
             mDialog.setDivideColor(vicTC);
             mDialog.setTitleTextColor(mainTC);
 
-            moreOptionsAdapter.setTextColor(mainTC);
+            moreOptionsAdapter.setTitleColor(mainTC);
             moreOptionsAdapter.setIconColor(accentC);
         }
 

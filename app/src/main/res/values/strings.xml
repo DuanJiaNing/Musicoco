@@ -74,6 +74,8 @@
     <string name="warning">警告</string>
     <string name="unknown">出错了 :O</string>
     <string name="ensure">确认</string>
+    <string name="play">播放</string>
+    <string name="count">次</string>
     <string name="search">搜索</string>
     <string name="continue_">继续</string>
     <string name="deleting">正在删除</string>

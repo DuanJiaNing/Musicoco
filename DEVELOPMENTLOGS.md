@@ -232,4 +232,8 @@
 - 2017-07-27
 
 1 歌单详情页歌曲选项可以点击查看并执行<br>
-2 MainActivity 和 SheetDetailActivity 的 toolbar 可以随主题变更颜色<br>
+
+- 2017-07-28
+
+1 MainActivity 和 SheetDetailActivity 的 toolbar 可以随主题变更颜色<br>
+2 主页底部播放进度添加背景

@@ -28,28 +28,28 @@ public class OptionsAdapter extends BaseAdapter {
     private List<Option> options = new ArrayList<>();
 
     private int iconColor;
-    private int textColor;
+    private int titleColor;
     private int msgColor;
 
     private int mPaddingLeft = 0;
 
     public OptionsAdapter(Context context) {
         this.context = context;
-        this.iconColor = this.textColor = Color.DKGRAY;
+        this.iconColor = this.titleColor = Color.DKGRAY;
         this.msgColor = Color.GRAY;
         this.options = new ArrayList<>();
     }
 
     public OptionsAdapter(Context context, List<Option> options) {
         this.context = context;
-        this.iconColor = this.textColor = Color.DKGRAY;
+        this.iconColor = this.titleColor = Color.DKGRAY;
         this.msgColor = Color.GRAY;
         this.options = options;
     }
 
     public OptionsAdapter(Context context, @Nullable int[] iconsID, @Nullable int[] ids, @NonNull String[] texts, @Nullable String[] msgs, @Nullable OptionClickListener[] listener) {
         this.context = context;
-        this.iconColor = this.textColor = Color.DKGRAY;
+        this.iconColor = this.titleColor = Color.DKGRAY;
         this.msgColor = Color.GRAY;
 
         for (int i = 0; i < texts.length; i++) {
@@ -98,7 +98,7 @@ public class OptionsAdapter extends BaseAdapter {
         }
 
         holder.text.setText(text);
-        holder.text.setTextColor(textColor);
+        holder.text.setTextColor(titleColor);
 
         if (iconID != -1) {
             holder.icon.setImageResource(iconID);
@@ -138,8 +138,8 @@ public class OptionsAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void setTextColor(int textColor) {
-        this.textColor = textColor;
+    public void setTitleColor(int titleColor) {
+        this.titleColor = titleColor;
         notifyDataSetChanged();
     }
 

@@ -56,6 +56,8 @@ public class MySheetsOperation {
         String inputMessage = activity.getString(R.string.new_sheet_input_message);
         int nameLimit = activity.getResources().getInteger(R.integer.sheet_name_text_limit);
         int remarkLimit = activity.getResources().getInteger(R.integer.sheet_remark_text_limit);
+        int mainTC = manager.getMainTextColor();
+        int vicTC = manager.getVicTextColor();
 
         final TextInputHelper.ViewHolder nameHolder = inputHelper.getLimitedTexInputLayoutView(
                 inputName,
@@ -63,6 +65,8 @@ public class MySheetsOperation {
                 countOutLimit, ""
         );
         nameHolder.editText.setLines(1);
+        nameHolder.textViewLimit.setTextColor(vicTC);
+        nameHolder.editText.setTextColor(mainTC);
 
         final TextInputHelper.ViewHolder remarkHolder = inputHelper.getLimitedTexInputLayoutView(
                 inputRemark,
@@ -71,6 +75,8 @@ public class MySheetsOperation {
         );
         int remarkInputMaxLine = activity.getResources().getInteger(R.integer.sheet_remark_input_max_lines);
         remarkHolder.editText.setMaxLines(remarkInputMaxLine);
+        remarkHolder.textViewLimit.setTextColor(vicTC);
+        remarkHolder.editText.setTextColor(mainTC);
 
         LinearLayout ll = new LinearLayout(activity);
         ll.setOrientation(LinearLayout.VERTICAL);
@@ -141,6 +147,8 @@ public class MySheetsOperation {
         String countOutLimit = activity.getString(R.string.error_text_count_out_of_limit);
         int nameLimit = activity.getResources().getInteger(R.integer.sheet_name_text_limit);
         int remarkLimit = activity.getResources().getInteger(R.integer.sheet_remark_text_limit);
+        int mainTC = manager.getMainTextColor();
+        int vicTC = manager.getVicTextColor();
 
         final String oldName = sheet.name;
         final String oldRemark = sheet.remark;
@@ -151,6 +159,8 @@ public class MySheetsOperation {
                 countOutLimit, oldName
         );
         nameHolder.editText.setLines(1);
+        nameHolder.textViewLimit.setTextColor(vicTC);
+        nameHolder.editText.setTextColor(mainTC);
 
         final TextInputHelper.ViewHolder remarkHolder = inputHelper.getLimitedTexInputLayoutView(
                 inputRemark,
@@ -159,6 +169,8 @@ public class MySheetsOperation {
         );
         int remarkInputMaxLine = activity.getResources().getInteger(R.integer.sheet_remark_input_max_lines);
         remarkHolder.editText.setMaxLines(remarkInputMaxLine);
+        remarkHolder.textViewLimit.setTextColor(vicTC);
+        remarkHolder.editText.setTextColor(mainTC);
 
         LinearLayout ll = new LinearLayout(activity);
         ll.setOrientation(LinearLayout.VERTICAL);

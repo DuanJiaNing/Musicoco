@@ -71,7 +71,6 @@
                     android:shadowDx="0"
                     android:shadowDy="0"
                     android:shadowRadius="20"
-                    android:textColor="@color/white"
                     android:textSize="@dimen/text_large_l_l_l"
                     android:textStyle="bold" />
 
@@ -92,7 +91,6 @@
                     android:layout_marginTop="@dimen/activity_default_margin_s_s"
                     android:maxLines="3"
                     android:ellipsize="end"
-                    android:textColor="@color/white_d_d"
                     android:textSize="@dimen/text_small" />
             </LinearLayout>
 
@@ -109,7 +107,6 @@
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:textColor="@color/white"
                 android:textSize="@dimen/text_small" />
         </RelativeLayout>
 
@@ -128,7 +125,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginLeft="@dimen/activity_default_padding"
             android:gravity="center_vertical"
-            android:text="播放"
+            android:text="@string/play"
             android:textSize="@dimen/text_small" />
 
         <TextView
@@ -152,7 +149,7 @@
             android:layout_toEndOf="@id/rmp_play_time"
             android:layout_toRightOf="@+id/rmp_play_time"
             android:gravity="center_vertical"
-            android:text="次"
+            android:text="@string/count"
             android:textSize="@dimen/text_small" />
 
 

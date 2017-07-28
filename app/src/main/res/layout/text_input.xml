@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -20,17 +20,18 @@
             <EditText
                 android:id="@+id/text_input"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/activity_default_padding" />
         </android.support.design.widget.TextInputLayout>
 
         <TextView
-            android:layout_marginBottom="6dp"
-            android:layout_alignBottom="@id/TextInputLayout"
             android:id="@+id/text_input_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/TextInputLayout"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="6dp" />
 
     </RelativeLayout>
 </RelativeLayout>

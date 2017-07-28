@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.RemoteException;
@@ -13,10 +14,11 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.duan.musicoco.R;
@@ -44,7 +46,6 @@ import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.service.PlayServiceCallback;
 import com.duan.musicoco.shared.SongOperation;
 import com.duan.musicoco.util.BitmapUtils;
-import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.shared.PeriodicTask;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
@@ -73,6 +74,7 @@ public class BottomNavigationController implements
     private View mContainer;
     private PullDownLinearLayout mListContainer;
     private View mProgress;
+    private View mProgressBG;
     private ImageView mAlbum;
     private TextView mName;
     private TextView mArts;
@@ -132,6 +134,7 @@ public class BottomNavigationController implements
         mShowList = (ImageButton) activity.findViewById(R.id.list_list);
         mContainer = activity.findViewById(R.id.list_bottom_nav_container);
         mProgress = activity.findViewById(R.id.list_progress);
+        mProgressBG = activity.findViewById(R.id.list_progress_bg);
 
         mContainer.setOnClickListener(this);
         mShowList.setOnClickListener(this);
@@ -248,7 +251,7 @@ public class BottomNavigationController implements
         try {
             progress = mControl.getProgress();
             int width = (int) (phoneWidth * (progress / (float) mDuration));
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mProgress.getLayoutParams();
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mProgress.getLayoutParams();
             params.width = width;
             mProgress.setLayoutParams(params);
             mProgress.invalidate();
@@ -473,6 +476,10 @@ public class BottomNavigationController implements
         mList.setBackgroundColor(mainBC);
         mLine.setBackgroundColor(vicTC);
         mSheet.setTextColor(mainTC);
+
+        ColorDrawable cd = new ColorDrawable(vicBC);
+        cd.setAlpha(200);
+        mProgressBG.setBackground(cd);
 
         mListContainer.setBackgroundColor(navC);
 

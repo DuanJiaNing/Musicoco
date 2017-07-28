@@ -386,10 +386,16 @@ public class SheetSongListController implements
     @Override
     public void themeChange(Theme theme, int[] colors) {
 
-        int mainBC = colors[0];
-        int vicBC = colors[1];
-        int mainTC = colors[2];
-        int vicTC = colors[3];
+        int statusC = colors[0];
+        int toolbarC = colors[1];
+        int accentC = colors[2];
+        int mainBC = colors[3];
+        int vicBC = colors[4];
+        int mainTC = colors[5];
+        int vicTC = colors[6];
+        int navC = colors[7];
+        int toolbarMainTC = colors[8];
+        int toolbarVicTC = colors[9];
 
         songAdapter.themeChange(theme, new int[]{mainTC, vicTC});
 
@@ -404,7 +410,7 @@ public class SheetSongListController implements
         optionsDialog.setDivideColor(vicTC);
         optionsDialog.setTitleTextColor(mainTC);
 
-        optionsAdapter.setTextColor(mainTC);
-        optionsAdapter.setIconColor(vicTC);
+        optionsAdapter.setTitleColor(mainTC);
+        optionsAdapter.setIconColor(accentC);
     }
 }

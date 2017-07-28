@@ -15,7 +15,6 @@
             android:id="@+id/main_play_sheet"
             android:layout_marginLeft="@dimen/activity_default_margin"
             android:gravity="center_vertical|start"
-            android:title="歌单："
             android:textSize="@dimen/text_middle_s"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />

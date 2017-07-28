@@ -409,7 +409,7 @@ public class ColorUtils {
         return colors;
     }
 
-    public static int[] get2ToolbarColors(Context context) {
+    public static int[] get2ToolbarTextColors(Context context) {
         int[] colors = new int[2];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             colors[0] = context.getColor(R.color.white_d);

@@ -70,7 +70,7 @@ public class Marker extends ViewGroup implements MarkerDrawable.MarkerAnimationL
         int textAppearanceId = a.getResourceId(R.styleable.DiscreteSeekBar_dsb_indicatorTextAppearance,
                 R.style.Widget_DiscreteIndicatorTextAppearance);
         mNumber = new TextView(context);
-        //Add some padding to this textView so the bubble has some space to breath
+        //Add some padding to this textViewLimit so the bubble has some space to breath
         mNumber.setPadding(padding, 0, padding, 0);
         mNumber.setTextAppearance(context, textAppearanceId);
         mNumber.setGravity(Gravity.CENTER);

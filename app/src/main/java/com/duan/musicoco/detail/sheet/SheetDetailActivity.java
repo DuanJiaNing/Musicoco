@@ -6,17 +6,16 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
@@ -37,6 +36,7 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
     private SheetInfoController infoController;
     private SheetSongListController songListController;
     private Toolbar toolbar;
+    private Menu menu;
 
     private DBMusicocoController dbController;
     private MediaManager mediaManager;
@@ -56,11 +56,11 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        appPreference = new AppPreference(this);
+        checkTheme();
         setContentView(R.layout.activity_sheet_detail);
 
         Utils.transitionStatusBar(this);
-
-        appPreference = new AppPreference(this);
 
         boolean darkTheme = appPreference.getTheme() == Theme.DARK;
         infoController = new SheetInfoController(this, darkTheme);
@@ -76,6 +76,15 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
 
         initData();
 
+    }
+
+    private void checkTheme() {
+        Theme theme = appPreference.getTheme();
+        if (theme == Theme.DARK) {
+            this.setTheme(R.style.Theme_Sheet_Detail_DARK);
+        } else if (theme == Theme.WHITE) {
+            this.setTheme(R.style.Theme_Sheet_Detail_WHITE);
+        }
     }
 
     private void getSheet() {
@@ -109,24 +118,9 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_sheet_detail, menu);
-        initOptionsMenuColors(menu);
+        this.menu = menu;
+        updateToolbarColor();
         return true;
-    }
-
-    private void initOptionsMenuColors(Menu menu) {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            int[] colors = ColorUtils.get2ToolbarColors(this);
-
-            MenuItem heart = menu.findItem(R.id.sheet_detail_action_collection);
-            MenuItem search = menu.findItem(R.id.sheet_detail_search);
-            MenuItem edit = menu.findItem(R.id.sheet_detail_action_modify);
-
-            int mainC = colors[0];
-            heart.getIcon().setTint(mainC);
-            search.getIcon().setTint(mainC);
-            edit.getIcon().setTint(mainC);
-        }
     }
 
     @Override
@@ -230,7 +224,6 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
 
         Theme th = appPreference.getTheme();
         int[] cs;
-        //标题栏和状态栏颜色
         switch (th) {
             case DARK:
                 cs = ColorUtils.get10DarkThemeColors(this);
@@ -252,33 +245,42 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
         int toolbarMainTC = cs[8];
         int toolbarVicTC = cs[9];
 
-        songListController.themeChange(th, new int[]{
-                mainBC, vicBC,
-                mainTC, vicTC
-        });
+        songListController.themeChange(th, cs);
 
         collapsingToolbarLayout.setContentScrimColor(toolbarC);
         collapsingToolbarLayout.setStatusBarScrimColor(statusC);
         container.setBackgroundColor(mainBC);
 
-        updateToolbarColor(th);
         updateFloatingBtColor(new int[]{accentC, toolbarMainTC, toolbarVicTC});
-
         infoController.themeChange(th, new int[]{toolbarMainTC, toolbarVicTC});
 
     }
 
-    private void updateToolbarColor(Theme theme) {
+    private void updateToolbarColor() {
 
-        int[] colors = ColorUtils.get2ToolbarColors(this);
+        if (toolbar == null || collapsingToolbarLayout == null) {
+            return;
+        }
 
-        int mainC = colors[0];
-        collapsingToolbarLayout.setCollapsedTitleTextColor(mainC);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            int[] colors = ColorUtils.get2ToolbarTextColors(this);
+
+            int mainTC = colors[0];
+            collapsingToolbarLayout.setCollapsedTitleTextColor(mainTC);
             Drawable navD = toolbar.getNavigationIcon();
             if (navD != null) {
-                navD.setTint(mainC);
+                navD.setTint(mainTC);
             }
+
+            MenuItem heart = menu.findItem(R.id.sheet_detail_action_collection);
+            MenuItem search = menu.findItem(R.id.sheet_detail_search);
+            MenuItem edit = menu.findItem(R.id.sheet_detail_action_modify);
+
+            int mainC = colors[0];
+            heart.getIcon().setTint(mainC);
+            search.getIcon().setTint(mainC);
+            edit.getIcon().setTint(mainC);
         }
     }
 

@@ -14,7 +14,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -36,7 +35,6 @@ import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.shared.MySheetsOperation;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.SongUtils;
-import com.duan.musicoco.util.Utils;
 
 import java.util.List;
 
@@ -143,7 +141,6 @@ public class MainActivity extends RootActivity implements
 
         toolbar = (Toolbar) findViewById(R.id.activity_main_toolbar);
         setSupportActionBar(toolbar);
-        updateToolbarColors();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(
@@ -169,15 +166,15 @@ public class MainActivity extends RootActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         this.menu = menu;
+        updateToolbarColors();
         return true;
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_main_settings) {
+        if (id == R.id.action_main_search) {
             return true;
         }
 
@@ -314,26 +311,17 @@ public class MainActivity extends RootActivity implements
             return;
         }
 
-        Theme th = appPreference.getTheme();
-        int color;
-        switch (th) {
-            case DARK:
-                color = ColorUtils.get2DarkThemeTextColor()[0];
-                break;
-            case WHITE:
-            default:
-                color = Color.WHITE;
-                break;
-        }
+        int[] colors = ColorUtils.get2ToolbarTextColors(this);
 
-        toolbar.setTitleTextColor(color);
-        toggle.getDrawerArrowDrawable().setColor(color);
+        int mainTC = colors[0];
+        toolbar.setTitleTextColor(mainTC);
+        toggle.getDrawerArrowDrawable().setColor(mainTC);
 
-        MenuItem search = menu.findItem(R.id.action_main_settings);
+        MenuItem search = menu.findItem(R.id.action_main_search);
         Drawable icon = search.getIcon();
         if (icon != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                icon.setTint(color);
+                icon.setTint(mainTC);
             }
         }
     }
