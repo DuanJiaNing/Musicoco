@@ -159,7 +159,6 @@ public class BottomNavigationController implements
         mRealTimeView.setOverlayColor(color);
         mListTitleContainer.setBackgroundColor(ColorUtils.setAlphaComponent(mRealTimeView.getOverlayColor(), 255));
 
-        themeChange(theme, null);
         songOption.updatePlayMode();
         songOption.show();
         listOption.hide();
@@ -371,20 +370,21 @@ public class BottomNavigationController implements
     @Override
     public void themeChange(Theme theme, int[] colors) {
 
+        int[] cs;
         switch (theme) {
             case DARK: {
-                updateColors(com.duan.musicoco.util.ColorUtils.get4DarkThemeColors()[2], false);
+                cs = com.duan.musicoco.util.ColorUtils.get10DarkThemeColors(activity);
                 break;
             }
             case VARYING:
             case WHITE:
             default:
-                updateColors(com.duan.musicoco.util.ColorUtils.get4WhiteThemeColors()[2], false);
+                cs = com.duan.musicoco.util.ColorUtils.get10WhiteThemeColors(activity);
                 break;
         }
 
-        songOption.themeChange(theme, null);
-        listOption.themeChange(theme, null);
+        songOption.themeChange(theme, cs);
+        listOption.themeChange(theme, cs);
     }
 
     @Override
@@ -426,6 +426,7 @@ public class BottomNavigationController implements
         }
     }
 
+    // updateColors 在 VARYING 主题时才会不断调用
     public void updateColors(int color, boolean isVarying) {
         Log.d("update", "play/BottomNavigationController updateColors");
         int alpha = activity.getResources().getInteger(R.integer.play_list_bg_alpha);
@@ -434,7 +435,7 @@ public class BottomNavigationController implements
         mRealTimeView.setOverlayColor(colorA);
         mListTitleContainer.setBackgroundColor(color);
 
-        Theme t = WHITE;
+        Theme t;
         double d = ColorUtils.calculateLuminance(colorA);
         if (d - 0.400 > 0.000001) {
             t = WHITE;
@@ -721,23 +722,12 @@ public class BottomNavigationController implements
 
         @Override
         public void themeChange(Theme theme, int[] colors) {
-            int[] cs;
-            switch (theme) {
-                case DARK: {
-                    cs = com.duan.musicoco.util.ColorUtils.get4DarkThemeColors();
-                    break;
-                }
-                case VARYING:
-                case WHITE:
-                default:
-                    cs = com.duan.musicoco.util.ColorUtils.get4WhiteThemeColors();
-                    break;
-            }
 
-            int mainBC = cs[0];
-            int mainTC = cs[1];
-            int vicBC = cs[2];
-            int vicTC = cs[3];
+            int accentC = colors[2];
+            int mainBC = colors[3];
+            int vicBC = colors[4];
+            int mainTC = colors[5];
+            int vicTC = colors[6];
 
             mDialog.setTitleBarBgColor(vicBC);
             mDialog.setContentBgColor(mainBC);
@@ -745,7 +735,7 @@ public class BottomNavigationController implements
             mDialog.setTitleTextColor(mainTC);
 
             moreOptionsAdapter.setTextColor(mainTC);
-            moreOptionsAdapter.setIconColor(vicTC);
+            moreOptionsAdapter.setIconColor(accentC);
         }
 
         int updatePlayMode() {

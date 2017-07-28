@@ -17,6 +17,7 @@ import com.duan.musicoco.app.manager.PlayServiceManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.PlayPreference;
+import com.duan.musicoco.preference.Theme;
 
 /**
  * Created by DuanJiaNing on 2017/3/21.
@@ -46,6 +47,8 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        checkTheme();
+
         playServiceManager = PlayServiceManager.getInstance(this);
         permissionManager = PermissionManager.getInstance(this);
         mediaManager = MediaManager.getInstance(getApplicationContext());
@@ -53,6 +56,19 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
 
         //检查权限
         checkPermission();
+
+    }
+
+    private void checkTheme() {
+        //FIXME test
+        appPreference.modifyTheme(Theme.DARK);
+
+        Theme theme = appPreference.getTheme();
+        if (theme == Theme.DARK) {
+            this.setTheme(R.style.Theme_DARK);
+        } else if (theme == Theme.WHITE) {
+            this.setTheme(R.style.Theme_WHITE);
+        }
 
     }
 

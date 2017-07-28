@@ -387,8 +387,8 @@ public class SheetSongListController implements
     public void themeChange(Theme theme, int[] colors) {
 
         int mainBC = colors[0];
-        int mainTC = colors[1];
-        int vicBC = colors[2];
+        int vicBC = colors[1];
+        int mainTC = colors[2];
         int vicTC = colors[3];
 
         songAdapter.themeChange(theme, new int[]{mainTC, vicTC});

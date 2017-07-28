@@ -89,16 +89,6 @@ public class MainActivity extends RootActivity implements
         mainSheetsController = new MainSheetsController(this, mediaManager);
         mySheetsController = new MySheetsController(this, dbMusicoco, mediaManager);
 
-        //FIXME test
-        appPreference.modifyTheme(Theme.DARK);
-
-        Theme theme = appPreference.getTheme();
-        if (theme == Theme.DARK) {
-            this.setTheme(R.style.Theme_DARK);
-        } else if (theme == Theme.WHITE) {
-            this.setTheme(R.style.Theme_WHITE);
-        }
-
         setContentView(R.layout.activity_main);
 
     }

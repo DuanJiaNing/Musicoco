@@ -301,19 +301,30 @@ public class ColorUtils {
      * 2 辅背景色
      * 3 辅字体色
      */
-    public static int[] get4WhiteThemeColors() {
-        Context context = App.getContext();
-        int[] colors = new int[4];
+    public static int[] get10WhiteThemeColors(Context context) {
+        int[] colors = new int[10];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            colors[0] = context.getColor(R.color.theme_white_primary); //主背景色
-            colors[1] = context.getColor(R.color.theme_white_main_text); // 主字体色
-            colors[2] = context.getColor(R.color.theme_white_primary_dark); // 辅背景色
-            colors[3] = context.getColor(R.color.theme_white_vic_text); // 辅字体色
+            colors[0] = context.getColor(R.color.theme_white_primary);
+            colors[1] = context.getColor(R.color.theme_white_primary_dark);
+            colors[2] = context.getColor(R.color.theme_white_accent);
+            colors[3] = context.getColor(R.color.theme_white_main_bg);
+            colors[4] = context.getColor(R.color.theme_white_vic_bg);
+            colors[5] = context.getColor(R.color.theme_white_main_text);
+            colors[6] = context.getColor(R.color.theme_white_vic_text);
+            colors[7] = context.getColor(R.color.theme_white_nav);
+            colors[8] = context.getColor(R.color.theme_white_toolbar_main_text);
+            colors[9] = context.getColor(R.color.theme_white_toolbar_vic_text);
         } else {
-            colors[0] = context.getResources().getColor(R.color.theme_white_primary); //主背景色
-            colors[1] = context.getResources().getColor(R.color.theme_white_main_text); // 主字体色
-            colors[2] = context.getResources().getColor(R.color.theme_white_primary_dark); // 辅背景色
-            colors[3] = context.getResources().getColor(R.color.theme_white_vic_text); // 辅字体色
+            colors[0] = context.getResources().getColor(R.color.theme_white_primary);
+            colors[1] = context.getResources().getColor(R.color.theme_white_primary_dark);
+            colors[2] = context.getResources().getColor(R.color.theme_white_accent);
+            colors[3] = context.getResources().getColor(R.color.theme_white_main_bg);
+            colors[4] = context.getResources().getColor(R.color.theme_white_vic_bg);
+            colors[5] = context.getResources().getColor(R.color.theme_white_main_text);
+            colors[6] = context.getResources().getColor(R.color.theme_white_vic_text);
+            colors[7] = context.getResources().getColor(R.color.theme_white_nav);
+            colors[8] = context.getResources().getColor(R.color.theme_white_toolbar_main_text);
+            colors[9] = context.getResources().getColor(R.color.theme_white_toolbar_vic_text);
         }
 
         return colors;
@@ -321,24 +332,41 @@ public class ColorUtils {
 
 
     /**
-     * 0 主背景色
-     * 1 主字体色
-     * 2 辅背景色
-     * 3 辅字体色
+     * 0 状态栏背景色<br>
+     * 1 标题栏背景色<br>
+     * 2 控件首选色<br>
+     * 3 主背景色<br>
+     * 4 辅背景色<br>
+     * 5 主字体色<br>
+     * 6 辅字体色<br>
+     * 7 底部导航背景色<br>
+     * 8 标题栏主字体色<br>
+     * 9 标题栏辅字体色<br>
      */
-    public static int[] get4DarkThemeColors() {
-        Context context = App.getContext();
-        int[] colors = new int[4];
+    public static int[] get10DarkThemeColors(Context context) {
+        int[] colors = new int[10];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            colors[0] = context.getColor(R.color.theme_dark_primary); //主背景色
-            colors[1] = context.getColor(R.color.theme_dark_main_text); // 主字体色
-            colors[2] = context.getColor(R.color.theme_dark_primary_dark); // 辅背景色
-            colors[3] = context.getColor(R.color.theme_dark_vic_text); // 辅字体色
+            colors[0] = context.getColor(R.color.theme_dark_primary);
+            colors[1] = context.getColor(R.color.theme_dark_primary_dark);
+            colors[2] = context.getColor(R.color.theme_dark_accent);
+            colors[3] = context.getColor(R.color.theme_dark_main_bg);
+            colors[4] = context.getColor(R.color.theme_dark_vic_bg);
+            colors[5] = context.getColor(R.color.theme_dark_main_text);
+            colors[6] = context.getColor(R.color.theme_dark_vic_text);
+            colors[7] = context.getColor(R.color.theme_dark_nav);
+            colors[8] = context.getColor(R.color.theme_dark_toolbar_main_text);
+            colors[9] = context.getColor(R.color.theme_dark_toolbar_vic_text);
         } else {
-            colors[0] = context.getResources().getColor(R.color.theme_dark_primary); //主背景色
-            colors[1] = context.getResources().getColor(R.color.theme_dark_main_text); // 主字体色
-            colors[2] = context.getResources().getColor(R.color.theme_dark_primary_dark); // 辅背景色
-            colors[3] = context.getResources().getColor(R.color.theme_dark_vic_text); // 辅字体色
+            colors[0] = context.getResources().getColor(R.color.theme_dark_primary);
+            colors[1] = context.getResources().getColor(R.color.theme_dark_primary_dark);
+            colors[2] = context.getResources().getColor(R.color.theme_dark_accent);
+            colors[3] = context.getResources().getColor(R.color.theme_dark_main_bg);
+            colors[4] = context.getResources().getColor(R.color.theme_dark_vic_bg);
+            colors[5] = context.getResources().getColor(R.color.theme_dark_main_text);
+            colors[6] = context.getResources().getColor(R.color.theme_dark_vic_text);
+            colors[7] = context.getResources().getColor(R.color.theme_dark_nav);
+            colors[8] = context.getResources().getColor(R.color.theme_dark_toolbar_main_text);
+            colors[9] = context.getResources().getColor(R.color.theme_dark_toolbar_vic_text);
         }
 
         return colors;
@@ -353,11 +381,11 @@ public class ColorUtils {
         int[] colors = new int[2];
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            colors[0] = context.getColor(R.color.dark_l_l_l_l); //主字体色
-            colors[1] = context.getColor(R.color.white_d_d_d_d); // 辅字体色
+            colors[0] = context.getColor(R.color.theme_white_main_text); //主字体色
+            colors[1] = context.getColor(R.color.theme_white_vic_text); // 辅字体色
         } else {
-            colors[0] = context.getResources().getColor(R.color.dark_l_l_l_l);
-            colors[1] = context.getResources().getColor(R.color.white_d_d_d_d);
+            colors[0] = context.getResources().getColor(R.color.theme_white_main_text);
+            colors[1] = context.getResources().getColor(R.color.theme_white_vic_text);
         }
 
         return colors;
@@ -378,6 +406,19 @@ public class ColorUtils {
             colors[0] = context.getResources().getColor(R.color.theme_dark_main_text);
             colors[1] = context.getResources().getColor(R.color.theme_dark_vic_text);
         }
+        return colors;
+    }
+
+    public static int[] get2ToolbarColors(Context context) {
+        int[] colors = new int[2];
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            colors[0] = context.getColor(R.color.white_d);
+            colors[1] = context.getColor(R.color.white_d_d);
+        } else {
+            colors[0] = context.getResources().getColor(R.color.white_d);
+            colors[1] = context.getResources().getColor(R.color.white_d_d);
+        }
+
         return colors;
     }
 
@@ -405,57 +446,6 @@ public class ColorUtils {
             colors[0] = context.getResources().getColor(R.color.white_d_d);
             colors[1] = context.getResources().getColor(R.color.white_d_d_d);
         }
-        return colors;
-    }
-
-    /**
-     * 0 主背景色<br>
-     * 1 主字体色<br>
-     * 2 辅字体色<br>
-     * 3 线条颜色<br>
-     */
-    public static int[] get4DarkDialogThemeColors() {
-        Context context = App.getContext();
-
-        int[] colors = new int[4];
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            colors[0] = context.getColor(R.color.theme_dark_dialog_bg);
-            colors[1] = context.getColor(R.color.theme_dark_dialog_main_text);
-            colors[2] = context.getColor(R.color.theme_dark_dialog_vic_text);
-            colors[3] = context.getColor(R.color.theme_dark_dialog_line);
-        } else {
-            colors[0] = context.getResources().getColor(R.color.theme_dark_dialog_bg);
-            colors[1] = context.getResources().getColor(R.color.theme_dark_dialog_main_text);
-            colors[2] = context.getResources().getColor(R.color.theme_dark_dialog_vic_text);
-            colors[3] = context.getResources().getColor(R.color.theme_dark_dialog_line);
-        }
-
-        return colors;
-    }
-
-
-    /**
-     * 0 主背景色<br>
-     * 1 主字体色<br>
-     * 2 辅字体色<br>
-     * 3 线条颜色<br>
-     */
-    public static int[] get4WhiteDialogThemeColors() {
-        Context context = App.getContext();
-
-        int[] colors = new int[4];
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            colors[0] = context.getColor(R.color.theme_white_dialog_bg);
-            colors[1] = context.getColor(R.color.theme_white_dialog_main_text);
-            colors[2] = context.getColor(R.color.theme_white_dialog_vic_text);
-            colors[3] = context.getColor(R.color.theme_white_dialog_line);
-        } else {
-            colors[0] = context.getResources().getColor(R.color.theme_white_dialog_bg);
-            colors[1] = context.getResources().getColor(R.color.theme_white_dialog_main_text);
-            colors[2] = context.getResources().getColor(R.color.theme_white_dialog_vic_text);
-            colors[3] = context.getResources().getColor(R.color.theme_white_dialog_line);
-        }
-
         return colors;
     }
 

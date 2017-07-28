@@ -35,9 +35,9 @@ public class DialogProvider {
      */
     private LinearLayout mFirstOuter;
 
-    private View mLine1;
+    private View mTopLine;
 
-    private View mLine2;
+    private View mMiddleLine;
 
     /**
      * 用于addView()的外层容器(包括标题和三个Button)
@@ -106,7 +106,9 @@ public class DialogProvider {
     int backgroundColor;
     int mainTextColor;
     int vicTextColor;
-    int lineAndButtonColor;
+    int topLineColor;
+    int middleLineColor;
+    int accentColor;
 
     public DialogProvider(Context context) {
         this.context = context;
@@ -135,12 +137,12 @@ public class DialogProvider {
         mNegativeButton = (TextView) rootView.findViewById(R.id.dialog_Negative);
         mNegativeButton.setEnabled(false);
 
-        mLine1 = rootView.findViewById(R.id.dialog_line1);
-        mLine2 = rootView.findViewById(R.id.dialog_line2);
+        mTopLine = rootView.findViewById(R.id.dialog_line1);
+        mMiddleLine = rootView.findViewById(R.id.dialog_line2);
 
         builder = new AlertDialog.Builder(context);
 
-        theme = App.getAppPreference().getTheme();
+        theme = ((App) context.getApplicationContext()).getAppPreference().getTheme();
         updateTheme();
 
     }
@@ -154,26 +156,39 @@ public class DialogProvider {
         int[] colors;
         switch (theme) {
             case DARK:
-                colors = ColorUtils.get4DarkDialogThemeColors();
+                colors = ColorUtils.get10DarkThemeColors(context);
                 break;
             case WHITE:
             default:
-                colors = ColorUtils.get4WhiteDialogThemeColors();
+                colors = ColorUtils.get10WhiteThemeColors(context);
                 break;
         }
 
-        backgroundColor = colors[0];
-        mainTextColor = colors[1];
-        vicTextColor = colors[2];
-        lineAndButtonColor = colors[3];
+        int statusC = colors[0];
+        int toolbarC = colors[1];
+        int accentC = colors[2];
+        int mainBC = colors[3];
+        int vicBC = colors[4];
+        int mainTC = colors[5];
+        int vicTC = colors[6];
+        int navC = colors[7];
+        int toolbarMainTC = colors[8];
+        int toolbarVicTC = colors[9];
+
+        backgroundColor = mainBC;
+        mainTextColor = mainTC;
+        vicTextColor = vicTC;
+        topLineColor = accentC;
+        accentColor = accentC;
+        middleLineColor = vicTC;
 
         mTitle.setTextColor(mainTextColor);
-        mLine1.setBackgroundColor(lineAndButtonColor);
-        mLine2.setBackgroundColor(lineAndButtonColor);
+        mTopLine.setBackgroundColor(topLineColor);
+        mMiddleLine.setBackgroundColor(middleLineColor);
         mMessage.setTextColor(vicTextColor);
-        mNeuterButton.setTextColor(lineAndButtonColor);
-        mPositiveButton.setTextColor(lineAndButtonColor);
-        mNegativeButton.setTextColor(lineAndButtonColor);
+        mNeuterButton.setTextColor(accentColor);
+        mPositiveButton.setTextColor(accentColor);
+        mNegativeButton.setTextColor(accentColor);
         mFirstOuter.setBackgroundColor(backgroundColor);
     }
 
@@ -348,7 +363,7 @@ public class DialogProvider {
         titleT.setTextColor(mainTextColor);
 
         final RotateLoading progressBar = (RotateLoading) view.findViewById(R.id.progress_rotate_loading);
-        progressBar.setLoadingColor(lineAndButtonColor);
+        progressBar.setLoadingColor(accentColor);
 
         createCustomSecondOuterDialog(view);
         Dialog dialog = getDialog();
@@ -374,6 +389,6 @@ public class DialogProvider {
     }
 
     public int getLineAndButtonColor() {
-        return lineAndButtonColor;
+        return accentColor;
     }
 }

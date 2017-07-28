@@ -30,41 +30,60 @@
     <color name="dsb_ripple_color_pressed">#77939393</color>
     <color name="dsb_ripple_color_focused">#99999999</color>
 
-    <color name="gold_primary">#332c2f</color>
-    <color name="gold_primary_dark">#2d2729</color>
-    <color name="gold_main_text">#C0A057</color>
-    <color name="gold_vic_text">#635339</color>
+    <!--夜间主题基本色-->
+    <color name="dark_primary">#17181A</color>
+    <color name="dark_primary_dark">#17181a</color>
+    <color name="dark_accent">#B62E2C</color>
+    <color name="dark_main_bg">#111214</color>
+    <color name="dark_vic_bg">#151518</color>
+    <color name="dark_main_text">#A2A3A3</color>
+    <color name="dark_vic_text">#5A5A5C</color>
+    <color name="dark_nav">#17181A</color>
+
+    <!--日间主题基本色-->
+    <color name="white_primary">#de3a31</color>
+    <color name="white_primary_dark">#de3a31</color>
+    <color name="white_accent">#de3a31</color>
+    <color name="white_main_bg">#F2F4F5</color>
+    <color name="white_vic_bg">#E7E9E9</color>
+    <color name="white_main_text">#303131</color>
+    <color name="white_vic_text">#919293</color>
+    <color name="white_nav">#FFFFFF</color>
 
     <color name="red">#e42d2d</color>
 
     <color name="my_sheet_play_bg">#2b000000</color>
     <color name="play_list_item_dark_bg">#05393939</color>
 
+    <color name="favorite">@color/red</color>
 
-    <color name="theme_white_primary">@color/white</color>
-    <color name="theme_white_primary_dark">@color/white_d</color>
-    <color name="theme_white_vic_text">@color/white_d_d_d_d</color>
-    <color name="theme_white_main_text">@color/dark_l_l_l_l_l</color>
 
-    <color name="theme_dark_primary">@color/gold_primary</color>
-    <color name="theme_dark_primary_dark">@color/gold_primary_dark</color>
-    <color name="theme_dark_main_text">@color/gold_main_text</color>
-    <color name="theme_dark_vic_text">@color/gold_vic_text</color>
+    <!--夜间主题基本色-->
+    <color name="theme_dark_primary">@color/dark_primary</color> <!--标题栏背景色-->
+    <color name="theme_dark_primary_dark">@color/dark_primary_dark</color> <!--状态栏背景色-->
+    <color name="theme_dark_accent">@color/dark_accent</color> <!--控件首选色-->
+    <color name="theme_dark_main_bg">@color/dark_main_bg</color> <!--主背景色-->
+    <color name="theme_dark_vic_bg">@color/dark_vic_bg</color> <!--辅背景色-->
+    <color name="theme_dark_main_text">@color/dark_main_text</color> <!--主字体色-->
+    <color name="theme_dark_vic_text">@color/dark_vic_text</color> <!--辅字体色-->
+    <color name="theme_dark_nav">@color/dark_nav</color> <!--底部导航背景色-->
+    <color name="theme_dark_toolbar_main_text">@color/white_d</color> <!--标题栏主字体色-->
+    <color name="theme_dark_toolbar_vic_text">@color/white_d_d</color> <!--标题栏辅字体色-->
+    <!--日间主题基本色-->
+    <color name="theme_white_primary">@color/white_primary</color>
+    <color name="theme_white_primary_dark">@color/white_primary_dark</color>
+    <color name="theme_white_accent">@color/white_accent</color>
+    <color name="theme_white_main_bg">@color/white_main_bg</color>
+    <color name="theme_white_vic_bg">@color/white_vic_bg</color>
+    <color name="theme_white_main_text">@color/white_main_text</color>
+    <color name="theme_white_vic_text">@color/white_vic_text</color>
+    <color name="theme_white_nav">@color/white_nav</color>
+    <color name="theme_white_toolbar_main_text">@color/white_d</color>
+    <color name="theme_white_toolbar_vic_text">@color/white_d_d</color>
+
 
     <color name="rmp_image_default_bg">@color/dark_l_l_l</color>
     <color name="main_rmp_image_filter">@color/white_d_d</color>
     <color name="sheet_detail_image_filter">@color/dark</color>
-
-    <color name="favorite">@color/red</color>
-
-    <color name="theme_dark_dialog_bg">@color/gold_primary_dark</color>
-    <color name="theme_dark_dialog_main_text">@color/gold_main_text</color>
-    <color name="theme_dark_dialog_vic_text">@color/gold_vic_text</color>
-    <color name="theme_dark_dialog_line">@color/gold_main_text</color>
-
-    <color name="theme_white_dialog_bg">@color/white</color>
-    <color name="theme_white_dialog_main_text">@color/dark_l_l_l</color>
-    <color name="theme_white_dialog_vic_text">@color/dark_l_l_l_l</color>
-    <color name="theme_white_dialog_line">@color/colorPrimary</color>
 
 </resources>

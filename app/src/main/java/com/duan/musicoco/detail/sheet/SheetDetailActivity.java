@@ -116,25 +116,16 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
     private void initOptionsMenuColors(Menu menu) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Theme th = appPreference.getTheme();
-            int color;
-            switch (th) {
-                case DARK:
-                    color = ColorUtils.get2DarkThemeTextColor()[0];
-                    break;
-                case WHITE:
-                default:
-                    color = Color.WHITE;
-                    break;
-            }
+            int[] colors = ColorUtils.get2ToolbarColors(this);
 
             MenuItem heart = menu.findItem(R.id.sheet_detail_action_collection);
             MenuItem search = menu.findItem(R.id.sheet_detail_search);
             MenuItem edit = menu.findItem(R.id.sheet_detail_action_modify);
 
-            heart.getIcon().setTint(color);
-            search.getIcon().setTint(color);
-            edit.getIcon().setTint(color);
+            int mainC = colors[0];
+            heart.getIcon().setTint(mainC);
+            search.getIcon().setTint(mainC);
+            edit.getIcon().setTint(mainC);
         }
     }
 
@@ -238,68 +229,64 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
     public void themeChange(Theme theme, int[] colors) {
 
         Theme th = appPreference.getTheme();
-        updateFloatingBtColor(th);
-        int[] cs = new int[4];
+        int[] cs;
         //标题栏和状态栏颜色
-        int topC;
         switch (th) {
             case DARK:
-                cs = ColorUtils.get4DarkThemeColors();
-                topC = cs[2];
+                cs = ColorUtils.get10DarkThemeColors(this);
                 break;
             case WHITE:
             default:
-                cs = ColorUtils.get4WhiteThemeColors();
-                topC = getResources().getColor(R.color.colorPrimary);
+                cs = ColorUtils.get10WhiteThemeColors(this);
                 break;
         }
 
-        int mainBC = cs[0];
-        int mainTC = cs[1];
-        int vicBC = cs[2];
-        int vicTC = cs[3];
+        int statusC = cs[0];
+        int toolbarC = cs[1];
+        int accentC = cs[2];
+        int mainBC = cs[3];
+        int vicBC = cs[4];
+        int mainTC = cs[5];
+        int vicTC = cs[6];
+        int navC = cs[7];
+        int toolbarMainTC = cs[8];
+        int toolbarVicTC = cs[9];
 
-        songListController.themeChange(th, cs);
+        songListController.themeChange(th, new int[]{
+                mainBC, vicBC,
+                mainTC, vicTC
+        });
 
-        int[] cos = {
-                th == Theme.DARK ? mainTC : mainBC, // 主字体色
-                th == Theme.DARK ? vicTC : vicBC, // 辅字体色
-        };
-        infoController.themeChange(th, cos);
-
-        collapsingToolbarLayout.setContentScrimColor(topC);
-        collapsingToolbarLayout.setStatusBarScrimColor(topC);
-
+        collapsingToolbarLayout.setContentScrimColor(toolbarC);
+        collapsingToolbarLayout.setStatusBarScrimColor(statusC);
         container.setBackgroundColor(mainBC);
-        updateToolbarColor(th == Theme.DARK ? mainTC : mainBC);
+
+        updateToolbarColor(th);
+        updateFloatingBtColor(new int[]{accentC, toolbarMainTC, toolbarVicTC});
+
+        infoController.themeChange(th, new int[]{toolbarMainTC, toolbarVicTC});
 
     }
 
-    private void updateToolbarColor(int textC) {
-        collapsingToolbarLayout.setCollapsedTitleTextColor(textC);
+    private void updateToolbarColor(Theme theme) {
+
+        int[] colors = ColorUtils.get2ToolbarColors(this);
+
+        int mainC = colors[0];
+        collapsingToolbarLayout.setCollapsedTitleTextColor(mainC);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Drawable navD = toolbar.getNavigationIcon();
             if (navD != null) {
-                navD.setTint(textC);
+                navD.setTint(mainC);
             }
         }
     }
 
-    private void updateFloatingBtColor(Theme theme) {
-        int[] colors = new int[4];
-        switch (theme) {
-            case DARK:
-                colors = ColorUtils.get4DarkDialogThemeColors();
-                break;
-            case WHITE:
-            default:
-                colors = ColorUtils.get4WhiteDialogThemeColors();
-                break;
-        }
+    private void updateFloatingBtColor(int[] colors) {
 
-        int tintC = colors[0];
+        int bgC = colors[0];
+        int tintC = colors[1];
         int rippleC = colors[2];
-        int bgC = colors[3];
 
         infoController.updateFloatingBtColor(new int[]{tintC, rippleC, bgC});
 

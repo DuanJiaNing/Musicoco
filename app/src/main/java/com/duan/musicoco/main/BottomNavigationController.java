@@ -435,27 +435,37 @@ public class BottomNavigationController implements
     @Override
     public void themeChange(Theme theme, int[] colors) {
 
-        int[] cs = new int[4];
-        if (theme == Theme.DARK) {
-            cs = ColorUtils.get4DarkThemeColors();
-        } else if (theme == Theme.WHITE) {
-            cs = ColorUtils.get4WhiteThemeColors();
-        } else return;
+        int[] cs;
+        switch (theme) {
+            case DARK: {
+                cs = com.duan.musicoco.util.ColorUtils.get10DarkThemeColors(activity);
+                break;
+            }
+            case VARYING:
+            case WHITE:
+            default:
+                cs = com.duan.musicoco.util.ColorUtils.get10WhiteThemeColors(activity);
+                break;
+        }
 
-        int mainBC = cs[0];
-        int mainTC = cs[1];
-        int vicBC = cs[2];
-        int vicTC = cs[3];
+        int statusC = cs[0];
+        int toolbarC = cs[1];
+        int accentC = cs[2];
+        int mainBC = cs[3];
+        int vicBC = cs[4];
+        int mainTC = cs[5];
+        int vicTC = cs[6];
+        int navC = cs[7];
+        int toolbarMainTC = cs[8];
+        int toolbarVicTC = cs[9];
 
         if (adapter != null) {
             adapter.themeChange(theme, new int[]{mainTC, vicTC});
         }
 
-        mContainer.setBackgroundColor(mainBC);
-
+        mContainer.setBackgroundColor(navC);
         mName.setTextColor(mainTC);
         mArts.setTextColor(vicTC);
-
         mPlay.setPauseLineColor(mainTC);
         mPlay.setSolidColor(mainTC);
         mPlay.setTriangleColor(mainTC);
@@ -464,7 +474,7 @@ public class BottomNavigationController implements
         mLine.setBackgroundColor(vicTC);
         mSheet.setTextColor(mainTC);
 
-        mListContainer.setBackgroundColor(vicBC);
+        mListContainer.setBackgroundColor(navC);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mShowList.getDrawable().setTint(mainTC);

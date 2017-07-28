@@ -42,7 +42,6 @@
     </style>
 
     <style name="AppTheme.Play" parent="AppTheme">
-        <item name="android:colorControlHighlight">@color/white_d_d</item>
         <item name="android:windowFullscreen">true</item>
     </style>
 
@@ -71,29 +70,31 @@
     </style>
 
     <style name="Theme.DARK" parent="AppTheme">
-        <item name="android:windowBackground">@color/theme_dark_primary</item>
-        <item name="colorPrimary">@color/theme_dark_primary_dark</item>
+        <item name="android:windowBackground">@color/theme_dark_main_bg</item>
+        <item name="colorPrimary">@color/theme_dark_primary</item>
         <item name="colorPrimaryDark">@color/theme_dark_primary_dark</item>
-        <item name="colorAccent">@color/theme_dark_main_text</item>
+        <item name="colorAccent">@color/theme_dark_accent</item>
         <item name="android:textColorPrimary">@color/theme_dark_main_text</item>
-        <item name="android:textColorSecondary">@color/theme_dark_main_text</item>
+        <item name="android:textColorSecondary">@color/theme_dark_vic_text</item>
 
+        <item name="android:colorControlActivated">@color/theme_dark_accent</item>
         <item name="android:colorControlHighlight">@color/theme_dark_vic_text</item>
-        <item name="android:colorControlNormal">@color/theme_dark_main_text</item>
-        <item name="android:navigationBarColor">@color/theme_dark_primary</item>
+        <item name="android:colorControlNormal">@color/theme_dark_vic_text</item>
+        <item name="android:navigationBarColor">@color/theme_dark_primary_dark</item>
     </style>
 
     <style name="Theme.WHITE" parent="AppTheme">
-        <item name="android:windowBackground">@color/theme_white_primary_dark</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowBackground">@color/theme_white_main_bg</item>
+        <item name="colorPrimary">@color/theme_white_primary</item>
+        <item name="colorPrimaryDark">@color/theme_white_primary_dark</item>
+        <item name="colorAccent">@color/theme_white_accent</item>
         <item name="android:textColorPrimary">@color/theme_white_main_text</item>
         <item name="android:textColorSecondary">@color/theme_white_vic_text</item>
 
-        <item name="android:colorControlActivated">@color/colorAccent</item>
-        <item name="android:colorControlNormal">@color/colorAccentLight</item>
-        <item name="android:navigationBarColor">@color/theme_white_main_text</item>
+        <item name="android:colorControlActivated">@color/theme_white_accent</item>
+        <item name="android:colorControlHighlight">@color/theme_white_vic_text</item>
+        <item name="android:colorControlNormal">@color/theme_white_vic_text</item>
+        <item name="android:navigationBarColor">@color/theme_dark_primary_dark</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

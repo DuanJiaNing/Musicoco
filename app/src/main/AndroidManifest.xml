@@ -26,7 +26,7 @@
             android:name=".play.PlayActivity"
             android:hardwareAccelerated="true"
             android:launchMode="singleInstance"
-            android:theme="@style/AppTheme.Play" />
+            android:theme="@style/AppTheme" />
 
         <service
             android:exported="true"

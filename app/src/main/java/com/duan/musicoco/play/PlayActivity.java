@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
@@ -85,8 +86,8 @@ public class PlayActivity extends RootActivity implements
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_play);
-
     }
 
     @Override
@@ -275,14 +276,24 @@ public class PlayActivity extends RootActivity implements
      */
     private void updateColors(int[] colors) {
         Log.d("update", "PlayActivity updateColors");
-        if (colors.length != 4) {
+
+        int mainBC;
+        int mainTC;
+        int vicBC;
+        int vicTC;
+        if (colors.length == 4) {
+            mainBC = colors[0];
+            mainTC = colors[1];
+            vicBC = colors[2];
+            vicTC = colors[3];
+        } else if (colors.length == 10) {
+            mainBC = colors[3];
+            vicBC = colors[4];
+            mainTC = colors[5];
+            vicTC = colors[6];
+        } else {
             return;
         }
-
-        int mainBC = colors[0];
-        int mainTC = colors[1];
-        int vicBC = colors[2];
-        int vicTC = colors[3];
 
         ((TextView) (tsSongName.getCurrentView())).setTextColor(mainTC);
         ((TextView) (tsSongArts.getCurrentView())).setTextColor(vicTC);
@@ -470,8 +481,6 @@ public class PlayActivity extends RootActivity implements
         transaction.commit();
 
         bottomNavigationController = new BottomNavigationController(this, dbMusicoco, mediaManager);
-        //更新主题
-        themeChange(theme, null);
 
     }
 
@@ -571,7 +580,6 @@ public class PlayActivity extends RootActivity implements
 
         periodicTask = new PeriodicTask(new PeriodicTask.Task() {
             int progress;
-
             @Override
             public void execute() {
                 runOnUiThread(new Runnable() {
@@ -612,6 +620,9 @@ public class PlayActivity extends RootActivity implements
                     this.getString(R.string.exception_remote), null
             );
         }
+
+        //更新主题
+        themeChange(null, null);
     }
 
     @Override
@@ -623,20 +634,23 @@ public class PlayActivity extends RootActivity implements
 
     @Override
     public void themeChange(Theme theme, int[] colors) {
-
-        int cs[] = new int[4];
-
+        theme = appPreference.getTheme();
+        int cs[];
         switch (theme) {
-            case WHITE:
-                cs = com.duan.musicoco.util.ColorUtils.get4WhiteThemeColors();
+            case DARK:
+                cs = com.duan.musicoco.util.ColorUtils.get10DarkThemeColors(this);
                 break;
             case VARYING:
-                break;
-            case DARK:
+                return;
             default:
-                cs = com.duan.musicoco.util.ColorUtils.get4DarkThemeColors();
+            case WHITE:
+                cs = com.duan.musicoco.util.ColorUtils.get10WhiteThemeColors(this);
                 break;
         }
+        bottomNavigationController.themeChange(theme, cs);
+
+        // 非 VARYING 主题时只在这里调用一次 updateColors 方法
+        // updateColors 重复调用只在 VARYING 主题下发生
         updateColors(cs);
     }
 

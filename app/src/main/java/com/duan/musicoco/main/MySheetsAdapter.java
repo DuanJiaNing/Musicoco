@@ -58,6 +58,8 @@ public class MySheetsAdapter extends BaseAdapter implements
     private int mainBC;
     private int vicTC;
     private int vicBC;
+    private int accentC;
+
     private final OptionsDialog mDialog;
     private OptionsAdapter moreOptionsAdapter;
 
@@ -258,6 +260,7 @@ public class MySheetsAdapter extends BaseAdapter implements
         mainTC = colors[1];
         vicBC = colors[2];
         vicTC = colors[3];
+        accentC = colors[4];
 
         mDialog.setTitleBarBgColor(vicBC);
         mDialog.setContentBgColor(mainBC);
@@ -265,7 +268,7 @@ public class MySheetsAdapter extends BaseAdapter implements
         mDialog.setTitleTextColor(mainTC);
 
         moreOptionsAdapter.setTextColor(mainTC);
-        moreOptionsAdapter.setIconColor(vicTC);
+        moreOptionsAdapter.setIconColor(accentC);
 
         notifyDataSetChanged();
     }

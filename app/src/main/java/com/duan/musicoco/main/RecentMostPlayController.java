@@ -294,42 +294,42 @@ public class RecentMostPlayController implements
     @Override
     public void themeChange(Theme theme, int[] colors) {
 
-        int[] cs = new int[4];
-
+        int[] cs;
         switch (theme) {
             case DARK: {
-                cs = ColorUtils.get4DarkThemeColors();
-                int mainTC = cs[1];
-                int vicTC = cs[3];
-                mName.setTextColor(mainTC);
-                // E/rsC++: RS CPP error: Blur radius out of 0-25 pixel bound
-                // radius 不能大于 25，模拟器没问题，但真机无法运行
-                mName.setShadowLayer(20, 0, 0, mainTC);
-                mRemark.setTextColor(vicTC);
-                mArts.setTextColor(vicTC);
-                mInfoLine.setBackgroundColor(mainTC);
+                cs = ColorUtils.get10DarkThemeColors(activity);
                 break;
             }
             case WHITE:
             default: {
-                cs = ColorUtils.get4WhiteThemeColors();
-                int mainBC = cs[0];
-                int vicBC = cs[2];
-                mName.setTextColor(mainBC);
-                mName.setShadowLayer(20, 0, 0, mainBC);
-                mRemark.setTextColor(vicBC);
-                mArts.setTextColor(vicBC);
-                mInfoLine.setBackgroundColor(mainBC);
+                cs = ColorUtils.get10WhiteThemeColors(activity);
                 break;
             }
         }
 
-        int mainTC = cs[1];
-        int vicTC = cs[3];
+        int statusC = cs[0];
+        int toolbarC = cs[1];
+        int accentC = cs[2];
+        int mainBC = cs[3];
+        int vicBC = cs[4];
+        int mainTC = cs[5];
+        int vicTC = cs[6];
+        int navC = cs[7];
+        int toolbarMainTC = cs[8];
+        int toolbarVicTC = cs[9];
+
+        mName.setTextColor(toolbarMainTC);
+        // E/rsC++: RS CPP error: Blur radius out of 0-25 pixel bound
+        // radius 不能大于 25，模拟器没问题，但真机无法运行
+        mName.setShadowLayer(20, 0, 0, toolbarMainTC);
+        mRemark.setTextColor(toolbarVicTC);
+        mArts.setTextColor(vicTC);
+        mInfoLine.setBackgroundColor(mainTC);
 
         mPlayTimeL.setTextColor(vicTC);
         mPlayTimeR.setTextColor(vicTC);
         mPlayTime.setTextColor(mainTC);
+
         mShowMore.setTextColor(vicTC);
         mLine.setBackgroundColor(vicTC);
         mType.setTextColor(mainTC);

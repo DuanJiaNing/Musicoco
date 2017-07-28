@@ -105,38 +105,43 @@ public class MySheetsController implements
         int[] cs;
         switch (theme) {
             case DARK:
-                cs = ColorUtils.get4DarkThemeColors();
+                cs = ColorUtils.get10DarkThemeColors(activity);
                 break;
             case WHITE:
             default:
-                cs = ColorUtils.get4WhiteThemeColors();
+                cs = ColorUtils.get10WhiteThemeColors(activity);
                 break;
         }
-        int mainBC = cs[0];
-        int mainTC = cs[1];
-        int vicBC = cs[2];
-        int vicTC = cs[3];
+
+        int statusC = cs[0];
+        int toolbarC = cs[1];
+        int accentC = cs[2];
+        int mainBC = cs[3];
+        int vicBC = cs[4];
+        int mainTC = cs[5];
+        int vicTC = cs[6];
+        int navC = cs[7];
+        int toolbarMainTC = cs[8];
+        int toolbarVicTC = cs[9];
 
         if (isEmptyViewVisible()) {
-            emptyViewThemeChange(cs);
+            emptyViewThemeChange(new int[]{mainTC, vicTC});
         } else {
-            adapter.themeChange(theme, cs);
+            adapter.themeChange(theme, new int[]{mainBC, mainTC, vicBC, vicTC, accentC});
         }
 
         mTitle.setTextColor(mainTC);
         mTitleLine.setBackgroundColor(vicTC);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mAddSheet.getDrawable().setTint(vicTC);
+            mAddSheet.getDrawable().setTint(mainTC);
         }
 
     }
 
     private void emptyViewThemeChange(int[] colors) {
 
-        int mainBC = colors[0];
-        int mainTC = colors[1];
-        int vicBC = colors[2];
-        int vicTC = colors[3];
+        int mainTC = colors[0];
+        int vicTC = colors[1];
 
         View v = mContainer.getChildAt(EMPTY_VIEW_INDEX);
         TextView text = (TextView) v.findViewById(R.id.sheet_empty_add);
