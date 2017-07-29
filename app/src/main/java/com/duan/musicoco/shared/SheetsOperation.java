@@ -8,15 +8,22 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
+import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.DBMusicocoController;
+import com.duan.musicoco.db.MainSheetHelper;
+import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.bean.Sheet;
+import com.duan.musicoco.util.SongUtils;
 import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.view.TextInputHelper;
+
+import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -27,7 +34,7 @@ import rx.schedulers.Schedulers;
  * Created by DuanJiaNing on 2017/7/21.
  */
 
-public class MySheetsOperation {
+public class SheetsOperation {
 
     public static final String DELETE_SHEET_ID = "deletel_sheet_id";
     public static final String PLAY_SHEET_RANDOM = "play_sheet_random";
@@ -37,7 +44,7 @@ public class MySheetsOperation {
     private DBMusicocoController dbMusicoco;
     private BroadcastManager broadcastManager;
 
-    public MySheetsOperation(Activity activity, IPlayControl control, DBMusicocoController dbMusicoco) {
+    public SheetsOperation(Activity activity, IPlayControl control, DBMusicocoController dbMusicoco) {
         this.activity = activity;
         this.control = control;
         this.dbMusicoco = dbMusicoco;
@@ -141,7 +148,7 @@ public class MySheetsOperation {
         DialogProvider manager = new DialogProvider(activity);
         TextInputHelper inputHelper = new TextInputHelper(activity);
 
-        String newSheet = activity.getString(R.string.new_sheet);
+        String newSheet = activity.getString(R.string.modify_sheet);
         String inputName = activity.getString(R.string.sheet_name);
         String inputRemark = activity.getString(R.string.sheet_remark);
         String countOutLimit = activity.getString(R.string.error_text_count_out_of_limit);
@@ -240,22 +247,16 @@ public class MySheetsOperation {
         DialogProvider provider = new DialogProvider(activity);
         final Dialog dialog = provider.createPromptDialog(
                 activity.getString(R.string.warning),
-                activity.getString(R.string.delete_confirm));
-
-        provider.setOnPositiveButtonListener(activity.getString(R.string.ensure), new DialogProvider.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                handleDelete(sheet);
-                dialog.hide();
-            }
-        });
-        provider.setOnNegativeButtonListener(activity.getString(R.string.cancel), new DialogProvider.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.hide();
-            }
-        });
-
+                activity.getString(R.string.delete_confirm),
+                new DialogProvider.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        handleDelete(sheet);
+                    }
+                },
+                null,
+                true
+        );
         dialog.show();
     }
 
@@ -269,7 +270,7 @@ public class MySheetsOperation {
                 boolean res = dbMusicoco.removeSheet(sheet.id);
 
                 try {
-                    Thread.sleep(300);
+                    Thread.sleep(500);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -328,4 +329,48 @@ public class MySheetsOperation {
         broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, extras);
     }
 
+    public void addAllSongToFavorite(int sheetID) {
+        if (sheetID < 0 && sheetID != MainSheetHelper.SHEET_FAVORITE) {
+            MainSheetHelper helper = new MainSheetHelper(activity, dbMusicoco);
+            List<DBSongInfo> info = helper.getMainSheetSongInfo(sheetID);
+
+            List<Song> songs = SongUtils.DBSongInfoListToSongList(info);
+            handleAddAllSongToFavorite(songs);
+        } else {
+            List<DBSongInfo> infos = dbMusicoco.getSongInfos(sheetID);
+
+            List<Song> songs = SongUtils.DBSongInfoListToSongList(infos);
+            handleAddAllSongToFavorite(songs);
+        }
+    }
+
+    public void handleAddAllSongToFavorite(final List<Song> songs) {
+        final Dialog progressDialog = new DialogProvider(activity).createProgressDialog(activity.getString(R.string.add_songs_to_favorite));
+        progressDialog.setCancelable(false);
+
+        final Dialog promptDialog = new DialogProvider(activity).createPromptDialog(activity.getString(R.string.tip),
+                activity.getString(R.string.add_all_songs_to_favorite),
+                new DialogProvider.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        progressDialog.show();
+                        //FIXME test
+//                        addAllSongToFavorite(songs);
+//                        progressDialog.dismiss();
+                    }
+
+                    private void addAllSongToFavorite(List<Song> songs) {
+                        for (Song song : songs) {
+                            DBSongInfo info = dbMusicoco.getSongInfo(song);
+                            if (info != null && !info.favorite) {
+                                dbMusicoco.updateSongFavorite(song, true);
+                            }
+                        }
+                    }
+                },
+                null,
+                true);
+
+        promptDialog.show();
+    }
 }

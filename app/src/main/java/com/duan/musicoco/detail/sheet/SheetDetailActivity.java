@@ -2,7 +2,6 @@ package com.duan.musicoco.detail.sheet;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -15,16 +14,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
+import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.bean.Sheet;
+import com.duan.musicoco.main.MainActivity;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.Theme;
+import com.duan.musicoco.shared.SheetsOperation;
 import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.ToastUtils;
@@ -49,6 +51,8 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
 
     private AppBarStateChangeListener barStateChangeListener;
     private AppPreference appPreference;
+    private SheetsOperation sheetsOperation;
+    private IPlayControl control;
 
     private Sheet sheet;
     private int sheetID;
@@ -64,11 +68,11 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
 
         boolean darkTheme = appPreference.getTheme() == Theme.DARK;
         infoController = new SheetInfoController(this, darkTheme);
-
         songListController = new SheetSongListController(this);
-
         dbController = new DBMusicocoController(this, true);
         mediaManager = MediaManager.getInstance(this);
+        control = MainActivity.getControl();
+        sheetsOperation = new SheetsOperation(this, control, dbController);
 
         getSheet();
 
@@ -110,7 +114,7 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
     private void initData() {
 
         infoController.initData(sheetID, sheet, dbController, mediaManager);
-        songListController.initData(sheetID, dbController, mediaManager);
+        songListController.initData(sheetID, control, dbController, mediaManager);
         themeChange(null, null);
 
     }
@@ -119,8 +123,18 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_sheet_detail, menu);
         this.menu = menu;
+        filterMenu();
         updateToolbarColor();
         return true;
+    }
+
+    private void filterMenu() {
+        if (sheetID < 0) {
+            menu.removeItem(R.id.sheet_detail_action_modify);
+            if (sheetID == MainSheetHelper.SHEET_FAVORITE) {
+                menu.removeItem(R.id.sheet_detail_action_collection);
+            }
+        }
     }
 
     @Override
@@ -128,13 +142,18 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
         int id = item.getItemId();
         switch (id) {
             case R.id.sheet_detail_search:
-                ToastUtils.showShortToast("search");
+                //TODO
+                ToastUtils.showShortToast("sheet_detail_search");
                 break;
             case R.id.sheet_detail_action_collection:
-
+                //FIXME
+                sheetsOperation.addAllSongToFavorite(sheetID);
+                songListController.update();
                 break;
             case R.id.sheet_detail_action_modify:
-
+                sheetsOperation.handleModifySheet(sheet);
+                break;
+            default:
                 break;
 
         }
@@ -278,9 +297,15 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
             MenuItem edit = menu.findItem(R.id.sheet_detail_action_modify);
 
             int mainC = colors[0];
-            heart.getIcon().setTint(mainC);
-            search.getIcon().setTint(mainC);
-            edit.getIcon().setTint(mainC);
+            if (heart != null) {
+                heart.getIcon().setTint(mainC);
+            }
+            if (search != null) {
+                search.getIcon().setTint(mainC);
+            }
+            if (edit != null) {
+                edit.getIcon().setTint(mainC);
+            }
         }
     }
 

@@ -23,7 +23,7 @@ import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.preference.Theme;
-import com.duan.musicoco.shared.MySheetsOperation;
+import com.duan.musicoco.shared.SheetsOperation;
 import com.duan.musicoco.util.ColorUtils;
 
 import java.util.ArrayList;
@@ -54,7 +54,7 @@ public class MySheetsController implements
     private MySheetsAdapter adapter;
     private final List<Sheet> sheets;
     private IPlayControl control;
-    private MySheetsOperation mySheetsOperation;
+    private SheetsOperation sheetsOperation;
 
     private boolean hasInitData = false;
 
@@ -80,9 +80,9 @@ public class MySheetsController implements
     public void initData(IPlayControl control) {
         this.control = control;
 
-        mySheetsOperation = new MySheetsOperation(activity, control, dbMusicoco);
+        sheetsOperation = new SheetsOperation(activity, control, dbMusicoco);
 
-        adapter = new MySheetsAdapter(activity, sheets, dbMusicoco, mediaManager, control, mySheetsOperation);
+        adapter = new MySheetsAdapter(activity, sheets, dbMusicoco, mediaManager, control, sheetsOperation);
         mListView.setAdapter(adapter);
         ((NestedScrollView) activity.findViewById(R.id.main_scroll)).smoothScrollTo(0, 0);
 
@@ -95,7 +95,7 @@ public class MySheetsController implements
         switch (v.getId()) {
             case R.id.my_sheet_add:
             case R.id.sheet_empty_add:
-                mySheetsOperation.handleAddSheet();
+                sheetsOperation.handleAddSheet();
                 break;
         }
     }

@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
@@ -125,12 +126,12 @@ public class SheetSongListController implements
         }
     }
 
-    public void initData(int sheetID, DBMusicocoController dbController, MediaManager mediaManager) {
+    public void initData(int sheetID, IPlayControl control, DBMusicocoController dbController, MediaManager mediaManager) {
         this.sheetID = sheetID;
         this.dbController = dbController;
         this.mediaManager = mediaManager;
 
-        control = MainActivity.getControl();
+        this.control = control;
 
         initSongList();
         initOptionsDialog();
@@ -181,6 +182,17 @@ public class SheetSongListController implements
         songAdapter = new SongAdapter(activity, data);
         songList.setLayoutManager(new LinearLayoutManager(activity));
         songList.setAdapter(songAdapter);
+        songList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    Glide.with(activity).resumeRequests();
+                } else {
+                    Glide.with(activity).pauseRequests();
+                }
+
+            }
+        });
         songAdapter.setOnMoreClickListener(new SongAdapter.OnMoreClickListener() {
             @Override
             public void onMore(SongAdapter.ViewHolder view, SongAdapter.DataHolder data) {

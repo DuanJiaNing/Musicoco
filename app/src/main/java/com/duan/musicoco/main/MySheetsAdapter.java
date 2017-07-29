@@ -24,7 +24,7 @@ import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
-import com.duan.musicoco.shared.MySheetsOperation;
+import com.duan.musicoco.shared.SheetsOperation;
 import com.duan.musicoco.shared.OptionsAdapter;
 import com.duan.musicoco.shared.OptionsDialog;
 import com.duan.musicoco.util.BitmapUtils;
@@ -52,7 +52,7 @@ public class MySheetsAdapter extends BaseAdapter implements
     private final List<Sheet> sheets;
     private final DBMusicocoController dbMusicoco;
     private final MediaManager mediaManager;
-    private final MySheetsOperation mySheetsOperation;
+    private final SheetsOperation sheetsOperation;
     private final IPlayControl control;
 
     private int mainTC;
@@ -73,13 +73,13 @@ public class MySheetsAdapter extends BaseAdapter implements
 
     public MySheetsAdapter(Activity activity, List<Sheet> sheets,
                            DBMusicocoController dbMusicoco, MediaManager mediaManager,
-                           IPlayControl control, MySheetsOperation mySheetsOperation) {
+                           IPlayControl control, SheetsOperation sheetsOperation) {
         this.activity = activity;
         this.sheets = sheets;
         this.control = control;
         this.dbMusicoco = dbMusicoco;
         this.mediaManager = mediaManager;
-        this.mySheetsOperation = mySheetsOperation;
+        this.sheetsOperation = sheetsOperation;
         this.mDialog = new OptionsDialog(activity);
 
         moreOptionsAdapter = new OptionsAdapter(activity);
@@ -111,7 +111,7 @@ public class MySheetsAdapter extends BaseAdapter implements
         modify.clickListener = new OptionsAdapter.OptionClickListener() {
             @Override
             public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
-                mySheetsOperation.handleModifySheet(currentClickMoreOperationItem);
+                sheetsOperation.handleModifySheet(currentClickMoreOperationItem);
                 mDialog.hide();
             }
         };
@@ -124,7 +124,7 @@ public class MySheetsAdapter extends BaseAdapter implements
         delete.clickListener = new OptionsAdapter.OptionClickListener() {
             @Override
             public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
-                mySheetsOperation.deleteSheet(currentClickMoreOperationItem);
+                sheetsOperation.deleteSheet(currentClickMoreOperationItem);
                 mDialog.hide();
             }
         };

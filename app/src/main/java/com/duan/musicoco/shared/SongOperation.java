@@ -105,7 +105,7 @@ public class SongOperation {
         newSheet.clickListener = new OptionsAdapter.OptionClickListener() {
             @Override
             public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
-                new MySheetsOperation(activity, control, dbMusicoco).handleAddSheet();
+                new SheetsOperation(activity, control, dbMusicoco).handleAddSheet();
                 dialog.hide();
             }
         };
@@ -123,22 +123,16 @@ public class SongOperation {
         DialogProvider manager = new DialogProvider(activity);
         final Dialog dialog = manager.createPromptDialog(
                 activity.getString(R.string.warning),
-                activity.getString(R.string.delete_confirm)
+                activity.getString(R.string.delete_confirm),
+                new DialogProvider.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        deleteSongFromDiskAndLibraryForever(song);
+                    }
+                },
+                null,
+                true
         );
-        manager.setOnPositiveButtonListener(activity.getString(R.string.ensure), new DialogProvider.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                deleteSongFromDiskAndLibraryForever(song);
-                dialog.dismiss();
-            }
-        });
-
-        manager.setOnNegativeButtonListener(activity.getString(R.string.cancel), new DialogProvider.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
         dialog.show();
     }
 

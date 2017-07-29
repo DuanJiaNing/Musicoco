@@ -785,62 +785,81 @@ public class BottomNavigationController implements
         private void updateCurrentFavorite(boolean favorite, boolean useAnim) {
             Log.d("update", "play/BottomNavigationController SongOption#updateCurrentFavorite");
 
-            int color = 0;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                color = activity.getColor(R.color.favorite);
-            } else {
-                color = activity.getResources().getColor(R.color.favorite);
-            }
+            Drawable select;
+            Drawable notSelect;
 
-            int from = getCurrentDrawableColor();
-            int to = color;
-            if (!favorite) {
-                int temp = from;
-                from = to;
-                to = temp;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                select = activity.getDrawable(R.drawable.ic_favorite);
+                notSelect = activity.getDrawable(R.drawable.ic_favorite_border);
+            } else {
+                select = activity.getResources().getDrawable(R.drawable.ic_favorite);
+                notSelect = activity.getResources().getDrawable(R.drawable.ic_favorite_border);
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                if (notSelect != null) {
+                    notSelect.setTint(currentDrawableColor);
+                }
+
+                if (select != null) {
+                    int color = activity.getResources().getColor(R.color.favorite);
+                    select.setTint(color);
+                }
             }
 
             if (useAnim) {
-                startFavoriteSwitchAnim(from, to);
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    playFavorite.getDrawable().setTint(to);
+                if (favorite) {
+                    startFavoriteSwitchAnim(select);
+                } else {
+                    startFavoriteSwitchAnim(notSelect);
                 }
+            } else {
+                playFavorite.setImageDrawable(favorite ? select : notSelect);
             }
         }
 
-        private void startFavoriteSwitchAnim(int colorFrom, int colorTo) {
+        private void startFavoriteSwitchAnim(final Drawable to) {
             float sFrom = 1.2f;
-            float sCenter = 1.5f;
-            float sTo = 1.2f;
-            ValueAnimator scaleAnimX = ObjectAnimator.ofFloat(playFavorite, "scaleX", sFrom, sCenter, sTo);
-            ValueAnimator scaleAnimY = ObjectAnimator.ofFloat(playFavorite, "scaleY", sFrom, sCenter, sTo);
+            float sTo = 2.0f;
+            ValueAnimator scaleAnimXExp = ObjectAnimator.ofFloat(playFavorite, "scaleX", sFrom, sTo);
+            ValueAnimator scaleAnimYExp = ObjectAnimator.ofFloat(playFavorite, "scaleY", sFrom, sTo);
+            ValueAnimator alphaExp = ObjectAnimator.ofFloat(playFavorite, "alpha", 1.0f, 0.0f);
 
-            ValueAnimator colorAnim = null;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                colorAnim = ObjectAnimator.ofArgb(colorFrom, colorTo);
-                colorAnim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        int value = (int) animation.getAnimatedValue();
-                        playFavorite.getDrawable().setTint(value);
-                    }
-                });
-            }
+            ValueAnimator scaleAnimXColl = ObjectAnimator.ofFloat(playFavorite, "scaleX", sTo, sFrom);
+            ValueAnimator scaleAnimYColl = ObjectAnimator.ofFloat(playFavorite, "scaleY", sTo, sFrom);
+            ValueAnimator alphaColl = ObjectAnimator.ofFloat(playFavorite, "alpha", 0.0f, 1.0f);
 
+            AnimatorSet animFrom = new AnimatorSet();
+            AnimatorSet animTo = new AnimatorSet();
             AnimatorSet set = new AnimatorSet();
-            set.setDuration(500);
-            if (colorAnim != null) {
-                set.play(scaleAnimX).with(scaleAnimY).with(colorAnim);
-                set.start();
-            } else {
-                set.play(scaleAnimX).with(scaleAnimY);
-                set.start();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    playFavorite.getDrawable().setTint(colorTo);
+
+            animFrom.play(scaleAnimXExp).with(scaleAnimYExp).with(alphaExp);
+            animTo.play(scaleAnimXColl).with(scaleAnimYColl).with(alphaColl);
+
+            set.play(animTo).after(animFrom);
+            set.setDuration(300);
+
+            animFrom.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
                 }
-            }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    playFavorite.setImageDrawable(to);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    playFavorite.setImageDrawable(to);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+            set.start();
         }
 
         public void initData() {

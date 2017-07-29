@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -32,7 +31,7 @@ import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.play.PlayServiceConnection;
 import com.duan.musicoco.preference.Theme;
-import com.duan.musicoco.shared.MySheetsOperation;
+import com.duan.musicoco.shared.SheetsOperation;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.SongUtils;
 
@@ -48,7 +47,7 @@ public class MainActivity extends RootActivity implements
     private ActionBarDrawerToggle toggle;
     private Menu menu;
 
-    private static PlayServiceConnection sSERVICECONNECTION;
+    private static PlayServiceConnection sServiceConnection;
     private SwipeRefreshLayout refreshLayout;
 
     private BottomNavigationController bottomNavigationController;
@@ -123,9 +122,9 @@ public class MainActivity extends RootActivity implements
     }
 
     private void unbindService() {
-        if (sSERVICECONNECTION != null && sSERVICECONNECTION.hasConnected) {
-            sSERVICECONNECTION.unregisterListener();
-            unbindService(sSERVICECONNECTION);
+        if (sServiceConnection != null && sServiceConnection.hasConnected) {
+            sServiceConnection.unregisterListener();
+            unbindService(sServiceConnection);
         }
     }
 
@@ -209,8 +208,8 @@ public class MainActivity extends RootActivity implements
     public void permissionGranted(int requestCode) {
         super.permissionGranted(requestCode);
 
-        sSERVICECONNECTION = new PlayServiceConnection(bottomNavigationController, this, this);
-        playServiceManager.bindService(sSERVICECONNECTION);
+        sServiceConnection = new PlayServiceConnection(bottomNavigationController, this, this);
+        playServiceManager.bindService(sServiceConnection);
 
     }
 
@@ -253,13 +252,13 @@ public class MainActivity extends RootActivity implements
     private void isNeedDeletePlayList(Intent intent) {
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            int sheetID = extras.getInt(MySheetsOperation.DELETE_SHEET_ID, Integer.MAX_VALUE);
+            int sheetID = extras.getInt(SheetsOperation.DELETE_SHEET_ID, Integer.MAX_VALUE);
             if (sheetID == Integer.MAX_VALUE) {
                 return;
             }
 
             try {
-                IPlayControl control = sSERVICECONNECTION.takeControl();
+                IPlayControl control = sServiceConnection.takeControl();
                 int cursid = control.getPlayListId();
                 if (sheetID == cursid) {
 
@@ -279,10 +278,10 @@ public class MainActivity extends RootActivity implements
 
     private void initSelfData() {
 
-        bottomNavigationController.initData(sSERVICECONNECTION.takeControl(), dbMusicoco);
+        bottomNavigationController.initData(sServiceConnection.takeControl(), dbMusicoco);
         mostPlayController.initData(dbMusicoco, getString(R.string.rmp_history));
         mainSheetsController.initData(dbMusicoco);
-        mySheetsController.initData(sSERVICECONNECTION.takeControl());
+        mySheetsController.initData(sServiceConnection.takeControl());
 
         update();
         themeChange(null, null);
@@ -291,9 +290,9 @@ public class MainActivity extends RootActivity implements
 
     @Override
     public void disConnected(ComponentName name) {
-        sSERVICECONNECTION = null;
-        sSERVICECONNECTION = new PlayServiceConnection(bottomNavigationController, this, this);
-        playServiceManager.bindService(sSERVICECONNECTION);
+        sServiceConnection = null;
+        sServiceConnection = new PlayServiceConnection(bottomNavigationController, this, this);
+        playServiceManager.bindService(sServiceConnection);
     }
 
     @Override
@@ -340,6 +339,6 @@ public class MainActivity extends RootActivity implements
     }
 
     public static IPlayControl getControl() {
-        return sSERVICECONNECTION.takeControl();
+        return sServiceConnection.takeControl();
     }
 }

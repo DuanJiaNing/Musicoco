@@ -125,23 +125,22 @@ public final class PermissionManager {
             DialogProvider provider = new DialogProvider(activity);
             final Dialog dialog = provider.createPromptDialog(
                     perMap.name,
-                    perMap.des
+                    perMap.des,
+                    new DialogProvider.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ActivityCompat.requestPermissions(activity, perMap.permissions, perMap.category);
+                        }
+                    },
+                    new DialogProvider.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            refuse.onRefuse();
+                        }
+                    },
+                    true
             );
-            provider.setOnPositiveButtonListener(activity.getString(R.string.continue_), new DialogProvider.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dialog.dismiss();
-                    ActivityCompat.requestPermissions(activity, perMap.permissions, perMap.category);
-                }
-            });
-            provider.setOnNegativeButtonListener(activity.getString(R.string.cancel), new DialogProvider.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    dialog.dismiss();
-                    refuse.onRefuse();
-                }
-            });
-            dialog.setCancelable(false);
+
             dialog.show();
         }
     }

@@ -10,7 +10,7 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/sheet_detail_action_collection"
-        android:icon="@drawable/ic_action_heart"
+        android:icon="@drawable/ic_favorite_border"
         android:orderInCategory="100"
         android:title="@string/sheet_collection_all"
         app:showAsAction="ifRoom" />

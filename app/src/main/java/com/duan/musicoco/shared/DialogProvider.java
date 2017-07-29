@@ -27,6 +27,9 @@ import com.victor.loading.rotate.RotateLoading;
  * （3）.自定义视图替换内层（保留最外层框架、标题显示处、提示信息显示处，三个按钮）
  * 注意：只有在调用了show..显示对话框之后才可以getDialog()获得实例。在自定义并保留三个固有按钮时可在外部调用对
  * 应按钮的setOn...ButtonListener(String title, final OnClickListener OnClickListener)并实现接口实现点击事件监听。
+ *
+ *
+ * 一个 DialogProvider 只应该被用来产生一种类型的对话框，不应试图用同一对象同时产生不同类型的对话框
  */
 public class DialogProvider {
 
@@ -89,16 +92,6 @@ public class DialogProvider {
      */
     private Context context;
 
-    /**
-     * Alerdialog构造者
-     */
-    private AlertDialog.Builder builder;
-
-    /**
-     * 对话框
-     */
-    private AlertDialog dialog;
-
     private final int buttonTextSize;
     private final int buttonPadding;
 
@@ -129,18 +122,16 @@ public class DialogProvider {
         mCustomContainer.setLayoutParams(p);
 
         mNeuterButton = (TextView) rootView.findViewById(R.id.dialog_Neuter);
-        mNeuterButton.setEnabled(false);
+        mNeuterButton.setVisibility(View.GONE);
 
         mPositiveButton = (TextView) rootView.findViewById(R.id.dialog_positive);
-        mPositiveButton.setEnabled(false);
+        mPositiveButton.setVisibility(View.GONE);
 
         mNegativeButton = (TextView) rootView.findViewById(R.id.dialog_Negative);
-        mNegativeButton.setEnabled(false);
+        mNegativeButton.setVisibility(View.GONE);
 
         mTopLine = rootView.findViewById(R.id.dialog_line1);
         mMiddleLine = rootView.findViewById(R.id.dialog_line2);
-
-        builder = new AlertDialog.Builder(context);
 
         theme = ((App) context.getApplicationContext()).getAppPreference().getTheme();
         updateTheme();
@@ -210,6 +201,7 @@ public class DialogProvider {
         p.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         mCustomContainer.setLayoutParams(p);
 
+        mNeuterButton.setVisibility(View.VISIBLE);
         mNeuterButton.setEnabled(true);
         mNeuterButton.setTextSize(buttonTextSize);
         mNeuterButton.setPadding(buttonPadding + 1, buttonPadding, buttonPadding + 1, buttonPadding);
@@ -233,6 +225,7 @@ public class DialogProvider {
         p.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         mCustomContainer.setLayoutParams(p);
 
+        mNegativeButton.setVisibility(View.VISIBLE);
         mNegativeButton.setEnabled(true);
         mNegativeButton.setTextSize(buttonTextSize);
         mNegativeButton.setPadding(buttonPadding + 1, buttonPadding, buttonPadding + 1, buttonPadding);
@@ -256,6 +249,7 @@ public class DialogProvider {
         p.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         mCustomContainer.setLayoutParams(p);
 
+        mPositiveButton.setVisibility(View.VISIBLE);
         mPositiveButton.setEnabled(true);
         mPositiveButton.setTextSize(buttonTextSize);
         mPositiveButton.setPadding(buttonPadding + 1, buttonPadding, buttonPadding + 1, buttonPadding);
@@ -292,16 +286,44 @@ public class DialogProvider {
 
     }
 
-    public AlertDialog createPromptDialog(String title, String info) {
+    public Dialog createPromptDialog(String title, String info,
+                                     @Nullable final DialogProvider.OnClickListener ensure,
+                                     @Nullable final DialogProvider.OnClickListener cancel,
+                                     boolean cancelable) {
+
+        final Dialog dialog = getDialog();
+        setOnPositiveButtonListener(context.getString(R.string.continue_), new DialogProvider.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+                if (ensure != null) {
+                    ensure.onClick(mPositiveButton);
+                }
+            }
+        });
+
+        if (cancelable) { // 能取消
+            setOnNegativeButtonListener(context.getString(R.string.cancel), new DialogProvider.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.dismiss();
+                    if (cancel != null) {
+                        cancel.onClick(mNegativeButton);
+                    }
+                }
+            });
+        }
+
+        dialog.setCancelable(cancelable);
         mTitle.setText(title);
         mMessage.setText(info);
-        return getDialog();
+
+        return dialog;
     }
 
     private AlertDialog getDialog() {
-
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(rootView);
-        dialog = builder.create();
 
         return builder.create();
     }

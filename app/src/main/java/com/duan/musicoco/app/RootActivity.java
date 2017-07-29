@@ -61,7 +61,7 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
 
     private void checkTheme() {
         //FIXME test
-        appPreference.modifyTheme(Theme.WHITE);
+        appPreference.modifyTheme(Theme.DARK);
 
         Theme theme = appPreference.getTheme();
         if (theme == Theme.DARK) {

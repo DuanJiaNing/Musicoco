@@ -123,7 +123,7 @@
         android:background="?android:selectableItemBackground"
         android:clickable="true"
 
-        android:padding="10dp"
+        android:padding="12dp"
         android:src="@drawable/ic_more_vert_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"

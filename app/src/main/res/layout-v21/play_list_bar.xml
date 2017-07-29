@@ -69,10 +69,7 @@
                 android:background="@android:color/transparent"
                 android:gravity="center"
                 android:padding="@dimen/activity_default_padding_2x"
-                android:scaleX="1.2"
-                android:scaleY="1.2"
-                android:src="@drawable/ic_favorite"
-                android:tint="@color/dark" />
+                android:src="@drawable/ic_favorite_border" />
 
             <ImageButton
                 android:id="@+id/play_list_hide"

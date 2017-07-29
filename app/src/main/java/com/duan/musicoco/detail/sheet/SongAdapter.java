@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
@@ -21,6 +22,8 @@ import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.StringUtils;
 
 import java.util.List;
+
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 /**
  * Created by DuanJiaNing on 2017/7/25.
@@ -79,10 +82,11 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
                 }
             });
         }
-
         Glide.with(context)
                 .load(info.getAlbum_path())
+                .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .placeholder(R.drawable.default_song)
+                .bitmapTransform(new RoundedCornersTransformation(context, 15, 0))
                 .crossFade()
                 .into(holder.image);
 
@@ -92,8 +96,8 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
         holder.name.setText(name);
         String arts = info.getArtist();
         holder.arts.setText(arts);
-        String durtion = StringUtils.getGenTimeMS((int) info.getDuration());
-        holder.duration.setText(durtion);
+        String duration = StringUtils.getGenTimeMS((int) info.getDuration());
+        holder.duration.setText(duration);
 
         bindStatAndColors(holder, position, dataHolder.isFavorite);
     }
