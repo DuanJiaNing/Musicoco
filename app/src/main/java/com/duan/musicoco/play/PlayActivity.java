@@ -372,6 +372,7 @@ public class PlayActivity extends RootActivity implements
         //FIXME test
         playPreference.updateTheme(Theme.VARYING);
 
+
         //初始控件
         flRootView = (FrameLayout) findViewById(R.id.play_root);
         tvPlayProgress = (TextView) findViewById(R.id.play_progress);
