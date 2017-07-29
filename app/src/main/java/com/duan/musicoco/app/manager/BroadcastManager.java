@@ -15,6 +15,7 @@ public class BroadcastManager {
     public static final String FILTER_MY_SHEET_CHANGED = "filter_my_sheet_changed";
     public static final String FILTER_MAIN_SHEET_CHANGED = "filter_main_sheet_changed";
     public static final String FILTER_PLAY_SHEET_RANDOM = "filter_play_sheet_random";
+    public static final String FILTER_SHEET_DETAIL_SONGS_CHANGE = "filter_sheet_detail_songs_change";
 
     private Context context;
 

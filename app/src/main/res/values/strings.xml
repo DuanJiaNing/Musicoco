@@ -70,6 +70,7 @@
     <string name="success_delete_file">成功删除文件 :)</string>
     <string name="success_delete_sheet">成功删除歌单 :)</string>
     <string name="success_remove_song_from_sheet">成功移除歌曲 :)</string>
+    <string name="success_add_all_song_to_favorite">已成功收藏全部 :)</string>
 
     <string name="warning">警告</string>
     <string name="unknown">出错了 :O</string>

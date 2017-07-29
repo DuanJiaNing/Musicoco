@@ -3,6 +3,7 @@ package com.duan.musicoco.detail.sheet;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.RemoteException;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,9 +16,12 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.duan.musicoco.R;
+import com.duan.musicoco.aidl.IPlayControl;
+import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.preference.Theme;
+import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.StringUtils;
 
@@ -31,7 +35,7 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> implements OnThemeChange {
 
-
+    private final int sheetID;
     private boolean isCurrentSheetPlaying = false;
     private int currentIndex;
     private Context context;
@@ -43,15 +47,25 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
     private final int choiceC;
 
     private OnMoreClickListener moreClickListener;
+    private OnItemClickListener itemClickListener;
 
-    public SongAdapter(Context context, List<DataHolder> data) {
+    public SongAdapter(Context context, List<DataHolder> data, int id) {
         this.context = context;
         this.data = data;
         this.choiceC = context.getResources().getColor(R.color.item_select_color);
+        this.sheetID = id;
     }
 
     public interface OnMoreClickListener {
-        void onMore(ViewHolder view, DataHolder data);
+        void onMore(ViewHolder view, DataHolder data, int position);
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(ViewHolder view, DataHolder data, int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.itemClickListener = listener;
     }
 
     public void setOnMoreClickListener(OnMoreClickListener moreClickListener) {
@@ -69,16 +83,26 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         final DataHolder dataHolder = getItem(position);
         SongInfo info = dataHolder.info;
+
+        if (itemClickListener != null) {
+            holder.itemView.setTag(position);
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    itemClickListener.onItemClick(holder, dataHolder, position);
+                }
+            });
+        }
 
         if (moreClickListener != null) {
             holder.more.setTag(info);
             holder.more.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    moreClickListener.onMore(holder, dataHolder);
+                    moreClickListener.onMore(holder, dataHolder, position);
                 }
             });
         }
@@ -133,6 +157,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
 
     }
 
+    // FIXME 位置错乱
     private void setNumberAsImage(boolean b, TextView number, int vtc) {
 
         if (b) {

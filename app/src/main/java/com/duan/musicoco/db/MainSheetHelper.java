@@ -66,7 +66,7 @@ public class MainSheetHelper {
     public List<DBSongInfo> getRecentSongInfo() {
         refreshData();
         List<DBSongInfo> recent = DBSongInfo.descSortByLastPlayTime(all);
-        return recent.subList(0, recentCount >= all.size() ? all.size() - 1 : recentCount);
+        return recent.subList(0, recentCount >= all.size() ? all.size() : recentCount);
     }
 
     public List<DBSongInfo> getFavoriteSongInfo() {

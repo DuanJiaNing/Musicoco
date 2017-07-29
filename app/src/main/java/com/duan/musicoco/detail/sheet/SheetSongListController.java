@@ -25,7 +25,6 @@ import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.bean.DBSongInfo;
-import com.duan.musicoco.main.MainActivity;
 import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.shared.OptionsAdapter;
@@ -54,6 +53,7 @@ public class SheetSongListController implements
         View.OnClickListener,
         OnThemeChange {
 
+    private static final String TAG = "SheetSongListController";
     private ImageView random;
     private TextView playAllRandom;
     private View line;
@@ -179,7 +179,7 @@ public class SheetSongListController implements
 
     private void initSongList() {
 
-        songAdapter = new SongAdapter(activity, data);
+        songAdapter = new SongAdapter(activity, data, sheetID);
         songList.setLayoutManager(new LinearLayoutManager(activity));
         songList.setAdapter(songAdapter);
         songList.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -193,9 +193,37 @@ public class SheetSongListController implements
 
             }
         });
+        songAdapter.setOnItemClickListener(new SongAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(SongAdapter.ViewHolder view, SongAdapter.DataHolder data, int position) {
+                try {
+                    int id = control.getPlayListId();
+                    int index = control.currentSongIndex();
+
+                    if (id == sheetID) { // 当前歌单
+                        if (position == index) {
+                            Log.d(TAG, "onClick: the song is playing");
+                            if (control.status() != PlayController.STATUS_PLAYING) {
+                                control.resume();
+                            }
+                        } else {
+                            control.playByIndex(position);
+                            update();
+                        }
+                    } else {
+                        control.setPlaySheet(sheetID, position);
+                        control.resume();
+                        update();
+                    }
+
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         songAdapter.setOnMoreClickListener(new SongAdapter.OnMoreClickListener() {
             @Override
-            public void onMore(SongAdapter.ViewHolder view, SongAdapter.DataHolder data) {
+            public void onMore(SongAdapter.ViewHolder view, SongAdapter.DataHolder data, int position) {
                 currentSongData = data;
                 if (optionsDialog.isShowing()) {
                     optionsDialog.hide();

@@ -1,6 +1,7 @@
 package com.duan.musicoco.main;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.widget.NestedScrollView;
@@ -14,6 +15,8 @@ import android.widget.TextView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
+import com.duan.musicoco.app.App;
+import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
@@ -102,6 +105,9 @@ public class MySheetsController implements
 
     @Override
     public void themeChange(Theme theme, int[] colors) {
+        if (theme == null) {
+            theme = ((App) activity.getApplicationContext()).getAppPreference().getTheme();
+        }
         int[] cs;
         switch (theme) {
             case DARK:
@@ -125,7 +131,7 @@ public class MySheetsController implements
         int toolbarVicTC = cs[9];
 
         if (isEmptyViewVisible()) {
-            emptyViewThemeChange(new int[]{mainTC, vicTC});
+            emptyViewThemeChange(new int[]{accentC});
         } else {
             adapter.themeChange(theme, cs);
         }
@@ -140,18 +146,35 @@ public class MySheetsController implements
 
     private void emptyViewThemeChange(int[] colors) {
 
-        int mainTC = colors[0];
-        int vicTC = colors[1];
+        int accentC;
+        if (colors == null) {
+            Theme theme = ((App) activity.getApplicationContext()).getAppPreference().getTheme();
+            int[] cs;
+            switch (theme) {
+                case DARK:
+                    cs = ColorUtils.get10DarkThemeColors(activity);
+                    break;
+                case WHITE:
+                default:
+                    cs = ColorUtils.get10WhiteThemeColors(activity);
+                    break;
+            }
+
+            accentC = cs[2];
+
+        } else {
+            accentC = colors[0];
+        }
 
         View v = mContainer.getChildAt(EMPTY_VIEW_INDEX);
         TextView text = (TextView) v.findViewById(R.id.sheet_empty_add);
 
-        text.setTextColor(mainTC);
+        text.setTextColor(accentC);
         Drawable[] drawables = text.getCompoundDrawables();
         for (Drawable d : drawables) {
             if (d != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    d.setTint(vicTC);
+                    d.setTint(accentC);
                 }
             }
         }
@@ -185,14 +208,19 @@ public class MySheetsController implements
         if (sheets.size() == 0) {
             adapter.notifyDataSetChanged();
             emptyMediaLibrary();
+            //需要检查主题
+            emptyViewThemeChange(null);
             mTitle.setText(title + "(0)");
         } else {
             if (isEmptyViewVisible()) {
                 mContainer.removeViewAt(EMPTY_VIEW_INDEX);
+                //需要检查主题
+                themeChange(null, null);
             }
             mTitle.setText(title + "(" + sheets.size() + ")");
             adapter.notifyDataSetChanged();
         }
+
     }
 
     private boolean isEmptyViewVisible() {

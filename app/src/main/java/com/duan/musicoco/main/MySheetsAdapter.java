@@ -181,8 +181,8 @@ public class MySheetsAdapter extends BaseAdapter implements
         }
 
         holder.play.setTag(sheet);
-        holder.play.setTriangleColor(vicTC);
-        holder.play.setPauseLineColor(vicTC);
+        holder.play.setTriangleColor(mainBC);
+        holder.play.setPauseLineColor(accentC);
         holder.play.setOnCheckedChangeListener(this);
 
         try {

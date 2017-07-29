@@ -1,5 +1,7 @@
 package com.duan.musicoco.detail.sheet;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
@@ -11,6 +13,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +22,7 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.manager.ActivityManager;
+import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
@@ -34,6 +38,8 @@ import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.AppBarStateChangeListener;
 
 public class SheetDetailActivity extends AppCompatActivity implements OnThemeChange {
+
+    private static final String TAG = "SheetDetailActivity";
 
     private SheetInfoController infoController;
     private SheetSongListController songListController;
@@ -53,6 +59,8 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
     private AppPreference appPreference;
     private SheetsOperation sheetsOperation;
     private IPlayControl control;
+    private BroadcastReceiver songsChangeReceiver;
+    private BroadcastManager broadcastManager;
 
     private Sheet sheet;
     private int sheetID;
@@ -73,13 +81,30 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
         mediaManager = MediaManager.getInstance(this);
         control = MainActivity.getControl();
         sheetsOperation = new SheetsOperation(this, control, dbController);
+        broadcastManager = BroadcastManager.getInstance(this);
 
         getSheet();
-
         initViews();
-
         initData();
+        initBroadcast();
 
+    }
+
+    private void initBroadcast() {
+        songsChangeReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                Log.d(TAG, "onReceive: songsChangeReceiver");
+                songListController.update();
+            }
+        };
+        broadcastManager.registerBroadReceiver(songsChangeReceiver, BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        broadcastManager.unregisterReceiver(songsChangeReceiver);
     }
 
     private void checkTheme() {
@@ -146,9 +171,7 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
                 ToastUtils.showShortToast("sheet_detail_search");
                 break;
             case R.id.sheet_detail_action_collection:
-                //FIXME
-                sheetsOperation.addAllSongToFavorite(sheetID);
-                songListController.update();
+                sheetsOperation.handleAddAllSongToFavorite(sheetID);
                 break;
             case R.id.sheet_detail_action_modify:
                 sheetsOperation.handleModifySheet(sheet);

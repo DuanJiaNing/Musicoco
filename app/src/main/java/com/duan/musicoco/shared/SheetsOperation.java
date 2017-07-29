@@ -23,6 +23,7 @@ import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.view.TextInputHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -329,48 +330,92 @@ public class SheetsOperation {
         broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, extras);
     }
 
-    public void addAllSongToFavorite(int sheetID) {
-        if (sheetID < 0 && sheetID != MainSheetHelper.SHEET_FAVORITE) {
-            MainSheetHelper helper = new MainSheetHelper(activity, dbMusicoco);
-            List<DBSongInfo> info = helper.getMainSheetSongInfo(sheetID);
-
-            List<Song> songs = SongUtils.DBSongInfoListToSongList(info);
-            handleAddAllSongToFavorite(songs);
-        } else {
-            List<DBSongInfo> infos = dbMusicoco.getSongInfos(sheetID);
-
-            List<Song> songs = SongUtils.DBSongInfoListToSongList(infos);
-            handleAddAllSongToFavorite(songs);
-        }
-    }
-
-    public void handleAddAllSongToFavorite(final List<Song> songs) {
-        final Dialog progressDialog = new DialogProvider(activity).createProgressDialog(activity.getString(R.string.add_songs_to_favorite));
-        progressDialog.setCancelable(false);
-
+    public void handleAddAllSongToFavorite(final int sheetID) {
         final Dialog promptDialog = new DialogProvider(activity).createPromptDialog(activity.getString(R.string.tip),
                 activity.getString(R.string.add_all_songs_to_favorite),
                 new DialogProvider.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        progressDialog.show();
-                        //FIXME test
-//                        addAllSongToFavorite(songs);
-//                        progressDialog.dismiss();
-                    }
-
-                    private void addAllSongToFavorite(List<Song> songs) {
-                        for (Song song : songs) {
-                            DBSongInfo info = dbMusicoco.getSongInfo(song);
-                            if (info != null && !info.favorite) {
-                                dbMusicoco.updateSongFavorite(song, true);
-                            }
-                        }
+                        addAllSongToFavorite(sheetID);
                     }
                 },
                 null,
                 true);
-
         promptDialog.show();
+
+    }
+
+    public void addAllSongToFavorite(final int sheetID) {
+
+        Observable.OnSubscribe<Boolean> onSubscribe = new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                subscriber.onStart();
+
+                List<Song> songs = new ArrayList<>();
+                if (sheetID < 0 && sheetID != MainSheetHelper.SHEET_FAVORITE) {
+                    MainSheetHelper helper = new MainSheetHelper(activity, dbMusicoco);
+                    List<DBSongInfo> info = helper.getMainSheetSongInfo(sheetID);
+                    songs = SongUtils.DBSongInfoListToSongList(info);
+                } else {
+                    List<DBSongInfo> infos = dbMusicoco.getSongInfos(sheetID);
+                    songs = SongUtils.DBSongInfoListToSongList(infos);
+                }
+
+                for (Song song : songs) {
+                    DBSongInfo info = dbMusicoco.getSongInfo(song);
+                    if (info != null && !info.favorite) {
+                        dbMusicoco.updateSongFavorite(song, true);
+                    }
+                }
+
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                subscriber.onCompleted();
+            }
+        };
+
+        final Dialog progressDialog = new DialogProvider(activity).createProgressDialog(activity.getString(R.string.add_songs_to_favorite));
+        progressDialog.setCancelable(false);
+
+        Observable.create(onSubscribe)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+
+                    @Override
+                    public void onStart() {
+                        progressDialog.show();
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        progressDialog.dismiss();
+
+                        String msg = activity.getString(R.string.success_add_all_song_to_favorite);
+                        ToastUtils.showShortToast(msg);
+                        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+                        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MAIN_SHEET_CHANGED, null);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        progressDialog.dismiss();
+
+                        String msg = activity.getString(R.string.unknown);
+                        ToastUtils.showShortToast(msg);
+                        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+                        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MAIN_SHEET_CHANGED, null);
+                    }
+
+                    @Override
+                    public void onNext(Boolean s) {
+                    }
+                });
     }
 }

@@ -54,7 +54,7 @@
 
     <color name="red">#e42d2d</color>
 
-    <color name="my_sheet_play_bg">#2b000000</color>
+    <color name="my_sheet_play_bg">#7b000000</color>
     <color name="play_list_item_dark_bg">#05393939</color>
 
     <color name="favorite">@color/red</color>

@@ -181,8 +181,9 @@ public class DBMusicocoController {
 
     @Nullable
     public DBSongInfo getSongInfo(@NonNull Song song) {
-        String sql = "select * from " + TABLE_SONG + " where " + SONG_PATH + " like '" + song.path + "'";
-        Cursor cursor = database.rawQuery(sql, null);
+        String sql = "select * from " + TABLE_SONG + " where " + SONG_PATH + " like ? ";
+        // 歌曲名中有 ' 符号的会导致 SQL 语句解析出错，所以用 rawQuery 第二个参数解决
+        Cursor cursor = database.rawQuery(sql, new String[]{song.path});
 
         DBSongInfo info = null;
         while (cursor.moveToNext()) {

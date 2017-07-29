@@ -473,7 +473,7 @@ public class BottomNavigationController implements
         mPlay.setSolidColor(mainTC);
         mPlay.setTriangleColor(mainTC);
         mProgress.setBackgroundColor(mainTC);
-        mList.setBackgroundColor(mainBC);
+        mList.setBackgroundColor(navC);
         mLine.setBackgroundColor(vicTC);
         mSheet.setTextColor(mainTC);
 
@@ -481,7 +481,7 @@ public class BottomNavigationController implements
         cd.setAlpha(200);
         mProgressBG.setBackground(cd);
 
-        mListContainer.setBackgroundColor(navC);
+        mListContainer.setBackgroundColor(mainBC);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mShowList.getDrawable().setTint(mainTC);

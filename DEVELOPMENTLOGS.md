@@ -236,8 +236,9 @@
 - 2017-07-28
 
 1 MainActivity 和 SheetDetailActivity 的 toolbar 可以随主题变更颜色<br>
-2 主页底部播放进度添加背景
+2 主页底部播放进度添加背景<br>
 
 - 2017-07-29
 
-1 歌单详情页可以收藏所有歌曲到【我的收藏】
+1 歌单详情页可以收藏所有歌曲到【我的收藏】<br>
+2 歌单详情页歌曲点击可以播放，收藏所有歌单到【我的收藏】时通知 MainActivity 更新 MainSheetController 更新<br>

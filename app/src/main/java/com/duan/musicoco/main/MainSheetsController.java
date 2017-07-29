@@ -154,13 +154,13 @@ public class MainSheetsController implements
                         } else {
                             switch (integer) {
                                 case Data.ALL:
-                                    data = getBitmapForAll(all);
+                                    data = getDataForAll(all);
                                     break;
                                 case Data.RECENT:
-                                    data = getBitmapForRecent(all);
+                                    data = getDataForRecent(all);
                                     break;
                                 case Data.FAVORITE:
-                                    data = getBitmapForFavorite();
+                                    data = getDataForFavorite();
                                     break;
                                 default: {
                                     data.count = 0;
@@ -207,7 +207,7 @@ public class MainSheetsController implements
                 });
     }
 
-    private Data getBitmapForFavorite() {
+    private Data getDataForFavorite() {
         Data data = new Data();
         List<DBSongInfo> favorite = mainSheetHelper.getFavoriteSongInfo();
         List<DBSongInfo> list = DBSongInfo.descSortByLastPlayTime(favorite);
@@ -216,16 +216,17 @@ public class MainSheetsController implements
         return data;
     }
 
-    private Data getBitmapForRecent(List<DBSongInfo> all) {
+    private Data getDataForRecent(List<DBSongInfo> all) {
         Data data = new Data();
         List<DBSongInfo> list = DBSongInfo.descSortByLastPlayTime(all);
-        int count = activity.getResources().getInteger(R.integer.sheet_recent_count);
+        int temp = activity.getResources().getInteger(R.integer.sheet_recent_count);
+        int count = temp > all.size() ? all.size() : temp;
         data.bitmap = findBitmap(list, count);
         data.count = count;
         return data;
     }
 
-    private Data getBitmapForAll(List<DBSongInfo> all) {
+    private Data getDataForAll(List<DBSongInfo> all) {
         Data data = new Data();
         data.bitmap = findBitmap(all, all.size());
         data.count = all.size();

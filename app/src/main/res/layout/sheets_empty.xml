@@ -9,6 +9,7 @@
         android:padding="8dp"
         android:background="?android:selectableItemBackground"
         android:layout_marginTop="@dimen/activity_default_margin_2x"
+        android:layout_marginBottom="@dimen/activity_default_margin_2x"
         android:id="@+id/sheet_empty_add"
         android:clickable="true"
         android:drawablePadding="3dp"
