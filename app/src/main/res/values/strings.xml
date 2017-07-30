@@ -45,7 +45,7 @@
     <string name="new_sheet">新建歌单</string>
     <string name="sheet_name">歌单名</string>
     <string name="sheet_remark">描述</string>
-    <string name="new_sheet_input_message">输入歌单名和描述，描述可以为空</string>
+    <string name="sheet_input_tip">输入歌单名和描述，描述可以为空</string>
 
     <string name="sheet_operation_modify">编辑歌单信息</string>
     <string name="sheet_operation_delete">删除</string>
@@ -182,6 +182,7 @@
     </string>
 
     <string name="sheet_collection_all">收藏所有歌曲</string>
+    <string name="title_activity_sheet_modify">SheetModifyActivity</string>
 
 
 </resources>

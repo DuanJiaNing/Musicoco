@@ -7,6 +7,7 @@ import android.net.Uri;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.detail.sheet.SheetDetailActivity;
 import com.duan.musicoco.detail.song.SongDetailActivity;
+import com.duan.musicoco.newsheet.SheetModifyActivity;
 import com.duan.musicoco.play.PlayActivity;
 
 import java.io.File;
@@ -20,6 +21,7 @@ public class ActivityManager {
     private Context context;
     public static final String SONG_DETAIL_PATH = "song_detail_path";
     public static final String SHEET_DETAIL_ID = "sheet_detail_id";
+    public static final String SHEET_MODIFY_ID = "sheet_modify_id";
 
     private static ActivityManager mInstance;
 
@@ -50,6 +52,12 @@ public class ActivityManager {
     public void startSheetDetailActivity(int sheetID) {
         Intent intent = new Intent(context, SheetDetailActivity.class);
         intent.putExtra(SHEET_DETAIL_ID, sheetID);
+        context.startActivity(intent);
+    }
+
+    public void startSheetModifyActivity(int sheetID) {
+        Intent intent = new Intent(context, SheetModifyActivity.class);
+        intent.putExtra(SHEET_MODIFY_ID, sheetID);
         context.startActivity(intent);
     }
 

@@ -9,6 +9,7 @@
     <color name="text_gray">#ababab</color>
 
     <color name="item_select_color">#ec4b42</color>
+    <color name="default_text_hint">#e96962</color>
 
     <color name="default_play_bg_color">#3d3d3d</color>
     <color name="default_play_text_color">#d6d6d6</color>
@@ -54,7 +55,7 @@
 
     <color name="red">#e42d2d</color>
 
-    <color name="my_sheet_play_bg">#7b000000</color>
+    <color name="my_sheet_play_bg">#3c000000</color>
     <color name="play_list_item_dark_bg">#05393939</color>
 
     <color name="favorite">@color/red</color>

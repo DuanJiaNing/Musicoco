@@ -242,3 +242,8 @@
 
 1 歌单详情页可以收藏所有歌曲到【我的收藏】<br>
 2 歌单详情页歌曲点击可以播放，收藏所有歌单到【我的收藏】时通知 MainActivity 更新 MainSheetController 更新<br>
+
+- 2017-07-30
+
+1 歌单修改和添加歌单使用单独的 Activity 处理：SheetModifyActivity <br>
+2 修复歌单修改/添加时描述字数超限却仍可以正常保存的错误<br>

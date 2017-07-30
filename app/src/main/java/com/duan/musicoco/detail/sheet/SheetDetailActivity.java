@@ -53,7 +53,6 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
     private AppBarLayout appBarLayout;
     private FloatingActionButton toTop;
     private RecyclerView songList;
-    private View container;
 
     private AppBarStateChangeListener barStateChangeListener;
     private AppPreference appPreference;
@@ -199,7 +198,6 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
         toTop = (FloatingActionButton) findViewById(R.id.sheet_detail_top);
         initToTopPos();
 
-        container = findViewById(R.id.sheet_detail_song_list_container);
         songList = (RecyclerView) findViewById(R.id.sheet_detail_songs_list);
         appBarLayout = (AppBarLayout) findViewById(R.id.sheet_detail_app_bar);
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.sheet_detail_toolbar_layout);
@@ -291,7 +289,6 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
 
         collapsingToolbarLayout.setContentScrimColor(toolbarC);
         collapsingToolbarLayout.setStatusBarScrimColor(statusC);
-        container.setBackgroundColor(mainBC);
 
         updateFloatingBtColor(new int[]{accentC, toolbarMainTC, toolbarVicTC});
         infoController.themeChange(th, new int[]{toolbarMainTC, toolbarVicTC});

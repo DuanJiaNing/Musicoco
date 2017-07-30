@@ -69,4 +69,6 @@
     <dimen name="app_bar_height">280dp</dimen>
     <dimen name="text_margin">16dp</dimen>
 
+    <dimen name="sheet_modify_linearlayout_divide_height">20dp</dimen>
+
 </resources>

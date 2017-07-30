@@ -28,6 +28,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     //    compile 'com.android.support:design:25.3.1'
+    //    compile 'com.github.bumptech.glide:glide:3.6.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
     compile 'com.android.support:palette-v7:23.4.0'
     compile 'com.android.support:appcompat-v7:26.0.0-alpha1'
@@ -35,12 +36,11 @@ dependencies {
     compile 'com.android.support:design:26.0.0-alpha1'
     compile 'io.reactivex:rxjava:1.0.14'
     compile 'io.reactivex:rxandroid:1.0.1'
-    testCompile 'junit:junit:4.12'
     compile 'com.victor:lib:1.0.4'
     compile 'com.android.support:support-v4:26.0.0-alpha1'
-//    compile 'com.github.bumptech.glide:glide:3.6.1'
     compile 'jp.wasabeef:glide-transformations:2.0.2'
     compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
+    testCompile 'junit:junit:4.12'
 }
 repositories {
     mavenCentral()

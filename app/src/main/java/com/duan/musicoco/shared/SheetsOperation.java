@@ -8,11 +8,11 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
@@ -54,194 +54,13 @@ public class SheetsOperation {
     }
 
     public void handleAddSheet() {
-        DialogProvider manager = new DialogProvider(activity);
-        TextInputHelper inputHelper = new TextInputHelper(activity);
-
-        String newSheet = activity.getString(R.string.new_sheet);
-        String inputName = activity.getString(R.string.sheet_name);
-        String inputRemark = activity.getString(R.string.sheet_remark);
-        String countOutLimit = activity.getString(R.string.error_text_count_out_of_limit);
-        String inputMessage = activity.getString(R.string.new_sheet_input_message);
-        int nameLimit = activity.getResources().getInteger(R.integer.sheet_name_text_limit);
-        int remarkLimit = activity.getResources().getInteger(R.integer.sheet_remark_text_limit);
-        int mainTC = manager.getMainTextColor();
-        int vicTC = manager.getVicTextColor();
-
-        final TextInputHelper.ViewHolder nameHolder = inputHelper.getLimitedTexInputLayoutView(
-                inputName,
-                nameLimit,
-                countOutLimit, ""
-        );
-        nameHolder.editText.setLines(1);
-        nameHolder.textViewLimit.setTextColor(vicTC);
-        nameHolder.editText.setTextColor(mainTC);
-
-        final TextInputHelper.ViewHolder remarkHolder = inputHelper.getLimitedTexInputLayoutView(
-                inputRemark,
-                remarkLimit,
-                countOutLimit, ""
-        );
-        int remarkInputMaxLine = activity.getResources().getInteger(R.integer.sheet_remark_input_max_lines);
-        remarkHolder.editText.setMaxLines(remarkInputMaxLine);
-        remarkHolder.textViewLimit.setTextColor(vicTC);
-        remarkHolder.editText.setTextColor(mainTC);
-
-        LinearLayout ll = new LinearLayout(activity);
-        ll.setOrientation(LinearLayout.VERTICAL);
-        ll.addView(nameHolder.view);
-        ViewGroup.MarginLayoutParams param = (ViewGroup.MarginLayoutParams) remarkHolder.textInputLayout.getLayoutParams();
-        param.topMargin = 50;
-        remarkHolder.textInputLayout.setLayoutParams(param);
-
-        ll.addView(remarkHolder.view);
-        final AlertDialog dialog = manager.createCustomInsiderDialog(
-                newSheet,
-                inputMessage,
-                ll
-        );
-
-        manager.setOnPositiveButtonListener(activity.getString(R.string.ensure), new DialogProvider.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String name = nameHolder.editText.getText().toString();
-                String error = null;
-
-                if (TextUtils.isEmpty(name)) {
-                    error = activity.getString(R.string.error_name_required);
-                } else {
-                    String remark = remarkHolder.editText.getText().toString();
-                    remark = TextUtils.isEmpty(remark) ? "" : remark;
-
-                    if (nameHolder.textInputLayout.isErrorEnabled()) {
-                        TextInputHelper.textInputErrorTwinkle(nameHolder.textInputLayout, "!");
-                        return;
-                    } else {
-                        String res = dbMusicoco.addSheet(name, remark, 0);
-                        if (res != null) {
-                            error = res;
-                        }
-                    }
-                }
-
-                if (error != null) {
-                    nameHolder.textInputLayout.setError(error);
-                    nameHolder.textInputLayout.setErrorEnabled(true);
-                } else {
-                    String msg = activity.getString(R.string.success_create_sheet) + " [" + name + "]";
-                    ToastUtils.showShortToast(msg);
-                    broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
-                    dialog.dismiss();
-                }
-            }
-        });
-
-        manager.setOnNegativeButtonListener(activity.getString(R.string.cancel), new DialogProvider.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-
-        dialog.show();
+        ActivityManager manager = ActivityManager.getInstance(activity);
+        manager.startSheetModifyActivity(Integer.MAX_VALUE);
     }
 
-    public void handleModifySheet(final Sheet sheet) {
-        DialogProvider manager = new DialogProvider(activity);
-        TextInputHelper inputHelper = new TextInputHelper(activity);
-
-        String newSheet = activity.getString(R.string.modify_sheet);
-        String inputName = activity.getString(R.string.sheet_name);
-        String inputRemark = activity.getString(R.string.sheet_remark);
-        String countOutLimit = activity.getString(R.string.error_text_count_out_of_limit);
-        int nameLimit = activity.getResources().getInteger(R.integer.sheet_name_text_limit);
-        int remarkLimit = activity.getResources().getInteger(R.integer.sheet_remark_text_limit);
-        int mainTC = manager.getMainTextColor();
-        int vicTC = manager.getVicTextColor();
-
-        final String oldName = sheet.name;
-        final String oldRemark = sheet.remark;
-
-        final TextInputHelper.ViewHolder nameHolder = inputHelper.getLimitedTexInputLayoutView(
-                inputName,
-                nameLimit,
-                countOutLimit, oldName
-        );
-        nameHolder.editText.setLines(1);
-        nameHolder.textViewLimit.setTextColor(vicTC);
-        nameHolder.editText.setTextColor(mainTC);
-
-        final TextInputHelper.ViewHolder remarkHolder = inputHelper.getLimitedTexInputLayoutView(
-                inputRemark,
-                remarkLimit,
-                countOutLimit, oldRemark
-        );
-        int remarkInputMaxLine = activity.getResources().getInteger(R.integer.sheet_remark_input_max_lines);
-        remarkHolder.editText.setMaxLines(remarkInputMaxLine);
-        remarkHolder.textViewLimit.setTextColor(vicTC);
-        remarkHolder.editText.setTextColor(mainTC);
-
-        LinearLayout ll = new LinearLayout(activity);
-        ll.setOrientation(LinearLayout.VERTICAL);
-        ll.addView(nameHolder.view);
-        ViewGroup.MarginLayoutParams param = (ViewGroup.MarginLayoutParams) remarkHolder.textInputLayout.getLayoutParams();
-        param.topMargin = 50;
-        remarkHolder.textInputLayout.setLayoutParams(param);
-
-        ll.addView(remarkHolder.view);
-        final AlertDialog dialog = manager.createCustomInsiderDialog(
-                newSheet,
-                activity.getString(R.string.sheet) + ": " + oldName + " (" + StringUtils.getGenDateYMD(sheet.create) + ")",
-                ll
-        );
-
-        manager.setOnPositiveButtonListener(activity.getString(R.string.ensure), new DialogProvider.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String newName = nameHolder.editText.getText().toString();
-                String newRemark = remarkHolder.editText.getText().toString();
-
-                if (newName.equals(oldName) && newRemark.equals(oldRemark)) {
-                    ToastUtils.showShortToast(activity.getString(R.string.not_modify));
-                    dialog.dismiss();
-                }
-
-                String error = null;
-                if (TextUtils.isEmpty(newName)) {
-                    error = activity.getString(R.string.error_name_required);
-                } else {
-                    newRemark = TextUtils.isEmpty(newRemark) ? "" : newRemark;
-
-                    if (nameHolder.textInputLayout.isErrorEnabled()) {
-                        TextInputHelper.textInputErrorTwinkle(nameHolder.textInputLayout, "!");
-                        return;
-                    } else {
-                        String res = dbMusicoco.updateSheet(sheet.id, newName, newRemark);
-                        if (res != null) {
-                            error = res;
-                        }
-                    }
-                }
-
-                if (error != null) {
-                    nameHolder.textInputLayout.setError(error);
-                    nameHolder.textInputLayout.setErrorEnabled(true);
-                } else {
-                    String msg = activity.getString(R.string.success_modify_sheet) + " [" + newName + "]";
-                    ToastUtils.showShortToast(msg);
-                    broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
-                    dialog.dismiss();
-                }
-            }
-        });
-
-        manager.setOnNegativeButtonListener(activity.getString(R.string.cancel), new DialogProvider.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-
-        dialog.show();
+    public void handleModifySheet(Sheet sheet) {
+        ActivityManager manager = ActivityManager.getInstance(activity);
+        manager.startSheetModifyActivity(sheet.id);
     }
 
     public void deleteSheet(final Sheet sheet) {

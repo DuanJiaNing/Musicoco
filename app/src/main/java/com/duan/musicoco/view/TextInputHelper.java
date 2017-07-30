@@ -31,7 +31,7 @@ public class TextInputHelper {
      * @param errorInfo 超限提示
      * @return view
      */
-    public ViewHolder getLimitedTexInputLayoutView(String hint, final int limit, final String errorInfo, String text) {
+    public ViewHolder createLimitedTexInputLayoutView(String hint, final int limit, final String errorInfo, String text) {
 
         final ViewHolder holder = new ViewHolder(context);
 
@@ -78,7 +78,7 @@ public class TextInputHelper {
         return holder;
     }
 
-    public ViewHolder getGeneralTexInputLayoutView(String hint, String text) {
+    public ViewHolder createGeneralTexInputLayoutView(String hint, String text) {
         final ViewHolder holder = new ViewHolder(context);
 
         holder.textInputLayout.setHint(hint);
