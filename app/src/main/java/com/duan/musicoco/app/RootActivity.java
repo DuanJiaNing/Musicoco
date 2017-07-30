@@ -17,7 +17,7 @@ import com.duan.musicoco.app.manager.PlayServiceManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.PlayPreference;
-import com.duan.musicoco.preference.Theme;
+import com.duan.musicoco.preference.ThemeEnum;
 
 /**
  * Created by DuanJiaNing on 2017/3/21.
@@ -61,10 +61,10 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
 
     private void checkTheme() {
         //FIXME test
-        appPreference.modifyTheme(Theme.WHITE);
+        appPreference.modifyTheme(ThemeEnum.WHITE);
 
-        Theme theme = appPreference.getTheme();
-        if (theme == Theme.DARK) {
+        ThemeEnum themeEnum = appPreference.getTheme();
+        if (themeEnum == ThemeEnum.DARK) {
             this.setTheme(R.style.Theme_DARK);
         } else {
             this.setTheme(R.style.Theme_WHITE);

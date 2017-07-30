@@ -2,16 +2,11 @@ package com.duan.musicoco.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.service.PlayController;
-
-import static android.content.Context.MODE_WORLD_READABLE;
 
 /**
  * Created by DuanJiaNing on 2017/6/2.
@@ -23,6 +18,8 @@ public class PlayPreference {
     public static final String KEY_PLAY_MODE = "key_play_mode";
     public static final String KEY_THEME = "key_theme";
     public static final String KEY_SHEET = "key_sheet";
+    public static final String KEY_PLAY_BG_MODE = "key_play_bg_mode";
+
     private SharedPreferences.Editor editor;
     private SharedPreferences preferences;
 
@@ -38,19 +35,34 @@ public class PlayPreference {
         }
     }
 
-    public void updateTheme(Theme theme) {
+    public void updateTheme(ThemeEnum themeEnum) {
         check();
         editor = preferences.edit();
-        editor.putString(KEY_THEME, theme.name());
+        editor.putString(KEY_THEME, themeEnum.name());
         editor.apply();
-        Log.d("musicoco", "updateColors: theme " + theme.name());
+        Log.d("musicoco", "updateTheme: themeEnum " + themeEnum.name());
     }
 
-    public Theme getTheme() {
+    public void updatePlayBgMode(PlayBackgroundModeEnum mode) {
         check();
-        String pa = preferences.getString(KEY_THEME, Theme.VARYING.name());
-        return Theme.valueOf(pa);
+        editor = preferences.edit();
+        editor.putString(KEY_PLAY_BG_MODE, mode.name());
+        editor.apply();
+        Log.d("musicoco", "updatePlayBgMode: mode " + mode.name());
     }
+
+    public ThemeEnum getTheme() {
+        check();
+        String pa = preferences.getString(KEY_THEME, ThemeEnum.VARYING.name());
+        return ThemeEnum.valueOf(pa);
+    }
+
+    public PlayBackgroundModeEnum getPlayBgMode() {
+        check();
+        String str = preferences.getString(KEY_PLAY_BG_MODE, PlayBackgroundModeEnum.COLOR.name());
+        return PlayBackgroundModeEnum.valueOf(str);
+    }
+
 
     public int updatePlayMode(int mode) {
         check();

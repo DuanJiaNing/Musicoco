@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -13,12 +14,22 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageSwitcher;
+import android.widget.ImageView;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.Request;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SizeReadyCallback;
+import com.bumptech.glide.request.target.Target;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
@@ -32,8 +43,9 @@ import com.duan.musicoco.play.album.VisualizerFragment;
 import com.duan.musicoco.play.album.VisualizerPresenter;
 import com.duan.musicoco.play.lyric.LyricFragment;
 import com.duan.musicoco.play.lyric.LyricPresenter;
+import com.duan.musicoco.preference.PlayBackgroundModeEnum;
 import com.duan.musicoco.preference.PlayPreference;
-import com.duan.musicoco.preference.Theme;
+import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.service.PlayServiceCallback;
 import com.duan.musicoco.shared.ExceptionHandler;
@@ -46,7 +58,11 @@ import com.duan.musicoco.view.media.SkipView;
 
 import java.util.List;
 
-import static com.duan.musicoco.preference.Theme.WHITE;
+import jp.wasabeef.glide.transformations.BlurTransformation;
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+import jp.wasabeef.glide.transformations.gpu.VignetteFilterTransformation;
+
+import static com.duan.musicoco.preference.ThemeEnum.WHITE;
 
 /**
  * Created by DuanJiaNing on 2017/5/23.
@@ -78,6 +94,7 @@ public class PlayActivity extends RootActivity implements
     private PlayView btPlay;
     private SkipView btPre;
     private SkipView btNext;
+    private ImageView isBg;
 
     private PlayServiceConnection mServiceConnection;
     private PeriodicTask periodicTask;
@@ -200,9 +217,9 @@ public class PlayActivity extends RootActivity implements
         updateStatus(song, isNext);
 
         //更新颜色
-        boolean updateColor = playPreference.getTheme().equals(Theme.VARYING);
+        boolean updateColor = playPreference.getTheme().equals(ThemeEnum.VARYING);
         if (updateColor) {
-            updateColors(visualizerFragment.getCurrColors());
+            updateColors(visualizerFragment.getCurrColors(), song);
         }
 
         //在 updateColors 后调用
@@ -227,7 +244,7 @@ public class PlayActivity extends RootActivity implements
             e.printStackTrace();
         }
 
-        boolean updateColor = playPreference.getTheme().equals(Theme.VARYING);
+        boolean updateColor = playPreference.getTheme().equals(ThemeEnum.VARYING);
         visualizerPresenter.songChanged(song, isNext, updateColor);
 
         bottomNavigationController.updatePlayMode();
@@ -274,7 +291,7 @@ public class PlayActivity extends RootActivity implements
      * 2 暗的柔和颜色 辅背景色<br>
      * 3 暗的柔和颜色 对应适合的字体颜色 辅字体色<br>
      */
-    private void updateColors(int[] colors) {
+    private void updateColors(int[] colors, Song song) {
         Log.d("update", "PlayActivity updateColors");
 
         int mainBC;
@@ -298,19 +315,7 @@ public class PlayActivity extends RootActivity implements
         ((TextView) (tsSongName.getCurrentView())).setTextColor(mainTC);
         ((TextView) (tsSongArts.getCurrentView())).setTextColor(vicTC);
 
-        int colorTo = mainBC;
-        ColorDrawable cd = (ColorDrawable) flRootView.getBackground();
-        if (cd != null) {
-            if (cd.getColor() != colorTo) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    AnimationUtils.startColorGradientAnim(1000, flRootView, cd.getColor(), colorTo);
-                } else {
-                    flRootView.setBackgroundColor(colorTo);
-                }
-            }
-        } else {
-            flRootView.setBackgroundColor(colorTo);
-        }
+        updateBackground(mainBC, song);
 
         tvPlayProgress.setTextColor(vicTC);
         tvDuration.setTextColor(vicTC);
@@ -333,6 +338,63 @@ public class PlayActivity extends RootActivity implements
 
     }
 
+    private void updateBackground(int mainBC, Song song) {
+        if (song == null) {
+            return;
+        }
+
+        SongInfo info = mediaManager.getSongInfo(song);
+        String path = null;
+        if (info != null) {
+            path = info.getAlbum_path();
+        }
+
+        playPreference.updatePlayBgMode(PlayBackgroundModeEnum.PICTUREWITHBLUR);
+        PlayBackgroundModeEnum bgMode = playPreference.getPlayBgMode();
+        switch (bgMode) {
+            case PICTUREWITHMASK: {
+
+                Glide.with(this)
+                        .load(path)
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                        .placeholder(R.drawable.default_song)
+                        .bitmapTransform(new VignetteFilterTransformation(this))
+                        .crossFade()
+                        .into(isBg);
+                break;
+            }
+            case PICTUREWITHBLUR: {
+
+                Glide.with(this)
+                        .load(path)
+                        .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                        .placeholder(R.drawable.default_song)
+                        .bitmapTransform(new BlurTransformation(this))
+                        .crossFade()
+                        .into(isBg);
+
+                break;
+            }
+            case COLOR:
+            default: {
+
+                int colorTo = mainBC;
+                ColorDrawable cd = (ColorDrawable) flRootView.getBackground();
+                if (cd != null) {
+                    if (cd.getColor() != colorTo) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                            AnimationUtils.startColorGradientAnim(1000, flRootView, cd.getColor(), colorTo);
+                        } else {
+                            flRootView.setBackgroundColor(colorTo);
+                        }
+                    }
+                } else {
+                    flRootView.setBackgroundColor(colorTo);
+                }
+                break;
+            }
+        }
+    }
 
     /**
      * 更新数值和文字<br>
@@ -370,10 +432,11 @@ public class PlayActivity extends RootActivity implements
     protected void initViews() {
 
         //FIXME test
-        playPreference.updateTheme(Theme.VARYING);
+        playPreference.updateTheme(ThemeEnum.VARYING);
 
 
         //初始控件
+        isBg = (ImageView) findViewById(R.id.play_bg);
         flRootView = (FrameLayout) findViewById(R.id.play_root);
         tvPlayProgress = (TextView) findViewById(R.id.play_progress);
         tvDuration = (TextView) findViewById(R.id.play_duration);
@@ -388,13 +451,13 @@ public class PlayActivity extends RootActivity implements
         btPlay = (PlayView) findViewById(R.id.play_song);
         flFragmentContainer = (FrameLayout) findViewById(R.id.play_fragment_container);
 
-        Theme theme = playPreference.getTheme();
+        ThemeEnum themeEnum = playPreference.getTheme();
         int mainTextColor = Color.DKGRAY;
         int vicTextColor = Color.GRAY;
-        if (theme == Theme.DARK) {
+        if (themeEnum == ThemeEnum.DARK) {
             mainTextColor = getResources().getColor(R.color.theme_dark_main_text);
             vicTextColor = getResources().getColor(R.color.theme_dark_vic_text);
-        } else if (theme == WHITE) {
+        } else if (themeEnum == WHITE) {
             mainTextColor = getResources().getColor(R.color.theme_white_main_text);
             vicTextColor = getResources().getColor(R.color.theme_white_vic_text);
         }
@@ -581,6 +644,7 @@ public class PlayActivity extends RootActivity implements
 
         periodicTask = new PeriodicTask(new PeriodicTask.Task() {
             int progress;
+
             @Override
             public void execute() {
                 runOnUiThread(new Runnable() {
@@ -634,10 +698,10 @@ public class PlayActivity extends RootActivity implements
     }
 
     @Override
-    public void themeChange(Theme theme, int[] colors) {
-        theme = appPreference.getTheme();
+    public void themeChange(ThemeEnum themeEnum, int[] colors) {
+        themeEnum = appPreference.getTheme();
         int cs[];
-        switch (theme) {
+        switch (themeEnum) {
             case DARK:
                 cs = com.duan.musicoco.util.ColorUtils.get10DarkThemeColors(this);
                 break;
@@ -648,11 +712,11 @@ public class PlayActivity extends RootActivity implements
                 cs = com.duan.musicoco.util.ColorUtils.get10WhiteThemeColors(this);
                 break;
         }
-        bottomNavigationController.themeChange(theme, cs);
+        bottomNavigationController.themeChange(themeEnum, cs);
 
         // 非 VARYING 主题时只在这里调用一次 updateColors 方法
         // updateColors 重复调用只在 VARYING 主题下发生
-        updateColors(cs);
+        updateColors(cs, null);
     }
 
     @Override

@@ -2,24 +2,14 @@ package com.duan.musicoco.detail.sheet;
 
 import android.app.Activity;
 import android.content.res.ColorStateList;
-import android.graphics.Bitmap;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.Toolbar;
-import android.text.BoringLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.target.ImageViewTarget;
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
@@ -27,17 +17,10 @@ import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.bean.Sheet;
-import com.duan.musicoco.preference.Theme;
+import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.shared.SheetCoverHelper;
-import com.duan.musicoco.util.AnimationUtils;
-import com.duan.musicoco.util.BitmapUtils;
-import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.StringUtils;
-import com.duan.musicoco.view.AppBarStateChangeListener;
 
-import jp.wasabeef.glide.transformations.BlurTransformation;
-import jp.wasabeef.glide.transformations.gpu.ContrastFilterTransformation;
-import jp.wasabeef.glide.transformations.gpu.SepiaFilterTransformation;
 import jp.wasabeef.glide.transformations.gpu.VignetteFilterTransformation;
 
 /**
@@ -172,7 +155,7 @@ public class SheetInfoController implements OnThemeChange {
     }
 
     @Override
-    public void themeChange(Theme theme, int[] colors) {
+    public void themeChange(ThemeEnum themeEnum, int[] colors) {
         int mainTC = colors[0];
         int vicTC = colors[1];
 

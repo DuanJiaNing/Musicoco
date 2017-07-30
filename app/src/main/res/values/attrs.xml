@@ -133,7 +133,7 @@
     </declare-styleable>
 
     <!-- DiscreteSeekBar specific attributes -->
-    <declare-styleable name="Theme">
+    <declare-styleable name="ThemeEnum">
         <attr name="discreteSeekBarStyle" format="reference" />
     </declare-styleable>
     <declare-styleable name="DiscreteSeekBar">

@@ -6,6 +6,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <ImageView
+        android:scaleType="centerCrop"
+        android:id="@+id/play_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <LinearLayout
         android:id="@+id/play_root_main"
         android:layout_width="match_parent"
@@ -61,10 +67,10 @@
         </FrameLayout>
 
         <LinearLayout
-            android:layout_marginBottom="@dimen/activity_default_margin"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/activity_default_margin"
             android:layout_weight="0.3"
             android:gravity="center|top"
             android:orientation="vertical">

@@ -29,7 +29,7 @@ import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.main.MainActivity;
 import com.duan.musicoco.preference.AppPreference;
-import com.duan.musicoco.preference.Theme;
+import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.shared.SheetsOperation;
 import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.util.ColorUtils;
@@ -73,7 +73,7 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
 
         Utils.transitionStatusBar(this);
 
-        boolean darkTheme = appPreference.getTheme() == Theme.DARK;
+        boolean darkTheme = appPreference.getTheme() == ThemeEnum.DARK;
         infoController = new SheetInfoController(this, darkTheme);
         songListController = new SheetSongListController(this);
         dbController = new DBMusicocoController(this, true);
@@ -107,10 +107,10 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
     }
 
     private void checkTheme() {
-        Theme theme = appPreference.getTheme();
-        if (theme == Theme.DARK) {
+        ThemeEnum themeEnum = appPreference.getTheme();
+        if (themeEnum == ThemeEnum.DARK) {
             this.setTheme(R.style.Theme_Sheet_Detail_DARK);
-        } else if (theme == Theme.WHITE) {
+        } else if (themeEnum == ThemeEnum.WHITE) {
             this.setTheme(R.style.Theme_Sheet_Detail_WHITE);
         }
     }
@@ -260,9 +260,9 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
     }
 
     @Override
-    public void themeChange(Theme theme, int[] colors) {
+    public void themeChange(ThemeEnum themeEnum, int[] colors) {
 
-        Theme th = appPreference.getTheme();
+        ThemeEnum th = appPreference.getTheme();
         int[] cs;
         switch (th) {
             case DARK:

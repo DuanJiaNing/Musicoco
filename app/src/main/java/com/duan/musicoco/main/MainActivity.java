@@ -30,7 +30,7 @@ import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.play.PlayServiceConnection;
-import com.duan.musicoco.preference.Theme;
+import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.shared.SheetsOperation;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.SongUtils;
@@ -296,11 +296,11 @@ public class MainActivity extends RootActivity implements
     }
 
     @Override
-    public void themeChange(Theme t, int[] colors) {
-        Theme theme = appPreference.getTheme();
-        bottomNavigationController.themeChange(theme, null);
-        mostPlayController.themeChange(theme, null);
-        mySheetsController.themeChange(theme, null);
+    public void themeChange(ThemeEnum t, int[] colors) {
+        ThemeEnum themeEnum = appPreference.getTheme();
+        bottomNavigationController.themeChange(themeEnum, null);
+        mostPlayController.themeChange(themeEnum, null);
+        mySheetsController.themeChange(themeEnum, null);
         updateToolbarColors();
     }
 

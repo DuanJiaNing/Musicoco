@@ -4,7 +4,7 @@ package com.duan.musicoco.preference;
  * Created by DuanJiaNing on 2017/6/13.
  */
 
-public enum Theme {
+public enum ThemeEnum {
     //白色
     WHITE,
 

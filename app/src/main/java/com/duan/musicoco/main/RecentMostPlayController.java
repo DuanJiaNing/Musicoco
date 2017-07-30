@@ -24,7 +24,7 @@ import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.image.BitmapBuilder;
-import com.duan.musicoco.preference.Theme;
+import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 
@@ -292,10 +292,10 @@ public class RecentMostPlayController implements
     }
 
     @Override
-    public void themeChange(Theme theme, int[] colors) {
+    public void themeChange(ThemeEnum themeEnum, int[] colors) {
 
         int[] cs;
-        switch (theme) {
+        switch (themeEnum) {
             case DARK: {
                 cs = ColorUtils.get10DarkThemeColors(activity);
                 break;
@@ -324,7 +324,7 @@ public class RecentMostPlayController implements
         mName.setShadowLayer(20, 0, 0, toolbarMainTC);
         mRemark.setTextColor(toolbarVicTC);
         mArts.setTextColor(vicTC);
-        mInfoLine.setBackgroundColor(mainTC);
+        mInfoLine.setBackgroundColor(toolbarMainTC);
 
         mPlayTimeL.setTextColor(vicTC);
         mPlayTimeR.setTextColor(vicTC);

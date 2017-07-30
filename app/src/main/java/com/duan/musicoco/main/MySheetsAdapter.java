@@ -22,7 +22,7 @@ import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.bean.Sheet;
-import com.duan.musicoco.preference.Theme;
+import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.shared.SheetsOperation;
 import com.duan.musicoco.shared.OptionsAdapter;
@@ -256,7 +256,7 @@ public class MySheetsAdapter extends BaseAdapter implements
     }
 
     @Override
-    public void themeChange(Theme theme, int[] colors) {
+    public void themeChange(ThemeEnum themeEnum, int[] colors) {
 
         mainBC = colors[3];
         mainTC = colors[5];
@@ -264,7 +264,7 @@ public class MySheetsAdapter extends BaseAdapter implements
         vicTC = colors[6];
         accentC = colors[2];
 
-        itemBGC = theme == Theme.WHITE ? Color.WHITE : vicBC;
+        itemBGC = themeEnum == ThemeEnum.WHITE ? Color.WHITE : vicBC;
 
         mDialog.setTitleBarBgColor(vicBC);
         mDialog.setContentBgColor(mainBC);

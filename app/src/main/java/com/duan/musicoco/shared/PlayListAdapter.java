@@ -1,6 +1,5 @@
 package com.duan.musicoco.shared;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -22,7 +21,7 @@ import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
-import com.duan.musicoco.preference.Theme;
+import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
 
 import java.util.ArrayList;
@@ -219,7 +218,7 @@ public class PlayListAdapter extends BaseAdapter implements
 
     }
 
-    public void updateColors(Theme theme, int[] colors) {
+    public void updateColors(ThemeEnum themeEnum, int[] colors) {
         Log.d("update", "PlayListAdapter updateColors");
 
         mainC = colors[0];
@@ -228,8 +227,8 @@ public class PlayListAdapter extends BaseAdapter implements
     }
 
     @Override
-    public void themeChange(Theme theme, int[] colors) {
-        updateColors(theme, colors);
+    public void themeChange(ThemeEnum themeEnum, int[] colors) {
+        updateColors(themeEnum, colors);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.duan.musicoco.newsheet;
 
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,7 +20,7 @@ import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.preference.AppPreference;
-import com.duan.musicoco.preference.Theme;
+import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.view.TextInputHelper;
@@ -154,9 +153,9 @@ public class SheetModifyActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void themeChange(Theme theme, int[] colors) {
+    public void themeChange(ThemeEnum themeEnum, int[] colors) {
 
-        Theme th = appPreference.getTheme();
+        ThemeEnum th = appPreference.getTheme();
         int[] cs;
         switch (th) {
             case DARK:
@@ -189,10 +188,10 @@ public class SheetModifyActivity extends AppCompatActivity implements
 
 
     private void checkTheme() {
-        Theme theme = appPreference.getTheme();
-        if (theme == Theme.DARK) {
+        ThemeEnum themeEnum = appPreference.getTheme();
+        if (themeEnum == ThemeEnum.DARK) {
             this.setTheme(R.style.Theme_DARK);
-        } else if (theme == Theme.WHITE) {
+        } else if (themeEnum == ThemeEnum.WHITE) {
             this.setTheme(R.style.Theme_WHITE);
         }
     }

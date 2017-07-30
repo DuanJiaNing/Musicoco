@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.RemoteException;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,7 +26,7 @@ import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.bean.DBSongInfo;
-import com.duan.musicoco.preference.Theme;
+import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.shared.OptionsAdapter;
 import com.duan.musicoco.shared.OptionsDialog;
@@ -182,6 +183,7 @@ public class SheetSongListController implements
         songAdapter = new SongAdapter(activity, data, sheetID);
         songList.setLayoutManager(new LinearLayoutManager(activity));
         songList.setAdapter(songAdapter);
+        songList.setItemAnimator(new DefaultItemAnimator());
         songList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -424,7 +426,7 @@ public class SheetSongListController implements
     }
 
     @Override
-    public void themeChange(Theme theme, int[] colors) {
+    public void themeChange(ThemeEnum themeEnum, int[] colors) {
 
         int statusC = colors[0];
         int toolbarC = colors[1];
@@ -437,7 +439,7 @@ public class SheetSongListController implements
         int toolbarMainTC = colors[8];
         int toolbarVicTC = colors[9];
 
-        songAdapter.themeChange(theme, new int[]{mainTC, vicTC});
+        songAdapter.themeChange(themeEnum, new int[]{mainTC, vicTC});
 
         playAllRandom.setTextColor(mainTC);
         line.setBackgroundColor(vicTC);

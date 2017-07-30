@@ -1,6 +1,6 @@
 package com.duan.musicoco.app.interfaces;
 
-import com.duan.musicoco.preference.Theme;
+import com.duan.musicoco.preference.ThemeEnum;
 
 /**
  * Created by DuanJiaNing on 2017/7/4.
@@ -8,5 +8,5 @@ import com.duan.musicoco.preference.Theme;
 
 public interface OnThemeChange {
 
-    void themeChange(Theme theme, int[] colors);
+    void themeChange(ThemeEnum themeEnum, int[] colors);
 }

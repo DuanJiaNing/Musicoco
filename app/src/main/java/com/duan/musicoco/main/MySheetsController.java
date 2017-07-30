@@ -1,7 +1,6 @@
 package com.duan.musicoco.main;
 
 import android.app.Activity;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v4.widget.NestedScrollView;
@@ -16,7 +15,6 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.app.App;
-import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
@@ -25,7 +23,7 @@ import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.bean.Sheet;
-import com.duan.musicoco.preference.Theme;
+import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.shared.SheetsOperation;
 import com.duan.musicoco.util.ColorUtils;
 
@@ -104,12 +102,12 @@ public class MySheetsController implements
     }
 
     @Override
-    public void themeChange(Theme theme, int[] colors) {
-        if (theme == null) {
-            theme = ((App) activity.getApplicationContext()).getAppPreference().getTheme();
+    public void themeChange(ThemeEnum themeEnum, int[] colors) {
+        if (themeEnum == null) {
+            themeEnum = ((App) activity.getApplicationContext()).getAppPreference().getTheme();
         }
         int[] cs;
-        switch (theme) {
+        switch (themeEnum) {
             case DARK:
                 cs = ColorUtils.get10DarkThemeColors(activity);
                 break;
@@ -133,7 +131,7 @@ public class MySheetsController implements
         if (isEmptyViewVisible()) {
             emptyViewThemeChange(new int[]{accentC});
         } else {
-            adapter.themeChange(theme, cs);
+            adapter.themeChange(themeEnum, cs);
         }
 
         mTitle.setTextColor(mainTC);
@@ -148,9 +146,9 @@ public class MySheetsController implements
 
         int accentC;
         if (colors == null) {
-            Theme theme = ((App) activity.getApplicationContext()).getAppPreference().getTheme();
+            ThemeEnum themeEnum = ((App) activity.getApplicationContext()).getAppPreference().getTheme();
             int[] cs;
-            switch (theme) {
+            switch (themeEnum) {
                 case DARK:
                     cs = ColorUtils.get10DarkThemeColors(activity);
                     break;

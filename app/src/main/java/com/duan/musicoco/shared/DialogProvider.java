@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.App;
-import com.duan.musicoco.preference.Theme;
+import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.ColorUtils;
 import com.victor.loading.rotate.RotateLoading;
 
@@ -95,7 +95,7 @@ public class DialogProvider {
     private final int buttonTextSize;
     private final int buttonPadding;
 
-    private Theme theme;
+    private ThemeEnum themeEnum;
     int backgroundColor;
     int mainTextColor;
     int vicTextColor;
@@ -133,19 +133,19 @@ public class DialogProvider {
         mTopLine = rootView.findViewById(R.id.dialog_line1);
         mMiddleLine = rootView.findViewById(R.id.dialog_line2);
 
-        theme = ((App) context.getApplicationContext()).getAppPreference().getTheme();
+        themeEnum = ((App) context.getApplicationContext()).getAppPreference().getTheme();
         updateTheme();
 
     }
 
-    public void setTheme(Theme theme) {
-        this.theme = theme;
+    public void setTheme(ThemeEnum themeEnum) {
+        this.themeEnum = themeEnum;
         updateTheme();
     }
 
     private void updateTheme() {
         int[] colors;
-        switch (theme) {
+        switch (themeEnum) {
             case DARK:
                 colors = ColorUtils.get10DarkThemeColors(context);
                 break;

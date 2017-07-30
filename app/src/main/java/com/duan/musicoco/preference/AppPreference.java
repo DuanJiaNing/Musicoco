@@ -2,7 +2,6 @@ package com.duan.musicoco.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.Nullable;
 
 /**
  * Created by DuanJiaNing on 2017/6/2.
@@ -24,13 +23,13 @@ public class AppPreference {
         this.context = context;
     }
 
-    public void modifyTheme(Theme theme) {
-        if (theme == Theme.VARYING)
+    public void modifyTheme(ThemeEnum themeEnum) {
+        if (themeEnum == ThemeEnum.VARYING)
             return;
 
         check();
         editor = preferences.edit();
-        editor.putString(KEY_THEME, theme.name());
+        editor.putString(KEY_THEME, themeEnum.name());
         editor.apply();
     }
 
@@ -40,10 +39,10 @@ public class AppPreference {
 
     }
 
-    public Theme getTheme() {
+    public ThemeEnum getTheme() {
         check();
-        String pa = preferences.getString(KEY_THEME, Theme.WHITE.name());
-        return Theme.valueOf(pa);
+        String pa = preferences.getString(KEY_THEME, ThemeEnum.WHITE.name());
+        return ThemeEnum.valueOf(pa);
     }
 
 

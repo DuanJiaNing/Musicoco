@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -41,7 +40,7 @@ import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.image.BitmapBuilder;
 import com.duan.musicoco.shared.PlayListAdapter;
 import com.duan.musicoco.preference.AppPreference;
-import com.duan.musicoco.preference.Theme;
+import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.service.PlayServiceCallback;
 import com.duan.musicoco.shared.SongOperation;
@@ -219,8 +218,8 @@ public class BottomNavigationController implements
             e.printStackTrace();
         }
 
-        Theme theme = appPreference.getTheme();
-        themeChange(theme, null);
+        ThemeEnum themeEnum = appPreference.getTheme();
+        themeChange(themeEnum, null);
 
         hasInitData = true;
 
@@ -436,10 +435,10 @@ public class BottomNavigationController implements
     }
 
     @Override
-    public void themeChange(Theme theme, int[] colors) {
+    public void themeChange(ThemeEnum themeEnum, int[] colors) {
 
         int[] cs;
-        switch (theme) {
+        switch (themeEnum) {
             case DARK: {
                 cs = com.duan.musicoco.util.ColorUtils.get10DarkThemeColors(activity);
                 break;
@@ -463,7 +462,7 @@ public class BottomNavigationController implements
         int toolbarVicTC = cs[9];
 
         if (adapter != null) {
-            adapter.themeChange(theme, new int[]{mainTC, vicTC});
+            adapter.themeChange(themeEnum, new int[]{mainTC, vicTC});
         }
 
         mContainer.setBackgroundColor(navC);

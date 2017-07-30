@@ -3,9 +3,7 @@ package com.duan.musicoco.detail.sheet;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.RemoteException;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +14,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.duan.musicoco.R;
-import com.duan.musicoco.aidl.IPlayControl;
-import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
-import com.duan.musicoco.preference.Theme;
-import com.duan.musicoco.service.PlayController;
-import com.duan.musicoco.util.ColorUtils;
+import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.StringUtils;
 
 import java.util.List;
@@ -188,7 +182,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
     }
 
     @Override
-    public void themeChange(Theme theme, int[] colors) {
+    public void themeChange(ThemeEnum themeEnum, int[] colors) {
 
         mainTC = colors[0];
         vicTC = colors[1];

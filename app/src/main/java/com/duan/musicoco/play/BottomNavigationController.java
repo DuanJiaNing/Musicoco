@@ -11,7 +11,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
@@ -33,6 +32,7 @@ import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.bean.Sheet;
+import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.shared.ExceptionHandler;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
@@ -45,7 +45,6 @@ import com.duan.musicoco.app.interfaces.OnViewVisibilityChange;
 import com.duan.musicoco.shared.OptionsAdapter;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.PlayPreference;
-import com.duan.musicoco.preference.Theme;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.shared.PlayListAdapter;
 import com.duan.musicoco.shared.SongOperation;
@@ -57,8 +56,8 @@ import com.duan.musicoco.view.RealTimeBlurView;
 
 import java.util.Arrays;
 
-import static com.duan.musicoco.preference.Theme.DARK;
-import static com.duan.musicoco.preference.Theme.WHITE;
+import static com.duan.musicoco.preference.ThemeEnum.DARK;
+import static com.duan.musicoco.preference.ThemeEnum.WHITE;
 
 /**
  * Created by DuanJiaNing on 2017/7/4.
@@ -141,10 +140,10 @@ public class BottomNavigationController implements
         }
 
         //更新播放列表字体颜色模式（亮 暗）
-        Theme theme = playPreference.getTheme();
+        ThemeEnum themeEnum = playPreference.getTheme();
         int alpha = activity.getResources().getInteger(R.integer.play_list_bg_alpha);
         int color;
-        switch (theme) {
+        switch (themeEnum) {
             case DARK: {
                 color = activity.getResources().getColor(R.color.theme_dark_vic_text);
                 break;
@@ -368,10 +367,10 @@ public class BottomNavigationController implements
     }
 
     @Override
-    public void themeChange(Theme theme, int[] colors) {
+    public void themeChange(ThemeEnum themeEnum, int[] colors) {
 
         int[] cs;
-        switch (theme) {
+        switch (themeEnum) {
             case DARK: {
                 cs = com.duan.musicoco.util.ColorUtils.get10DarkThemeColors(activity);
                 break;
@@ -383,8 +382,8 @@ public class BottomNavigationController implements
                 break;
         }
 
-        songOption.themeChange(theme, cs);
-        listOption.themeChange(theme, cs);
+        songOption.themeChange(themeEnum, cs);
+        listOption.themeChange(themeEnum, cs);
     }
 
     @Override
@@ -435,7 +434,7 @@ public class BottomNavigationController implements
         mRealTimeView.setOverlayColor(colorA);
         mListTitleContainer.setBackgroundColor(color);
 
-        Theme t;
+        ThemeEnum t;
         double d = ColorUtils.calculateLuminance(colorA);
         if (d - 0.400 > 0.000001) {
             t = WHITE;
@@ -555,7 +554,7 @@ public class BottomNavigationController implements
         }
 
         @Override
-        public void themeChange(Theme theme, int[] colors) {
+        public void themeChange(ThemeEnum themeEnum, int[] colors) {
 
         }
 
@@ -721,7 +720,7 @@ public class BottomNavigationController implements
         }
 
         @Override
-        public void themeChange(Theme theme, int[] colors) {
+        public void themeChange(ThemeEnum themeEnum, int[] colors) {
 
             int accentC = colors[2];
             int mainBC = colors[3];
