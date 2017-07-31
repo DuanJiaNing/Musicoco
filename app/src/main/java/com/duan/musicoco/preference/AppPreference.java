@@ -23,7 +23,7 @@ public class AppPreference {
         this.context = context;
     }
 
-    public void modifyTheme(ThemeEnum themeEnum) {
+    public void updateTheme(ThemeEnum themeEnum) {
         if (themeEnum == ThemeEnum.VARYING)
             return;
 

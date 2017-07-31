@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ImageView
-        android:scaleType="centerCrop"
+    <ImageSwitcher
+        android:foreground="@color/play_bg_mask"
         android:id="@+id/play_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -20,7 +20,7 @@
         android:orientation="vertical">
 
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/play_name"
+            android:id="@+id/play_name_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="@dimen/status_bar_height"

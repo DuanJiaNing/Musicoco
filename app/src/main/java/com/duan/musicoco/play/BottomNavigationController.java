@@ -7,6 +7,7 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.RemoteException;
@@ -29,9 +30,11 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.App;
 import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.bean.Sheet;
+import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.shared.ExceptionHandler;
 import com.duan.musicoco.app.manager.MediaManager;
@@ -82,8 +85,9 @@ public class BottomNavigationController implements
     private View vDarkBg;
     private LinearLayout llRootMain;
 
-    private PlayListAdapter playListAdapter;
     private PlayPreference playPreference;
+    private AppPreference appPreference;
+    private PlayListAdapter playListAdapter;
     private IPlayControl control;
     private DBMusicocoController dbMusicoco;
     private MediaManager mediaManager;
@@ -93,11 +97,14 @@ public class BottomNavigationController implements
     private int currentDrawableColor;
     private SongOperation songOperation;
 
-    public BottomNavigationController(Activity activity, DBMusicocoController dbMusicoco, MediaManager mediaManager) {
+    public BottomNavigationController(Activity activity, DBMusicocoController dbMusicoco,
+                                      MediaManager mediaManager, PlayPreference playPreference,
+                                      AppPreference appPreference) {
         this.activity = activity;
         this.dbMusicoco = dbMusicoco;
         this.mediaManager = mediaManager;
-        this.playPreference = new PlayPreference(activity);
+        this.playPreference = playPreference;
+        this.appPreference = appPreference;
 
         mViewRoot = (CardView) activity.findViewById(R.id.play_list);
         mPlayList = (ListView) activity.findViewById(R.id.play_play_list);
@@ -368,7 +375,7 @@ public class BottomNavigationController implements
 
     @Override
     public void themeChange(ThemeEnum themeEnum, int[] colors) {
-
+        themeEnum = appPreference.getTheme();
         int[] cs;
         switch (themeEnum) {
             case DARK: {
@@ -432,7 +439,9 @@ public class BottomNavigationController implements
         int colorA = ColorUtils.setAlphaComponent(color, alpha);
 
         mRealTimeView.setOverlayColor(colorA);
-        mListTitleContainer.setBackgroundColor(color);
+        ColorDrawable bd = new ColorDrawable(color);
+        bd.setAlpha(10);
+        mListTitleContainer.setBackground(bd);
 
         ThemeEnum t;
         double d = ColorUtils.calculateLuminance(colorA);

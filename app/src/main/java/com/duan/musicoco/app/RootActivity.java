@@ -16,6 +16,7 @@ import com.duan.musicoco.app.manager.PermissionManager;
 import com.duan.musicoco.app.manager.PlayServiceManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.AppPreference;
+import com.duan.musicoco.preference.PlayBackgroundModeEnum;
 import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 
@@ -60,9 +61,6 @@ public abstract class RootActivity extends AppCompatActivity implements Permissi
     }
 
     private void checkTheme() {
-        //FIXME test
-        appPreference.modifyTheme(ThemeEnum.WHITE);
-
         ThemeEnum themeEnum = appPreference.getTheme();
         if (themeEnum == ThemeEnum.DARK) {
             this.setTheme(R.style.Theme_DARK);
