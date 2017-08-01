@@ -1,6 +1,7 @@
 package com.duan.musicoco.detail.sheet;
 
 import android.app.Activity;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.RemoteException;
 import android.support.design.widget.FloatingActionButton;
@@ -9,10 +10,11 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -63,6 +65,10 @@ public class SheetSongListController implements
     private RecyclerView songList;
     private FloatingActionButton fabPlayAll;
 
+    private View checkContainer;
+    private TextView checkCount;
+    private CheckBox checkAll;
+
     private final Activity activity;
     private SongAdapter songAdapter;
     private IPlayControl control;
@@ -99,6 +105,20 @@ public class SheetSongListController implements
         line = activity.findViewById(R.id.sheet_detail_songs_line);
         songList = (RecyclerView) activity.findViewById(R.id.sheet_detail_songs_list);
         randomContainer = activity.findViewById(R.id.sheet_detail_random_container);
+
+        checkContainer = activity.findViewById(R.id.sheet_detail_check_container);
+        checkAll = (CheckBox) activity.findViewById(R.id.sheet_detail_check_all);
+        checkCount = (TextView) activity.findViewById(R.id.sheet_detail_check_count);
+        checkAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    songAdapter.checkAll();
+                } else {
+                    songAdapter.clearAllCheck();
+                }
+            }
+        });
 
         randomContainer.setOnClickListener(this);
         fabPlayAll.setOnClickListener(this);
@@ -182,7 +202,8 @@ public class SheetSongListController implements
     private void initSongList() {
 
         songAdapter = new SongAdapter(activity, data, sheetID);
-        songList.setLayoutManager(new LinearLayoutManager(activity));
+        LinearLayoutManager lm = new LinearLayoutManager(activity);
+        songList.setLayoutManager(lm);
         songList.setAdapter(songAdapter);
         songList.setItemAnimator(new DefaultItemAnimator());
         songList.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -192,7 +213,6 @@ public class SheetSongListController implements
                     Glide.with(activity).resumeRequests();
                 } else {
                     Glide.with(activity).pauseRequests();
-
                 }
             }
 
@@ -206,12 +226,25 @@ public class SheetSongListController implements
                 }
             }
         });
+        setSongAdapterListeners();
+        //在 calculateRecycleViewHeight 之后再更新
+        songList.post(new Runnable() {
+            @Override
+            public void run() {
+                update();
+            }
+        });
+
+    }
+
+    private void setSongAdapterListeners() {
         songAdapter.setOnItemClickListener(new SongAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(SongAdapter.ViewHolder view, SongAdapter.DataHolder data, int position) {
                 playSong(position);
             }
         });
+
         songAdapter.setOnMoreClickListener(new SongAdapter.OnMoreClickListener() {
             @Override
             public void onMore(SongAdapter.ViewHolder view, SongAdapter.DataHolder data, int position) {
@@ -231,16 +264,28 @@ public class SheetSongListController implements
             @Override
             public boolean onLongClick(View v) {
                 songAdapter.setMultiselectionModeEnable(true);
-                switchMenus(true);
+                switchMultiselectionMode(true);
                 return true;
             }
         });
 
-        //在 calculateRecycleViewHeight 之后再更新
-        songList.post(new Runnable() {
+        songAdapter.setOnCheckStatusChangedListener(new SongAdapter.OnItemCheckStatusChangedListener() {
             @Override
-            public void run() {
-                update();
+            public void itemCheckChanged(int position, boolean check) {
+                List<?> checked = songAdapter.getCheckItemsIndex();
+                String count = activity.getString(R.string.select_song);
+                boolean isAllChecked = false;
+                if (checked != null) {
+                    int itemCount = songAdapter.getItemCount();
+                    count = checked.size() + "/" + itemCount;
+                    if (itemCount == checked.size()) {
+                        isAllChecked = true;
+                    }
+                }
+
+                checkCount.setText(count);
+                checkAll.setChecked(isAllChecked);
+
             }
         });
 
@@ -484,15 +529,42 @@ public class SheetSongListController implements
     public boolean onBackPressed() {
         if (songAdapter.getMultiselectionModeEnable()) {
             songAdapter.setMultiselectionModeEnable(false);
-            switchMenus(false);
+            switchMultiselectionMode(false);
             return false;
         }
-
         return true;
     }
 
-    private void switchMenus(boolean mulit) {
+    private void switchMultiselectionMode(boolean mulit) {
+        if (mulit) {
+            showCheckAllView();
+        } else {
+            hideCheckAllView();
+        }
+    }
 
+    private void hideCheckAllView() {
+        checkContainer.setVisibility(View.GONE);
+
+        randomContainer.setClickable(true);
+        randomContainer.setOnClickListener(this);
+        random.setVisibility(View.VISIBLE);
+        playAllRandom.setVisibility(View.VISIBLE);
+    }
+
+    private void showCheckAllView() {
+        checkContainer.setVisibility(View.VISIBLE);
+        TextView all = (TextView) activity.findViewById(R.id.sheet_detail_check_all_);
+        int vicTC = ((ColorDrawable) line.getBackground()).getColor();
+        int mainTC = playAllRandom.getCurrentTextColor();
+        all.setTextColor(vicTC);
+        checkCount.setTextColor(mainTC);
+        checkCount.setText(R.string.select_song);
+        checkAll.setChecked(false);
+
+        randomContainer.setClickable(false);
+        random.setVisibility(View.GONE);
+        playAllRandom.setVisibility(View.GONE);
     }
 
 }

@@ -48,7 +48,6 @@ public class SheetInfoController implements OnThemeChange {
     private final SheetCoverHelper.OnFindCompleted onFindCompleted;
     private Sheet sheet;
 
-
     public SheetInfoController(Activity activity, boolean darkTheme) {
         this.activity = activity;
         this.isDarkThem = darkTheme;

@@ -14,6 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="8dp"
+        android:clickable="false"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/sheet_song_item_number"
@@ -28,9 +29,9 @@
         android:drawableTint="@android:color/black"
         android:gravity="center_vertical|start"
         android:lines="1"
+        android:text="name"
         android:textSize="@dimen/text_middle"
         android:textStyle="bold"
-        android:text="name"
         android:typeface="normal"
         app:layout_constraintRight_toLeftOf="@+id/sheet_song_item_more"
         app:layout_constraintTop_toTopOf="@+id/sheet_song_item_image" />
@@ -79,7 +80,8 @@
         android:id="@+id/sheet_song_item_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="8dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:ellipsize="end"
         android:gravity="center"
         android:lines="1"
@@ -90,7 +92,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/sheet_song_item_image"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.508" />
+        app:layout_constraintVertical_bias="0.508"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView
         android:id="@+id/sheet_song_item_arts"

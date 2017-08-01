@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
     private OnMoreClickListener moreClickListener;
     private OnItemClickListener itemClickListener;
     private View.OnLongClickListener longClickListener;
+    private OnItemCheckStatusChangedListener checkStatusChangedListener;
 
     private boolean multiselectionMode = false;
     private boolean useAnim = false;
@@ -64,6 +66,32 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
         return multiselectionMode;
     }
 
+    public void checkAll() {
+        if (checksIndex != null) {
+            for (int i = 0; i < getItemCount(); i++) {
+                if (!checksIndex.contains(i)) {
+                    checksIndex.add(i);
+                }
+            }
+
+            notifyDataSetChanged();
+            if (checkStatusChangedListener != null) {
+                checkStatusChangedListener.itemCheckChanged(0, true);
+            }
+        }
+    }
+
+    public void clearAllCheck() {
+        if (checksIndex != null) {
+            checksIndex.clear();
+            notifyDataSetChanged();
+
+            if (checkStatusChangedListener != null) {
+                checkStatusChangedListener.itemCheckChanged(0, true);
+            }
+        }
+    }
+
     public interface OnMoreClickListener {
         void onMore(ViewHolder view, DataHolder data, int position);
     }
@@ -72,12 +100,20 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
         void onItemClick(ViewHolder view, DataHolder data, int position);
     }
 
+    public interface OnItemCheckStatusChangedListener {
+        void itemCheckChanged(int position, boolean check);
+    }
+
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.itemClickListener = listener;
     }
 
-    public void setOnMoreClickListener(OnMoreClickListener moreClickListener) {
-        this.moreClickListener = moreClickListener;
+    public void setOnMoreClickListener(OnMoreClickListener listener) {
+        this.moreClickListener = listener;
+    }
+
+    public void setOnCheckStatusChangedListener(OnItemCheckStatusChangedListener listener) {
+        this.checkStatusChangedListener = listener;
     }
 
     public void setOnItemLongClickListener(View.OnLongClickListener listener) {
@@ -106,14 +142,14 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
         } else {
             checksIndex = null;
         }
-
         notifyDataSetChanged();
-        notifyItemRangeChanged(0, getItemCount());
     }
 
     public void setUseAnim(boolean useAnim) {
         this.useAnim = useAnim;
     }
+
+    private int moreBtWidth;
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
@@ -121,22 +157,28 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
         SongInfo info = dataHolder.info;
 
         loadData(dataHolder, holder, position);
+
         int tr = holder.more.getWidth();
+        // 注意可能获取到值 0
+        if (moreBtWidth == 0 && tr != 0) {
+            moreBtWidth = tr;
+        }
+
         if (multiselectionMode) {
-            startTranslAnim(0, tr, holder);
+            startTranslAnimIfNeed(0, moreBtWidth, holder);
             holder.check.setVisibility(View.VISIBLE);
 
             handleSelectModeListener(holder, position);
 
         } else {
-            startTranslAnim(tr, 0, holder);
+            startTranslAnimIfNeed(moreBtWidth, 0, holder);
             holder.check.setVisibility(View.GONE);
 
             handleNormalListeners(info, holder, dataHolder, position);
         }
     }
 
-    private void startTranslAnim(int from, int to, final ViewHolder holder) {
+    private void startTranslAnimIfNeed(int from, final int to, final ViewHolder holder) {
         if (useAnim) {
             ValueAnimator anim = ObjectAnimator.ofInt(from, to);
             int dur = context.getResources().getInteger(R.integer.anim_default_duration);
@@ -147,7 +189,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
                 public void onAnimationUpdate(ValueAnimator animation) {
                     int va = (int) animation.getAnimatedValue();
                     for (View v : holder.views) {
-                        if (v != null) {
+                        if (v != null && v.getTranslationX() != to) {
                             v.setTranslationX(va);
                         }
                     }
@@ -156,11 +198,15 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
             anim.start();
         } else {
             for (View v : holder.views) {
-                if (v != null) {
+                if (v != null && v.getTranslationX() != to) {
                     v.setTranslationX(to);
                 }
             }
         }
+    }
+
+    public List<Integer> getCheckItemsIndex() {
+        return checksIndex;
     }
 
     private void handleSelectModeListener(final ViewHolder holder, final int position) {
@@ -178,10 +224,16 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
                 if (holder.check.isChecked()) {
                     if (!checksIndex.contains(ele)) {
                         checksIndex.add(ele);
+                        if (checkStatusChangedListener != null) {
+                            checkStatusChangedListener.itemCheckChanged(position, true);
+                        }
                     }
                 } else {
                     if (checksIndex.contains(ele)) {
                         checksIndex.remove(ele);
+                        if (checkStatusChangedListener != null) {
+                            checkStatusChangedListener.itemCheckChanged(position, false);
+                        }
                     }
                 }
             }
@@ -195,6 +247,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    setUseAnim(false);
                     itemClickListener.onItemClick(holder, dataHolder, position);
                 }
             });
@@ -235,6 +288,12 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
         String duration = StringUtils.getGenTimeMS((int) info.getDuration());
         holder.duration.setText(duration);
 
+        if (multiselectionMode && checksIndex.contains(position)) {
+            holder.check.setChecked(true);
+        } else {
+            holder.check.setChecked(false);
+        }
+
         bindStatAndColors(holder, position, dataHolder.isFavorite);
     }
 
@@ -243,7 +302,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
         int mtc;
         int vtc;
 
-        if (isCurrentSheetPlaying && position == currentIndex) {
+        if (isCurrentSheetPlaying && position == currentIndex && !multiselectionMode) {
             mtc = vtc = choiceC;
             setNumberAsImage(true, holder.number, vtc);
         } else {
@@ -339,7 +398,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
             arts = (TextView) itemView.findViewById(R.id.sheet_song_item_arts);
             more = (ImageButton) itemView.findViewById(R.id.sheet_song_item_more);
             check = (CheckBox) itemView.findViewById(R.id.sheet_song_item_check);
-
             views = new View[]{
                     name,
                     image,
@@ -349,6 +407,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
                     arts,
                     more,
                     check};
+
         }
     }
 

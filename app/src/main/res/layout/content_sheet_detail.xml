@@ -15,14 +15,56 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:clickable="true"
             android:id="@+id/sheet_detail_random_container"
             android:layout_width="match_parent"
             android:layout_height="@dimen/action_bar_default_height"
             android:background="?android:selectableItemBackground"
+            android:clickable="true"
             android:orientation="horizontal"
             android:paddingLeft="@dimen/activity_default_margin"
             android:paddingRight="@dimen/activity_default_margin">
+
+            <RelativeLayout
+                android:id="@+id/sheet_detail_check_container"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:visibility="gone">
+
+                <CheckBox
+                    android:id="@+id/sheet_detail_check_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/sheet_detail_check_all_"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginTop="10dp" />
+
+                <TextView
+                    android:id="@+id/sheet_detail_check_all_"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginStart="7dp"
+                    android:text="@string/all"
+                    android:textSize="@dimen/text_small_s_s" />
+
+                <TextView
+                    android:text="@string/select_song"
+                    android:id="@+id/sheet_detail_check_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="@dimen/activity_default_margin"
+                    android:layout_marginRight="@dimen/activity_default_margin"
+                    android:layout_toRightOf="@id/sheet_detail_check_all"
+                    android:gravity="center" />
+
+            </RelativeLayout>
 
             <ImageView
                 android:id="@+id/sheet_detail_songs_icon"
@@ -40,6 +82,7 @@
                 android:layout_marginRight="@dimen/activity_default_margin"
                 android:gravity="center_vertical|start"
                 android:lines="1" />
+
         </LinearLayout>
 
         <View
@@ -51,11 +94,11 @@
             android:background="#000" />
 
         <android.support.v7.widget.RecyclerView
-            android:paddingTop="@dimen/activity_default_padding"
-            android:paddingBottom="@dimen/activity_default_padding"
             android:id="@+id/sheet_detail_songs_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/activity_default_padding"
+            android:paddingTop="@dimen/activity_default_padding" />
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>
