@@ -189,7 +189,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
                 public void onAnimationUpdate(ValueAnimator animation) {
                     int va = (int) animation.getAnimatedValue();
                     for (View v : holder.views) {
-                        if (v != null && v.getTranslationX() != to) {
+                        if (v != null) {
                             v.setTranslationX(va);
                         }
                     }
@@ -198,7 +198,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
             anim.start();
         } else {
             for (View v : holder.views) {
-                if (v != null && v.getTranslationX() != to) {
+                if (v != null) {
                     v.setTranslationX(to);
                 }
             }
