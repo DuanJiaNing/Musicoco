@@ -61,18 +61,12 @@
             android:name=".detail.sheet.SheetDetailActivity"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.Sheet.Detail">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".main.MainActivity" />
         </activity>
 
         <activity
             android:name=".newsheet.SheetModifyActivity"
             android:label="@string/title_activity_sheet_modify"
             android:theme="@style/AppTheme">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".main.MainActivity" />
         </activity>
     </application>
 

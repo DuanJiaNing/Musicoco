@@ -1,5 +1,7 @@
 package com.duan.musicoco.detail.sheet;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -7,6 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,6 +23,7 @@ import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
@@ -42,12 +47,21 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
 
     private OnMoreClickListener moreClickListener;
     private OnItemClickListener itemClickListener;
+    private View.OnLongClickListener longClickListener;
+
+    private boolean multiselectionMode = false;
+    private boolean useAnim = false;
+    private List<Integer> checksIndex = null;
 
     public SongAdapter(Context context, List<DataHolder> data, int id) {
         this.context = context;
         this.data = data;
         this.choiceC = context.getResources().getColor(R.color.item_select_color);
         this.sheetID = id;
+    }
+
+    public boolean getMultiselectionModeEnable() {
+        return multiselectionMode;
     }
 
     public interface OnMoreClickListener {
@@ -66,6 +80,10 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
         this.moreClickListener = moreClickListener;
     }
 
+    public void setOnItemLongClickListener(View.OnLongClickListener listener) {
+        this.longClickListener = listener;
+    }
+
     public DataHolder getItem(int pos) {
         return data.get(pos);
     }
@@ -76,10 +94,101 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
         return new ViewHolder(view);
     }
 
+    public void setMultiselectionModeEnable(boolean enable) {
+        multiselectionMode = enable;
+        setUseAnim(true);
+        if (enable) {
+            if (checksIndex == null) {
+                checksIndex = new ArrayList<>();
+            } else {
+                checksIndex.clear();
+            }
+        } else {
+            checksIndex = null;
+        }
+
+        notifyDataSetChanged();
+        notifyItemRangeChanged(0, getItemCount());
+    }
+
+    public void setUseAnim(boolean useAnim) {
+        this.useAnim = useAnim;
+    }
+
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         final DataHolder dataHolder = getItem(position);
         SongInfo info = dataHolder.info;
+
+        loadData(dataHolder, holder, position);
+        int tr = holder.more.getWidth();
+        if (multiselectionMode) {
+            startTranslAnim(0, tr, holder);
+            holder.check.setVisibility(View.VISIBLE);
+
+            handleSelectModeListener(holder, position);
+
+        } else {
+            startTranslAnim(tr, 0, holder);
+            holder.check.setVisibility(View.GONE);
+
+            handleNormalListeners(info, holder, dataHolder, position);
+        }
+    }
+
+    private void startTranslAnim(int from, int to, final ViewHolder holder) {
+        if (useAnim) {
+            ValueAnimator anim = ObjectAnimator.ofInt(from, to);
+            int dur = context.getResources().getInteger(R.integer.anim_default_duration);
+            anim.setDuration(dur);
+            anim.setInterpolator(new DecelerateInterpolator());
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    int va = (int) animation.getAnimatedValue();
+                    for (View v : holder.views) {
+                        if (v != null) {
+                            v.setTranslationX(va);
+                        }
+                    }
+                }
+            });
+            anim.start();
+        } else {
+            for (View v : holder.views) {
+                if (v != null) {
+                    v.setTranslationX(to);
+                }
+            }
+        }
+    }
+
+    private void handleSelectModeListener(final ViewHolder holder, final int position) {
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                holder.check.toggle();
+
+                if (checksIndex == null) {
+                    checksIndex = new ArrayList<Integer>();
+                }
+
+                Integer ele = position;
+                if (holder.check.isChecked()) {
+                    if (!checksIndex.contains(ele)) {
+                        checksIndex.add(ele);
+                    }
+                } else {
+                    if (checksIndex.contains(ele)) {
+                        checksIndex.remove(ele);
+                    }
+                }
+            }
+        });
+    }
+
+    private void handleNormalListeners(SongInfo info, final ViewHolder holder, final DataHolder dataHolder, final int position) {
 
         if (itemClickListener != null) {
             holder.itemView.setTag(position);
@@ -100,6 +209,15 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
                 }
             });
         }
+
+        if (longClickListener != null) {
+            holder.itemView.setOnLongClickListener(longClickListener);
+        }
+    }
+
+    private void loadData(DataHolder dataHolder, ViewHolder holder, int position) {
+        SongInfo info = dataHolder.info;
+
         Glide.with(context)
                 .load(info.getAlbum_path())
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
@@ -124,6 +242,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
 
         int mtc;
         int vtc;
+
         if (isCurrentSheetPlaying && position == currentIndex) {
             mtc = vtc = choiceC;
             setNumberAsImage(true, holder.number, vtc);
@@ -151,10 +270,10 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
 
     }
 
-    // FIXME 位置错乱
     private void setNumberAsImage(boolean b, TextView number, int vtc) {
 
         if (b) {
+
             Drawable drawable;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 drawable = context.getDrawable(R.drawable.ic_volume_up_black_24dp);
@@ -172,6 +291,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
             }
         } else {
             number.setTextColor(vtc);
+            number.setCompoundDrawables(null, null, null, null);
         }
 
     }
@@ -205,10 +325,11 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
         TextView arts;
         ImageButton more;
         View itemView;
+        CheckBox check;
+        final View[] views;
 
         public ViewHolder(View itemView) {
             super(itemView);
-
             this.itemView = itemView;
             name = (TextView) itemView.findViewById(R.id.sheet_song_item_name);
             image = (ImageView) itemView.findViewById(R.id.sheet_song_item_image);
@@ -217,6 +338,17 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
             number = (TextView) itemView.findViewById(R.id.sheet_song_item_number);
             arts = (TextView) itemView.findViewById(R.id.sheet_song_item_arts);
             more = (ImageButton) itemView.findViewById(R.id.sheet_song_item_more);
+            check = (CheckBox) itemView.findViewById(R.id.sheet_song_item_check);
+
+            views = new View[]{
+                    name,
+                    image,
+                    favorite,
+                    duration,
+                    number,
+                    arts,
+                    more,
+                    check};
         }
     }
 

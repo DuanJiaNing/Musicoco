@@ -9,109 +9,107 @@
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="81dp">
 
+    <CheckBox
+        android:id="@+id/sheet_song_item_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/sheet_song_item_number"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/sheet_song_item_name"
-        android:layout_width="0dp"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="0dp"
         android:drawableTint="@android:color/black"
         android:gravity="center_vertical|start"
         android:lines="1"
         android:textSize="@dimen/text_middle"
         android:textStyle="bold"
+        android:text="name"
         android:typeface="normal"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline5"
-        app:layout_constraintRight_toLeftOf="@+id/guideline2"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.497" />
+        app:layout_constraintRight_toLeftOf="@+id/sheet_song_item_more"
+        app:layout_constraintTop_toTopOf="@+id/sheet_song_item_image" />
 
     <ImageView
         android:id="@+id/sheet_song_item_image"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="8dp"
         android:src="@drawable/default_album"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline3"
-        app:layout_constraintRight_toLeftOf="@+id/guideline5"
+        app:layout_constraintRight_toLeftOf="@+id/sheet_song_item_name"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/sheet_song_item_favorite"
         android:layout_width="15dp"
         android:layout_height="15dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="0dp"
         android:alpha="0.5"
         android:src="@drawable/ic_action_heart"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline5"
-        app:layout_constraintTop_toTopOf="@+id/guideline"
-        app:layout_constraintVertical_bias="0.555" />
+        app:layout_constraintBottom_toBottomOf="@+id/sheet_song_item_image"
+        app:layout_constraintLeft_toLeftOf="@+id/sheet_song_item_arts" />
 
     <TextView
         android:id="@+id/sheet_song_item_duration"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:layout_marginLeft="0dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
         android:gravity="center_vertical|start"
         android:lines="1"
         android:maxEms="3"
-        android:textSize="@dimen/text_small_s"
         android:text="12:09"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="@dimen/text_small_s"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toRightOf="@+id/sheet_song_item_favorite"
-        app:layout_constraintRight_toLeftOf="@+id/guideline2"
-        app:layout_constraintTop_toTopOf="@+id/guideline"
-        app:layout_constraintVertical_bias="0.454" />
+        app:layout_constraintRight_toRightOf="@+id/sheet_song_item_arts"
+        app:layout_constraintTop_toTopOf="@+id/sheet_song_item_favorite" />
 
     <TextView
         android:id="@+id/sheet_song_item_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:ellipsize="end"
         android:gravity="center"
         android:lines="1"
         android:maxEms="2"
+        android:text="12"
         android:textSize="@dimen/text_middle"
         android:textStyle="bold"
-        android:text="12"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/guideline3"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintRight_toLeftOf="@+id/sheet_song_item_image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.508" />
 
     <TextView
         android:id="@+id/sheet_song_item_arts"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="4dp"
         android:gravity="center_vertical|start"
         android:lines="1"
-        android:textSize="@dimen/text_small_s"
         android:text="arts"
+        android:textSize="@dimen/text_small_s"
         app:layout_constraintBottom_toTopOf="@+id/sheet_song_item_favorite"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline5"
-        app:layout_constraintRight_toLeftOf="@+id/guideline2"
-        app:layout_constraintTop_toTopOf="@+id/guideline"
-        app:layout_constraintVertical_bias="0.503" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="@+id/sheet_song_item_name"
+        app:layout_constraintRight_toRightOf="@+id/sheet_song_item_name"
+        app:layout_constraintTop_toBottomOf="@+id/sheet_song_item_name"
+        app:layout_constraintVertical_bias="0.4" />
 
     <ImageButton
         android:id="@+id/sheet_song_item_more"
@@ -129,35 +127,5 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="256dp" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.76" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.11" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.28" />
 
 </android.support.constraint.ConstraintLayout>

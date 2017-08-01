@@ -9,6 +9,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -191,36 +192,24 @@ public class SheetSongListController implements
                     Glide.with(activity).resumeRequests();
                 } else {
                     Glide.with(activity).pauseRequests();
-                }
 
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy < 0) {
+                    songAdapter.setUseAnim(false);
+                } else {
+                    songAdapter.setUseAnim(true);
+                }
             }
         });
         songAdapter.setOnItemClickListener(new SongAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(SongAdapter.ViewHolder view, SongAdapter.DataHolder data, int position) {
-                try {
-                    int id = control.getPlayListId();
-                    int index = control.currentSongIndex();
-
-                    if (id == sheetID) { // 当前歌单
-                        if (position == index) {
-                            Log.d(TAG, "onClick: the song is playing");
-                            if (control.status() != PlayController.STATUS_PLAYING) {
-                                control.resume();
-                            }
-                        } else {
-                            control.playByIndex(position);
-                            update();
-                        }
-                    } else {
-                        control.setPlaySheet(sheetID, position);
-                        control.resume();
-                        update();
-                    }
-
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+                playSong(position);
             }
         });
         songAdapter.setOnMoreClickListener(new SongAdapter.OnMoreClickListener() {
@@ -238,6 +227,15 @@ public class SheetSongListController implements
             }
         });
 
+        songAdapter.setOnItemLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                songAdapter.setMultiselectionModeEnable(true);
+                switchMenus(true);
+                return true;
+            }
+        });
+
         //在 calculateRecycleViewHeight 之后再更新
         songList.post(new Runnable() {
             @Override
@@ -246,6 +244,33 @@ public class SheetSongListController implements
             }
         });
 
+    }
+
+    private void playSong(int position) {
+        try {
+            int id = control.getPlayListId();
+            int index = control.currentSongIndex();
+
+            if (id == sheetID) { // 当前歌单
+                if (position == index) {
+                    Log.d(TAG, "onClick: the song is playing");
+                    if (control.status() != PlayController.STATUS_PLAYING) {
+                        control.resume();
+                    }
+                } else {
+                    control.playByIndex(position);
+                    songAdapter.update(true, position);
+
+                }
+            } else {
+                control.setPlaySheet(sheetID, position);
+                control.resume();
+                songAdapter.update(true, position);
+            }
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
 
     private void updateSongFavoriteOptions() {
@@ -455,4 +480,19 @@ public class SheetSongListController implements
         optionsAdapter.setTitleColor(mainTC);
         optionsAdapter.setIconColor(accentC);
     }
+
+    public boolean onBackPressed() {
+        if (songAdapter.getMultiselectionModeEnable()) {
+            songAdapter.setMultiselectionModeEnable(false);
+            switchMenus(false);
+            return false;
+        }
+
+        return true;
+    }
+
+    private void switchMenus(boolean mulit) {
+
+    }
+
 }

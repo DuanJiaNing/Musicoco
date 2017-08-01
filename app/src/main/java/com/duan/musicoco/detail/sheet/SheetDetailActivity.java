@@ -89,6 +89,17 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
 
     }
 
+    @Override
+    public void onBackPressed() {
+        if (songListController != null) {
+            if (songListController.onBackPressed()) {
+                super.onBackPressed();
+            }
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     private void initBroadcast() {
         songsChangeReceiver = new BroadcastReceiver() {
             @Override
@@ -170,10 +181,20 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
                 ToastUtils.showShortToast("sheet_detail_search");
                 break;
             case R.id.sheet_detail_action_collection:
-                sheetsOperation.handleAddAllSongToFavorite(sheetID);
+                if (songList.getChildCount() == 0) {
+                    String msg = getString(R.string.error_empty_sheet);
+                    ToastUtils.showShortToast(msg);
+                } else {
+                    sheetsOperation.handleAddAllSongToFavorite(sheetID);
+                }
                 break;
             case R.id.sheet_detail_action_modify:
                 sheetsOperation.handleModifySheet(sheet);
+                break;
+            case android.R.id.home:
+                if (songListController.onBackPressed()) {
+                    finish();
+                }
                 break;
             default:
                 break;
