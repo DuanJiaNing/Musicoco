@@ -55,14 +55,15 @@
                     android:textSize="@dimen/text_small_s_s" />
 
                 <TextView
-                    android:text="@string/select_song"
                     android:id="@+id/sheet_detail_check_count"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/activity_default_margin"
                     android:layout_marginRight="@dimen/activity_default_margin"
                     android:layout_toRightOf="@id/sheet_detail_check_all"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:text="@string/select_song"
+                    android:textSize="@dimen/text_middle" />
 
             </RelativeLayout>
 
@@ -96,9 +97,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/sheet_detail_songs_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/activity_default_padding"
-            android:paddingTop="@dimen/activity_default_padding" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </android.support.v4.widget.NestedScrollView>

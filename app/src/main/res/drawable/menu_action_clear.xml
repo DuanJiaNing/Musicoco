@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+    android:src="@drawable/ic_clear_black_24dp"></bitmap><!--
+drawable 复用会使 tint 设置被覆盖，因而在此新建图标
+SheetDetailActivity#updateToolbarColor
+-->

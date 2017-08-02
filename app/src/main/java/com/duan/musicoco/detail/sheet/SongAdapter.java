@@ -73,8 +73,9 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
                     checksIndex.add(i);
                 }
             }
-
+            setUseAnim(false);
             notifyDataSetChanged();
+
             if (checkStatusChangedListener != null) {
                 checkStatusChangedListener.itemCheckChanged(0, true);
             }
@@ -84,6 +85,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
     public void clearAllCheck() {
         if (checksIndex != null) {
             checksIndex.clear();
+            setUseAnim(false);
             notifyDataSetChanged();
 
             if (checkStatusChangedListener != null) {
@@ -155,7 +157,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
     public void onBindViewHolder(ViewHolder holder, int position) {
         final DataHolder dataHolder = getItem(position);
         SongInfo info = dataHolder.info;
-
         loadData(dataHolder, holder, position);
 
         int tr = holder.more.getWidth();
@@ -238,6 +239,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
                 }
             }
         });
+        holder.itemView.setLongClickable(false);
     }
 
     private void handleNormalListeners(SongInfo info, final ViewHolder holder, final DataHolder dataHolder, final int position) {
@@ -264,6 +266,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
         }
 
         if (longClickListener != null) {
+            holder.itemView.setLongClickable(true);
             holder.itemView.setOnLongClickListener(longClickListener);
         }
     }
@@ -372,6 +375,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
     public void update(Boolean isCurrentSheetPlaying, int currentIndex) {
         this.isCurrentSheetPlaying = isCurrentSheetPlaying;
         this.currentIndex = currentIndex;
+        setUseAnim(false);
         notifyDataSetChanged();
     }
 

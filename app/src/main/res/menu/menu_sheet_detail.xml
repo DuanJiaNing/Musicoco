@@ -2,22 +2,53 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.duan.musicoco.detail.sheet.SheetDetailActivity">
-    <item
-        android:id="@+id/sheet_detail_search"
-        android:icon="@drawable/ic_search_black_24dp"
-        android:orderInCategory="200"
-        android:title="@string/search"
-        app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/sheet_detail_action_collection"
         android:icon="@drawable/ic_favorite_border"
         android:orderInCategory="100"
         android:title="@string/sheet_collection_all"
         app:showAsAction="ifRoom" />
+
     <item
         android:id="@+id/sheet_detail_action_modify"
         android:icon="@drawable/ic_mode_edit_black_24dp"
-        android:orderInCategory="300"
+        android:orderInCategory="200"
         android:title="@string/modify_sheet"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/sheet_detail_search"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:orderInCategory="300"
+        android:title="@string/search"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/sheet_detail_multi_add_favorite"
+        android:icon="@drawable/ic_favorite_border"
+        android:orderInCategory="400"
+        android:title="@string/sheet_collection_select"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/sheet_detail_multi_add_to_sheet"
+        android:icon="@drawable/menu_action_create_new_folder"
+        android:orderInCategory="500"
+        android:title="@string/sheet_add_select_to"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/sheet_detail_multi_remove"
+        android:icon="@drawable/menu_action_clear"
+        android:orderInCategory="600"
+        android:title="@string/sheet_remove_select"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/sheet_detail_multi_delete_songs"
+        android:icon="@drawable/menu_action_delete_forever"
+        android:orderInCategory="700"
+        android:title="@string/sheet_delete_select"
         app:showAsAction="ifRoom" />
 </menu>

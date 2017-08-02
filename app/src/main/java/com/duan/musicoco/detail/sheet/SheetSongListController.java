@@ -63,7 +63,6 @@ public class SheetSongListController implements
     private View line;
     private View randomContainer;
     private RecyclerView songList;
-    private FloatingActionButton fabPlayAll;
 
     private View checkContainer;
     private TextView checkCount;
@@ -101,7 +100,6 @@ public class SheetSongListController implements
     public void initViews() {
         random = (ImageView) activity.findViewById(R.id.sheet_detail_songs_icon);
         playAllRandom = (TextView) activity.findViewById(R.id.sheet_detail_songs_play_random);
-        fabPlayAll = (FloatingActionButton) activity.findViewById(R.id.sheet_detail_play_all);
         line = activity.findViewById(R.id.sheet_detail_songs_line);
         songList = (RecyclerView) activity.findViewById(R.id.sheet_detail_songs_list);
         randomContainer = activity.findViewById(R.id.sheet_detail_random_container);
@@ -109,9 +107,10 @@ public class SheetSongListController implements
         checkContainer = activity.findViewById(R.id.sheet_detail_check_container);
         checkAll = (CheckBox) activity.findViewById(R.id.sheet_detail_check_all);
         checkCount = (TextView) activity.findViewById(R.id.sheet_detail_check_count);
-        checkAll.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        checkAll.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onClick(View v) {
+                boolean isChecked = checkAll.isChecked();
                 if (isChecked) {
                     songAdapter.checkAll();
                 } else {
@@ -121,6 +120,7 @@ public class SheetSongListController implements
         });
 
         randomContainer.setOnClickListener(this);
+        FloatingActionButton fabPlayAll = (FloatingActionButton) activity.findViewById(R.id.sheet_detail_play_all);
         fabPlayAll.setOnClickListener(this);
 
         songList.post(new Runnable() {
@@ -219,7 +219,7 @@ public class SheetSongListController implements
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (dy < 0) {
+                if (dy <= 0) {
                     songAdapter.setUseAnim(false);
                 } else {
                     songAdapter.setUseAnim(true);
@@ -538,8 +538,10 @@ public class SheetSongListController implements
     private void switchMultiselectionMode(boolean mulit) {
         if (mulit) {
             showCheckAllView();
+            ((SheetDetailActivity) activity).setMultiModeMenuVisible(true);
         } else {
             hideCheckAllView();
+            ((SheetDetailActivity) activity).setMultiModeMenuVisible(false);
         }
     }
 
@@ -567,4 +569,13 @@ public class SheetSongListController implements
         playAllRandom.setVisibility(View.GONE);
     }
 
+    public List<Integer> getSelectSongIndex() {
+        return songAdapter.getCheckItemsIndex();
+    }
+
+    // 没有歌曲选中返回 true
+    public boolean checkSelectedEmpty() {
+        List<?> list = getSelectSongIndex();
+        return list == null || list.size() == 0;
+    }
 }

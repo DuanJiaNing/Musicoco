@@ -169,7 +169,6 @@ public class SongOperation {
         }
     }
 
-
     //反转歌曲收藏状态
     public boolean reverseSongFavoriteStatus(Song song) {
         if (song != null) {

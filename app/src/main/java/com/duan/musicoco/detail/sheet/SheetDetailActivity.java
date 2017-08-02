@@ -170,6 +170,30 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
                 menu.removeItem(R.id.sheet_detail_action_collection);
             }
         }
+        setMultiModeMenuVisible(false);
+    }
+
+    public void setMultiModeMenuVisible(boolean visible) {
+        MenuItem c = menu.findItem(R.id.sheet_detail_action_collection);
+        MenuItem m = menu.findItem(R.id.sheet_detail_action_modify);
+        MenuItem s = menu.findItem(R.id.sheet_detail_search);
+        MenuItem maf = menu.findItem(R.id.sheet_detail_multi_add_favorite);
+        MenuItem mas = menu.findItem(R.id.sheet_detail_multi_add_to_sheet);
+        MenuItem mr = menu.findItem(R.id.sheet_detail_multi_remove);
+        MenuItem md = menu.findItem(R.id.sheet_detail_multi_delete_songs);
+
+        if (c != null) {
+            c.setVisible(!visible);
+        }
+        if (m != null) {
+            m.setVisible(!visible);
+        }
+        s.setVisible(!visible);
+
+        maf.setVisible(visible);
+        mas.setVisible(visible);
+        mr.setVisible(visible);
+        md.setVisible(visible);
     }
 
     @Override
@@ -194,6 +218,38 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
             case android.R.id.home:
                 if (songListController.onBackPressed()) {
                     finish();
+                }
+                break;
+            case R.id.sheet_detail_multi_add_to_sheet: // 收藏多首歌曲到歌单
+                if (!songListController.checkSelectedEmpty()) {
+
+                } else {
+                    String msg = getString(R.string.error_non_song_select);
+                    ToastUtils.showShortToast(msg);
+                }
+                break;
+            case R.id.sheet_detail_multi_delete_songs: // 彻底删除多首歌曲
+                if (!songListController.checkSelectedEmpty()) {
+
+                } else {
+                    String msg = getString(R.string.error_non_song_select);
+                    ToastUtils.showShortToast(msg);
+                }
+                break;
+            case R.id.sheet_detail_multi_add_favorite: // 添加多首歌曲到[我的收藏]
+                if (!songListController.checkSelectedEmpty()) {
+
+                } else {
+                    String msg = getString(R.string.error_non_song_select);
+                    ToastUtils.showShortToast(msg);
+                }
+                break;
+            case R.id.sheet_detail_multi_remove: // 从当前歌单移除
+                if (!songListController.checkSelectedEmpty()) {
+
+                } else {
+                    String msg = getString(R.string.error_non_song_select);
+                    ToastUtils.showShortToast(msg);
                 }
                 break;
             default:
@@ -333,19 +389,16 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
                 navD.setTint(mainTC);
             }
 
-            MenuItem heart = menu.findItem(R.id.sheet_detail_action_collection);
-            MenuItem search = menu.findItem(R.id.sheet_detail_search);
-            MenuItem edit = menu.findItem(R.id.sheet_detail_action_modify);
-
+            int menuCount = menu.size();
             int mainC = colors[0];
-            if (heart != null) {
-                heart.getIcon().setTint(mainC);
-            }
-            if (search != null) {
-                search.getIcon().setTint(mainC);
-            }
-            if (edit != null) {
-                edit.getIcon().setTint(mainC);
+            for (int i = 0; i < menuCount; i++) {
+                MenuItem item = menu.getItem(i);
+                if (item != null) {
+                    Drawable icon = item.getIcon();
+                    if (icon != null) {
+                        icon.setTint(mainC);
+                    }
+                }
             }
         }
     }
