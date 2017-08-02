@@ -38,7 +38,7 @@
     <string name="song_operation_collection_sheet">收藏到歌单</string>
     <string name="song_operation_detail">歌曲详情</string>
     <string name="song_operation_remove_from_sheet">从歌单中移除歌曲</string>
-    <string name="song_operation_delete">彻底删除歌曲</string>
+    <string name="song_operation_delete">删除</string>
     <string name="song_operation_add_to_favorite">收藏</string>
     <string name="song_operation_remove_from_favorite">取消收藏</string>
 
@@ -97,10 +97,10 @@
 
     <string name="sheet_collection_all">收藏所有歌曲</string>
 
-    <string name="sheet_add_select_to">将选中歌曲添加到</string>
-    <string name="sheet_collection_select">收藏选中歌曲</string>
-    <string name="sheet_remove_select">移除选中歌曲</string>
-    <string name="sheet_delete_select">彻底删除选中歌曲</string>
+    <string name="sheet_add_select_to">添加至播放列表</string>
+    <string name="sheet_collection_select">添加至收藏</string>
+    <string name="sheet_remove_select">移除</string>
+    <string name="sheet_delete_select">删除</string>
 
     <string name="title_activity_sheet_modify">SheetModifyActivity</string>
 

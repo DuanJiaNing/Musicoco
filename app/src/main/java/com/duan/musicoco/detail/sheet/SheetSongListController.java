@@ -170,6 +170,7 @@ public class SheetSongListController implements
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Song song = new Song(currentSongData.info.getData());
                 SongInfo info = currentSongData.info;
+                // FIXME 彻底删除 和 移除 时让列表有动画，调用 adapter 的 romeItemXXX
                 switch (position) {
                     case 0: //收藏到歌单
                         songOperation.handleCollectToSheet(info);
@@ -340,7 +341,7 @@ public class SheetSongListController implements
                 R.drawable.ic_create_new_folder_black_24dp,
                 R.drawable.ic_art_track_black_24dp,
                 R.drawable.ic_delete_forever_black_24dp,
-                R.drawable.ic_action_heart,
+                R.drawable.ic_favorite_border,
                 R.drawable.ic_clear_black_24dp
         };
 
