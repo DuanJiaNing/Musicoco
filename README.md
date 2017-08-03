@@ -13,7 +13,7 @@
 
 #### 效果图
 界面已经完成的部分<br>
-<img src="https://raw.githubusercontent.com/DuanJiaNing/Musicoco/master/screenshort.jpg"><br>
+<img src="https://raw.githubusercontent.com/DuanJiaNing/Musicoco/master/screenshort1.jpg"><br>
 
 #### 版本变化
 
