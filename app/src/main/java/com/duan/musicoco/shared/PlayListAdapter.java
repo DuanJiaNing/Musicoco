@@ -67,7 +67,7 @@ public class PlayListAdapter extends BaseAdapter implements
             @Override
             public void onClick(View v) {
                 Song s = new Song((String) v.getTag(R.id.play_list_item_remove_path));
-                PlayListAdapter.this.songOperation.removeSongFromCurrentSheet(s);
+                PlayListAdapter.this.songOperation.removeSongFromCurrentPlayingSheet(s);
             }
         };
 
@@ -219,7 +219,7 @@ public class PlayListAdapter extends BaseAdapter implements
     }
 
     public void updateColors(ThemeEnum themeEnum, int[] colors) {
-        Log.d("update", "PlayListAdapter updateColors");
+        Log.d("updateCurrentPlay", "PlayListAdapter updateColors");
 
         mainC = colors[0];
         vicC = colors[1];
@@ -233,7 +233,7 @@ public class PlayListAdapter extends BaseAdapter implements
 
     @Override
     public void update(Object obj, OnUpdateStatusChanged statusChanged) {
-        Log.d("update", "PlayListAdapter update");
+        Log.d("updateCurrentPlay", "PlayListAdapter updateCurrentPlay");
         try {
 
             List<Song> ss = control.getPlayList();

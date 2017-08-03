@@ -138,7 +138,7 @@ public class MainSheetsController implements
 
     @Override
     public void update(Object obj, final OnUpdateStatusChanged statusChanged) {
-        Log.d("update", "MainSheetController update");
+        Log.d("updateCurrentPlay", "MainSheetController updateCurrentPlay");
 
         Observable.just(Data.ALL, Data.RECENT, Data.FAVORITE)
                 .map(new Func1<Integer, Data>() {
@@ -234,21 +234,21 @@ public class MainSheetsController implements
     }
 
     private void updateFavorite(Data data) {
-        Log.d("update", "MainSheetController updateFavorite");
+        Log.d("updateCurrentPlay", "MainSheetController updateFavorite");
         Bitmap b = data.bitmap;
         mImageFavorite.setImageBitmap(createImage(b));
         updateTextAndColor(mTextFavorite, data.count, mCountFavorite, data.colors);
     }
 
     private void updateRecent(Data data) {
-        Log.d("update", "MainSheetController updateRecent");
+        Log.d("updateCurrentPlay", "MainSheetController updateRecent");
         Bitmap b = data.bitmap;
         mImageRecent.setImageBitmap(createImage(b));
         updateTextAndColor(mTextRecent, data.count, mCountRecent, data.colors);
     }
 
     private void updateAll(Data data) {
-        Log.d("update", "MainSheetController updateAll");
+        Log.d("updateCurrentPlay", "MainSheetController updateAll");
         Bitmap b = data.bitmap;
         mImageAll.setImageBitmap(createImage(b));
         updateTextAndColor(mTextAll, data.count, mCountAll, data.colors);
@@ -274,7 +274,7 @@ public class MainSheetsController implements
     }
 
     private void updateTextAndColor(TextView categoryView, int count, TextView countView, int[] colors) {
-        Log.d("update", "MainSheetController updateTextAndColor");
+        Log.d("updateCurrentPlay", "MainSheetController updateTextAndColor");
 
         categoryView.setBackgroundColor(colors[2]);
         categoryView.setTextColor(colors[3]);

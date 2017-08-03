@@ -173,7 +173,7 @@ public class PlayActivity extends RootActivity implements
     }
 
     private void updateStatus(Song song, boolean isNext) {
-        Log.d("update", "PlayActivity updateStatus");
+        Log.d("updateCurrentPlay", "PlayActivity updateStatus");
 
         try {
             boolean playing = control.status() == PlayController.STATUS_PLAYING;
@@ -266,7 +266,7 @@ public class PlayActivity extends RootActivity implements
      * 3 暗的柔和颜色 对应适合的字体颜色 辅字体色<br>
      */
     private void updateViews(int[] colors, Song song) {
-        Log.d("update", "PlayActivity updateViews");
+        Log.d("updateCurrentPlay", "PlayActivity updateViews");
 
         if (colors.length != 4 || song == null) {
             return;

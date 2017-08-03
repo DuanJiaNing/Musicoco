@@ -142,7 +142,7 @@ public class RecentMostPlayController implements
 
     @Override
     public void update(Object obj, OnUpdateStatusChanged completed) {
-        Log.d("update", "RecentMostPlayController update");
+        Log.d("updateCurrentPlay", "RecentMostPlayController updateCurrentPlay");
 
         final Object ob = obj;
         Observable.OnSubscribe<Data> onSubscribe = new Observable.OnSubscribe<Data>() {
@@ -228,7 +228,7 @@ public class RecentMostPlayController implements
     }
 
     private void updateImage(@NonNull Bitmap bitmap) {
-        Log.d("update", "RecentMostPlayController updateImage");
+        Log.d("updateCurrentPlay", "RecentMostPlayController updateImage");
         mImage.setImageBitmap(bitmap);
         AlphaAnimation anim = new AlphaAnimation(0.4f, 1.0f);
         anim.setDuration(1000);
@@ -236,7 +236,7 @@ public class RecentMostPlayController implements
     }
 
     private void updateText(SongInfo info, String remark, int maxPlayTime, String type) {
-        Log.d("update", "RecentMostPlayController updateText");
+        Log.d("updateCurrentPlay", "RecentMostPlayController updateText");
 
         String name = info.getTitle();
         String arts = info.getArtist();
@@ -259,7 +259,7 @@ public class RecentMostPlayController implements
     }
 
     private void updateColors(@NonNull int[] colors) {
-        Log.d("update", "RecentMostPlayController updateColors");
+        Log.d("updateCurrentPlay", "RecentMostPlayController updateColors");
 
         int startC = colors[0];
         int endC = colors[2];

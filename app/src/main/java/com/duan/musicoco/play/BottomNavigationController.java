@@ -30,7 +30,6 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.App;
 import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.bean.Sheet;
@@ -395,14 +394,14 @@ public class BottomNavigationController implements
 
     @Override
     public void update(Object obj, OnUpdateStatusChanged completed) {
-        Log.d("update", "play/BottomNavigationController update");
+        Log.d("updateCurrentPlay", "play/BottomNavigationController updateCurrentPlay");
         playListAdapter.update(obj, completed);
         listOption.update(obj, completed);
         songOption.update(obj, completed);
     }
 
     public void updatePlayMode() {
-        Log.d("update", "play/BottomNavigationController updatePlayMode");
+        Log.d("updateCurrentPlay", "play/BottomNavigationController updatePlayMode");
         if (songOption != null) {
             songOption.updatePlayMode();
         }
@@ -418,7 +417,7 @@ public class BottomNavigationController implements
     }
 
     public void updateFavorite() {
-        Log.d("update", "play/BottomNavigationController updateFavorite");
+        Log.d("updateCurrentPlay", "play/BottomNavigationController updateFavorite");
         try {
             Song song = control.currentSong();
             if (song != null) {
@@ -434,7 +433,7 @@ public class BottomNavigationController implements
 
     // updateColors 在 VARYING 主题时才会不断调用
     public void updateColors(int color, boolean isVarying) {
-        Log.d("update", "play/BottomNavigationController updateColors");
+        Log.d("updateCurrentPlay", "play/BottomNavigationController updateColors");
         int alpha = activity.getResources().getInteger(R.integer.play_list_bg_alpha);
         int colorA = ColorUtils.setAlphaComponent(color, alpha);
 
@@ -524,7 +523,7 @@ public class BottomNavigationController implements
         }
 
         private void updateCurrentSheet() {
-            Log.d("update", "play/BottomNavigationController updateCurrentSheet");
+            Log.d("updateCurrentPlay", "play/BottomNavigationController updateCurrentSheet");
             try {
                 int id = control.getPlayListId();
                 if (id < 0) {
@@ -553,7 +552,7 @@ public class BottomNavigationController implements
         }
 
         public void updateColors() {
-            Log.d("update", "play/BottomNavigationController ListOption#updateColors");
+            Log.d("updateCurrentPlay", "play/BottomNavigationController ListOption#updateColors");
 
             mSheet.setTextColor(currentDrawableColor);
 
@@ -569,7 +568,7 @@ public class BottomNavigationController implements
 
         @Override
         public void update(Object obj, OnUpdateStatusChanged statusChanged) {
-            Log.d("update", "play/BottomNavigationController ListOption#update");
+            Log.d("updateCurrentPlay", "play/BottomNavigationController ListOption#updateCurrentPlay");
             updateCurrentSheet();
         }
     }
@@ -717,7 +716,7 @@ public class BottomNavigationController implements
         }
 
         public void updateColors() {
-            Log.d("update", "play/BottomNavigationController SongOption#updateColors");
+            Log.d("updateCurrentPlay", "play/BottomNavigationController SongOption#updateColors");
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 hidePlayListBar.getDrawable().setTint(currentDrawableColor);
@@ -747,7 +746,7 @@ public class BottomNavigationController implements
         }
 
         int updatePlayMode() {
-            Log.d("update", "play/BottomNavigationController SongOption#updatePlayMode");
+            Log.d("updateCurrentPlay", "play/BottomNavigationController SongOption#updatePlayMode");
 
             Drawable drawable = null;
             int mode = PlayController.MODE_LIST_LOOP;
@@ -791,7 +790,7 @@ public class BottomNavigationController implements
         }
 
         private void updateCurrentFavorite(boolean favorite, boolean useAnim) {
-            Log.d("update", "play/BottomNavigationController SongOption#updateCurrentFavorite");
+            Log.d("updateCurrentPlay", "play/BottomNavigationController SongOption#updateCurrentFavorite");
 
             Drawable select;
             Drawable notSelect;
@@ -948,7 +947,7 @@ public class BottomNavigationController implements
                             songOperation.handleDeleteSongForever(song);
                             break;
                         case 3: {//从歌单中移除(非主歌单才有)
-                            songOperation.removeSongFromCurrentSheet(song);
+                            songOperation.removeSongFromCurrentPlayingSheet(song);
                             break;
                         }
                         default:

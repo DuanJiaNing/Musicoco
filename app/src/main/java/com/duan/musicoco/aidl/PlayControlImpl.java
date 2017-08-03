@@ -63,7 +63,9 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
     @Override
     public int playByIndex(int index) {
         int re = PlayController.ERROR_UNKNOWN;
-        if (manager.getSongsList().get(index) != null && manager.getCurrentSongIndex() != index) {
+        if (index < manager.getSongsList().size()
+                && manager.getSongsList().get(index) != null
+                && manager.getCurrentSongIndex() != index) {
             re = manager.play(index);
         }
         return re;

@@ -22,7 +22,7 @@
 
     <TextView
         android:id="@+id/sheet_song_item_name"
-        android:layout_width="200dp"
+        android:layout_width="190dp"
         android:layout_height="wrap_content"
         android:layout_marginRight="8dp"
         android:layout_marginTop="0dp"
@@ -80,8 +80,7 @@
         android:id="@+id/sheet_song_item_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="16dp"
         android:ellipsize="end"
         android:gravity="center"
         android:lines="1"
@@ -93,6 +92,7 @@
         app:layout_constraintRight_toLeftOf="@+id/sheet_song_item_image"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.508"
+        android:layout_marginLeft="16dp"
         app:layout_constraintLeft_toLeftOf="parent" />
 
     <TextView

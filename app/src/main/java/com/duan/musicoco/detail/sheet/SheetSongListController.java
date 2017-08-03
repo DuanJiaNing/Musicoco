@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.RemoteException;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -91,6 +89,8 @@ public class SheetSongListController implements
     private static final int OPTIONS_DELETE_FOREVER = 3;
     private static final int OPTIONS_FAVORITE = 4;
     private static final int OPTIONS_REMOVE_FROM_SHEET = 5;
+
+    private boolean isCurrentSheetPlaying = false;
 
     public SheetSongListController(Activity activity) {
         this.activity = activity;
@@ -187,10 +187,13 @@ public class SheetSongListController implements
                         update();
                         break;
                     case 4: //从歌单中移除(非主歌单才有该选项)
-                        songOperation.removeSongFromSheet(song, sheetID);
+                        if (isCurrentSheetPlaying) {
+                            songOperation.removeSongFromCurrentPlayingSheet(song);
+                        } else {
+                            songOperation.removeSongFromSheetNotPlaying(song, sheetID);
+                        }
                         update();
-                        String msg = activity.getString(R.string.success_remove_song_from_sheet);
-                        ToastUtils.showShortToast(msg);
+
                         break;
                 }
                 optionsDialog.hide();
@@ -206,12 +209,15 @@ public class SheetSongListController implements
         LinearLayoutManager lm = new LinearLayoutManager(activity);
         songList.setLayoutManager(lm);
         songList.setAdapter(songAdapter);
-        songList.setItemAnimator(new DefaultItemAnimator());
         songList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    Glide.with(activity).resumeRequests();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                        if (!activity.isDestroyed()) {
+                            Glide.with(activity).resumeRequests();
+                        }
+                    }
                 } else {
                     Glide.with(activity).pauseRequests();
                 }
@@ -242,6 +248,7 @@ public class SheetSongListController implements
         songAdapter.setOnItemClickListener(new SongAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(SongAdapter.ViewHolder view, SongAdapter.DataHolder data, int position) {
+                Log.i(TAG, "onItemClick: pos=" + position + " data=" + data.info);
                 playSong(position);
             }
         });
@@ -299,19 +306,22 @@ public class SheetSongListController implements
 
             if (id == sheetID) { // 当前歌单
                 if (position == index) {
+                    // FIXME BUG 在另外的歌单删除当前歌单中正在播放的歌曲
                     Log.d(TAG, "onClick: the song is playing");
                     if (control.status() != PlayController.STATUS_PLAYING) {
                         control.resume();
                     }
                 } else {
                     control.playByIndex(position);
-                    songAdapter.update(true, position);
+                    isCurrentSheetPlaying = true;
+                    songAdapter.update(isCurrentSheetPlaying, position);
 
                 }
             } else {
                 control.setPlaySheet(sheetID, position);
                 control.resume();
-                songAdapter.update(true, position);
+                isCurrentSheetPlaying = true;
+                songAdapter.update(isCurrentSheetPlaying, position);
             }
 
         } catch (RemoteException e) {
@@ -416,7 +426,6 @@ public class SheetSongListController implements
 
                 songCount = data.size();
 
-                boolean isCurrentSheetPlaying = false;
                 try {
                     int curID = control.getPlayListId();
                     if (curID == sheetID) {
@@ -437,8 +446,8 @@ public class SheetSongListController implements
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<Boolean>() {
                     @Override
-                    public void call(Boolean isCurrentSheetPlaying) {
-                        songAdapter.update(isCurrentSheetPlaying, currentIndex);
+                    public void call(Boolean playing) {
+                        songAdapter.update(playing, currentIndex);
 
                         String str = activity.getString(R.string.play_all_song_random);
                         String res = str.replace("*", String.valueOf(songCount));

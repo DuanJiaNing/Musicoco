@@ -240,10 +240,12 @@ public class BottomNavigationController implements
         mDuration = (int) info.getDuration();
 
         update(null, null);
+
+        // 如果此时正在浏览歌单详情 SheetDetailActivity ，需要通知更新
+        BroadcastManager.getInstance(activity).sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
     }
 
     private void updateProgress() {
-        Log.d("update", "menu_main/BottomNavigationController updateProgress");
         int progress;
         final float phoneWidth = Utils.getMetrics(activity).widthPixels;
 
@@ -261,7 +263,7 @@ public class BottomNavigationController implements
     }
 
     private void updateSongInfo(SongInfo info) {
-        Log.d("update", "menu_main/BottomNavigationController updateSongInfo");
+        Log.d("updateCurrentPlay", "menu_main/BottomNavigationController updateSongInfo");
         String name = info.getTitle();
         String arts = info.getArtist();
         builder.reset();
@@ -284,7 +286,7 @@ public class BottomNavigationController implements
 
     @Override
     public void update(@Nullable Object obj, OnUpdateStatusChanged completed) {
-        Log.d("update", "menu_main/BottomNavigationController update");
+        Log.d("updateCurrentPlay", "menu_main/BottomNavigationController updateCurrentPlay");
         if (!hasInitData()) {
             return;
         }
@@ -313,7 +315,7 @@ public class BottomNavigationController implements
     }
 
     private void updateCurrentSheet() {
-        Log.d("update", "menu_main/BottomNavigationController updateCurrentSheet");
+        Log.d("updateCurrentPlay", "menu_main/BottomNavigationController updateCurrentSheet");
         try {
             int id = mControl.getPlayListId();
             if (id < 0) {
@@ -492,7 +494,7 @@ public class BottomNavigationController implements
     }
 
     private int updatePlayMode() {
-        Log.d("update", "menu_main/BottomNavigationController updatePlayMode");
+        Log.d("updateCurrentPlay", "menu_main/BottomNavigationController updatePlayMode");
 
         Drawable drawable = null;
         StringBuilder builder = new StringBuilder();

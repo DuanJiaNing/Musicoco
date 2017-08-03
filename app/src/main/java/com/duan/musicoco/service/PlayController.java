@@ -281,7 +281,7 @@ public class PlayController {
             }
         }
 
-        return mPlayList.get(mCurrentSong);
+        return mPlayList.size() == 0 ? null : mPlayList.get(mCurrentSong);
     }
 
     //下一曲
@@ -322,7 +322,7 @@ public class PlayController {
             }
         }
 
-        return mPlayList.get(mCurrentSong);
+        return mPlayList.size() == 0 ? null : mPlayList.get(mCurrentSong);
     }
 
     //暂停播放

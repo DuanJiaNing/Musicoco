@@ -3,10 +3,12 @@ package com.duan.musicoco.detail.sheet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.Resource;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
+import com.bumptech.glide.request.target.ImageViewTarget;
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
@@ -274,13 +280,15 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
     private void loadData(DataHolder dataHolder, ViewHolder holder, int position) {
         SongInfo info = dataHolder.info;
 
+        final RoundedCornersTransformation rtf = new RoundedCornersTransformation(context, 15, 0);
+        final ImageView img = holder.image;
         Glide.with(context)
                 .load(info.getAlbum_path())
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .placeholder(R.drawable.default_song)
-                .bitmapTransform(new RoundedCornersTransformation(context, 15, 0))
+                .bitmapTransform(rtf)
                 .crossFade()
-                .into(holder.image);
+                .into(img);
 
         String number = String.valueOf(position + 1);
         holder.number.setText(number);
@@ -302,21 +310,15 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
 
     private void bindStatAndColors(ViewHolder holder, int position, boolean isFavorite) {
 
-        int mtc;
-        int vtc;
-
         if (isCurrentSheetPlaying && position == currentIndex && !multiselectionMode) {
-            mtc = vtc = choiceC;
-            setNumberAsImage(true, holder.number, vtc);
+            setNumberAsImage(true, holder.number, choiceC);
         } else {
-            mtc = mainTC;
-            vtc = vicTC;
-            setNumberAsImage(false, holder.number, vtc);
+            setNumberAsImage(false, holder.number, vicTC);
         }
 
-        holder.name.setTextColor(mtc);
-        holder.arts.setTextColor(vtc);
-        holder.duration.setTextColor(vtc);
+        holder.name.setTextColor(mainTC);
+        holder.arts.setTextColor(vicTC);
+        holder.duration.setTextColor(vicTC);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (isFavorite) {
@@ -325,7 +327,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
                 holder.favorite.getDrawable().setTint(vicTC);
             }
 
-            holder.more.getDrawable().setTint(vtc);
+            holder.more.getDrawable().setTint(vicTC);
         } else {
             holder.favorite.setVisibility(View.GONE);
         }
@@ -372,9 +374,10 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
         notifyDataSetChanged();
     }
 
-    public void update(Boolean isCurrentSheetPlaying, int currentIndex) {
-        this.isCurrentSheetPlaying = isCurrentSheetPlaying;
-        this.currentIndex = currentIndex;
+
+    public void update(Boolean currentSheet, int index) {
+        isCurrentSheetPlaying = currentSheet;
+        currentIndex = index;
         setUseAnim(false);
         notifyDataSetChanged();
     }

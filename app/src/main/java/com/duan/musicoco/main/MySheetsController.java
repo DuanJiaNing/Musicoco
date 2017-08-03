@@ -193,7 +193,7 @@ public class MySheetsController implements
 
     @Override
     public void update(Object obj, OnUpdateStatusChanged completed) {
-        Log.d("update", "MySheetController update");
+        Log.d("updateCurrentPlay", "MySheetController updateCurrentPlay");
 
         //注意不能修改 sheets 的引用，否则 notifyDataSetChanged 失效
         List<Sheet> newData = dbMusicoco.getSheets();

@@ -119,6 +119,9 @@ public class SongOperation {
         ActivityManager.getInstance(activity).startSongDetailActivity(song);
     }
 
+    /**
+     * 当 isCurrentPlaying 为 false 时，sheetID 传 -1 即可，此时 sheetID 不会被使用
+     */
     public void handleDeleteSongForever(final Song song) {
         DialogProvider manager = new DialogProvider(activity);
         final Dialog dialog = manager.createPromptDialog(
@@ -128,6 +131,7 @@ public class SongOperation {
                     @Override
                     public void onClick(View view) {
                         deleteSongFromDiskAndLibraryForever(song);
+                        checkIsPlaying(song);
                     }
                 },
                 null,
@@ -136,8 +140,19 @@ public class SongOperation {
         dialog.show();
     }
 
+    // 检查当前歌曲是否正在播放，若正在播放则将其从服务器播放列表中移除
+    private void checkIsPlaying(Song s) {
+        try {
+            Song song = control.currentSong();
+            if (s.equals(song)) {
+                control.remove(s);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void deleteSongFromDiskAndLibraryForever(Song song) {
-        removeSongFromCurrentSheet(song);
 
         String msg = activity.getString(R.string.error_delete_file_fail);
         if (FileUtils.deleteFile(song.path)) {
@@ -148,7 +163,8 @@ public class SongOperation {
         ToastUtils.showShortToast(msg);
     }
 
-    public void removeSongFromCurrentSheet(Song song) {
+    //从当前正在播放的歌单中移除
+    public void removeSongFromCurrentPlayingSheet(Song song) {
         try {
             //需要在服务器移除前修改数据库
             int sheetID = control.getPlayListId();
@@ -159,14 +175,9 @@ public class SongOperation {
         }
     }
 
-    public void removeSongFromSheet(Song song, int sheetID) {
-        try {
-            //需要在服务器移除前修改数据库
-            dbMusicoco.removeSongInfoFromSheet(song, sheetID);
-            control.remove(song);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
+    //从歌单中移除
+    public void removeSongFromSheetNotPlaying(Song song, int sheetID) {
+        dbMusicoco.removeSongInfoFromSheet(song, sheetID);
     }
 
     //反转歌曲收藏状态

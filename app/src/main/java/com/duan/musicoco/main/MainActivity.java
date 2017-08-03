@@ -331,7 +331,7 @@ public class MainActivity extends RootActivity implements
     }
 
     private void update() {
-        Log.d("update", "MainActivity update");
+        Log.d("updateCurrentPlay", "MainActivity updateCurrentPlay");
         bottomNavigationController.update(null, statusChanged);
         mostPlayController.update(getString(R.string.rmp_history), statusChanged);
         mainSheetsController.update(null, statusChanged);
