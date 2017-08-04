@@ -1,4 +1,6 @@
 <resources>
+    <!-- // FIIXME 变量名整理-->
+
     <string name="app_name">我的音乐</string>
     <string name="app_name_us">Musicoco</string>
 
@@ -27,7 +29,7 @@
     <string name="main_sheet_recent">最近播放</string>
     <string name="main_sheet_all">全部歌曲</string>
 
-    <string name="exception_remote">与播放服务连接断开啦:)，可以尝试退出应用，并重新打开。 </string>
+    <string name="error_exception_remote">与播放服务连接断开啦:)，可以尝试退出应用，并重新打开。 </string>
 
     <string name="rmp_see_more">查看更多</string>
     <string name="rmp_history">历史最多播放</string>
@@ -64,6 +66,7 @@
     <string name="error_non_song_select">还没有选择任何歌曲 :(</string>
     <string name="error_delete_sheet_fail">删除歌单失败 :(</string>
     <string name="error_load_sheet_fail">加载歌单失败 :(</string>
+    <string name="error_not_modify">未修改</string>
 
     <string name="success_create_sheet">创建歌单 :)</string>
     <string name="success_modify_sheet">歌单信息已修改 :)</string>
@@ -79,7 +82,6 @@
     <string name="unknown">出错了 :O</string>
     <string name="ensure">确认</string>
     <string name="collect">收藏</string>
-    <string name="cancel_collect">取消收藏</string>
     <string name="add">添加</string>
     <string name="tip">提示</string>
     <string name="all">全部</string>
@@ -91,26 +93,31 @@
     <string name="continue_">继续</string>
     <string name="deleting">正在删除</string>
     <string name="cancel">取消</string>
+    <string name="remove">移除</string>
+    <string name="delete">删除</string>
+
+    <string name="cancel_collect">取消收藏</string>
+    <string name="select_operation">选择操作</string>
     <string name="select_song">选择歌曲</string>
 
-    <string name="add_songs_to_favorite">正在收藏歌曲</string>
-    <string name="add_all_songs_to_favorite">将所有歌曲加入[我的收藏]</string>
-    <string name="add_select_songs_to_favorite">将选中歌曲加入[我的收藏]</string>
+    <string name="info_add_all_songs_to_favorite">将所有歌曲加入[我的收藏]</string>
+    <string name="info_add_select_songs_to_favorite">将选中歌曲加入[我的收藏]</string>
+    <string name="info_remove_select_songs_from_favorite">将选中歌曲从[我的收藏]移除</string>
+    <string name="info_remove_select_songs_from_sheet">从歌单中移除选中歌曲</string>
+    <string name="info_delete_confirm">确认删除，删除后将无法恢复！</string>
+
+    <string name="title_add_all_songs_to_favorite">收藏所有歌曲</string>
+    <string name="title_add_to_sheet">添加至播放列表</string>
+    <string name="title_add_to_favorite">添加至收藏</string>
+
+    <string name="in_progress_add_songs_to_favorite">正在收藏歌曲</string>
+    <string name="in_progress_remove_songs_from_favorite">正在取消收藏</string>
+    <string name="in_progress_remove_songs_from_sheet">正在移除</string>
+
     <string name="play_all_song_random">随机播放 * 首歌曲</string>
 
-    <string name="remove_select_songs_from_favorite">将选中歌曲从[我的收藏]移除</string>
-
-    <string name="not_modify">未修改</string>
     <string name="create_time">创建时间</string>
-    <string name="delete_confirm">确认删除，删除后将无法恢复！</string>
-    <string name="title_activity_sheet_detail">SheetDetailActivity</string>
 
-    <string name="sheet_collection_all">收藏所有歌曲</string>
-
-    <string name="sheet_add_select_to">添加至播放列表</string>
-    <string name="sheet_collection_select">添加至收藏</string>
-    <string name="sheet_remove_select">移除</string>
-    <string name="sheet_delete_select">删除</string>
 
     <string name="title_activity_sheet_modify">SheetModifyActivity</string>
 

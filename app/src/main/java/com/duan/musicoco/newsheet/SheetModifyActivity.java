@@ -280,7 +280,7 @@ public class SheetModifyActivity extends AppCompatActivity implements
         String newRemark = remarkModifyHolder.editText.getText().toString();
 
         if (newName.equals(oldName) && newRemark.equals(oldRemark)) {
-            ToastUtils.showShortToast(getString(R.string.not_modify));
+            ToastUtils.showShortToast(getString(R.string.error_not_modify));
             finish();
             return;
         }

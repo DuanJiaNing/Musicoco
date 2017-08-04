@@ -510,7 +510,7 @@ public class BottomNavigationController implements
                     } catch (RemoteException e) {
                         e.printStackTrace();
                         new ExceptionHandler().handleRemoteException(activity,
-                                activity.getString(R.string.exception_remote), null
+                                activity.getString(R.string.error_exception_remote), null
                         );
                     }
                     break;
@@ -699,7 +699,7 @@ public class BottomNavigationController implements
             } catch (RemoteException e) {
                 e.printStackTrace();
                 new ExceptionHandler().handleRemoteException(activity,
-                        activity.getString(R.string.exception_remote), null
+                        activity.getString(R.string.error_exception_remote), null
                 );
             }
         }
@@ -947,7 +947,7 @@ public class BottomNavigationController implements
                             songOperation.handleDeleteSongForever(song);
                             break;
                         case 3: {//从歌单中移除(非主歌单才有)
-                            songOperation.removeSongFromCurrentPlayingSheet(song);
+                            songOperation.removeSongFromCurrentPlayingSheet(null, song);
                             break;
                         }
                         default:

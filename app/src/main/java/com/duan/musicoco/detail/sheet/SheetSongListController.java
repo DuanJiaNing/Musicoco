@@ -188,9 +188,9 @@ public class SheetSongListController implements
                         break;
                     case 4: //从歌单中移除(非主歌单才有该选项)
                         if (isCurrentSheetPlaying) {
-                            songOperation.removeSongFromCurrentPlayingSheet(song);
+                            songOperation.removeSongFromCurrentPlayingSheet(null, song);
                         } else {
-                            songOperation.removeSongFromSheetNotPlaying(song, sheetID);
+                            songOperation.removeSongFromSheetNotPlaying(null, sheetID, song);
                         }
                         update();
 
@@ -610,4 +610,7 @@ public class SheetSongListController implements
         return dataHolders;
     }
 
+    public boolean isCurrentSheetPlaying() {
+        return isCurrentSheetPlaying;
+    }
 }

@@ -418,7 +418,7 @@ public class BottomNavigationController implements
                 } catch (RemoteException e) {
                     e.printStackTrace();
                     new ExceptionHandler().handleRemoteException(activity,
-                            activity.getString(R.string.exception_remote), null
+                            activity.getString(R.string.error_exception_remote), null
                     );
                 }
                 break;
@@ -429,7 +429,7 @@ public class BottomNavigationController implements
                 } catch (RemoteException e) {
                     e.printStackTrace();
                     new ExceptionHandler().handleRemoteException(activity,
-                            activity.getString(R.string.exception_remote), null
+                            activity.getString(R.string.error_exception_remote), null
                     );
                 }
                 break;

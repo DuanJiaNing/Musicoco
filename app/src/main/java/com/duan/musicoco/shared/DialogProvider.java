@@ -27,8 +27,8 @@ import com.victor.loading.rotate.RotateLoading;
  * （3）.自定义视图替换内层（保留最外层框架、标题显示处、提示信息显示处，三个按钮）
  * 注意：只有在调用了show..显示对话框之后才可以getDialog()获得实例。在自定义并保留三个固有按钮时可在外部调用对
  * 应按钮的setOn...ButtonListener(String title, final OnClickListener OnClickListener)并实现接口实现点击事件监听。
- *
- *
+ * <p>
+ * <p>
  * 一个 DialogProvider 只应该被用来产生一种类型的对话框，不应试图用同一对象同时产生不同类型的对话框
  */
 public class DialogProvider {
@@ -96,12 +96,12 @@ public class DialogProvider {
     private final int buttonPadding;
 
     private ThemeEnum themeEnum;
-    int backgroundColor;
-    int mainTextColor;
-    int vicTextColor;
-    int topLineColor;
-    int middleLineColor;
-    int accentColor;
+    private int backgroundColor;
+    private int mainTextColor;
+    private int vicTextColor;
+    private int topLineColor;
+    private int middleLineColor;
+    private int accentColor;
 
     public DialogProvider(Context context) {
         this.context = context;
@@ -333,7 +333,9 @@ public class DialogProvider {
         mTitle.setText(title);
         if (message != null) {
             mMessage.setText(message);
-        } else mFirstOuter.removeView(mMessage);
+        } else {
+            mSecondOuter.removeView(mMessage);
+        }
         return getDialog();
 
     }

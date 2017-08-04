@@ -67,7 +67,7 @@ public class PlayListAdapter extends BaseAdapter implements
             @Override
             public void onClick(View v) {
                 Song s = new Song((String) v.getTag(R.id.play_list_item_remove_path));
-                PlayListAdapter.this.songOperation.removeSongFromCurrentPlayingSheet(s);
+                PlayListAdapter.this.songOperation.removeSongFromCurrentPlayingSheet(null, s);
             }
         };
 
@@ -93,7 +93,7 @@ public class PlayListAdapter extends BaseAdapter implements
                 } catch (RemoteException e) {
                     e.printStackTrace();
                     new ExceptionHandler().handleRemoteException(context,
-                            context.getString(R.string.exception_remote), null
+                            context.getString(R.string.error_exception_remote), null
                     );
                 }
             }
@@ -164,7 +164,7 @@ public class PlayListAdapter extends BaseAdapter implements
         } catch (RemoteException e) {
             e.printStackTrace();
             new ExceptionHandler().handleRemoteException(context,
-                    context.getString(R.string.exception_remote), null
+                    context.getString(R.string.error_exception_remote), null
             );
         }
 
@@ -246,7 +246,7 @@ public class PlayListAdapter extends BaseAdapter implements
         } catch (RemoteException e) {
             e.printStackTrace();
             new ExceptionHandler().handleRemoteException(context,
-                    context.getString(R.string.exception_remote), null
+                    context.getString(R.string.error_exception_remote), null
             );
         }
     }

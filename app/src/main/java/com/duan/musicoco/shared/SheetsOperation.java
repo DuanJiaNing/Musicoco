@@ -54,7 +54,7 @@ public class SheetsOperation {
         DialogProvider provider = new DialogProvider(activity);
         final Dialog dialog = provider.createPromptDialog(
                 activity.getString(R.string.warning),
-                activity.getString(R.string.delete_confirm),
+                activity.getString(R.string.info_delete_confirm),
                 new DialogProvider.OnClickListener() {
                     @Override
                     public void onClick(View view) {

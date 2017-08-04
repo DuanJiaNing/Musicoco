@@ -182,10 +182,9 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
                 menu.removeItem(R.id.sheet_detail_multi_remove);
             }
 
-            // 我的收藏歌单 不需要【收藏所有】【收藏多首歌曲】选项
+            // 我的收藏 歌单不需要【收藏所有】选项
             if (sheetID == MainSheetHelper.SHEET_FAVORITE) {
                 menu.removeItem(R.id.sheet_detail_action_collection);
-                menu.removeItem(R.id.sheet_detail_multi_add_favorite);
             }
         }
         setMultiModeMenuVisible(false);
@@ -281,6 +280,14 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
                 break;
             case R.id.sheet_detail_multi_remove: // 从当前歌单移除多首歌曲
                 if (!songListController.checkSelectedEmpty()) {
+
+                    List<Song> songs = songListController.getCheckItemsIndex();
+                    if (songListController.isCurrentSheetPlaying()) {
+                        songOperation.handleRemoveSongFromCurrentPlayingSheet(complete, songs);
+                    } else {
+                        songOperation.handleRemoveSongFromSheetNotPlaying(complete, sheetID, songs);
+                    }
+
                 } else {
                     String msg = getString(R.string.error_non_song_select);
                     ToastUtils.showShortToast(msg);
@@ -305,7 +312,7 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
             }
         }
 
-        if (favoriteCount == holder.size()) { // 选中全为收藏歌曲
+        if (sheetID == MainSheetHelper.SHEET_FAVORITE || favoriteCount == holder.size()) { // 选中全为收藏歌曲
             songOperation.handleSelectSongCancelFavorite(songs, complete);
         } else if (favoriteCount == 0) { // 选中歌曲全为非收藏歌曲
             songOperation.handleSelectSongAddToFavorite(songs, complete);
@@ -360,7 +367,6 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
     }
 
     private void initToTopPos() {
-        //FIXME view.post 和 addOnGlobalLayoutListener 都有获取为 0 的情况
         toTop.post(new Runnable() {
             @Override
             public void run() {

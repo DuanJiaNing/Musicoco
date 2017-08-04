@@ -29,8 +29,10 @@ import com.duan.musicoco.util.FileUtils;
 import com.duan.musicoco.util.SongUtils;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
+import com.duan.musicoco.util.ViewUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,7 +108,7 @@ public class SongOperation {
         DialogProvider manager = new DialogProvider(activity);
         final Dialog dialog = manager.createPromptDialog(
                 activity.getString(R.string.warning),
-                activity.getString(R.string.delete_confirm),
+                activity.getString(R.string.info_delete_confirm),
                 new DialogProvider.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -143,23 +145,6 @@ public class SongOperation {
         ToastUtils.showShortToast(msg);
     }
 
-    //从当前正在播放的歌单中移除
-    public void removeSongFromCurrentPlayingSheet(Song song) {
-        try {
-            //需要在服务器移除前修改数据库
-            int sheetID = control.getPlayListId();
-            dbMusicoco.removeSongInfoFromSheet(song, sheetID);
-            control.remove(song);
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    //从歌单中移除
-    public void removeSongFromSheetNotPlaying(Song song, int sheetID) {
-        dbMusicoco.removeSongInfoFromSheet(song, sheetID);
-    }
-
     //反转歌曲收藏状态
     public boolean reverseSongFavoriteStatus(Song song) {
         if (song != null) {
@@ -180,7 +165,7 @@ public class SongOperation {
 
     public void handleAddAllSongToFavorite(final int sheetID) {
         final Dialog promptDialog = new DialogProvider(activity).createPromptDialog(activity.getString(R.string.tip),
-                activity.getString(R.string.add_all_songs_to_favorite),
+                activity.getString(R.string.info_add_all_songs_to_favorite),
                 new DialogProvider.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -196,7 +181,7 @@ public class SongOperation {
     public void handleSelectSongAddToFavorite(final List<Song> songs, final OnCompleteListener<Void> onCompleteListener) {
         final Dialog promptDialog = new DialogProvider(activity).createPromptDialog(
                 activity.getString(R.string.collect),
-                activity.getString(R.string.add_select_songs_to_favorite),
+                activity.getString(R.string.info_add_select_songs_to_favorite),
                 new DialogProvider.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -227,7 +212,13 @@ public class SongOperation {
             }
         };
 
-        final Dialog progressDialog = new DialogProvider(activity).createProgressDialog(activity.getString(R.string.add_songs_to_favorite));
+        String title;
+        if (favorite) {
+            title = activity.getString(R.string.in_progress_add_songs_to_favorite);
+        } else {
+            title = activity.getString(R.string.in_progress_remove_songs_from_favorite);
+        }
+        final Dialog progressDialog = new DialogProvider(activity).createProgressDialog(title);
         progressDialog.setCancelable(false);
 
         Observable.create(onSubscribe)
@@ -312,7 +303,7 @@ public class SongOperation {
             }
         };
 
-        final Dialog progressDialog = new DialogProvider(activity).createProgressDialog(activity.getString(R.string.add_songs_to_favorite));
+        final Dialog progressDialog = new DialogProvider(activity).createProgressDialog(activity.getString(R.string.in_progress_add_songs_to_favorite));
         progressDialog.setCancelable(false);
 
         Observable.create(onSubscribe)
@@ -461,7 +452,7 @@ public class SongOperation {
             }
         };
 
-        final Dialog progressDialog = new DialogProvider(activity).createProgressDialog(activity.getString(R.string.add_songs_to_favorite));
+        final Dialog progressDialog = new DialogProvider(activity).createProgressDialog(activity.getString(R.string.in_progress_add_songs_to_favorite));
         progressDialog.setCancelable(false);
 
         Observable.create(onSubscribe)
@@ -509,7 +500,7 @@ public class SongOperation {
     public void handleSelectSongCancelFavorite(final List<Song> songs, final OnCompleteListener<Void> complete) {
         final Dialog promptDialog = new DialogProvider(activity).createPromptDialog(
                 activity.getString(R.string.cancel_collect),
-                activity.getString(R.string.remove_select_songs_from_favorite),
+                activity.getString(R.string.info_remove_select_songs_from_favorite),
                 new DialogProvider.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -522,7 +513,241 @@ public class SongOperation {
 
     }
 
-    public void handleSelectSongFavorite(List<Song> songs, OnCompleteListener<Void> complete) {
-        //TODO add_favorite cancel_favorite 选择收藏和取消收藏
+    public void handleSelectSongFavorite(final List<Song> songs, final OnCompleteListener<Void> complete) {
+
+        DialogProvider provider = new DialogProvider(activity);
+        int[] colors = new int[5];
+        Arrays.fill(colors, provider.getMainTextColor());
+        colors[4] = provider.getVicTextColor();
+
+        View view = ViewUtils.getSelectFavoriteOptionsView(activity, null, null, colors);
+        String title = activity.getString(R.string.select_operation);
+        final AlertDialog dialog = provider.createCustomInsiderDialog(title, null, view);
+
+        View fit = view.findViewById(R.id.select_favorite_true);
+        View fif = view.findViewById(R.id.select_favorite_false);
+        fit.setOnClickListener(new View.OnClickListener() { // 收藏
+            @Override
+            public void onClick(View v) {
+                modifySelectSongFavorite(true, songs, complete);
+                dialog.dismiss();
+            }
+        });
+        fif.setOnClickListener(new View.OnClickListener() { // 收藏
+            @Override
+            public void onClick(View v) {
+                modifySelectSongFavorite(false, songs, complete);
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
+
+    public void handleRemoveSongFromCurrentPlayingSheet(final @Nullable OnCompleteListener<Void> complete, final List<Song> songs) {
+
+        final Dialog promptDialog = new DialogProvider(activity).createPromptDialog(
+                activity.getString(R.string.remove),
+                activity.getString(R.string.info_remove_select_songs_from_sheet),
+                new DialogProvider.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Song[] s = songs.toArray(new Song[songs.size()]);
+                        removeSongFromCurrentPlayingSheet(complete, s);
+                    }
+                },
+                null,
+                true);
+        promptDialog.show();
+    }
+
+    //从当前正在播放的歌单中移除
+    public void removeSongFromCurrentPlayingSheet(final @Nullable OnCompleteListener<Void> complete, final Song... songs) {
+        if (songs.length == 1) {
+            try {
+                //需要在服务器移除前修改数据库
+                int sheetID = control.getPlayListId();
+                dbMusicoco.removeSongInfoFromSheet(songs[0], sheetID);
+                control.remove(songs[0]);
+
+                String msg = activity.getString(R.string.success_remove_song_from_sheet);
+                ToastUtils.showShortToast(msg);
+
+                broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+                broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MAIN_SHEET_CHANGED, null);
+                if (complete != null) {
+                    complete.onComplete(null);
+                }
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        } else {
+
+            Observable.OnSubscribe<Boolean> onSubscribe = new Observable.OnSubscribe<Boolean>() {
+                @Override
+                public void call(Subscriber<? super Boolean> subscriber) {
+                    subscriber.onStart();
+
+                    try {
+                        //需要在服务器移除前修改数据库
+                        // FIXME 移除歌曲里包括正在播放的歌曲时出错
+                        int sheetID = control.getPlayListId();
+                        for (Song song : songs) {
+                            dbMusicoco.removeSongInfoFromSheet(song, sheetID);
+                            control.remove(song);
+                        }
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+
+                    Utils.pretendToRun(300);
+                    subscriber.onCompleted();
+                }
+            };
+
+            String title = activity.getString(R.string.in_progress_remove_songs_from_sheet);
+            final Dialog progressDialog = new DialogProvider(activity).createProgressDialog(title);
+            progressDialog.setCancelable(false);
+
+            Observable.create(onSubscribe)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<Boolean>() {
+
+                        @Override
+                        public void onStart() {
+                            progressDialog.show();
+                        }
+
+                        @Override
+                        public void onCompleted() {
+                            progressDialog.dismiss();
+
+                            String msg = activity.getString(R.string.success_remove_song_from_sheet);
+                            ToastUtils.showShortToast(msg);
+                            sendBroadcast();
+                        }
+
+                        private void sendBroadcast() {
+                            broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+                            broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MAIN_SHEET_CHANGED, null);
+                            if (complete != null) {
+                                complete.onComplete(null);
+                            }
+                        }
+
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                            progressDialog.dismiss();
+
+                            String msg = activity.getString(R.string.unknown);
+                            ToastUtils.showShortToast(msg);
+                            sendBroadcast();
+                        }
+
+                        @Override
+                        public void onNext(Boolean s) {
+                        }
+                    });
+        }
+    }
+
+    public void handleRemoveSongFromSheetNotPlaying(final @Nullable OnCompleteListener<Void> complete, final int sheetID, final List<Song> songs) {
+        final Dialog promptDialog = new DialogProvider(activity).createPromptDialog(
+                activity.getString(R.string.remove),
+                activity.getString(R.string.info_remove_select_songs_from_sheet),
+                new DialogProvider.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Song[] s = songs.toArray(new Song[songs.size()]);
+                        removeSongFromSheetNotPlaying(complete, sheetID, s);
+                    }
+                },
+                null,
+                true);
+        promptDialog.show();
+    }
+
+    //从歌单中移除
+    public void removeSongFromSheetNotPlaying(final OnCompleteListener<Void> complete, final int sheetID, final Song... songs) {
+
+        if (songs.length == 1) {
+
+            dbMusicoco.removeSongInfoFromSheet(songs[0], sheetID);
+
+            String msg = activity.getString(R.string.success_remove_song_from_sheet);
+            ToastUtils.showShortToast(msg);
+
+            broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+            broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MAIN_SHEET_CHANGED, null);
+            if (complete != null) {
+                complete.onComplete(null);
+            }
+        } else {
+
+            Observable.OnSubscribe<Boolean> onSubscribe = new Observable.OnSubscribe<Boolean>() {
+                @Override
+                public void call(Subscriber<? super Boolean> subscriber) {
+                    subscriber.onStart();
+
+                    for (Song song : songs) {
+                        dbMusicoco.removeSongInfoFromSheet(song, sheetID);
+                    }
+
+                    Utils.pretendToRun(300);
+                    subscriber.onCompleted();
+                }
+            };
+
+            String title = activity.getString(R.string.in_progress_remove_songs_from_sheet);
+            final Dialog progressDialog = new DialogProvider(activity).createProgressDialog(title);
+            progressDialog.setCancelable(false);
+
+            Observable.create(onSubscribe)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<Boolean>() {
+
+                        @Override
+                        public void onStart() {
+                            progressDialog.show();
+                        }
+
+                        @Override
+                        public void onCompleted() {
+                            progressDialog.dismiss();
+
+                            String msg = activity.getString(R.string.success_remove_song_from_sheet);
+                            ToastUtils.showShortToast(msg);
+                            sendBroadcast();
+                        }
+
+                        private void sendBroadcast() {
+                            broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+                            broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MAIN_SHEET_CHANGED, null);
+                            if (complete != null) {
+                                complete.onComplete(null);
+                            }
+                        }
+
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                            progressDialog.dismiss();
+
+                            String msg = activity.getString(R.string.unknown);
+                            ToastUtils.showShortToast(msg);
+                            sendBroadcast();
+                        }
+
+                        @Override
+                        public void onNext(Boolean s) {
+                        }
+                    });
+        }
+    }
+
 }

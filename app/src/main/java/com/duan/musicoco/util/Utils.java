@@ -38,7 +38,7 @@ public class Utils {
 
     public static void pretendToRun(long time) {
         try {
-            Thread.sleep(500);
+            Thread.sleep(time);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

@@ -302,6 +302,7 @@ public class PlayController {
                 break;
             }
             case MODE_RANDOM: {
+                // FIXME 正在播放的歌单最后一首歌曲被移除歌单时 mPlayList.size() == 0 使 nextInt 方法出错
                 int next = new Random().nextInt(mPlayList.size());
                 if (next != mCurrentSong) {
                     mCurrentSong = next;
