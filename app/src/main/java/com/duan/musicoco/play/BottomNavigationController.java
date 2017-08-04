@@ -938,7 +938,7 @@ public class BottomNavigationController implements
                 if (info != null) {
                     switch (position) {
                         case 0: // 收藏到歌单
-                            songOperation.handleCollectToSheet(info);
+                            songOperation.handleAddSongToSheet(info);
                             break;
                         case 1: // 查看详情
                             songOperation.checkSongDetail(song);

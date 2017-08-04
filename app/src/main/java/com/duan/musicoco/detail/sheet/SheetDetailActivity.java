@@ -20,6 +20,8 @@ import android.view.View;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
+import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.interfaces.OnCompleteListener;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
@@ -31,11 +33,15 @@ import com.duan.musicoco.main.MainActivity;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.shared.SheetsOperation;
+import com.duan.musicoco.shared.SongOperation;
 import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.AppBarStateChangeListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SheetDetailActivity extends AppCompatActivity implements OnThemeChange {
 
@@ -57,6 +63,7 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
     private AppBarStateChangeListener barStateChangeListener;
     private AppPreference appPreference;
     private SheetsOperation sheetsOperation;
+    private SongOperation songOperation;
     private IPlayControl control;
     private BroadcastReceiver songsChangeReceiver;
     private BroadcastManager broadcastManager;
@@ -80,6 +87,7 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
         mediaManager = MediaManager.getInstance(this);
         control = MainActivity.getControl();
         sheetsOperation = new SheetsOperation(this, control, dbController);
+        songOperation = new SongOperation(this, control, dbController);
         broadcastManager = BroadcastManager.getInstance(this);
 
         getSheet();
@@ -165,9 +173,19 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
 
     private void filterMenu() {
         if (sheetID < 0) {
+
+            // 主歌单歌单信息不允许修改
             menu.removeItem(R.id.sheet_detail_action_modify);
+
+            // 除 我的收藏 以外的主歌单没有【移除多首歌曲】选项
+            if (sheetID != MainSheetHelper.SHEET_FAVORITE) {
+                menu.removeItem(R.id.sheet_detail_multi_remove);
+            }
+
+            // 我的收藏歌单 不需要【收藏所有】【收藏多首歌曲】选项
             if (sheetID == MainSheetHelper.SHEET_FAVORITE) {
                 menu.removeItem(R.id.sheet_detail_action_collection);
+                menu.removeItem(R.id.sheet_detail_multi_add_favorite);
             }
         }
         setMultiModeMenuVisible(false);
@@ -188,17 +206,33 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
         if (m != null) {
             m.setVisible(!visible);
         }
-        s.setVisible(!visible);
-
-        maf.setVisible(visible);
-        mas.setVisible(visible);
-        mr.setVisible(visible);
-        md.setVisible(visible);
+        if (s != null) {
+            s.setVisible(!visible);
+        }
+        if (maf != null) {
+            maf.setVisible(visible);
+        }
+        if (mas != null) {
+            mas.setVisible(visible);
+        }
+        if (mr != null) {
+            mr.setVisible(visible);
+        }
+        if (md != null) {
+            md.setVisible(visible);
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        OnCompleteListener<Void> complete = new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(Void aVoid) {
+                songListController.onBackPressed();
+            }
+        };
+
         switch (id) {
             case R.id.sheet_detail_search:
                 //TODO
@@ -209,7 +243,7 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
                     String msg = getString(R.string.error_empty_sheet);
                     ToastUtils.showShortToast(msg);
                 } else {
-                    sheetsOperation.handleAddAllSongToFavorite(sheetID);
+                    songOperation.handleAddAllSongToFavorite(sheetID);
                 }
                 break;
             case R.id.sheet_detail_action_modify:
@@ -220,9 +254,10 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
                     finish();
                 }
                 break;
-            case R.id.sheet_detail_multi_add_to_sheet: // 收藏多首歌曲到歌单
+            case R.id.sheet_detail_multi_add_to_sheet: // 添加多首歌曲到歌单
                 if (!songListController.checkSelectedEmpty()) {
-
+                    List<Song> songs = songListController.getCheckItemsIndex();
+                    songOperation.handleAddSongToSheet(songs, complete);
                 } else {
                     String msg = getString(R.string.error_non_song_select);
                     ToastUtils.showShortToast(msg);
@@ -238,15 +273,14 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
                 break;
             case R.id.sheet_detail_multi_add_favorite: // 添加多首歌曲到[我的收藏]
                 if (!songListController.checkSelectedEmpty()) {
-
+                    handleAddSelectSongToFavorite(complete);
                 } else {
                     String msg = getString(R.string.error_non_song_select);
                     ToastUtils.showShortToast(msg);
                 }
                 break;
-            case R.id.sheet_detail_multi_remove: // 从当前歌单移除
+            case R.id.sheet_detail_multi_remove: // 从当前歌单移除多首歌曲
                 if (!songListController.checkSelectedEmpty()) {
-
                 } else {
                     String msg = getString(R.string.error_non_song_select);
                     ToastUtils.showShortToast(msg);
@@ -257,6 +291,28 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void handleAddSelectSongToFavorite(OnCompleteListener<Void> complete) {
+        List<SongAdapter.DataHolder> holder = songListController.getCheckItemsDataHolder();
+
+        int favoriteCount = 0;
+        List<Song> songs = new ArrayList<>();
+        for (SongAdapter.DataHolder h : holder) {
+            songs.add(new Song(h.info.getData()));
+            if (h.isFavorite) {
+                favoriteCount++;
+            }
+        }
+
+        if (favoriteCount == holder.size()) { // 选中全为收藏歌曲
+            songOperation.handleSelectSongCancelFavorite(songs, complete);
+        } else if (favoriteCount == 0) { // 选中歌曲全为非收藏歌曲
+            songOperation.handleSelectSongAddToFavorite(songs, complete);
+        } else { // 都有
+            songOperation.handleSelectSongFavorite(songs, complete);
+        }
+
     }
 
     private void initViews() {

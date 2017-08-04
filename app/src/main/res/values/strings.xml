@@ -72,14 +72,21 @@
     <string name="success_delete_sheet">成功删除歌单 :)</string>
     <string name="success_remove_song_from_sheet">成功移除歌曲 :)</string>
     <string name="success_add_all_song_to_favorite">已成功收藏全部 :)</string>
+    <string name="success_add_select_song_to_favorite">成功收藏选中歌曲 :)</string>
+    <string name="success_remove_select_song_from_favorite">选中歌曲已取消收藏 :)</string>
 
     <string name="warning">警告</string>
     <string name="unknown">出错了 :O</string>
     <string name="ensure">确认</string>
+    <string name="collect">收藏</string>
+    <string name="cancel_collect">取消收藏</string>
+    <string name="add">添加</string>
     <string name="tip">提示</string>
     <string name="all">全部</string>
+    <string name="to">到</string>
     <string name="play">播放</string>
     <string name="count">次</string>
+    <string name="head">首</string>
     <string name="search">搜索</string>
     <string name="continue_">继续</string>
     <string name="deleting">正在删除</string>
@@ -88,7 +95,10 @@
 
     <string name="add_songs_to_favorite">正在收藏歌曲</string>
     <string name="add_all_songs_to_favorite">将所有歌曲加入[我的收藏]</string>
+    <string name="add_select_songs_to_favorite">将选中歌曲加入[我的收藏]</string>
     <string name="play_all_song_random">随机播放 * 首歌曲</string>
+
+    <string name="remove_select_songs_from_favorite">将选中歌曲从[我的收藏]移除</string>
 
     <string name="not_modify">未修改</string>
     <string name="create_time">创建时间</string>

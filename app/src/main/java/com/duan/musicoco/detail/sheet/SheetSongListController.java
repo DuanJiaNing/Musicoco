@@ -173,7 +173,7 @@ public class SheetSongListController implements
                 // FIXME 彻底删除 和 移除 时让列表有动画，调用 adapter 的 romeItemXXX
                 switch (position) {
                     case 0: //收藏到歌单
-                        songOperation.handleCollectToSheet(info);
+                        songOperation.handleAddSongToSheet(info);
                         break;
                     case 1: //详细信息
                         songOperation.checkSongDetail(song);
@@ -588,4 +588,26 @@ public class SheetSongListController implements
         List<?> list = getSelectSongIndex();
         return list == null || list.size() == 0;
     }
+
+    public List<Song> getCheckItemsIndex() {
+        List<Integer> list = songAdapter.getCheckItemsIndex();
+        List<Song> songs = new ArrayList<>();
+        for (int index : list) {
+            SongAdapter.DataHolder item = songAdapter.getItem(index);
+            Song song = new Song(item.info.getData());
+            songs.add(song);
+        }
+        return songs;
+    }
+
+    public List<SongAdapter.DataHolder> getCheckItemsDataHolder() {
+        List<Integer> list = songAdapter.getCheckItemsIndex();
+        List<SongAdapter.DataHolder> dataHolders = new ArrayList<>();
+        for (int index : list) {
+            SongAdapter.DataHolder item = songAdapter.getItem(index);
+            dataHolders.add(item);
+        }
+        return dataHolders;
+    }
+
 }
