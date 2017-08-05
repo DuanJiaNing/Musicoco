@@ -12,6 +12,7 @@ import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.util.ToastUtils;
+import com.duan.musicoco.util.Utils;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -40,17 +41,17 @@ public class SheetsOperation {
 
     }
 
-    public void handleAddSheet() {
+    public void addSheet() {
         ActivityManager manager = ActivityManager.getInstance(activity);
         manager.startSheetModifyActivity(Integer.MAX_VALUE);
     }
 
-    public void handleModifySheet(Sheet sheet) {
+    public void modifySheet(Sheet sheet) {
         ActivityManager manager = ActivityManager.getInstance(activity);
         manager.startSheetModifyActivity(sheet.id);
     }
 
-    public void deleteSheet(final Sheet sheet) {
+    public void handleDeleteSheet(final Sheet sheet) {
         DialogProvider provider = new DialogProvider(activity);
         final Dialog dialog = provider.createPromptDialog(
                 activity.getString(R.string.warning),
@@ -58,7 +59,7 @@ public class SheetsOperation {
                 new DialogProvider.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        handleDelete(sheet);
+                        deleteSheet(sheet);
                     }
                 },
                 null,
@@ -67,7 +68,7 @@ public class SheetsOperation {
         dialog.show();
     }
 
-    private void handleDelete(final Sheet sheet) {
+    private void deleteSheet(final Sheet sheet) {
 
         Observable.OnSubscribe<Boolean> onSubscribe = new Observable.OnSubscribe<Boolean>() {
             @Override
@@ -76,10 +77,8 @@ public class SheetsOperation {
 
                 boolean res = dbMusicoco.removeSheet(sheet.id);
 
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                if (sheet.count != 0) {
+                    Utils.pretendToRun(300);
                 }
 
                 subscriber.onNext(res);
@@ -127,13 +126,13 @@ public class SheetsOperation {
                             broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
                         }
                     }
-                });
-    }
 
-    private void sendBroadcast(Sheet sheet) {
-        Bundle extras = new Bundle();
-        extras.putInt(DELETE_SHEET_ID, sheet.id);
-        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, extras);
+                    private void sendBroadcast(Sheet sheet) {
+                        Bundle extras = new Bundle();
+                        extras.putInt(DELETE_SHEET_ID, sheet.id);
+                        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, extras);
+                    }
+                });
     }
 
 }

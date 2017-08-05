@@ -96,7 +96,7 @@ public class MySheetsController implements
         switch (v.getId()) {
             case R.id.my_sheet_add:
             case R.id.sheet_empty_add:
-                sheetsOperation.handleAddSheet();
+                sheetsOperation.addSheet();
                 break;
         }
     }

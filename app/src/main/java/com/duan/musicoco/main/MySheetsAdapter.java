@@ -111,7 +111,7 @@ public class MySheetsAdapter extends BaseAdapter implements
         modify.clickListener = new OptionsAdapter.OptionClickListener() {
             @Override
             public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
-                sheetsOperation.handleModifySheet(currentClickMoreOperationItem);
+                sheetsOperation.modifySheet(currentClickMoreOperationItem);
                 mDialog.hide();
             }
         };
@@ -124,7 +124,7 @@ public class MySheetsAdapter extends BaseAdapter implements
         delete.clickListener = new OptionsAdapter.OptionClickListener() {
             @Override
             public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
-                sheetsOperation.deleteSheet(currentClickMoreOperationItem);
+                sheetsOperation.handleDeleteSheet(currentClickMoreOperationItem);
                 mDialog.hide();
             }
         };

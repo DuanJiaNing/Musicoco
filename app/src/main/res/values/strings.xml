@@ -105,6 +105,7 @@
     <string name="info_remove_select_songs_from_favorite">将选中歌曲从[我的收藏]移除</string>
     <string name="info_remove_select_songs_from_sheet">从歌单中移除选中歌曲</string>
     <string name="info_delete_confirm">确认删除，删除后将无法恢复！</string>
+    <string name="info_delete_select_confirm">确认删除选中歌曲，删除后将无法恢复！</string>
 
     <string name="title_add_all_songs_to_favorite">收藏所有歌曲</string>
     <string name="title_add_to_sheet">添加至播放列表</string>
@@ -113,6 +114,7 @@
     <string name="in_progress_add_songs_to_favorite">正在收藏歌曲</string>
     <string name="in_progress_remove_songs_from_favorite">正在取消收藏</string>
     <string name="in_progress_remove_songs_from_sheet">正在移除</string>
+    <string name="in_progress_delete">正在删除</string>
 
     <string name="play_all_song_random">随机播放 * 首歌曲</string>
 

@@ -57,6 +57,7 @@ public class MainActivity extends RootActivity implements
 
     private BroadcastReceiver mySheetDataChangedReceiver;
     private BroadcastReceiver mainSheetDataChangedReceiver;
+    private BroadcastReceiver dataChangedReceiver;
     private BroadcastManager broadcastManager;
 
     private OnUpdateStatusChanged statusChanged = new OnUpdateStatusChanged() {
@@ -118,6 +119,9 @@ public class MainActivity extends RootActivity implements
         }
         if (mainSheetDataChangedReceiver != null) {
             broadcastManager.unregisterReceiver(mainSheetDataChangedReceiver);
+        }
+        if (dataChangedReceiver != null) {
+            broadcastManager.unregisterReceiver(dataChangedReceiver);
         }
     }
 
@@ -244,7 +248,14 @@ public class MainActivity extends RootActivity implements
             }
         };
 
+        dataChangedReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                update();
+            }
+        };
 
+        broadcastManager.registerBroadReceiver(dataChangedReceiver, BroadcastManager.FILTER_MAIN_DATA_UPDATE);
         broadcastManager.registerBroadReceiver(mySheetDataChangedReceiver, BroadcastManager.FILTER_MY_SHEET_CHANGED);
         broadcastManager.registerBroadReceiver(mainSheetDataChangedReceiver, BroadcastManager.FILTER_MAIN_SHEET_CHANGED);
     }

@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -87,7 +88,7 @@ public class SongOperation {
         newSheet.clickListener = new OptionsAdapter.OptionClickListener() {
             @Override
             public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
-                new SheetsOperation(activity, control, dbMusicoco).handleAddSheet();
+                new SheetsOperation(activity, control, dbMusicoco).addSheet();
                 dialog.hide();
             }
         };
@@ -99,50 +100,6 @@ public class SongOperation {
 
     public void checkSongDetail(Song song) {
         ActivityManager.getInstance(activity).startSongDetailActivity(song);
-    }
-
-    /**
-     * 当 isCurrentPlaying 为 false 时，sheetID 传 -1 即可，此时 sheetID 不会被使用
-     */
-    public void handleDeleteSongForever(final Song song) {
-        DialogProvider manager = new DialogProvider(activity);
-        final Dialog dialog = manager.createPromptDialog(
-                activity.getString(R.string.warning),
-                activity.getString(R.string.info_delete_confirm),
-                new DialogProvider.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        deleteSongFromDiskAndLibraryForever(song);
-                        checkIsPlaying(song);
-                    }
-                },
-                null,
-                true
-        );
-        dialog.show();
-    }
-
-    // 检查当前歌曲是否正在播放，若正在播放则将其从服务器播放列表中移除
-    private void checkIsPlaying(Song s) {
-        try {
-            Song song = control.currentSong();
-            if (s.equals(song)) {
-                control.remove(s);
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void deleteSongFromDiskAndLibraryForever(Song song) {
-
-        String msg = activity.getString(R.string.error_delete_file_fail);
-        if (FileUtils.deleteFile(song.path)) {
-            dbMusicoco.removeSongInfo(song);
-            msg = activity.getString(R.string.success_delete_file);
-        }
-
-        ToastUtils.showShortToast(msg);
     }
 
     //反转歌曲收藏状态
@@ -388,6 +345,14 @@ public class SongOperation {
 
         adapter.setPaddingLeft(30);
         listView.setAdapter(adapter);
+
+        int height = Utils.getListViewHeight(listView);
+        int screenHeight = Utils.getMetrics(activity).heightPixels;
+        if (height >= screenHeight / 2) {
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, screenHeight / 2);
+            listView.setLayoutParams(params);
+        }
+
         final AlertDialog dialog = manager.createCustomInsiderDialog(
                 activity.getString(R.string.song_operation_collection_sheet),
                 TextUtils.isEmpty(msg) ? "" : msg,
@@ -750,4 +715,136 @@ public class SongOperation {
         }
     }
 
+    public void handleDeleteSongForever(final Song song) {
+        DialogProvider manager = new DialogProvider(activity);
+        final Dialog dialog = manager.createPromptDialog(
+                activity.getString(R.string.warning),
+                activity.getString(R.string.info_delete_confirm),
+                new DialogProvider.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        deleteSongFromDiskAndLibraryForever(song);
+                        checkIsPlaying(song);
+                    }
+                },
+                null,
+                true
+        );
+        dialog.show();
+    }
+
+    // 检查当前歌曲是否正在播放，若正在播放则将其从服务器播放列表中移除
+    private void checkIsPlaying(Song s) {
+        try {
+            Song song = control.currentSong();
+            if (s.equals(song)) {
+                control.remove(s);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteSongFromDiskAndLibraryForever(Song song) {
+
+        String msg = activity.getString(R.string.error_delete_file_fail);
+        if (FileUtils.deleteFile(song.path)) {
+            dbMusicoco.removeSongInfo(song);
+            msg = activity.getString(R.string.success_delete_file);
+        }
+
+        ToastUtils.showShortToast(msg);
+    }
+
+    public void handleDeleteSongForever(final OnCompleteListener<Void> complete, final int sheetID, final List<Song> songs) {
+        DialogProvider manager = new DialogProvider(activity);
+        final Dialog dialog = manager.createPromptDialog(
+                activity.getString(R.string.warning),
+                activity.getString(R.string.info_delete_select_confirm),
+                new DialogProvider.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        deleteSongFromDiskAndLibraryForever(complete, sheetID, songs);
+                    }
+                },
+                null,
+                true
+        );
+        dialog.show();
+    }
+
+    public void deleteSongFromDiskAndLibraryForever(final OnCompleteListener<Void> complete, final int sheetID, final List<Song> songs) {
+
+        Observable.OnSubscribe<Boolean> onSubscribe = new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                subscriber.onStart();
+
+                try {
+                    // FIXME 删除多首歌曲时，删除歌曲里包含正在播放的歌曲时，服务器的播放列表和歌单显示的列表不一样
+                    Song song = control.currentSong();
+
+                    for (Song s : songs) {
+                        dbMusicoco.removeSongInfo(s);
+                        if (s.equals(song)) {
+                            control.remove(song);
+                        }
+                    }
+
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+
+                Utils.pretendToRun(300);
+                subscriber.onCompleted();
+            }
+        };
+
+        String title = activity.getString(R.string.in_progress_delete);
+        final Dialog progressDialog = new DialogProvider(activity).createProgressDialog(title);
+        progressDialog.setCancelable(false);
+
+        Observable.create(onSubscribe)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+
+                    @Override
+                    public void onStart() {
+                        progressDialog.show();
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        progressDialog.dismiss();
+
+                        String msg = activity.getString(R.string.success_delete_file);
+                        ToastUtils.showShortToast(msg);
+                        sendBroadcast();
+                    }
+
+                    private void sendBroadcast() {
+                        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+                        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MAIN_DATA_UPDATE, null);
+                        if (complete != null) {
+                            complete.onComplete(null);
+                        }
+                    }
+
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                        progressDialog.dismiss();
+
+                        String msg = activity.getString(R.string.unknown);
+                        ToastUtils.showShortToast(msg);
+                        sendBroadcast();
+                    }
+
+                    @Override
+                    public void onNext(Boolean s) {
+                    }
+                });
+    }
 }

@@ -246,7 +246,7 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
                 }
                 break;
             case R.id.sheet_detail_action_modify:
-                sheetsOperation.handleModifySheet(sheet);
+                sheetsOperation.modifySheet(sheet);
                 break;
             case android.R.id.home:
                 if (songListController.onBackPressed()) {
@@ -264,7 +264,8 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
                 break;
             case R.id.sheet_detail_multi_delete_songs: // 彻底删除多首歌曲
                 if (!songListController.checkSelectedEmpty()) {
-
+                    List<Song> songs = songListController.getCheckItemsIndex();
+                    songOperation.handleDeleteSongForever(complete, sheetID, songs);
                 } else {
                     String msg = getString(R.string.error_non_song_select);
                     ToastUtils.showShortToast(msg);

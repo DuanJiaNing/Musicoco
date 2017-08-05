@@ -86,14 +86,7 @@ public class OptionsDialog implements
         //FIXME getHeight == 0
         int totalHeight = activity.getResources().getDimensionPixelSize(R.dimen.action_bar_default_height);
 
-        ListAdapter listAdapter = listView.getAdapter();
-        if (listAdapter != null) {
-            for (int i = 0; i < listAdapter.getCount(); i++) {
-                View listItem = listAdapter.getView(i, null, listView);
-                listItem.measure(0, 0);
-                totalHeight += listItem.getMeasuredHeight();
-            }
-        }
+        totalHeight += Utils.getListViewHeight(listView);
 
         DisplayMetrics metrics = Utils.getMetrics(activity);
         int maxHeight = metrics.heightPixels * 3 / 5;
