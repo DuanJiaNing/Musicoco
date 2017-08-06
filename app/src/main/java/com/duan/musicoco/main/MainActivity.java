@@ -22,10 +22,11 @@ import android.view.MenuItem;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.RootActivity;
+import com.duan.musicoco.app.InspectActivity;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
+import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.MainSheetHelper;
@@ -37,7 +38,7 @@ import com.duan.musicoco.util.SongUtils;
 
 import java.util.List;
 
-public class MainActivity extends RootActivity implements
+public class MainActivity extends InspectActivity implements
         NavigationView.OnNavigationItemSelectedListener,
         OnServiceConnect,
         OnThemeChange,
@@ -85,7 +86,7 @@ public class MainActivity extends RootActivity implements
         bottomNavigationController = new BottomNavigationController(this, mediaManager, appPreference, playPreference);
         mostPlayController = new RecentMostPlayController(this, mediaManager);
         mainSheetsController = new MainSheetsController(this, mediaManager);
-        mySheetsController = new MySheetsController(this, dbMusicoco, mediaManager);
+        mySheetsController = new MySheetsController(this, dbController, mediaManager);
 
         setContentView(R.layout.activity_main);
 
@@ -110,6 +111,9 @@ public class MainActivity extends RootActivity implements
         unbindService();
         unregisterReceiver();
 
+        if (dbController != null) {
+            dbController.close();
+        }
     }
 
     private void unregisterReceiver() {
@@ -178,6 +182,8 @@ public class MainActivity extends RootActivity implements
         int id = item.getItemId();
 
         if (id == R.id.action_main_search) {
+            int sheetID = MainSheetHelper.SHEET_ALL;
+            ActivityManager.getInstance(this).startSearchActivity(sheetID);
             return true;
         }
 
@@ -274,7 +280,7 @@ public class MainActivity extends RootActivity implements
                 if (sheetID == cursid) {
 
                     //当前播放歌单属于被删除歌单时需将播放列表置为【全部歌单】
-                    MainSheetHelper helper = new MainSheetHelper(this, dbMusicoco);
+                    MainSheetHelper helper = new MainSheetHelper(this, dbController);
                     List<DBSongInfo> list = helper.getAllSongInfo();
                     List<Song> songs = SongUtils.DBSongInfoListToSongList(list);
                     control.setPlayList(songs, 0, MainSheetHelper.SHEET_ALL);
@@ -289,9 +295,9 @@ public class MainActivity extends RootActivity implements
 
     private void initSelfData() {
 
-        bottomNavigationController.initData(sServiceConnection.takeControl(), dbMusicoco);
-        mostPlayController.initData(dbMusicoco, getString(R.string.rmp_history));
-        mainSheetsController.initData(dbMusicoco);
+        bottomNavigationController.initData(sServiceConnection.takeControl(), dbController);
+        mostPlayController.initData(dbController, getString(R.string.rmp_history));
+        mainSheetsController.initData(dbController);
         mySheetsController.initData(sServiceConnection.takeControl());
 
         update();

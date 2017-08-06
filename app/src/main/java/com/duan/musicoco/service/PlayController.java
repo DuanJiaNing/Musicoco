@@ -168,6 +168,7 @@ public class PlayController {
         } else {
             ds = dbController.getSongInfos(sheetID);
         }
+        dbController.close();
 
         if (ds == null || ds.size() == 0) {
             return null;

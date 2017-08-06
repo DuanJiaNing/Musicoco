@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -15,24 +14,21 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
-import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.bean.Sheet;
-import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.view.TextInputHelper;
 
-public class SheetModifyActivity extends AppCompatActivity implements
+public class SheetModifyActivity extends RootActivity implements
         OnThemeChange,
         View.OnClickListener {
 
-    private DBMusicocoController dbController;
     private BroadcastManager broadcastManager;
-    private AppPreference appPreference;
 
     private FloatingActionButton done;
     private Toolbar toolbar;
@@ -50,11 +46,8 @@ public class SheetModifyActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        appPreference = new AppPreference(this);
-        checkTheme();
         setContentView(R.layout.activity_sheet_modify);
 
-        dbController = new DBMusicocoController(this, true);
         broadcastManager = BroadcastManager.getInstance(this);
 
         initViews();
@@ -63,6 +56,14 @@ public class SheetModifyActivity extends AppCompatActivity implements
         initToolBarTitle();
         themeChange(null, null);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (dbController != null) {
+            dbController.close();
+        }
     }
 
     private void initToolBarTitle() {
@@ -185,16 +186,6 @@ public class SheetModifyActivity extends AppCompatActivity implements
         nameModifyHolder.textViewLimit.setTextColor(vicTC);
         remarkModifyHolder.textViewLimit.setTextColor(vicTC);
 
-    }
-
-
-    private void checkTheme() {
-        ThemeEnum themeEnum = appPreference.getTheme();
-        if (themeEnum == ThemeEnum.DARK) {
-            this.setTheme(R.style.Theme_DARK);
-        } else if (themeEnum == ThemeEnum.WHITE) {
-            this.setTheme(R.style.Theme_WHITE);
-        }
     }
 
     private void updateFloatingBtColor(int[] colors) {

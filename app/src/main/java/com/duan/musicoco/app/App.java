@@ -1,6 +1,5 @@
 package com.duan.musicoco.app;
 
-import android.animation.PropertyValuesHolder;
 import android.app.Application;
 import android.content.Context;
 
@@ -15,9 +14,10 @@ import com.duan.musicoco.preference.ThemeEnum;
 
 public class App extends Application {
 
-    //FIXME 内存泄漏
-    private AppPreference appPreference;
     private PlayPreference playPreference;
+    private AppPreference appPreference;
+
+    //FIXME 内存泄漏
     private static Context sCONTEXT;
 
     @Override
@@ -33,7 +33,7 @@ public class App extends Application {
 
     private void test() {
 
-        appPreference.updateTheme(ThemeEnum.WHITE);
+        appPreference.updateTheme(ThemeEnum.DARK);
         playPreference.updateTheme(ThemeEnum.VARYING);
         playPreference.updatePlayBgMode(PlayBackgroundModeEnum.COLOR);
 

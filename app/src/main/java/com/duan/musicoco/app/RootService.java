@@ -30,4 +30,13 @@ public abstract class RootService extends Service {
         this.mediaManager = MediaManager.getInstance(getApplicationContext());
 
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (dbController != null) {
+            dbController.close();
+        }
+    }
 }

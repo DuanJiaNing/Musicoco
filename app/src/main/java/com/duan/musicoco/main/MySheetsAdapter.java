@@ -221,7 +221,7 @@ public class MySheetsAdapter extends BaseAdapter implements
                         //Java.util.ConcurrentModificationException
                         //FIXME 多线程导致迭代时修改错误
                         List<DBSongInfo> infos = dbMusicoco.getSongInfos(integer);
-//                        TreeSet<DBMusicocoController.DBSongInfo> treeSet = dbMusicoco.descSortByLastPlayTime(infos);
+//                        TreeSet<DBMusicocoController.DBSongInfo> treeSet = dbController.descSortByLastPlayTime(infos);
                         Bitmap bitmap = findBitmap(infos, image);
                         if (bitmap == null) {
                             bitmap = defaultBitmap;

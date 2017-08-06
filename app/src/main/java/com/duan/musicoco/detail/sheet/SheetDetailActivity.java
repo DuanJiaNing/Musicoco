@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -21,16 +20,15 @@ import android.view.View;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.interfaces.OnCompleteListener;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.app.manager.MediaManager;
-import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.main.MainActivity;
-import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.shared.SheetsOperation;
 import com.duan.musicoco.shared.SongOperation;
@@ -43,7 +41,7 @@ import com.duan.musicoco.view.AppBarStateChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SheetDetailActivity extends AppCompatActivity implements OnThemeChange {
+public class SheetDetailActivity extends RootActivity implements OnThemeChange {
 
     private static final String TAG = "SheetDetailActivity";
 
@@ -52,7 +50,6 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
     private Toolbar toolbar;
     private Menu menu;
 
-    private DBMusicocoController dbController;
     private MediaManager mediaManager;
 
     private CollapsingToolbarLayout collapsingToolbarLayout;
@@ -61,7 +58,6 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
     private RecyclerView songList;
 
     private AppBarStateChangeListener barStateChangeListener;
-    private AppPreference appPreference;
     private SheetsOperation sheetsOperation;
     private SongOperation songOperation;
     private IPlayControl control;
@@ -74,8 +70,6 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        appPreference = new AppPreference(this);
-        checkTheme();
         setContentView(R.layout.activity_sheet_detail);
 
         Utils.transitionStatusBar(this);
@@ -83,7 +77,6 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
         boolean darkTheme = appPreference.getTheme() == ThemeEnum.DARK;
         infoController = new SheetInfoController(this, darkTheme);
         songListController = new SheetSongListController(this);
-        dbController = new DBMusicocoController(this, true);
         mediaManager = MediaManager.getInstance(this);
         control = MainActivity.getControl();
         sheetsOperation = new SheetsOperation(this, control, dbController);
@@ -125,7 +118,8 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
         broadcastManager.unregisterReceiver(songsChangeReceiver);
     }
 
-    private void checkTheme() {
+    @Override
+    protected void checkTheme() {
         ThemeEnum themeEnum = appPreference.getTheme();
         if (themeEnum == ThemeEnum.DARK) {
             this.setTheme(R.style.Theme_Sheet_Detail_DARK);
@@ -234,8 +228,7 @@ public class SheetDetailActivity extends AppCompatActivity implements OnThemeCha
 
         switch (id) {
             case R.id.sheet_detail_search:
-                //TODO
-                ToastUtils.showShortToast("sheet_detail_search");
+                ActivityManager.getInstance(this).startSearchActivity(sheetID);
                 break;
             case R.id.sheet_detail_action_collection:
                 if (songList.getChildCount() == 0) {

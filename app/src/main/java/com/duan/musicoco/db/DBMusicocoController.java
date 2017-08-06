@@ -76,6 +76,25 @@ public class DBMusicocoController {
         db.execSQL(sql);
     }
 
+    /**
+     * 在使用结束时应调用{@link #close()}关闭数据库连接
+     */
+    public DBMusicocoController(Context context, boolean writable) {
+        DBHelper helper = DBHelper.getInstance(context, DATABASE);
+        if (writable) {
+            this.database = helper.getWritableDatabase();
+        } else {
+            this.database = helper.getReadableDatabase();
+        }
+        this.context = context;
+    }
+
+    public void close() {
+        if (database.isOpen()) {
+            database.close();
+        }
+    }
+
     public boolean addSongToSheet(int sheetID, Song song) {
         DBSongInfo info = getSongInfo(song);
         if (info == null) {
@@ -127,25 +146,6 @@ public class DBMusicocoController {
         }
 
         return addSongToSheet(sheet.id, song);
-    }
-
-    /**
-     * 在使用结束时应调用{@link #close()}关闭数据库连接
-     */
-    public DBMusicocoController(Context context, boolean writable) {
-        DBHelper helper = DBHelper.getInstance(context, DATABASE);
-        if (writable) {
-            this.database = helper.getWritableDatabase();
-        } else {
-            this.database = helper.getReadableDatabase();
-        }
-        this.context = context;
-    }
-
-    public void close() {
-        if (database.isOpen()) {
-            database.close();
-        }
     }
 
     @Nullable

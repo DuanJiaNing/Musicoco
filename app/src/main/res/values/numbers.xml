@@ -2,6 +2,7 @@
 <resources>
     <integer name="play_list_anim_duration">400</integer>
     <integer name="anim_default_duration">600</integer>
+    <integer name="anim_default_duration_half">300</integer>
 
     <!--0 - 255-->
     <integer name="play_list_bg_alpha">180</integer>

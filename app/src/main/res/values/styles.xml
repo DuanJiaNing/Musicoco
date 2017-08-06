@@ -1,32 +1,5 @@
 <resources>
 
-    <style name="Widget.DiscreteSeekBar" parent="android:Widget">
-        <item name="dsb_indicatorTextAppearance">@style/Widget.DiscreteIndicatorTextAppearance
-        </item>
-        <item name="dsb_progressColor">@color/dsb_progress_color_list</item>
-        <item name="dsb_trackColor">@color/dsb_track_color_list</item>
-        <item name="dsb_rippleColor">@color/dsb_ripple_color_list</item>
-        <item name="dsb_indicatorColor">@color/dsb_progress_color</item>
-        <item name="dsb_indicatorElevation">4dp</item>
-        <item name="dsb_mirrorForRtl">true</item>
-    </style>
-
-    <style name="Widget.DiscreteIndicatorTextAppearance" parent="android:TextAppearance.Small">
-        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
-        <item name="android:padding">6dp</item>
-    </style>
-
-    <style name="BottomDialog" parent="@style/Base.V7.Theme.AppCompat.Light.Dialog">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-    </style>
-
-    <style name="BottomDialog.Animation" parent="Animation.AppCompat.Dialog">
-        <item name="android:windowEnterAnimation">@anim/slide_in_bottom</item>
-        <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
-    </style>
-
-
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
@@ -41,11 +14,45 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="AppTheme.Transparent" parent="AppTheme">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@style/SearchActivity.Animation</item>
+    </style>
+
+
+    <style name="Theme.Search.DARK" parent="AppTheme.Transparent">
+        <item name="colorPrimary">@color/theme_dark_primary</item>
+        <item name="colorPrimaryDark">@color/theme_dark_primary_dark</item>
+        <item name="colorAccent">@color/theme_dark_accent</item>
+        <item name="android:textColorPrimary">@color/theme_dark_main_text</item>
+        <item name="android:textColorHint">@color/default_text_hint</item>
+        <item name="android:textColorSecondary">@color/theme_dark_vic_text</item>
+
+        <item name="android:colorControlActivated">@color/theme_dark_accent</item>
+        <item name="android:colorControlHighlight">@color/theme_dark_vic_text</item>
+        <item name="android:colorControlNormal">@color/theme_dark_vic_text</item>
+        <item name="android:navigationBarColor">@color/theme_dark_primary_dark</item>
+    </style>
+
+    <style name="Theme.Search.WHITE" parent="AppTheme.Transparent">
+        <item name="colorPrimary">@color/theme_white_primary</item>
+        <item name="colorPrimaryDark">@color/theme_white_primary_dark</item>
+        <item name="colorAccent">@color/theme_white_accent</item>
+        <item name="android:textColorHint">@color/default_text_hint</item>
+        <item name="android:textColorPrimary">@color/theme_white_main_text</item>
+        <item name="android:textColorSecondary">@color/theme_white_vic_text</item>
+
+        <item name="android:colorControlActivated">@color/theme_white_accent</item>
+        <item name="android:colorControlHighlight">@color/theme_white_vic_text</item>
+        <item name="android:colorControlNormal">@color/theme_white_vic_text</item>
+        <item name="android:navigationBarColor">@color/theme_dark_primary_dark</item>
+    </style>
+
     <style name="AppTheme.Song.Detail" parent="AppTheme">
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
-
     </style>
 
     <style name="AppTheme.Sheet.Detail" parent="AppTheme.NoActionBar">
@@ -71,7 +78,6 @@
         <item name="android:colorControlNormal">@color/theme_white_vic_text</item>
         <item name="android:navigationBarColor">@color/theme_dark_primary_dark</item>
     </style>
-
 
     <style name="Theme.DARK" parent="AppTheme">
         <item name="android:windowBackground">@color/theme_dark_main_bg</item>
@@ -106,5 +112,38 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Widget.DiscreteSeekBar" parent="android:Widget">
+        <item name="dsb_indicatorTextAppearance">@style/Widget.DiscreteIndicatorTextAppearance
+        </item>
+        <item name="dsb_progressColor">@color/dsb_progress_color_list</item>
+        <item name="dsb_trackColor">@color/dsb_track_color_list</item>
+        <item name="dsb_rippleColor">@color/dsb_ripple_color_list</item>
+        <item name="dsb_indicatorColor">@color/dsb_progress_color</item>
+        <item name="dsb_indicatorElevation">4dp</item>
+        <item name="dsb_mirrorForRtl">true</item>
+    </style>
+
+    <style name="Widget.DiscreteIndicatorTextAppearance" parent="android:TextAppearance.Small">
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+        <item name="android:padding">6dp</item>
+    </style>
+
+    <style name="BottomDialog" parent="@style/Base.V7.Theme.AppCompat.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="BottomDialog.Animation" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/slide_in_bottom</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_bottom</item>
+    </style>
+
+    <style name="SearchActivity.Animation" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/slide_in_right_no_alpha</item>
+        <item name="android:activityOpenExitAnimation">@anim/slide_out_right_no_alpha</item>
+        <item name="android:activityCloseEnterAnimation">@anim/slide_in_right_no_alpha</item>
+        <item name="android:activityCloseExitAnimation">@anim/slide_out_right_no_alpha</item>
+    </style>
 
 </resources>

@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageButton;
@@ -18,10 +17,10 @@ import android.widget.TextView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.RootActivity;
+import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
-import com.duan.musicoco.app.SongInfo;
-import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.util.BitmapUtils;
@@ -35,7 +34,7 @@ import com.duan.musicoco.util.Utils;
  * Created by DuanJiaNing on 2017/7/19.
  */
 
-public class SongDetailActivity extends AppCompatActivity implements View.OnClickListener {
+public class SongDetailActivity extends RootActivity implements View.OnClickListener {
 
     private ImageButton mClose;
     private FloatingActionButton mSaveImage;
@@ -48,7 +47,6 @@ public class SongDetailActivity extends AppCompatActivity implements View.OnClic
 
     private SongInfo info;
     private MediaManager mediaManager;
-    private DBMusicocoController dbMusicocoController;
 
     private boolean haveAlbumImage = false;
 
@@ -69,8 +67,6 @@ public class SongDetailActivity extends AppCompatActivity implements View.OnClic
         info = mediaManager.getSongInfo(song);
 
         if (info != null) {
-            dbMusicocoController = new DBMusicocoController(this, false);
-
             initText();
             mImage.post(new Runnable() {
                 @Override
@@ -99,7 +95,7 @@ public class SongDetailActivity extends AppCompatActivity implements View.OnClic
         String dateAdded = StringUtils.getGenDateYMDHMS(info.getDate_added());
         String mimeType = info.getMime_type();
 
-        DBSongInfo songInfo = dbMusicocoController.getSongInfo(new Song(path));
+        DBSongInfo songInfo = dbController.getSongInfo(new Song(path));
         String playTimes = songInfo.playTimes + "次";
         String remark = songInfo.remark;
         String lastPlayTime = StringUtils.getGenDateYMDHMS(songInfo.lastPlayTime);
@@ -108,7 +104,7 @@ public class SongDetailActivity extends AppCompatActivity implements View.OnClic
         int[] ss = songInfo.sheets;
         StringBuilder sheets = new StringBuilder();
         for (int i = 0; i < ss.length; i++) {
-            Sheet s = dbMusicocoController.getSheet(ss[i]);
+            Sheet s = dbController.getSheet(ss[i]);
             if (s != null) {
                 sheets.append(s.name);
                 if (i != ss.length - 1) {

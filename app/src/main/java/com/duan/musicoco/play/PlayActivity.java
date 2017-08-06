@@ -15,7 +15,7 @@ import android.widget.FrameLayout;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.RootActivity;
+import com.duan.musicoco.app.InspectActivity;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
@@ -29,7 +29,6 @@ import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.service.PlayServiceCallback;
-import com.duan.musicoco.shared.ExceptionHandler;
 
 import java.util.List;
 
@@ -37,7 +36,7 @@ import java.util.List;
  * Created by DuanJiaNing on 2017/5/23.
  */
 
-public class PlayActivity extends RootActivity implements
+public class PlayActivity extends InspectActivity implements
         PlayServiceCallback,
         OnServiceConnect,
         View.OnClickListener,
@@ -110,15 +109,16 @@ public class PlayActivity extends RootActivity implements
         if (bottomNavigationController.isListShowing()) {
             bottomNavigationController.hide();
             return;
+        } else {
+            moveTaskToBack(true);
         }
-        super.onBackPressed();
     }
 
     @Override
     public void songChanged(Song song, int index, boolean isNext) {
 
         //FIXME 次数计算策略完善
-        dbMusicoco.addSongPlayTimes(song);
+        dbController.addSongPlayTimes(song);
         synchronize(song, isNext);
 
     }
@@ -313,7 +313,7 @@ public class PlayActivity extends RootActivity implements
         if (bottomNavigationController == null) {
             bottomNavigationController = new BottomNavigationController(
                     this,
-                    dbMusicoco,
+                    dbController,
                     mediaManager,
                     playPreference,
                     appPreference);

@@ -68,6 +68,10 @@
             android:label="@string/title_activity_sheet_modify"
             android:theme="@style/AppTheme">
         </activity>
+
+        <activity
+            android:name=".search.SearchActivity"
+            android:theme="@style/AppTheme.Transparent"></activity>
     </application>
 
 </manifest>
