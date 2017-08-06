@@ -1,15 +1,20 @@
 package com.duan.musicoco.search;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.duan.musicoco.R;
@@ -17,9 +22,12 @@ import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.db.MainSheetHelper;
+import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.ToastUtils;
+
+import java.util.List;
 
 /**
  * Created by DuanJiaNing on 2017/8/6.
@@ -29,33 +37,79 @@ public class SearchActivity extends RootActivity implements OnThemeChange {
 
     private int mSheetId;
     private SearchController mSearchController;
+    private MainSheetHelper mainSheetHelper;
+    private List<DBSongInfo> infos;
+
     private Toolbar mToolbar;
     private View mResultContainer;
-    private TextView mResult;
-    private ImageButton mGoBack;
     private EditText mInput;
+
+    private boolean isResultContainerShowing = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity);
 
-        mSearchController = new SearchController();
+        mainSheetHelper = new MainSheetHelper(this, dbController);
         getSheet();
-        initViews();
+        mSearchController = new SearchController(this, dbController, mSheetId, infos);
 
+        initViews();
+        initData();
+
+    }
+
+    private void initData() {
+        mSearchController.initData();
+        initInputListener();
+        themeChange(null, null);
+    }
+
+    private void initInputListener() {
+        mInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mSearchController.update(s + "");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     private void initViews() {
         mToolbar = (Toolbar) findViewById(R.id.search_toolbar);
-        initToolbarView();
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        mInput = (EditText) findViewById(R.id.search_input);
         mResultContainer = findViewById(R.id.search_result_container);
-        mResult = (TextView) findViewById(R.id.search_result);
-        themeChange(null, null);
 
         mSearchController.initViews();
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        switch (id) {
+            case android.R.id.home:
+                finish();
+                break;
+            default:
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     private void showResultContainer() {
@@ -71,7 +125,7 @@ public class SearchActivity extends RootActivity implements OnThemeChange {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-
+                isResultContainerShowing = true;
             }
 
             @Override
@@ -80,10 +134,6 @@ public class SearchActivity extends RootActivity implements OnThemeChange {
             }
         });
         mResultContainer.startAnimation(animation);
-
-    }
-
-    private void initToolbarView() {
 
     }
 
@@ -122,9 +172,10 @@ public class SearchActivity extends RootActivity implements OnThemeChange {
     public void onEnterAnimationComplete() {
         super.onEnterAnimationComplete();
 
-        showResultContainer();
+        if (!isResultContainerShowing) {
+            showResultContainer();
+        }
     }
-
 
     @Override
     protected void checkTheme() {
@@ -145,9 +196,23 @@ public class SearchActivity extends RootActivity implements OnThemeChange {
         } else {
             mSheetId = MainSheetHelper.SHEET_ALL;
         }
-        ToastUtils.showShortToast("" + mSheetId);
+
+        validate();
     }
 
+    private void validate() {
+        if (mSheetId < 0) {
+            infos = mainSheetHelper.getMainSheetSongInfo(mSheetId);
+        } else {
+            infos = dbController.getSongInfos(mSheetId);
+        }
+
+        if (infos == null || infos.size() == 0) {
+            String msg = getString(R.string.error_empty_sheet);
+            ToastUtils.showShortToast(msg);
+            finish();
+        }
+    }
 
     @Override
     public void themeChange(ThemeEnum themeEnum, int[] colors) {
@@ -165,6 +230,7 @@ public class SearchActivity extends RootActivity implements OnThemeChange {
                 break;
             }
         }
+        mSearchController.themeChange(theme, cs);
 
         int statusC = cs[0];
         int toolbarC = cs[1];
@@ -177,13 +243,14 @@ public class SearchActivity extends RootActivity implements OnThemeChange {
         int toolbarMainTC = cs[8];
         int toolbarVicTC = cs[9];
 
-        mToolbar.setBackgroundColor(vicBC);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            mGoBack.getDrawable().setTint(toolbarC);
-        }
-
         mResultContainer.setBackgroundColor(mainBC);
-        mResult.setBackgroundColor(accentC);
+        mInput.setHintTextColor(vicTC);
+        mInput.setTextColor(mainTC);
 
+        Drawable icon = getResources().getDrawable(R.drawable.ic_arrow_back);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            icon.setTint(accentC);
+        }
+        mToolbar.setNavigationIcon(icon);
     }
 }

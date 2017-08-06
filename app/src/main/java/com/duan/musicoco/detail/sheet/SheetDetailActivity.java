@@ -228,7 +228,12 @@ public class SheetDetailActivity extends RootActivity implements OnThemeChange {
 
         switch (id) {
             case R.id.sheet_detail_search:
-                ActivityManager.getInstance(this).startSearchActivity(sheetID);
+                if (songList.getChildCount() == 0) {
+                    String msg = getString(R.string.error_empty_sheet);
+                    ToastUtils.showShortToast(msg);
+                } else {
+                    ActivityManager.getInstance(this).startSearchActivity(sheetID);
+                }
                 break;
             case R.id.sheet_detail_action_collection:
                 if (songList.getChildCount() == 0) {

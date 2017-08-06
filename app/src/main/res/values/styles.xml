@@ -36,7 +36,7 @@
     </style>
 
     <style name="Theme.Search.WHITE" parent="AppTheme.Transparent">
-        <item name="colorPrimary">@color/theme_white_primary</item>
+        <item name="colorPrimary">@color/theme_white_main_bg</item>
         <item name="colorPrimaryDark">@color/theme_white_primary_dark</item>
         <item name="colorAccent">@color/theme_white_accent</item>
         <item name="android:textColorHint">@color/default_text_hint</item>
@@ -141,9 +141,6 @@
 
     <style name="SearchActivity.Animation" parent="@android:style/Animation.Activity">
         <item name="android:activityOpenEnterAnimation">@anim/slide_in_right_no_alpha</item>
-        <item name="android:activityOpenExitAnimation">@anim/slide_out_right_no_alpha</item>
-        <item name="android:activityCloseEnterAnimation">@anim/slide_in_right_no_alpha</item>
-        <item name="android:activityCloseExitAnimation">@anim/slide_out_right_no_alpha</item>
     </style>
 
 </resources>

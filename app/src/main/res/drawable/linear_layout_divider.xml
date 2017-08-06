@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <size android:height="@dimen/sheet_modify_linearlayout_divide_height" />
+    <size android:height="@dimen/sheet_modify_linear_layout_divide_height" />
 </shape>

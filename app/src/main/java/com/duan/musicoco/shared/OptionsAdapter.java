@@ -172,6 +172,12 @@ public class OptionsAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void addOption(@NonNull String title, @Nullable String msg, int id, int iconID, @Nullable OptionClickListener listener) {
+        Option opion = new Option(title, id, msg, iconID, listener);
+        options.add(opion);
+        notifyDataSetChanged();
+    }
+
     public void addOption(@Nullable int[] iconsID, @Nullable int[] ids, @NonNull String[] texts, @Nullable String[] msgs, @Nullable OptionClickListener[] listener) {
         for (int i = 0; i < texts.length; i++) {
             Option option = new Option(

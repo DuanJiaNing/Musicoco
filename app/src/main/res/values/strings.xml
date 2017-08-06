@@ -93,6 +93,8 @@
     <string name="continue_">继续</string>
     <string name="deleting">正在删除</string>
     <string name="cancel">取消</string>
+    <string name="arts">艺术家</string>
+    <string name="album">专辑</string>
     <string name="remove">移除</string>
     <string name="delete">删除</string>
 
@@ -110,13 +112,17 @@
     <string name="title_add_all_songs_to_favorite">收藏所有歌曲</string>
     <string name="title_add_to_sheet">添加至播放列表</string>
     <string name="title_add_to_favorite">添加至收藏</string>
+    <string name="info_search">搜索音乐</string>
+    <string name="info_show_in_sheet">在歌单中显示</string>
 
     <string name="in_progress_add_songs_to_favorite">正在收藏歌曲</string>
     <string name="in_progress_remove_songs_from_favorite">正在取消收藏</string>
     <string name="in_progress_remove_songs_from_sheet">正在移除</string>
     <string name="in_progress_delete">正在删除</string>
 
-    <string name="play_all_song_random">随机播放 * 首歌曲</string>
+    <string name="replace_play_all_song_random">随机播放 * 首歌曲</string>
+    <string name="replace_search_from_songs">从 * 首歌曲中检索</string>
+    <string name="replace_search_result_prompt">共检索到 * 首歌曲</string>
 
     <string name="create_time">创建时间</string>
 

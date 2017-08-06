@@ -24,9 +24,9 @@
     <dimen name="status_bar_height">24dp</dimen>
     <dimen name="action_bar_default_height">48dip</dimen>
 
-    <dimen name="text_small">13sp</dimen>
-    <dimen name="text_small_s">11sp</dimen>
-    <dimen name="text_small_s_s">9sp</dimen>
+    <dimen name="text_small">12sp</dimen>
+    <dimen name="text_small_s">10sp</dimen>
+    <dimen name="text_small_s_s">8sp</dimen>
 
     <dimen name="text_dialog_button">6sp</dimen>
 
@@ -62,6 +62,7 @@
     <dimen name="my_sheets_item_image_width">100dp</dimen>
     <dimen name="my_sheets_item_image_height">80dp</dimen>
     <dimen name="sheet_songs_item_height">80dp</dimen>
+    <dimen name="search_item_height">80dp</dimen>
 
     <dimen name="song_detail_image_height">230dp</dimen>
 
@@ -69,6 +70,6 @@
     <dimen name="app_bar_height">280dp</dimen>
     <dimen name="text_margin">16dp</dimen>
 
-    <dimen name="sheet_modify_linearlayout_divide_height">20dp</dimen>
+    <dimen name="sheet_modify_linear_layout_divide_height">20dp</dimen>
 
 </resources>

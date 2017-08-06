@@ -40,5 +40,4 @@ public class RootActivity extends AppCompatActivity {
             this.setTheme(R.style.Theme_WHITE);
         }
     }
-
 }

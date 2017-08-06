@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageButton;
@@ -21,6 +22,7 @@ import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
+import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.util.BitmapUtils;
@@ -64,6 +66,7 @@ public class SongDetailActivity extends RootActivity implements View.OnClickList
         Song song = new Song(path);
 
         mediaManager = MediaManager.getInstance(this);
+
         info = mediaManager.getSongInfo(song);
 
         if (info != null) {
@@ -76,6 +79,11 @@ public class SongDetailActivity extends RootActivity implements View.OnClickList
             });
         }
 
+    }
+
+    @Override
+    protected void checkTheme() {
+        // 不需要检查主题
     }
 
     private void initText() {

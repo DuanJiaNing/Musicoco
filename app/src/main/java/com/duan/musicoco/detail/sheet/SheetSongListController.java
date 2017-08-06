@@ -449,7 +449,7 @@ public class SheetSongListController implements
                     public void call(Boolean playing) {
                         songAdapter.update(playing, currentIndex);
 
-                        String str = activity.getString(R.string.play_all_song_random);
+                        String str = activity.getString(R.string.replace_play_all_song_random);
                         String res = str.replace("*", String.valueOf(songCount));
                         playAllRandom.setText(res);
                     }
