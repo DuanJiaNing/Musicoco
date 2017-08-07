@@ -237,6 +237,6 @@ public class MySheetsController implements
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Sheet sheet = (Sheet) adapter.getItem(position);
-        ActivityManager.getInstance(activity).startSheetDetailActivity(sheet.id);
+        ActivityManager.getInstance(activity).startSheetDetailActivity(sheet.id, null);
     }
 }

@@ -107,13 +107,13 @@ public class MainSheetsController implements
         ActivityManager manager = ActivityManager.getInstance(activity);
         switch (v.getId()) {
             case R.id.sheet_all_container:
-                manager.startSheetDetailActivity(MainSheetHelper.SHEET_ALL);
+                manager.startSheetDetailActivity(MainSheetHelper.SHEET_ALL, null);
                 break;
             case R.id.sheet_recent_container:
-                manager.startSheetDetailActivity(MainSheetHelper.SHEET_RECENT);
+                manager.startSheetDetailActivity(MainSheetHelper.SHEET_RECENT, null);
                 break;
             case R.id.sheet_favorite_container:
-                manager.startSheetDetailActivity(MainSheetHelper.SHEET_FAVORITE);
+                manager.startSheetDetailActivity(MainSheetHelper.SHEET_FAVORITE, null);
                 break;
         }
     }

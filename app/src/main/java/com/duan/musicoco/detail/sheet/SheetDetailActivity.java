@@ -66,6 +66,7 @@ public class SheetDetailActivity extends RootActivity implements OnThemeChange {
 
     private Sheet sheet;
     private int sheetID;
+    private Song locationAt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +89,20 @@ public class SheetDetailActivity extends RootActivity implements OnThemeChange {
         initData();
         initBroadcast();
 
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        locationAt = intent.getParcelableExtra(ActivityManager.SHEET_DETAIL_LOCATION_AT);
+        handleListLocation(false);
+    }
+
+    // delay 是否延迟滚动
+    private void handleListLocation(boolean delay) {
+        if (locationAt != null) {
+            songListController.locationAt(locationAt, delay);
+        }
     }
 
     @Override
@@ -130,8 +145,8 @@ public class SheetDetailActivity extends RootActivity implements OnThemeChange {
 
     private void getSheet() {
         Intent intent = getIntent();
-        int si = intent.getIntExtra(ActivityManager.SHEET_DETAIL_ID, Integer.MAX_VALUE);
 
+        int si = intent.getIntExtra(ActivityManager.SHEET_DETAIL_ID, Integer.MAX_VALUE);
         if (Integer.MAX_VALUE != si) {
             if (si < 0) {
                 sheetID = si;
@@ -146,12 +161,16 @@ public class SheetDetailActivity extends RootActivity implements OnThemeChange {
                 }
             }
         }
+
+        locationAt = intent.getParcelableExtra(ActivityManager.SHEET_DETAIL_LOCATION_AT);
     }
 
     private void initData() {
 
         infoController.initData(sheetID, sheet, dbController, mediaManager);
         songListController.initData(sheetID, control, dbController, mediaManager);
+        handleListLocation(true);
+
         themeChange(null, null);
 
     }
@@ -171,12 +190,10 @@ public class SheetDetailActivity extends RootActivity implements OnThemeChange {
             // 主歌单歌单信息不允许修改
             menu.removeItem(R.id.sheet_detail_action_modify);
 
-            // 除 我的收藏 以外的主歌单没有【移除多首歌曲】选项
-            if (sheetID != MainSheetHelper.SHEET_FAVORITE) {
-                menu.removeItem(R.id.sheet_detail_multi_remove);
-            }
+            // 主歌单没有【移除多首歌曲】选项，我的收藏的由【多项取消收藏】选项
+            menu.removeItem(R.id.sheet_detail_multi_remove);
 
-            // 我的收藏 歌单不需要【收藏所有】选项
+            // 我的收藏 歌单不需要【收藏所有】
             if (sheetID == MainSheetHelper.SHEET_FAVORITE) {
                 menu.removeItem(R.id.sheet_detail_action_collection);
             }

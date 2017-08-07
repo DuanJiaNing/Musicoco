@@ -80,7 +80,7 @@ public class DBMusicocoController {
      * 在使用结束时应调用{@link #close()}关闭数据库连接
      */
     public DBMusicocoController(Context context, boolean writable) {
-        DBHelper helper = DBHelper.getInstance(context, DATABASE);
+        DBHelper helper = new DBHelper(context, DATABASE);
         if (writable) {
             this.database = helper.getWritableDatabase();
         } else {

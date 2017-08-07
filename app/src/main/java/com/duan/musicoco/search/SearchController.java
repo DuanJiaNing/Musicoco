@@ -11,6 +11,7 @@ import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
@@ -155,7 +156,9 @@ public class SearchController implements OnThemeChange, ResultsAdapter.OnItemCli
     }
 
     private void locationSongInSheet() {
-        //TODO
+        mActivity.finish();
+        Song song = new Song(currentClickItem.getData());
+        ActivityManager.getInstance(mActivity).startSheetDetailActivity(mSheetId, song);
     }
 
     private void playSong() {

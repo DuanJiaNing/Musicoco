@@ -23,9 +23,11 @@ public class ActivityManager {
 
     private Context context;
     public static final String SONG_DETAIL_PATH = "song_detail_path";
-    public static final String SHEET_DETAIL_ID = "sheet_detail_id";
     public static final String SHEET_MODIFY_ID = "sheet_modify_id";
     public static final String SHEET_SEARCH_ID = "sheet_search_id";
+
+    public static final String SHEET_DETAIL_ID = "sheet_detail_id";
+    public static final String SHEET_DETAIL_LOCATION_AT = "sheet_detail_location_at";
 
     private static ActivityManager mInstance;
 
@@ -53,9 +55,15 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public void startSheetDetailActivity(int sheetID) {
+    /**
+     * locationAt: 显示列表时滚动到，不需要滚动传 -1 即可
+     */
+    public void startSheetDetailActivity(int sheetID, Song locationAt) {
         Intent intent = new Intent(context, SheetDetailActivity.class);
         intent.putExtra(SHEET_DETAIL_ID, sheetID);
+        if (locationAt != null) {
+            intent.putExtra(SHEET_DETAIL_LOCATION_AT, locationAt);
+        }
         context.startActivity(intent);
     }
 

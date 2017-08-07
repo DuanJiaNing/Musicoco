@@ -33,9 +33,9 @@ public class App extends Application {
 
     private void test() {
 
-        appPreference.updateTheme(ThemeEnum.DARK);
-        playPreference.updateTheme(ThemeEnum.DARK);
-        playPreference.updatePlayBgMode(PlayBackgroundModeEnum.COLOR);
+        appPreference.updateTheme(ThemeEnum.WHITE);
+        playPreference.updateTheme(ThemeEnum.VARYING);
+        playPreference.updatePlayBgMode(PlayBackgroundModeEnum.PICTUREWITHBLUR);
 
     }
 

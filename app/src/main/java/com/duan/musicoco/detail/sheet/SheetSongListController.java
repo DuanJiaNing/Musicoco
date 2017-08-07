@@ -8,6 +8,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,6 +77,8 @@ public class SheetSongListController implements
 
     private int currentIndex = 0;
     private int songCount;
+    private boolean needLocation = false;
+    private Song locationAt;
 
     private final List<SongAdapter.DataHolder> data;
 
@@ -449,6 +452,11 @@ public class SheetSongListController implements
                     public void call(Boolean playing) {
                         songAdapter.update(playing, currentIndex);
 
+                        if (needLocation) {
+                            location();
+                            needLocation = false;
+                        }
+
                         String str = activity.getString(R.string.replace_play_all_song_random);
                         String res = str.replace("*", String.valueOf(songCount));
                         playAllRandom.setText(res);
@@ -612,5 +620,29 @@ public class SheetSongListController implements
 
     public boolean isCurrentSheetPlaying() {
         return isCurrentSheetPlaying;
+    }
+
+    public void locationAt(Song locationAt, boolean delay) {
+        if (locationAt == null || TextUtils.isEmpty(locationAt.path)) {
+            return;
+        }
+        this.locationAt = locationAt;
+
+        if (delay) {
+            needLocation = true;
+        } else {
+            location();
+        }
+    }
+
+    private void location() {
+        int index;
+        for (index = 0; index < data.size(); index++) {
+            String path = data.get(index).info.getData();
+            if (path.equals(locationAt.path)) {
+                break;
+            }
+        }
+        songList.smoothScrollToPosition(index);
     }
 }
