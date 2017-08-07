@@ -20,33 +20,6 @@ public class DBSongInfo {
     public int[] sheets;
     public boolean favorite;
 
-    private static TreeSet<DBSongInfo> sTREESET = new TreeSet<>(new Comparator<DBSongInfo>() {
-        @Override
-        public int compare(DBSongInfo o1, DBSongInfo o2) {
-            int rs;
-            if (o1.lastPlayTime > o2.lastPlayTime) {
-                rs = -1;
-            } else if (o1.lastPlayTime < o2.lastPlayTime) {
-                rs = 1;
-            } else {
-                rs = -1; // equals set 不能重复，会丢失数据
-            }
-            return rs;
-        }
-    });
-
-    /**
-     * 按最后播放时间降序排序
-     */
-    public static List<DBSongInfo> descSortByLastPlayTime(List<DBSongInfo> list) {
-        sTREESET.clear();
-        for (DBSongInfo s : list) {
-            sTREESET.add(s);
-        }
-
-        return new ArrayList<>(sTREESET);
-    }
-
     public DBSongInfo() {
     }
 
@@ -76,4 +49,57 @@ public class DBSongInfo {
         return path.hashCode();
     }
 
+    /**
+     * 按最后播放时间降序排序
+     */
+    public static List<DBSongInfo> descSortByLastPlayTime(List<DBSongInfo> list) {
+
+        TreeSet<DBSongInfo> set = new TreeSet<>(new Comparator<DBSongInfo>() {
+            @Override
+            public int compare(DBSongInfo o1, DBSongInfo o2) {
+                int rs;
+                if (o1.lastPlayTime > o2.lastPlayTime) {
+                    rs = -1;
+                } else if (o1.lastPlayTime < o2.lastPlayTime) {
+                    rs = 1;
+                } else {
+                    rs = -1; // equals set 不能重复，会丢失数据
+                }
+                return rs;
+            }
+        });
+
+        for (DBSongInfo s : list) {
+            set.add(s);
+        }
+
+        return new ArrayList<>(set);
+    }
+
+    /**
+     * 按播放次数降序排序
+     */
+    public static ArrayList<DBSongInfo> descSortByPlayTimes(List<DBSongInfo> list) {
+
+        TreeSet<DBSongInfo> set = new TreeSet<>(new Comparator<DBSongInfo>() {
+            @Override
+            public int compare(DBSongInfo o1, DBSongInfo o2) {
+                int rs;
+                if (o1.playTimes > o2.playTimes) {
+                    rs = -1;
+                } else if (o1.playTimes < o2.playTimes) {
+                    rs = 1;
+                } else {
+                    rs = -1; // equals set 不能重复，会丢失数据
+                }
+                return rs;
+            }
+        });
+
+        for (DBSongInfo s : list) {
+            set.add(s);
+        }
+
+        return new ArrayList<>(set);
+    }
 }

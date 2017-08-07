@@ -11,6 +11,7 @@ import com.duan.musicoco.detail.sheet.SheetDetailActivity;
 import com.duan.musicoco.detail.song.SongDetailActivity;
 import com.duan.musicoco.newsheet.SheetModifyActivity;
 import com.duan.musicoco.play.PlayActivity;
+import com.duan.musicoco.rmp.RecentMostPlayActivity;
 import com.duan.musicoco.search.SearchActivity;
 
 import java.io.File;
@@ -81,5 +82,9 @@ public class ActivityManager {
 
     public void startPlayActivity() {
         context.startActivity(new Intent(context, PlayActivity.class));
+    }
+
+    public void startRecentMostPlayActivity() {
+        context.startActivity(new Intent(context, RecentMostPlayActivity.class));
     }
 }

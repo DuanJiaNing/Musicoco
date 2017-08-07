@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <set xmlns:android="http://schemas.android.com/apk/res/android"
-    android:interpolator="@android:anim/accelerate_interpolator"
+    android:interpolator="@android:anim/accelerate_decelerate_interpolator"
     >
     <translate
         android:duration="@integer/play_list_anim_duration"

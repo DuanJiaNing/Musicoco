@@ -60,18 +60,23 @@
         <activity
             android:name=".detail.sheet.SheetDetailActivity"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme.Sheet.Detail">
-        </activity>
-
+            android:theme="@style/AppTheme.Sheet.Detail"></activity>
         <activity
             android:name=".newsheet.SheetModifyActivity"
             android:label="@string/title_activity_sheet_modify"
-            android:theme="@style/AppTheme">
-        </activity>
-
+            android:theme="@style/AppTheme"></activity>
         <activity
             android:name=".search.SearchActivity"
-            android:theme="@style/AppTheme.Transparent"></activity>
+            android:theme="@style/AppTheme.Transparent" />
+        <activity
+            android:name=".rmp.RecentMostPlayActivity"
+            android:label="@string/rmp_history"
+            android:parentActivityName=".app.RootActivity"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.duan.musicoco.main.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

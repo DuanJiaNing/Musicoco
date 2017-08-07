@@ -173,7 +173,6 @@ public class SheetSongListController implements
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Song song = new Song(currentSongData.info.getData());
                 SongInfo info = currentSongData.info;
-                // FIXME 彻底删除 和 移除 时让列表有动画，调用 adapter 的 romeItemXXX
                 switch (position) {
                     case 0: //收藏到歌单
                         songOperation.handleAddSongToSheet(info);
@@ -644,5 +643,9 @@ public class SheetSongListController implements
             }
         }
         songList.smoothScrollToPosition(index);
+    }
+
+    public void setUseAnim(boolean anim) {
+        songAdapter.setUseAnim(anim);
     }
 }

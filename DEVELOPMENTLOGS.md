@@ -291,4 +291,5 @@
 - 2017-08-07
 
 1 搜索到的歌曲可以快速在歌单中定位<br>
+2 添加 历史最多播放 RecentMostPlayActivity<br>
 

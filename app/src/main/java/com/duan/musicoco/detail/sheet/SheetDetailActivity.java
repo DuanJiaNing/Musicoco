@@ -391,7 +391,9 @@ public class SheetDetailActivity extends RootActivity implements OnThemeChange {
         });
     }
 
+    // 滚动到顶部 按钮的点击事件
     public void smoothScrollToTop(View view) {
+        songListController.setUseAnim(false);
         songList.smoothScrollToPosition(0);
     }
 

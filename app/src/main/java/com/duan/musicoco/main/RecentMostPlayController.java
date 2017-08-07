@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnContentUpdate;
@@ -112,9 +113,9 @@ public class RecentMostPlayController implements
     @Override
     public void onClick(View v) {
 
-        //TODO 完成显示更多
         switch (v.getId()) {
             case R.id.rmp_see_more:
+                ActivityManager.getInstance(activity).startRecentMostPlayActivity();
                 break;
         }
     }

@@ -8,7 +8,7 @@
     <integer name="play_list_bg_alpha">180</integer>
 
     <integer name="sheet_recent_count">50</integer>
-
+    <integer name="rmp_count">10</integer>
 
     <integer name="sheet_name_text_limit">13</integer>
     <integer name="sheet_remark_text_limit">50</integer>

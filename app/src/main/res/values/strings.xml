@@ -31,9 +31,6 @@
 
     <string name="error_exception_remote">与播放服务连接断开啦:)，可以尝试退出应用，并重新打开。 </string>
 
-    <string name="rmp_see_more">查看更多</string>
-    <string name="rmp_history">历史最多播放</string>
-
     <string name="my_sheet_title">创建的歌单</string>
     <string name="my_sheet_click_here_for_new_sheet">点击这里创建歌单</string>
 
@@ -128,6 +125,10 @@
 
 
     <string name="title_activity_sheet_modify">SheetModifyActivity</string>
+    <string name="title_activity_recent_most_play">RecentMostPlayActivity</string>
 
+
+    <string name="rmp_see_more">查看更多</string>
+    <string name="rmp_history">历史最多播放</string>
 
 </resources>
