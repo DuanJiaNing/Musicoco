@@ -52,6 +52,7 @@ public class SearchController implements OnThemeChange, ResultsAdapter.OnItemCli
     private IPlayControl control;
 
     private SongInfo currentClickItem;
+    private ActivityManager activityManager;
 
     public SearchController(Activity activity, DBMusicocoController dbController, int sheetId, List<DBSongInfo> infos) {
         this.mSheetId = sheetId;
@@ -62,6 +63,7 @@ public class SearchController implements OnThemeChange, ResultsAdapter.OnItemCli
         this.adapter = new ResultsAdapter(activity, data);
         this.optionsDialog = new OptionsDialog(activity);
         this.control = MainActivity.getControl();
+        this.activityManager = ActivityManager.getInstance(mActivity);
     }
 
     private void updatePrompt() {
@@ -158,7 +160,7 @@ public class SearchController implements OnThemeChange, ResultsAdapter.OnItemCli
     private void locationSongInSheet() {
         mActivity.finish();
         Song song = new Song(currentClickItem.getData());
-        ActivityManager.getInstance(mActivity).startSheetDetailActivity(mSheetId, song);
+        activityManager.startSheetDetailActivity(mSheetId, song);
     }
 
     private void playSong() {
@@ -172,6 +174,9 @@ public class SearchController implements OnThemeChange, ResultsAdapter.OnItemCli
             } else {
                 control.play(song);
             }
+            mActivity.finish();
+            activityManager.startPlayActivity();
+
 
         } catch (RemoteException e) {
             e.printStackTrace();

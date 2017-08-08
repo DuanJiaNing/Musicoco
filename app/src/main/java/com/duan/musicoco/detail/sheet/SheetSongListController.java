@@ -387,7 +387,7 @@ public class SheetSongListController implements
 
     private String[] getTexts() {
         String[] res = {
-                activity.getString(R.string.song_operation_collection_sheet),
+                activity.getString(R.string.title_add_to_sheet),
                 activity.getString(R.string.song_operation_detail),
                 activity.getString(R.string.song_operation_delete),
                 activity.getString(R.string.song_operation_add_to_favorite),

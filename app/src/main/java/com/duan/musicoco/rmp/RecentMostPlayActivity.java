@@ -5,6 +5,8 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -13,12 +15,24 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.duan.musicoco.R;
+import com.duan.musicoco.aidl.IPlayControl;
+import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.bean.DBSongInfo;
+import com.duan.musicoco.main.MainActivity;
+import com.duan.musicoco.preference.ThemeEnum;
+import com.duan.musicoco.shared.OptionsAdapter;
+import com.duan.musicoco.shared.OptionsDialog;
+import com.duan.musicoco.shared.SongOperation;
+import com.duan.musicoco.util.ColorUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,26 +42,55 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class RecentMostPlayActivity extends RootActivity {
+public class RecentMostPlayActivity extends RootActivity implements OnThemeChange, RMPAdapter.OnItemClickListener {
 
     private FirstThreeViewHolder first;
     private FirstThreeViewHolder second;
     private FirstThreeViewHolder third;
 
-    private final List<DataHolder> data = new ArrayList<>();
+    private final List<RMPAdapter.DataHolder> data = new ArrayList<>();
+    private RMPAdapter adapter;
+    private RecyclerView list;
+
     private MediaManager mediaManager;
+    private ActivityManager activityManager;
+
+    private View line;
+    private TextView title;
+    private boolean isActivityFirstCreate = true;
+
+    private IPlayControl control;
+
+    private OptionsDialog optionsDialog;
+    private OptionsAdapter optionsAdapter;
+    private SongOperation songOperation;
+
+    private SongInfo currentClickItem;
+    private boolean currentClickItemFavorite;
+    private static final int SONG_OPTIONS_FAVORITE = 937;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recent_most_play);
 
+        mediaManager = MediaManager.getInstance(this);
+        activityManager = ActivityManager.getInstance(this);
+        control = MainActivity.getControl();
+        songOperation = new SongOperation(this, control, dbController);
+
         initViews();
 
     }
 
     private void initData() {
-        mediaManager = MediaManager.getInstance(this);
+        optionsAdapter = new OptionsAdapter(this);
+        optionsDialog = new OptionsDialog(this);
+        optionsDialog.setAdapter(optionsAdapter);
+        initDialogOptions();
+
+        initTitle();
+        themeChange(null, null);
 
         Observable.OnSubscribe<Void> onSubscribe = new Observable.OnSubscribe<Void>() {
             @Override
@@ -64,6 +107,7 @@ public class RecentMostPlayActivity extends RootActivity {
                 .subscribe(new Subscriber<Void>() {
                     @Override
                     public void onCompleted() {
+                        prepareDataForFirstThree();
                         showFirstThree();
                         initList();
                     }
@@ -80,6 +124,128 @@ public class RecentMostPlayActivity extends RootActivity {
                 });
     }
 
+    private void initDialogOptions() {
+
+        // 播放
+        optionsAdapter.addOption(
+                getString(R.string.play),
+                null,
+                0,
+                R.drawable.ic_play_arrow_black_24dp,
+                new OptionsAdapter.OptionClickListener() {
+                    @Override
+                    public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
+                        Song song = new Song(currentClickItem.getData());
+                        songOperation.playSongAtSheetAll(song);
+                        optionsDialog.hide();
+                        finish(); // FIXME finish 调用顺序
+                        activityManager.startPlayActivity();
+
+                    }
+                });
+
+        // 在歌单中显示
+        optionsAdapter.addOption(
+                getString(R.string.info_show_in_sheet),
+                null,
+                1,
+                R.drawable.ic_location_searching_black_24dp,
+                new OptionsAdapter.OptionClickListener() {
+                    @Override
+                    public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
+                        Song song = new Song(currentClickItem.getData());
+                        activityManager.startSheetDetailActivity(MainSheetHelper.SHEET_ALL, song);
+                        optionsDialog.hide();
+                        finish();
+
+                    }
+                });
+
+        // 歌曲详情
+        optionsAdapter.addOption(
+                getString(R.string.song_operation_detail),
+                null,
+                2,
+                R.drawable.ic_art_track_black_24dp,
+                new OptionsAdapter.OptionClickListener() {
+                    @Override
+                    public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
+                        Song song = new Song(currentClickItem.getData());
+                        optionsDialog.hide();
+                        songOperation.checkSongDetail(song);
+                    }
+                });
+
+        //收藏
+        optionsAdapter.addOption(
+                getString(R.string.collect),
+                null,
+                SONG_OPTIONS_FAVORITE,
+                R.drawable.ic_favorite_border,
+                new OptionsAdapter.OptionClickListener() {
+                    @Override
+                    public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
+                        Song song = new Song(currentClickItem.getData());
+                        songOperation.reverseSongFavoriteStatus(song);
+                        optionsDialog.hide();
+                    }
+                });
+
+        //添加到歌单
+        optionsAdapter.addOption(
+                getString(R.string.title_add_to_sheet),
+                null,
+                3,
+                R.drawable.ic_create_new_folder_black_24dp,
+                new OptionsAdapter.OptionClickListener() {
+                    @Override
+                    public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
+                        optionsDialog.hide();
+                        songOperation.handleAddSongToSheet(currentClickItem);
+                    }
+                });
+
+    }
+
+    private void prepareDataForFirstThree() {
+
+        int c = 3;
+        int a = 0;
+        FirstThreeViewHolder[] holders = {first, second, third};
+        while (data.size() >= c) {
+            RMPAdapter.DataHolder d = data.remove(0);
+
+            // 用于点击事件构造歌曲
+            holders[a].image.setTag(R.id.rmp_first_three_song_path, d.path);
+
+            holders[a].name.setText(d.title);
+            holders[a].arts.setText(d.arts);
+            holders[a].time.setText(String.format("%d" + getString(R.string.count), d.times));
+
+            Glide.with(this)
+                    .load(d.album)
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .placeholder(R.drawable.default_song)
+                    .crossFade()
+                    .into(holders[a].image);
+
+            a++;
+            c--;
+
+            if (c == 0) {
+                break;
+            }
+        }
+
+    }
+
+    private void initTitle() {
+        int count = getResources().getInteger(R.integer.rmp_count);
+        String str = getString(R.string.replace_rmp_title);
+        str = str.replace("*", String.valueOf(count));
+        title.setText(str);
+    }
+
     private void LoadData() {
         MainSheetHelper helper = new MainSheetHelper(this, dbController);
         List<DBSongInfo> info = helper.getMainSheetSongInfo(MainSheetHelper.SHEET_ALL);
@@ -89,28 +255,36 @@ public class RecentMostPlayActivity extends RootActivity {
         count = count > result.size() ? result.size() : count;
         // 左闭右开
         for (DBSongInfo in : result.subList(0, count)) {
-            DataHolder da = new DataHolder();
+            RMPAdapter.DataHolder da = new RMPAdapter.DataHolder();
             da.times = in.playTimes;
 
             SongInfo songInfo = mediaManager.getSongInfo(in.path);
             String title = songInfo.getTitle();
             String arts = songInfo.getArtist();
+            String albumP = songInfo.getAlbum_path();
 
+            da.album = albumP;
             da.title = title;
             da.arts = arts;
+            da.path = in.path;
+
             data.add(da);
         }
 
     }
 
     private void initList() {
-
+        list.setAdapter(adapter);
+        adapter.setOnItemClickListener(this);
     }
 
     @Override
     public void onEnterAnimationComplete() {
         super.onEnterAnimationComplete();
-        initData();
+        if (isActivityFirstCreate) {
+            initData();
+            isActivityFirstCreate = false;
+        }
     }
 
     private void showFirstThree() {
@@ -222,6 +396,13 @@ public class RecentMostPlayActivity extends RootActivity {
 
     private void initViews() {
 
+        list = (RecyclerView) findViewById(R.id.rmp_a_list);
+
+        adapter = new RMPAdapter(this, data);
+        list.setLayoutManager(new LinearLayoutManager(this));
+
+        line = findViewById(R.id.rmp_a_line);
+        title = (TextView) findViewById(R.id.rmp_a_title);
         Toolbar toolbar = (Toolbar) findViewById(R.id.rmp_a_toolbar);
         setSupportActionBar(toolbar);
         // FIXME 点击无效 只能在 onOptionsItemSelected 中设置
@@ -247,6 +428,112 @@ public class RecentMostPlayActivity extends RootActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void themeChange(ThemeEnum themeEnum, int[] colors) {
+
+        ThemeEnum th = appPreference.getTheme();
+        int[] cs;
+        switch (th) {
+            case DARK:
+                cs = ColorUtils.get10DarkThemeColors(this);
+                break;
+            case WHITE:
+            default:
+                cs = ColorUtils.get10WhiteThemeColors(this);
+                break;
+        }
+
+        int statusC = cs[0];
+        int toolbarC = cs[1];
+        int accentC = cs[2];
+        int mainBC = cs[3];
+        int vicBC = cs[4];
+        int mainTC = cs[5];
+        int vicTC = cs[6];
+        int navC = cs[7];
+        int toolbarMainTC = cs[8];
+        int toolbarVicTC = cs[9];
+
+        adapter.themeChange(th, cs);
+
+        optionsDialog.setTitleBarBgColor(vicBC);
+        optionsDialog.setContentBgColor(mainBC);
+        optionsDialog.setDivideColor(vicTC);
+        optionsDialog.setTitleTextColor(mainTC);
+
+        optionsAdapter.setTitleColor(mainTC);
+        optionsAdapter.setIconColor(accentC);
+
+        FirstThreeViewHolder[] holders = {first, second, third};
+        for (FirstThreeViewHolder holder : holders) {
+            holder.number.setTextColor(mainBC);
+            holder.name.setTextColor(mainTC);
+            holder.arts.setTextColor(vicTC);
+
+            holder.time.setTextColor(toolbarMainTC);
+            holder.time.setBackgroundColor(toolbarC);
+        }
+
+        line.setBackgroundColor(accentC);
+        title.setTextColor(mainTC);
+
+    }
+
+    @Override
+    public void onItemClick(RMPAdapter.DataHolder data, RMPAdapter.ViewHolder view, int position) {
+
+        RMPAdapter.DataHolder dataHolder = this.data.get(position);
+        Song song = new Song(dataHolder.path);
+
+        currentClickItem = mediaManager.getSongInfo(song);
+
+        DBSongInfo info = dbController.getSongInfo(song);
+        if (info != null) {
+            currentClickItemFavorite = info.favorite;
+        }
+
+        showDialogIfNeed();
+
+    }
+
+    private void showDialogIfNeed() {
+
+        if (optionsDialog.isShowing()) {
+            optionsDialog.hide();
+        } else {
+            if (currentClickItem != null) {
+                String title = getString(R.string.song) + ": " + currentClickItem.getTitle();
+                optionsDialog.setTitle(title);
+
+                String favorite = getString(R.string.cancel_collect);
+                if (currentClickItemFavorite) {
+                    favorite = getString(R.string.collect);
+                }
+                OptionsAdapter.Option option = optionsAdapter.getOption(SONG_OPTIONS_FAVORITE);
+                if (option != null) {
+                    option.title = favorite;
+                }
+
+                optionsDialog.show();
+            }
+        }
+    }
+
+    // 前三首歌曲点击事件
+    public void firstThreeClick(View view) {
+        String path = (String) view.getTag(R.id.rmp_first_three_song_path);
+
+        Song song = new Song(path);
+        currentClickItem = mediaManager.getSongInfo(song);
+
+        DBSongInfo info = dbController.getSongInfo(song);
+        if (info != null) {
+            currentClickItemFavorite = info.favorite;
+        }
+
+        showDialogIfNeed();
     }
 
     private class FirstThreeViewHolder {
@@ -302,9 +589,4 @@ public class RecentMostPlayActivity extends RootActivity {
 
     }
 
-    public static class DataHolder {
-        String title;
-        String arts;
-        int times;
-    }
 }

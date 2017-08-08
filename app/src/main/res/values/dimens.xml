@@ -5,8 +5,10 @@
 
     <dimen name="activity_default_margin">16dp</dimen>
     <dimen name="activity_default_margin_l">18dp</dimen>
-    <dimen name="activity_default_margin_s">10dp</dimen>
-    <dimen name="activity_default_margin_s_s">5dp</dimen>
+    <dimen name="activity_default_margin_s">14dp</dimen>
+    <dimen name="activity_default_margin_s_s">12dp</dimen>
+    <dimen name="activity_default_margin_s_s_s">10dp</dimen>
+    <dimen name="activity_default_margin_half">8dp</dimen>
     <dimen name="activity_default_margin_2x">32dp</dimen>
 
     <dimen name="activity_default_padding">6dp</dimen>
@@ -65,6 +67,8 @@
     <dimen name="search_item_height">80dp</dimen>
 
     <dimen name="song_detail_image_height">230dp</dimen>
+
+    <dimen name="rmp_song_item_height">130dp</dimen>
 
     <dimen name="dialog_padding">12dp</dimen>
     <dimen name="app_bar_height">280dp</dimen>

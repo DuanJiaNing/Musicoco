@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/rmp_song_item_height"
+        android:layout_marginBottom="@dimen/activity_default_margin_half"
+        android:layout_marginLeft="@dimen/activity_default_margin_s"
+        android:layout_marginRight="@dimen/activity_default_margin_s"
+        android:layout_marginTop="@dimen/activity_default_margin_half"
+        app:cardCornerRadius="2dp"
+        app:cardElevation="2dp">
+
+        <ImageView
+            android:id="@+id/rmp_item_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_album" />
+
+        <View
+            android:id="@+id/rmp_item_gradient"
+            android:layout_width="100dp"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/rmp_item_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|top"
+            android:layout_marginTop="@dimen/activity_default_padding"
+            android:lines="1"
+            android:padding="3dp"
+
+            android:textColor="@color/white_d"
+            android:textSize="@dimen/text_small_s"
+            android:textStyle="bold|italic" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/activity_default_margin"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/rmp_item_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:padding="3dp"
+                android:text="name"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_large_s" />
+
+            <TextView
+                android:id="@+id/rmp_item_arts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:text="arts"
+                android:textColor="@color/white_d"
+                android:textSize="@dimen/text_middle" />
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

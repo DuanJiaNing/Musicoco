@@ -847,4 +847,21 @@ public class SongOperation {
                     }
                 });
     }
+
+    public void playSongAtSheetAll(Song song) {
+        try {
+
+            int sid = control.getPlayListId();
+            if (sid != MainSheetHelper.SHEET_ALL) {
+                control.pause();
+                control.setPlaySheet(MainSheetHelper.SHEET_ALL, 0);
+                control.play(song);
+            } else {
+                control.play(song);
+            }
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
 }

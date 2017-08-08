@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layoutAnimation xmlns:android="http://schemas.android.com/apk/res/android"
-    android:delay="30%"
+    android:animation="@android:anim/slide_in_left"
     android:animationOrder="normal"
-    android:animation="@android:anim/slide_in_left"></layoutAnimation>
+    android:delay="30%" />

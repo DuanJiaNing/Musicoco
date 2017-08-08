@@ -293,3 +293,7 @@
 1 搜索到的歌曲可以快速在歌单中定位<br>
 2 添加 历史最多播放 RecentMostPlayActivity<br>
 
+- 2017-08-08
+
+1 添加 RecentMostPlayActivity 和 RMPActivity 并完成功能<br>
+

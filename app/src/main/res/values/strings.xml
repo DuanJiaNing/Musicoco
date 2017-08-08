@@ -120,6 +120,7 @@
     <string name="replace_play_all_song_random">随机播放 * 首歌曲</string>
     <string name="replace_search_from_songs">从 * 首歌曲中检索</string>
     <string name="replace_search_result_prompt">共检索到 * 首歌曲</string>
+    <string name="replace_rmp_title">播放次数最多的 * 首歌</string>
 
     <string name="create_time">创建时间</string>
 

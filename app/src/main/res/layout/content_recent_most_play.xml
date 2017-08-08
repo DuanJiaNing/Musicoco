@@ -2,22 +2,30 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rmp_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginBottom="@dimen/activity_default_padding"
+    android:layout_marginTop="@dimen/activity_default_padding"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.duan.musicoco.rmp.RecentMostPlayActivity"
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="81dp"
     tools:showIn="@layout/activity_recent_most_play">
 
     <TextView
         android:id="@+id/rmp_a_first_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/ic_medal"
+        android:backgroundTint="@color/gold"
+        android:gravity="center"
         android:lines="1"
+        android:paddingTop="7dp"
         android:text="1"
-        android:textSize="@dimen/text_large"
+
+        android:textSize="@dimen/text_middle"
         android:textStyle="bold|italic"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -25,6 +33,9 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
+        android:background="?android:selectableItemBackground"
+        android:clickable="true"
+        android:onClick="firstThreeClick"
         android:id="@+id/rmp_a_first_image"
         android:layout_width="90dp"
         android:layout_height="90dp"
@@ -38,26 +49,33 @@
 
     <TextView
         android:id="@+id/rmp_a_first_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
         android:layout_marginTop="0dp"
+        android:ellipsize="end"
+        android:gravity="start"
         android:lines="1"
-        android:text="love story"
         android:textSize="@dimen/text_middle_s"
         app:layout_constraintLeft_toLeftOf="@+id/rmp_a_first_image"
+        app:layout_constraintRight_toRightOf="@+id/rmp_a_first_image"
         app:layout_constraintTop_toBottomOf="@+id/rmp_a_first_image" />
 
     <TextView
         android:id="@+id/rmp_a_first_arts"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
         android:layout_marginTop="0dp"
+        android:ellipsize="end"
+        android:gravity="start"
         android:lines="1"
-        android:text="taylor swift"
         android:textSize="@dimen/text_small"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="@+id/rmp_a_first_image"
+        app:layout_constraintRight_toRightOf="@+id/rmp_a_first_image"
         app:layout_constraintTop_toBottomOf="@+id/rmp_a_first_name" />
 
     <TextView
@@ -68,7 +86,7 @@
         android:layout_marginTop="8dp"
         android:background="@color/white_d"
         android:lines="1"
-        android:text="20次"
+        android:padding="3dp"
         android:textSize="@dimen/text_small_s"
         app:layout_constraintRight_toRightOf="@+id/rmp_a_first_image"
         app:layout_constraintTop_toTopOf="@+id/rmp_a_first_image" />
@@ -77,20 +95,29 @@
 
     <TextView
         android:id="@+id/rmp_a_second_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/ic_medal"
+        android:backgroundTint="@color/silver"
+        android:gravity="center"
+
         android:lines="1"
+        android:paddingTop="7dp"
         android:text="2"
-        android:textSize="@dimen/text_large"
+        android:textSize="@dimen/text_middle"
         android:textStyle="bold|italic"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/rmp_a_first_image"
         app:layout_constraintTop_toTopOf="@+id/guideline10" />
 
     <ImageView
+        android:background="?android:selectableItemBackground"
+        android:clickable="true"
+        android:onClick="firstThreeClick"
         android:id="@+id/rmp_a_second_image"
         android:layout_width="80dp"
         android:layout_height="80dp"
@@ -105,26 +132,32 @@
 
     <TextView
         android:id="@+id/rmp_a_second_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
         android:layout_marginTop="0dp"
+        android:ellipsize="end"
+        android:gravity="start"
         android:lines="1"
-        android:text="love story"
         android:textSize="@dimen/text_middle_s"
         app:layout_constraintLeft_toLeftOf="@+id/rmp_a_second_image"
+        app:layout_constraintRight_toRightOf="@+id/rmp_a_second_image"
         app:layout_constraintTop_toBottomOf="@+id/rmp_a_second_image" />
 
     <TextView
         android:id="@+id/rmp_a_second_arts"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
         android:layout_marginTop="0dp"
+        android:ellipsize="end"
+        android:gravity="start"
         android:lines="1"
-        android:text="taylor swift"
         android:textSize="@dimen/text_small"
         app:layout_constraintLeft_toLeftOf="@+id/rmp_a_second_image"
+        app:layout_constraintRight_toRightOf="@+id/rmp_a_second_image"
         app:layout_constraintTop_toBottomOf="@+id/rmp_a_second_name" />
 
     <TextView
@@ -135,7 +168,7 @@
         android:layout_marginTop="8dp"
         android:background="@color/white_d"
         android:lines="1"
-        android:text="20次"
+        android:padding="3dp"
         android:textSize="@dimen/text_small_s"
         app:layout_constraintRight_toRightOf="@+id/rmp_a_second_image"
         app:layout_constraintTop_toTopOf="@+id/rmp_a_second_image" />
@@ -144,20 +177,29 @@
 
     <TextView
         android:id="@+id/rmp_a_third_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/ic_medal"
+        android:backgroundTint="@color/copper"
+        android:gravity="center"
+
         android:lines="1"
+        android:paddingTop="7dp"
         android:text="3"
-        android:textSize="@dimen/text_large"
+        android:textSize="@dimen/text_middle"
         android:textStyle="bold|italic"
         app:layout_constraintLeft_toRightOf="@+id/rmp_a_first_image"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline10" />
 
     <ImageView
+        android:background="?android:selectableItemBackground"
+        android:clickable="true"
+        android:onClick="firstThreeClick"
         android:id="@+id/rmp_a_third_image"
         android:layout_width="80dp"
         android:layout_height="80dp"
@@ -171,26 +213,32 @@
 
     <TextView
         android:id="@+id/rmp_a_third_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
         android:layout_marginTop="0dp"
+        android:ellipsize="end"
+        android:gravity="start"
         android:lines="1"
-        android:text="love story"
         android:textSize="@dimen/text_middle_s"
         app:layout_constraintLeft_toLeftOf="@+id/rmp_a_third_image"
+        app:layout_constraintRight_toRightOf="@+id/rmp_a_third_image"
         app:layout_constraintTop_toBottomOf="@+id/rmp_a_third_image" />
 
     <TextView
         android:id="@+id/rmp_a_third_arts"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
         android:layout_marginTop="0dp"
+        android:ellipsize="end"
+        android:gravity="start"
         android:lines="1"
-        android:text="taylor swift"
         android:textSize="@dimen/text_small"
         app:layout_constraintLeft_toLeftOf="@+id/rmp_a_third_image"
+        app:layout_constraintRight_toRightOf="@+id/rmp_a_third_image"
         app:layout_constraintTop_toBottomOf="@+id/rmp_a_third_name" />
 
     <TextView
@@ -201,59 +249,12 @@
         android:layout_marginTop="8dp"
         android:background="@color/white_d"
         android:lines="1"
-        android:text="20次"
+        android:padding="3dp"
         android:textSize="@dimen/text_small_s"
         app:layout_constraintRight_toRightOf="@+id/rmp_a_third_image"
         app:layout_constraintTop_toTopOf="@+id/rmp_a_third_image" />
 
     <!-- ///////////////////////////////////// -->
-
-    <TextView
-        android:id="@+id/rmp_a_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="5dp"
-        android:lines="1"
-        android:padding="5dp"
-        android:text="最近播放最多的 10 首个"
-        android:textSize="@dimen/text_middle_s"
-        app:layout_constraintBottom_toTopOf="@+id/guideline9"
-        app:layout_constraintLeft_toRightOf="@+id/rmp_a_line" />
-
-
-    <View
-        android:id="@+id/rmp_a_line"
-        android:layout_width="3dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="0dp"
-        android:background="@color/colorPrimary"
-        android:rotation="25"
-        app:layout_constraintBottom_toTopOf="@+id/guideline9"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/rmp_a_title" />
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rmp_a_list"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline9" />
-
-    <android.support.constraint.Guideline
-        android:id="@+id/guideline9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="255dp" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline10"
