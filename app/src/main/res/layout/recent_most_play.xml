@@ -4,8 +4,8 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="@dimen/activity_default_margin_l"
     android:layout_marginRight="@dimen/activity_default_margin_l"
-    android:paddingTop="@dimen/activity_default_margin_s"
     android:orientation="vertical"
+    android:paddingTop="@dimen/activity_default_margin_s"
     android:weightSum="1">
 
     <LinearLayout
@@ -43,8 +43,7 @@
         <RelativeLayout
             android:id="@+id/rmp_info_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clickable="true">
+            android:layout_height="match_parent">
 
             <LinearLayout
                 android:id="@+id/l002"
@@ -83,30 +82,30 @@
                     android:background="@color/white_d_d" />
 
                 <TextView
-                    android:textStyle="bold"
-                    android:alpha="0.7"
                     android:id="@+id/rmp_info_remark"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_default_margin_s_s"
-                    android:maxLines="3"
+                    android:alpha="0.7"
                     android:ellipsize="end"
-                    android:textSize="@dimen/text_small" />
+                    android:maxLines="3"
+                    android:textSize="@dimen/text_small"
+                    android:textStyle="bold" />
             </LinearLayout>
 
             <TextView
                 android:id="@+id/rmp_info_arts"
-                android:layout_marginLeft="-15dp"
-                android:paddingLeft="18dp"
-                android:paddingTop="3dp"
-                android:paddingRight="5dp"
-                android:paddingBottom="3dp"
-                android:layout_marginBottom="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="-15dp"
+                android:paddingBottom="3dp"
+                android:paddingLeft="18dp"
+                android:paddingRight="5dp"
+                android:paddingTop="3dp"
                 android:textSize="@dimen/text_small" />
         </RelativeLayout>
 

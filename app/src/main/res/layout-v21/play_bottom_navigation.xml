@@ -16,15 +16,15 @@
 
         <View
             android:id="@+id/list_progress_bg"
-            android:background="#000"
             android:layout_width="match_parent"
-            android:layout_height="1px" />
+            android:layout_height="1px"
+            android:background="#000" />
 
         <View
-            android:layout_gravity="center|start"
             android:id="@+id/list_progress"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center|start"
             android:background="@color/colorAccent" />
     </FrameLayout>
 
@@ -32,10 +32,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/list_progress_container"
-        android:layout_marginBottom="@dimen/activity_default_margin_s_s"
-        android:layout_marginLeft="@dimen/activity_default_margin_s_s"
-        android:layout_marginTop="@dimen/activity_default_margin_s_s"
-        android:layout_toLeftOf="@+id/list_list">
+        android:layout_toLeftOf="@+id/list_list"
+        android:paddingBottom="@dimen/activity_default_margin_half_s"
+        android:paddingLeft="@dimen/activity_default_margin_half_s"
+        android:paddingTop="@dimen/activity_default_margin_half_s">
 
         <ImageView
             android:id="@+id/list_album"

@@ -99,6 +99,7 @@ public class RecentMostPlayController implements
         mContainer = activity.findViewById(R.id.rmp_container);
 
         mShowMore.setOnClickListener(this);
+        mContainer.setOnClickListener(this);
     }
 
     public void initData(@NonNull DBMusicocoController dbMusicoco, @NonNull String title) {
@@ -115,6 +116,7 @@ public class RecentMostPlayController implements
 
         switch (v.getId()) {
             case R.id.rmp_see_more:
+            case R.id.rmp_container:
                 ActivityManager.getInstance(activity).startRecentMostPlayActivity();
                 break;
         }

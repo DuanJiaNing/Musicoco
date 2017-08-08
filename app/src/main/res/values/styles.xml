@@ -30,7 +30,7 @@
         <item name="android:textColorSecondary">@color/theme_dark_vic_text</item>
 
         <item name="android:colorControlActivated">@color/theme_dark_accent</item>
-        <item name="android:colorControlHighlight">@color/theme_dark_vic_text</item>
+        <item name="android:colorControlHighlight">@color/dark_high_light</item>
         <item name="android:colorControlNormal">@color/theme_dark_vic_text</item>
         <item name="android:navigationBarColor">@color/theme_dark_main_bg</item>
     </style>
@@ -44,7 +44,7 @@
         <item name="android:textColorSecondary">@color/theme_white_vic_text</item>
 
         <item name="android:colorControlActivated">@color/theme_white_accent</item>
-        <item name="android:colorControlHighlight">@color/theme_white_vic_text</item>
+        <item name="android:colorControlHighlight">@color/white_high_light</item>
         <item name="android:colorControlNormal">@color/theme_white_vic_text</item>
         <item name="android:navigationBarColor">@color/theme_dark_main_bg</item>
     </style>
@@ -65,7 +65,7 @@
         <item name="android:windowBackground">@color/theme_dark_main_bg</item>
 
         <item name="android:colorControlActivated">@color/theme_dark_accent</item>
-        <item name="android:colorControlHighlight">@color/theme_dark_vic_text</item>
+        <item name="android:colorControlHighlight">@color/dark_high_light</item>
         <item name="android:colorControlNormal">@color/theme_dark_vic_text</item>
         <item name="android:navigationBarColor">@color/theme_dark_main_bg</item>
     </style>
@@ -74,7 +74,7 @@
         <item name="android:windowBackground">@color/theme_white_main_bg</item>
 
         <item name="android:colorControlActivated">@color/theme_white_accent</item>
-        <item name="android:colorControlHighlight">@color/theme_white_vic_text</item>
+        <item name="android:colorControlHighlight">@color/white_high_light</item>
         <item name="android:colorControlNormal">@color/theme_white_vic_text</item>
         <item name="android:navigationBarColor">@color/theme_dark_main_bg</item>
     </style>
@@ -89,7 +89,7 @@
         <item name="android:textColorSecondary">@color/theme_dark_vic_text</item>
 
         <item name="android:colorControlActivated">@color/theme_dark_accent</item>
-        <item name="android:colorControlHighlight">@color/theme_dark_vic_text</item>
+        <item name="android:colorControlHighlight">@color/dark_high_light</item>
         <item name="android:colorControlNormal">@color/theme_dark_vic_text</item>
         <item name="android:navigationBarColor">@color/theme_dark_main_bg</item>
     </style>
@@ -104,7 +104,7 @@
         <item name="android:textColorSecondary">@color/theme_white_vic_text</item>
 
         <item name="android:colorControlActivated">@color/theme_white_accent</item>
-        <item name="android:colorControlHighlight">@color/theme_white_vic_text</item>
+        <item name="android:colorControlHighlight">@color/white_high_light</item>
         <item name="android:colorControlNormal">@color/theme_white_vic_text</item>
         <item name="android:navigationBarColor">@color/theme_dark_main_bg</item>
     </style>

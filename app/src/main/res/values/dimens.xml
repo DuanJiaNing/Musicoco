@@ -9,6 +9,7 @@
     <dimen name="activity_default_margin_s_s">12dp</dimen>
     <dimen name="activity_default_margin_s_s_s">10dp</dimen>
     <dimen name="activity_default_margin_half">8dp</dimen>
+    <dimen name="activity_default_margin_half_s">6dp</dimen>
     <dimen name="activity_default_margin_2x">32dp</dimen>
 
     <dimen name="activity_default_padding">6dp</dimen>

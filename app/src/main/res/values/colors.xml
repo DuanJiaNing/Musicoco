@@ -46,6 +46,7 @@
     <color name="dark_main_text">#A2A3A3</color>
     <color name="dark_vic_text">#5A5A5C</color>
     <color name="dark_nav">#17181A</color>
+    <color name="dark_high_light">#4effffff</color>
 
     <!--日间主题基本色-->
     <color name="white_primary">#de3a31</color>
@@ -56,6 +57,7 @@
     <color name="white_main_text">#303131</color>
     <color name="white_vic_text">#919293</color>
     <color name="white_nav">#FFFFFF</color>
+    <color name="white_high_light">#4e000000</color>
 
     <color name="red">#e42d2d</color>
 
