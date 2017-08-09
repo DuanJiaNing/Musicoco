@@ -22,7 +22,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/action_bar_default_height"
+                android:layout_marginTop="?attr/actionBarSize"
                 app:layout_collapseMode="parallax">
 
                 <include layout="@layout/content_recent_most_play" />

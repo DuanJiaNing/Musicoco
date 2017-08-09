@@ -3,7 +3,6 @@ package com.duan.musicoco.main;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.v4.widget.NestedScrollView;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -42,12 +41,13 @@ public class MySheetsController implements
         OnEmptyMediaLibrary {
 
     private static final int EMPTY_VIEW = 0x1;
-    private static final int EMPTY_VIEW_INDEX = 2;
+    private static final int EMPTY_VIEW_INDEX = 0;
     private TextView mTitle;
     private ImageButton mAddSheet;
     private View mTitleLine;
     private ListView mListView;
-    private LinearLayout mContainer;
+    private LinearLayout mEmptyListNoticeContainer;
+    private View line;
 
     private Activity activity;
     private DBMusicocoController dbMusicoco;
@@ -71,7 +71,8 @@ public class MySheetsController implements
         mAddSheet = (ImageButton) activity.findViewById(R.id.my_sheet_add);
         mTitleLine = activity.findViewById(R.id.my_sheet_line);
         mListView = (ListView) activity.findViewById(R.id.my_sheet_list);
-        mContainer = (LinearLayout) activity.findViewById(R.id.my_sheet_container);
+        mEmptyListNoticeContainer = (LinearLayout) activity.findViewById(R.id.empty_list_notice_container);
+        line = activity.findViewById(R.id.activity_main_line);
 
         mAddSheet.setOnClickListener(this);
         mListView.setOnItemClickListener(this);
@@ -85,7 +86,6 @@ public class MySheetsController implements
 
         adapter = new MySheetsAdapter(activity, sheets, dbMusicoco, mediaManager, control, sheetsOperation);
         mListView.setAdapter(adapter);
-        ((NestedScrollView) activity.findViewById(R.id.main_scroll)).smoothScrollTo(0, 0);
 
         hasInitData = true;
     }
@@ -140,6 +140,11 @@ public class MySheetsController implements
             mAddSheet.getDrawable().setTint(mainTC);
         }
 
+        line.setBackgroundColor(vicTC);
+    }
+
+    public void setLineVisible(boolean visible) {
+        line.setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
     }
 
     private void emptyViewThemeChange(int[] colors) {
@@ -164,7 +169,7 @@ public class MySheetsController implements
             accentC = colors[0];
         }
 
-        View v = mContainer.getChildAt(EMPTY_VIEW_INDEX);
+        View v = mEmptyListNoticeContainer.getChildAt(EMPTY_VIEW_INDEX);
         TextView text = (TextView) v.findViewById(R.id.sheet_empty_add);
 
         text.setTextColor(accentC);
@@ -187,7 +192,8 @@ public class MySheetsController implements
             add.setOnClickListener(this);
 
             view.setTag(EMPTY_VIEW);
-            mContainer.addView(view, EMPTY_VIEW_INDEX);
+            mEmptyListNoticeContainer.setVisibility(View.VISIBLE);
+            mEmptyListNoticeContainer.addView(view, EMPTY_VIEW_INDEX);
         }
     }
 
@@ -211,7 +217,8 @@ public class MySheetsController implements
             mTitle.setText(title + "(0)");
         } else {
             if (isEmptyViewVisible()) {
-                mContainer.removeViewAt(EMPTY_VIEW_INDEX);
+                mEmptyListNoticeContainer.removeViewAt(EMPTY_VIEW_INDEX);
+                mEmptyListNoticeContainer.setVisibility(View.GONE);
                 //需要检查主题
                 themeChange(null, null);
             }
@@ -222,7 +229,7 @@ public class MySheetsController implements
     }
 
     private boolean isEmptyViewVisible() {
-        View v = mContainer.getChildAt(EMPTY_VIEW_INDEX);
+        View v = mEmptyListNoticeContainer.getChildAt(EMPTY_VIEW_INDEX);
         if (v != null && ((int) v.getTag()) == EMPTY_VIEW) {
             return true;
         } else {

@@ -47,7 +47,7 @@
     <string name="sheet_input_tip">输入歌单名和描述，描述可以为空</string>
 
     <string name="sheet_operation_modify">编辑歌单信息</string>
-    <string name="sheet_operation_delete">删除</string>
+    <string name="sheet_operation_delete">删除歌单</string>
 
     <string name="modify_sheet">编辑歌单</string>
 

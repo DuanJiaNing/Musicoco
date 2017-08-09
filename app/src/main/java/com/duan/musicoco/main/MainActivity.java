@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -18,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
@@ -25,16 +27,17 @@ import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.InspectActivity;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
-import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
-import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.MainSheetHelper;
+import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.play.PlayServiceConnection;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.shared.SheetsOperation;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.SongUtils;
+import com.duan.musicoco.util.Utils;
+import com.duan.musicoco.view.AppBarStateChangeListener;
 
 import java.util.List;
 
@@ -48,8 +51,8 @@ public class MainActivity extends InspectActivity implements
     private ActionBarDrawerToggle toggle;
     private Menu menu;
 
+    // FIXME 内存泄漏
     private static PlayServiceConnection sServiceConnection;
-    private SwipeRefreshLayout refreshLayout;
 
     private BottomNavigationController bottomNavigationController;
     private RecentMostPlayController mostPlayController;
@@ -61,26 +64,11 @@ public class MainActivity extends InspectActivity implements
     private BroadcastReceiver dataChangedReceiver;
     private BroadcastManager broadcastManager;
 
-    private OnUpdateStatusChanged statusChanged = new OnUpdateStatusChanged() {
-        @Override
-        public void onCompleted() {
-            refreshLayout.setRefreshing(false);
-        }
-
-        @Override
-        public void onStart() {
-            refreshLayout.setRefreshing(true);
-        }
-
-        @Override
-        public void onError(Throwable e) {
-
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Utils.transitionStatusBar(this);
 
         broadcastManager = BroadcastManager.getInstance(this);
         bottomNavigationController = new BottomNavigationController(this, mediaManager, appPreference, playPreference);
@@ -143,9 +131,6 @@ public class MainActivity extends InspectActivity implements
         mainSheetsController.initView();
         mySheetsController.initView();
 
-        refreshLayout = (SwipeRefreshLayout) findViewById(R.id.main_swipe_refresh);
-        refreshLayout.setOnRefreshListener(this);
-
         toolbar = (Toolbar) findViewById(R.id.activity_main_toolbar);
         setSupportActionBar(toolbar);
 
@@ -157,6 +142,25 @@ public class MainActivity extends InspectActivity implements
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.activity_main_app_bar);
+        AppBarStateChangeListener barStateChangeListener = new AppBarStateChangeListener() {
+            @Override
+            public void onStateChanged(AppBarLayout appBarLayout, State state) {
+                switch (state) {
+                    case EXPANDED:
+                        mySheetsController.setLineVisible(false);
+                        break;
+                    case COLLAPSED:
+                        mySheetsController.setLineVisible(true);
+                        break;
+                    case IDLE:
+                        mySheetsController.setLineVisible(false);
+                        break;
+                }
+            }
+        };
+        appBarLayout.addOnOffsetChangedListener(barStateChangeListener);
     }
 
     @Override
@@ -349,10 +353,10 @@ public class MainActivity extends InspectActivity implements
 
     private void update() {
         Log.d("updateCurrentPlay", "MainActivity updateCurrentPlay");
-        bottomNavigationController.update(null, statusChanged);
-        mostPlayController.update(getString(R.string.rmp_history), statusChanged);
-        mainSheetsController.update(null, statusChanged);
-        mySheetsController.update(null, statusChanged);
+        bottomNavigationController.update(null, null);
+        mostPlayController.update(getString(R.string.rmp_history), null);
+        mainSheetsController.update(null, null);
+        mySheetsController.update(null, null);
     }
 
     public static IPlayControl getControl() {

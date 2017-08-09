@@ -297,3 +297,6 @@
 
 1 添加 RecentMostPlayActivity 和 RMPActivity 并完成功能<br>
 
+- 2017 -08-09
+
+1 修改 MainActivity 界面，改用 CollapsingToolbarLayout <br>
