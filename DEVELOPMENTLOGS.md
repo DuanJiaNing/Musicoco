@@ -300,3 +300,5 @@
 - 2017 -08-09
 
 1 修改 MainActivity 界面，改用 CollapsingToolbarLayout <br>
+2 可以定制状态栏和标题栏颜色以及'明显'(accentColor)文字和控件颜色<br>
+3 为 PlayBackgroundModeEnum 添加 GRADIENT_COLOR （渐变色）模式<br>

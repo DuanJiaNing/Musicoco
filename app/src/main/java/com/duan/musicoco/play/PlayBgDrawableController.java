@@ -7,6 +7,7 @@ import android.graphics.PointF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -204,28 +205,38 @@ public class PlayBgDrawableController {
         flRootView.setBackgroundColor(color);
     }
 
-    public void updateBackground(int color, SongInfo info) {
+    public void updateBackground(int mainBC, int vicBC, SongInfo info) {
 
         PlayBackgroundModeEnum bgMode = playPreference.getPlayBgMode();
         switch (bgMode) {
+            case GRADIENT_COLOR: {
+
+                isBg.setVisibility(View.GONE);
+
+                GradientDrawable drawable = new GradientDrawable(
+                        GradientDrawable.Orientation.TR_BL,
+                        new int[]{mainBC, vicBC}
+                );
+                flRootView.setBackground(drawable);
+
+                break;
+            }
             case COLOR: {
-                if (color == -1) {
-                    return;
-                }
 
                 isBg.setVisibility(View.GONE);
                 ColorDrawable cd = (ColorDrawable) flRootView.getBackground();
                 if (cd != null) {
-                    if (cd.getColor() != color) {
+                    if (cd.getColor() != mainBC) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            AnimationUtils.startColorGradientAnim(1000, flRootView, cd.getColor(), color);
+                            AnimationUtils.startColorGradientAnim(1000, flRootView, cd.getColor(), mainBC);
                         } else {
-                            flRootView.setBackgroundColor(color);
+                            flRootView.setBackgroundColor(mainBC);
                         }
                     }
                 } else {
-                    flRootView.setBackgroundColor(color);
+                    flRootView.setBackgroundColor(mainBC);
                 }
+
                 break;
             }
             default: {

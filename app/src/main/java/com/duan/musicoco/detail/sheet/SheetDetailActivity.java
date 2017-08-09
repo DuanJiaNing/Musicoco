@@ -442,10 +442,12 @@ public class SheetDetailActivity extends RootActivity implements OnThemeChange {
         int toolbarMainTC = cs[8];
         int toolbarVicTC = cs[9];
 
-        songListController.themeChange(th, cs);
 
-        collapsingToolbarLayout.setContentScrimColor(toolbarC);
-        collapsingToolbarLayout.setStatusBarScrimColor(statusC);
+        int[] sa = ColorUtils.get2ActionStatusBarColors(this);
+        collapsingToolbarLayout.setStatusBarScrimColor(sa[0]);
+        collapsingToolbarLayout.setContentScrimColor(sa[1]);
+
+        songListController.themeChange(th, cs);
 
         updateFloatingBtColor(new int[]{accentC, toolbarMainTC, toolbarVicTC});
         infoController.themeChange(th, new int[]{toolbarMainTC, toolbarVicTC});

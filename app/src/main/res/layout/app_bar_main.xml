@@ -15,7 +15,7 @@
         app:elevation="0dp">
 
         <android.support.design.widget.CollapsingToolbarLayout
-            android:id="@+id/sheet_detail_toolbar_layout"
+            android:id="@+id/activity_main_coll_tool_bar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
@@ -38,7 +38,6 @@
                 android:id="@+id/activity_main_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
@@ -54,8 +53,8 @@
 
             <View
                 android:id="@+id/my_sheet_line"
-                android:layout_width="1dp"
-                android:layout_height="25dp"
+                android:layout_width="3dp"
+                android:layout_height="15dp"
                 android:layout_centerInParent="true"
                 android:background="@color/dark" />
 
@@ -68,11 +67,11 @@
                 android:layout_marginRight="8dp"
                 android:layout_toLeftOf="@id/my_sheet_line"
                 android:gravity="center_vertical|start"
-                android:textSize="@dimen/text_small"
-                android:textStyle="bold"
-                android:title="@string/my_sheet_title" />
+                android:textSize="@dimen/text_middle_s"
+                android:textStyle="italic" />
 
-            <ImageButton
+            <TextView
+                android:textSize="@dimen/text_middle"
                 android:id="@+id/my_sheet_add"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -81,7 +80,9 @@
                 android:layout_marginStart="8dp"
                 android:layout_toRightOf="@id/my_sheet_line"
                 android:background="?android:selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_action_add" />
+                android:drawableBottom="@drawable/line_for_main_my_sheet_new"
+                android:gravity="center"
+                android:text="@string/new_" />
 
         </RelativeLayout>
 

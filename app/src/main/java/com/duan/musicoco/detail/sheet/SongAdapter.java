@@ -27,6 +27,7 @@ import com.bumptech.glide.request.target.ImageViewTarget;
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.StringUtils;
 
@@ -64,8 +65,10 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
     public SongAdapter(Context context, List<DataHolder> data, int id) {
         this.context = context;
         this.data = data;
-        this.choiceC = context.getResources().getColor(R.color.item_select_color);
         this.sheetID = id;
+
+        AppPreference ac = new AppPreference(context);
+        this.choiceC = ac.getAccentColor();
     }
 
     public boolean getMultiselectionModeEnable() {

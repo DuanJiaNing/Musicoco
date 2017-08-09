@@ -9,6 +9,9 @@ import android.support.v7.graphics.Palette;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.App;
+import com.duan.musicoco.preference.AppPreference;
+import com.duan.musicoco.preference.ThemeEnum;
+import com.duan.musicoco.view.RealTimeBlurView;
 
 /**
  * Created by DuanJiaNing on 2017/4/2.
@@ -18,8 +21,6 @@ public class ColorUtils {
 
     /**
      * 获得一个随机的颜色
-     *
-     * @return 颜色
      */
     public static int getRandomColor() {
         int r = (int) (Math.random() * 255); //产生一个255以内的整数
@@ -30,8 +31,6 @@ public class ColorUtils {
 
     /**
      * 获得一个比较暗的随机颜色
-     *
-     * @return 颜色
      */
     public static int getRandomBrunetColor() {
         int r = (int) (Math.random() * 100); //产生一个100以内的整数
@@ -296,10 +295,16 @@ public class ColorUtils {
     }
 
     /**
-     * 0 主背景色
-     * 1 主字体色
-     * 2 辅背景色
-     * 3 辅字体色
+     * 0 状态栏背景色<br>
+     * 1 标题栏背景色<br>
+     * 2 控件首选色<br>
+     * 3 主背景色<br>
+     * 4 辅背景色<br>
+     * 5 主字体色<br>
+     * 6 辅字体色<br>
+     * 7 底部导航背景色<br>
+     * 8 标题栏主字体色<br>
+     * 9 标题栏辅字体色<br>
      */
     public static int[] get10WhiteThemeColors(Context context) {
         int[] colors = new int[10];
@@ -327,9 +332,42 @@ public class ColorUtils {
             colors[9] = context.getResources().getColor(R.color.theme_white_toolbar_vic_text);
         }
 
+        AppPreference preference = new AppPreference(context);
+        colors[2] = preference.getAccentColor();
+
         return colors;
     }
 
+    /**
+     * 0 状态栏背景色
+     * 1 标题栏背景色
+     */
+    public static int[] get2ActionStatusBarColors(Context context) {
+
+        AppPreference preference = new AppPreference(context);
+
+        int actionColor;
+        int statusColor;
+
+        if (preference.getTheme() != ThemeEnum.DARK) {
+            actionColor = preference.getActionbarColor();
+            statusColor = preference.getStatusBarColor();
+        } else {
+            statusColor = context.getResources().getColor(R.color.theme_dark_primary);
+            actionColor = context.getResources().getColor(R.color.theme_dark_primary_dark);
+        }
+
+        return new int[]{statusColor, actionColor};
+    }
+
+    public static int getAccentColor(Context context) {
+        AppPreference preference = new AppPreference(context);
+        if (preference.getTheme() != ThemeEnum.DARK) {
+            return preference.getAccentColor();
+        } else {
+            return context.getResources().getColor(R.color.theme_dark_accent);
+        }
+    }
 
     /**
      * 0 状态栏背景色<br>
@@ -449,6 +487,9 @@ public class ColorUtils {
         return colors;
     }
 
+    /**
+     * r g b >= 160 时返回 true
+     */
     public static boolean isBrightSeriesColor(int color) {
 
         double d = android.support.v4.graphics.ColorUtils.calculateLuminance(color);

@@ -43,7 +43,7 @@ public class MySheetsController implements
     private static final int EMPTY_VIEW = 0x1;
     private static final int EMPTY_VIEW_INDEX = 0;
     private TextView mTitle;
-    private ImageButton mAddSheet;
+    private TextView mAddSheet;
     private View mTitleLine;
     private ListView mListView;
     private LinearLayout mEmptyListNoticeContainer;
@@ -68,7 +68,7 @@ public class MySheetsController implements
 
     public void initView() {
         mTitle = (TextView) activity.findViewById(R.id.my_sheet_title);
-        mAddSheet = (ImageButton) activity.findViewById(R.id.my_sheet_add);
+        mAddSheet = (TextView) activity.findViewById(R.id.my_sheet_add);
         mTitleLine = activity.findViewById(R.id.my_sheet_line);
         mListView = (ListView) activity.findViewById(R.id.my_sheet_list);
         mEmptyListNoticeContainer = (LinearLayout) activity.findViewById(R.id.empty_list_notice_container);
@@ -136,8 +136,13 @@ public class MySheetsController implements
 
         mTitle.setTextColor(mainTC);
         mTitleLine.setBackgroundColor(accentC);
+        mAddSheet.setTextColor(mainTC);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mAddSheet.getDrawable().setTint(mainTC);
+            for (Drawable d : mAddSheet.getCompoundDrawables()) {
+                if (d != null) {
+                    d.setTint(mainTC);
+                }
+            }
         }
 
         line.setBackgroundColor(vicTC);

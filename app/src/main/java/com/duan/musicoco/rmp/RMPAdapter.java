@@ -155,7 +155,7 @@ public class RMPAdapter extends RecyclerView.Adapter<RMPAdapter.ViewHolder> impl
         int toolbarMainTC = colors[8];
         int toolbarVicTC = colors[9];
 
-        this.accentBC = toolbarC;
+        this.accentBC = accentC;
         this.accentTC = toolbarMainTC;
     }
 

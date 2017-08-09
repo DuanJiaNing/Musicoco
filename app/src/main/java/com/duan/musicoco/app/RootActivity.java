@@ -16,18 +16,17 @@ import com.duan.musicoco.preference.ThemeEnum;
 
 public class RootActivity extends AppCompatActivity {
 
-    protected final AppPreference appPreference;
-    protected final PlayPreference playPreference;
+    protected AppPreference appPreference;
+    protected PlayPreference playPreference;
     protected DBMusicocoController dbController;
-
-    public RootActivity() {
-        appPreference = new AppPreference(this);
-        playPreference = new PlayPreference(this);
-    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        appPreference = new AppPreference(this);
+        playPreference = new PlayPreference(this);
+
         checkTheme();
         dbController = new DBMusicocoController(this, true);
     }

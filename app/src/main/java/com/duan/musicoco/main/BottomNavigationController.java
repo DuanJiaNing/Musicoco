@@ -473,7 +473,7 @@ public class BottomNavigationController implements
         mPlay.setPauseLineColor(mainTC);
         mPlay.setSolidColor(mainTC);
         mPlay.setTriangleColor(mainTC);
-        mProgress.setBackgroundColor(mainTC);
+        mProgress.setBackgroundColor(accentC);
         mList.setBackgroundColor(navC);
         mLine.setBackgroundColor(vicTC);
         mSheet.setTextColor(mainTC);

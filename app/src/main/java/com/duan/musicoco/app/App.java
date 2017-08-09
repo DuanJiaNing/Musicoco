@@ -2,6 +2,7 @@ package com.duan.musicoco.app;
 
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Color;
 
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.PlayBackgroundModeEnum;
@@ -33,9 +34,16 @@ public class App extends Application {
 
     private void test() {
 
+        int color = Color.parseColor("#363151");
+        int color1 = Color.parseColor("#363151");
+        int color2 = Color.parseColor("#DF6EF2");
+        appPreference.updateActionbarColor(color);
+        appPreference.updateStatusBarColor(color1);
+        appPreference.updateAccentColor(color2);
+
         appPreference.updateTheme(ThemeEnum.WHITE);
         playPreference.updateTheme(ThemeEnum.VARYING);
-        playPreference.updatePlayBgMode(PlayBackgroundModeEnum.PICTUREWITHBLUR);
+        playPreference.updatePlayBgMode(PlayBackgroundModeEnum.GRADIENT_COLOR);
 
     }
 

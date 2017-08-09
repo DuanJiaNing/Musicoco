@@ -10,16 +10,17 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
@@ -343,6 +344,17 @@ public class MainActivity extends InspectActivity implements
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 icon.setTint(mainTC);
             }
+        }
+
+        CollapsingToolbarLayout coll = (CollapsingToolbarLayout) findViewById(R.id.activity_main_coll_tool_bar);
+        int[] cs = ColorUtils.get2ActionStatusBarColors(this);
+        coll.setStatusBarScrimColor(cs[0]);
+        coll.setContentScrimColor(cs[1]);
+
+
+        toolbar.setBackgroundColor(cs[1]);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(cs[0]);
         }
     }
 

@@ -253,5 +253,10 @@ public class SearchActivity extends RootActivity implements OnThemeChange {
             icon.setTint(accentC);
         }
         mToolbar.setNavigationIcon(icon);
+
+        int[] ta = ColorUtils.get2ActionStatusBarColors(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ta[0]);
+        }
     }
 }

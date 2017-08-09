@@ -279,7 +279,7 @@ public class PlayActivity extends InspectActivity implements
 
         viewsController.updateColors(new int[]{mainBC, mainTC, vicBC, vicTC});
         bottomNavigationController.updateColors(vicBC, true);
-        bgDrawableController.updateBackground(mainBC, mediaManager.getSongInfo(song));
+        bgDrawableController.updateBackground(mainBC, vicBC, mediaManager.getSongInfo(song));
 
     }
 

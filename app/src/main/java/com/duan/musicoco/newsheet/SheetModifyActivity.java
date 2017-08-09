@@ -2,8 +2,10 @@ package com.duan.musicoco.newsheet;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -186,6 +188,13 @@ public class SheetModifyActivity extends RootActivity implements
         nameModifyHolder.textViewLimit.setTextColor(vicTC);
         remarkModifyHolder.textViewLimit.setTextColor(vicTC);
 
+        nameModifyHolder.editText.setHighlightColor(accentC);
+
+        int[] ta = ColorUtils.get2ActionStatusBarColors(this);
+        toolbar.setBackgroundColor(ta[1]);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ta[0]);
+        }
     }
 
     private void updateFloatingBtColor(int[] colors) {

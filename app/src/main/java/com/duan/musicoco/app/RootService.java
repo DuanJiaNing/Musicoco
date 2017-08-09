@@ -14,18 +14,18 @@ import com.duan.musicoco.preference.PlayPreference;
 public abstract class RootService extends Service {
 
     protected MediaManager mediaManager;
-    protected final PlayPreference playPreference;
-    protected final AppPreference appPreference;
+    protected PlayPreference playPreference;
+    protected AppPreference appPreference;
     protected DBMusicocoController dbController;
 
     public RootService() {
-        this.playPreference = new PlayPreference(this);
-        this.appPreference = new AppPreference(this);
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
+        this.playPreference = new PlayPreference(this);
+        this.appPreference = new AppPreference(this);
         this.dbController = new DBMusicocoController(this, false);
         this.mediaManager = MediaManager.getInstance(getApplicationContext());
 

@@ -10,12 +10,12 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_height="15dp"
         android:orientation="horizontal">
 
-        <TextView
+        <View
             android:id="@+id/rmp_type_line"
-            android:layout_width="2px"
+            android:layout_width="3dp"
             android:layout_height="match_parent" />
 
         <TextView
@@ -24,7 +24,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:gravity="start|center_vertical"
-            android:textSize="@dimen/text_small_s" />
+            android:textSize="@dimen/text_small" />
     </LinearLayout>
 
     <FrameLayout

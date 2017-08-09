@@ -9,6 +9,9 @@ public enum PlayBackgroundModeEnum {
 
     COLOR,  // 纯色
 
+    // 颜色过度
+    GRADIENT_COLOR,
+
     PICTUREWITHMASK, // 带遮罩(黑边)的专辑图片
 
     /**

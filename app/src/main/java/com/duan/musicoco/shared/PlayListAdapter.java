@@ -21,8 +21,10 @@ import com.duan.musicoco.app.interfaces.OnContentUpdate;
 import com.duan.musicoco.app.interfaces.OnThemeChange;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
+import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
+import com.duan.musicoco.util.ColorUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +62,9 @@ public class PlayListAdapter extends BaseAdapter implements
         this.control = control;
         this.dbController = dbMusicocoController;
         this.songOperation = songOperation;
-        this.choiceC = context.getResources().getColor(R.color.item_select_color);
         this.mediaManager = MediaManager.getInstance(context);
+
+        choiceC = ColorUtils.getAccentColor(context);
 
         this.removeClickListener = new View.OnClickListener() {
             @Override

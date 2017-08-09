@@ -48,7 +48,7 @@ public class RecentMostPlayController implements
         OnThemeChange {
 
     private TextView mType;
-    private TextView mTypeLine;
+    private View mTypeLine;
 
     private TextView mName;
     private TextView mArts;
@@ -81,7 +81,7 @@ public class RecentMostPlayController implements
 
     public void initView() {
         mType = (TextView) activity.findViewById(R.id.rmp_type);
-        mTypeLine = (TextView) activity.findViewById(R.id.rmp_type_line);
+        mTypeLine = activity.findViewById(R.id.rmp_type_line);
 
         mName = (TextView) activity.findViewById(R.id.rmp_info_name);
         mArts = (TextView) activity.findViewById(R.id.rmp_info_arts);
@@ -331,12 +331,12 @@ public class RecentMostPlayController implements
 
         mPlayTimeL.setTextColor(vicTC);
         mPlayTimeR.setTextColor(vicTC);
-        mPlayTime.setTextColor(mainTC);
+        mPlayTime.setTextColor(accentC);
 
         mShowMore.setTextColor(vicTC);
         mLine.setBackgroundColor(vicTC);
         mType.setTextColor(mainTC);
-        mTypeLine.setBackgroundColor(mainTC);
+        mTypeLine.setBackgroundColor(accentC);
 
     }
 

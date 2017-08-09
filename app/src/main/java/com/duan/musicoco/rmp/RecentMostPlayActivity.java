@@ -4,7 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -51,6 +53,7 @@ public class RecentMostPlayActivity extends RootActivity implements OnThemeChang
     private final List<RMPAdapter.DataHolder> data = new ArrayList<>();
     private RMPAdapter adapter;
     private RecyclerView list;
+    private Toolbar toolbar;
 
     private MediaManager mediaManager;
     private ActivityManager activityManager;
@@ -403,7 +406,7 @@ public class RecentMostPlayActivity extends RootActivity implements OnThemeChang
 
         line = findViewById(R.id.rmp_a_line);
         title = (TextView) findViewById(R.id.rmp_a_title);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.rmp_a_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.rmp_a_toolbar);
         setSupportActionBar(toolbar);
         // FIXME 点击无效 只能在 onOptionsItemSelected 中设置
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -473,11 +476,21 @@ public class RecentMostPlayActivity extends RootActivity implements OnThemeChang
             holder.arts.setTextColor(vicTC);
 
             holder.time.setTextColor(toolbarMainTC);
-            holder.time.setBackgroundColor(toolbarC);
+            holder.time.setBackgroundColor(accentC);
         }
 
         line.setBackgroundColor(accentC);
         title.setTextColor(mainTC);
+
+        CollapsingToolbarLayout coll = (CollapsingToolbarLayout) findViewById(R.id.rmp_a_coll_toolbar);
+        int[] ta = ColorUtils.get2ActionStatusBarColors(this);
+        coll.setStatusBarScrimColor(ta[0]);
+        coll.setContentScrimColor(ta[1]);
+
+        toolbar.setBackgroundColor(ta[1]);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ta[0]);
+        }
 
     }
 

@@ -13,7 +13,7 @@
     <color name="copper">#D06200</color>
 
     <color name="item_select_color">#ec4b42</color>
-    <color name="default_text_hint">#e96962</color>
+    <color name="default_text_hint">#939393</color>
 
     <color name="default_play_bg_color">#3d3d3d</color>
     <color name="default_play_text_color">#d6d6d6</color>
@@ -36,30 +36,33 @@
     <color name="dsb_disabled_color">#66939393</color>
     <color name="dsb_ripple_color_pressed">#77939393</color>
     <color name="dsb_ripple_color_focused">#99999999</color>
-
+    <!--////////////////////////////////////////////////////////////////  -->
     <!--夜间主题基本色-->
     <color name="dark_primary">#17181A</color>
     <color name="dark_primary_dark">#17181a</color>
-    <color name="dark_accent">#B62E2C</color>
+    <color name="dark_accent">#FF002B</color>
     <color name="dark_main_bg">#111214</color>
     <color name="dark_vic_bg">#151518</color>
     <color name="dark_main_text">#A2A3A3</color>
     <color name="dark_vic_text">#5A5A5C</color>
     <color name="dark_nav">#17181A</color>
     <color name="dark_high_light">#4effffff</color>
-
+    <!--////////////////////////////////////////////////////////////////  -->
     <!--日间主题基本色-->
     <color name="white_primary">#de3a31</color>
     <color name="white_primary_dark">#de3a31</color>
-    <color name="white_accent">#de3a31</color>
+    <color name="white_accent">#3e3e3e</color>
     <color name="white_main_bg">#F2F4F5</color>
     <color name="white_vic_bg">#E7E9E9</color>
     <color name="white_main_text">#303131</color>
     <color name="white_vic_text">#919293</color>
     <color name="white_nav">#FFFFFF</color>
     <color name="white_high_light">#4e000000</color>
+    <!--////////////////////////////////////////////////////////////////  -->
 
     <color name="red">#e42d2d</color>
+
+    <color name="test">#0d8eca</color>
 
     <color name="list_view_divider">#15000000</color>
 
