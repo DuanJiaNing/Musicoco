@@ -751,7 +751,7 @@ public class DiscreteSeekBar extends View {
             mIsDragging = true;
             mDragOffset = (bounds.width() / 2) - mAddedTouchBounds;
             updateDragging(ev);
-            //As the thumb may have moved, get the bounds again
+            //As the thumb may have moved, getBitmapForVisualizer the bounds again
             mThumb.copyBounds(bounds);
             bounds.inset(-mAddedTouchBounds, -mAddedTouchBounds);
         }

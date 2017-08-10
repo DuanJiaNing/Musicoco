@@ -3,9 +3,6 @@ package com.duan.musicoco.detail.sheet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
@@ -20,13 +17,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.Resource;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
-import com.bumptech.glide.request.target.ImageViewTarget;
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.SongInfo;
-import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.StringUtils;
@@ -40,7 +33,7 @@ import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
  * Created by DuanJiaNing on 2017/7/25.
  */
 
-public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> implements OnThemeChange {
+public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> implements ThemeChangeable {
 
     private final int sheetID;
     private boolean isCurrentSheetPlaying = false;

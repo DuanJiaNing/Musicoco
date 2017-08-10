@@ -24,7 +24,7 @@ import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.SongInfo;
-import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.MainSheetHelper;
@@ -44,7 +44,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class RecentMostPlayActivity extends RootActivity implements OnThemeChange, RMPAdapter.OnItemClickListener {
+public class RecentMostPlayActivity extends RootActivity implements ThemeChangeable, RMPAdapter.OnItemClickListener {
 
     private FirstThreeViewHolder first;
     private FirstThreeViewHolder second;

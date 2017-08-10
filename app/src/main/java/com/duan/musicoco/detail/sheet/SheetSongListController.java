@@ -22,7 +22,7 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.SongInfo;
-import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
@@ -54,7 +54,7 @@ import rx.schedulers.Schedulers;
 
 public class SheetSongListController implements
         View.OnClickListener,
-        OnThemeChange {
+        ThemeChangeable {
 
     private static final String TAG = "SheetSongListController";
     private ImageView random;

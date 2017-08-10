@@ -32,10 +32,10 @@ import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.shared.ExceptionHandler;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
-import com.duan.musicoco.app.interfaces.OnContentUpdate;
+import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
-import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.image.BitmapBuilder;
 import com.duan.musicoco.shared.PlayListAdapter;
@@ -59,9 +59,9 @@ public class BottomNavigationController implements
         OnPlayListVisibilityChange,
         View.OnClickListener,
         PlayServiceCallback,
-        OnContentUpdate,
+        ContentUpdatable,
         OnEmptyMediaLibrary,
-        OnThemeChange {
+        ThemeChangeable {
 
     private final Activity activity;
     private final BroadcastManager broadcastManager;
@@ -537,7 +537,7 @@ public class BottomNavigationController implements
     @Override
     public void show() {
 
-        if (mDialog.isShowing()) {
+        if (visible()) {
             return;
         } else {
             adapter.update(null, null);
@@ -547,9 +547,14 @@ public class BottomNavigationController implements
 
     @Override
     public void hide() {
-        if (mDialog.isShowing()) {
+        if (visible()) {
             mDialog.dismiss();
         }
+    }
+
+    @Override
+    public boolean visible() {
+        return mDialog.isShowing();
     }
 
     @Override

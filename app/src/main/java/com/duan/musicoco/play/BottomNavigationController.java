@@ -38,12 +38,12 @@ import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.shared.ExceptionHandler;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
-import com.duan.musicoco.app.interfaces.OnContentUpdate;
+import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
-import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
-import com.duan.musicoco.app.interfaces.OnViewVisibilityChange;
+import com.duan.musicoco.app.interfaces.ViewVisibilityChangeable;
 import com.duan.musicoco.shared.OptionsAdapter;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.PlayPreference;
@@ -68,9 +68,9 @@ import static com.duan.musicoco.preference.ThemeEnum.WHITE;
 public class BottomNavigationController implements
         View.OnClickListener,
         OnPlayListVisibilityChange,
-        OnContentUpdate,
+        ContentUpdatable,
         OnEmptyMediaLibrary,
-        OnThemeChange {
+        ThemeChangeable {
 
     private Activity activity;
     private boolean isListShowing = false;
@@ -272,6 +272,11 @@ public class BottomNavigationController implements
         } else {
             vDarkBg.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public boolean visible() {
+        return isListShowing;
     }
 
     public void hidePlayListTitle() {
@@ -482,9 +487,9 @@ public class BottomNavigationController implements
 
     private class ListOption implements
             View.OnClickListener,
-            OnViewVisibilityChange,
-            OnThemeChange,
-            OnContentUpdate {
+            ViewVisibilityChangeable,
+            ThemeChangeable,
+            ContentUpdatable {
 
         private ViewGroup container;
         private ImageButton mLocation;
@@ -551,6 +556,11 @@ public class BottomNavigationController implements
             container.setVisibility(View.GONE);
         }
 
+        @Override
+        public boolean visible() {
+            return false;
+        }
+
         public void updateColors() {
             Log.d("updateCurrentPlay", "play/BottomNavigationController ListOption#updateColors");
 
@@ -575,10 +585,10 @@ public class BottomNavigationController implements
 
     private class SongOption implements
             View.OnClickListener,
-            OnViewVisibilityChange,
-            OnThemeChange,
+            ViewVisibilityChangeable,
+            ThemeChangeable,
             AdapterView.OnItemClickListener,
-            OnContentUpdate {
+            ContentUpdatable {
 
         private ViewGroup container;
         private final OptionsDialog mDialog;
@@ -713,6 +723,11 @@ public class BottomNavigationController implements
         @Override
         public void hide() {
             container.setVisibility(View.GONE);
+        }
+
+        @Override
+        public boolean visible() {
+            return false;
         }
 
         public void updateColors() {

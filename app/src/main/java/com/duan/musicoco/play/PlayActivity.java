@@ -19,7 +19,7 @@ import com.duan.musicoco.app.InspectActivity;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
-import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.play.album.VisualizerFragment;
 import com.duan.musicoco.play.album.VisualizerPresenter;
@@ -41,7 +41,7 @@ public class PlayActivity extends InspectActivity implements
         OnServiceConnect,
         View.OnClickListener,
         OnEmptyMediaLibrary,
-        OnThemeChange {
+        ThemeChangeable {
 
     private VisualizerFragment visualizerFragment;
     private LyricFragment lyricFragment;

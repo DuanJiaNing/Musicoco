@@ -17,11 +17,10 @@ import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.app.manager.MediaManager;
-import com.duan.musicoco.app.interfaces.OnContentUpdate;
-import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.interfaces.ContentUpdatable;
+import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
-import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.util.ColorUtils;
@@ -34,8 +33,8 @@ import java.util.List;
  */
 
 public class PlayListAdapter extends BaseAdapter implements
-        OnThemeChange,
-        OnContentUpdate {
+        ThemeChangeable,
+        ContentUpdatable {
 
     private static final String TAG = "PlayListAdapter";
 

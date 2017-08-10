@@ -11,12 +11,6 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -27,7 +21,7 @@ import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.InspectActivity;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
-import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.MainSheetHelper;
@@ -37,25 +31,22 @@ import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.shared.SheetsOperation;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.SongUtils;
-import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.AppBarStateChangeListener;
 
 import java.util.List;
 
 public class MainActivity extends InspectActivity implements
-        NavigationView.OnNavigationItemSelectedListener,
         OnServiceConnect,
-        OnThemeChange,
-        SwipeRefreshLayout.OnRefreshListener {
+        ThemeChangeable {
 
     private Toolbar toolbar;
-    private ActionBarDrawerToggle toggle;
     private Menu menu;
 
     // FIXME 内存泄漏
     private static PlayServiceConnection sServiceConnection;
 
     private BottomNavigationController bottomNavigationController;
+    private LeftNavigationController leftNavigationController;
     private RecentMostPlayController mostPlayController;
     private MainSheetsController mainSheetsController;
     private MySheetsController mySheetsController;
@@ -69,10 +60,9 @@ public class MainActivity extends InspectActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Utils.transitionStatusBar(this);
-
         broadcastManager = BroadcastManager.getInstance(this);
         bottomNavigationController = new BottomNavigationController(this, mediaManager, appPreference, playPreference);
+        leftNavigationController = new LeftNavigationController(this);
         mostPlayController = new RecentMostPlayController(this, mediaManager);
         mainSheetsController = new MainSheetsController(this, mediaManager);
         mySheetsController = new MySheetsController(this, dbController, mediaManager);
@@ -131,18 +121,12 @@ public class MainActivity extends InspectActivity implements
         mostPlayController.initView();
         mainSheetsController.initView();
         mySheetsController.initView();
+        leftNavigationController.initViews();
 
         toolbar = (Toolbar) findViewById(R.id.activity_main_toolbar);
         setSupportActionBar(toolbar);
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.ic_menu);
 
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.activity_main_app_bar);
         AppBarStateChangeListener barStateChangeListener = new AppBarStateChangeListener() {
@@ -166,10 +150,7 @@ public class MainActivity extends InspectActivity implements
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
+        if (leftNavigationController.onBackPressed()) {
             super.onBackPressed();
         }
     }
@@ -186,37 +167,23 @@ public class MainActivity extends InspectActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_main_search) {
-            int sheetID = MainSheetHelper.SHEET_ALL;
-            ActivityManager.getInstance(this).startSearchActivity(sheetID);
-            return true;
+        switch (id) {
+            case R.id.action_main_search:
+                int sheetID = MainSheetHelper.SHEET_ALL;
+                ActivityManager.getInstance(this).startSearchActivity(sheetID);
+                break;
+            case android.R.id.home:
+                if (leftNavigationController.visible()) {
+                    leftNavigationController.hide();
+                } else {
+                    leftNavigationController.show();
+                }
+                break;
+            default:
+                break;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     @Override
@@ -304,6 +271,7 @@ public class MainActivity extends InspectActivity implements
         mostPlayController.initData(dbController, getString(R.string.rmp_history));
         mainSheetsController.initData(dbController);
         mySheetsController.initData(sServiceConnection.takeControl());
+        leftNavigationController.initData();
 
         update();
         themeChange(null, null);
@@ -328,7 +296,7 @@ public class MainActivity extends InspectActivity implements
 
     // 文字和图标颜色
     private void updateToolbarColors() {
-        if (toolbar == null || toggle == null) {
+        if (toolbar == null) {
             return;
         }
 
@@ -336,7 +304,9 @@ public class MainActivity extends InspectActivity implements
 
         int mainTC = colors[0];
         toolbar.setTitleTextColor(mainTC);
-        toggle.getDrawerArrowDrawable().setColor(mainTC);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            toolbar.getNavigationIcon().setTint(mainTC);
+        }
 
         MenuItem search = menu.findItem(R.id.action_main_search);
         Drawable icon = search.getIcon();
@@ -351,16 +321,10 @@ public class MainActivity extends InspectActivity implements
         coll.setStatusBarScrimColor(cs[0]);
         coll.setContentScrimColor(cs[1]);
 
-
         toolbar.setBackgroundColor(cs[1]);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(cs[0]);
         }
-    }
-
-    @Override
-    public void onRefresh() {
-        update();
     }
 
     private void update() {

@@ -5,21 +5,18 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.RootActivity;
-import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.bean.DBSongInfo;
@@ -33,7 +30,7 @@ import java.util.List;
  * Created by DuanJiaNing on 2017/8/6.
  */
 
-public class SearchActivity extends RootActivity implements OnThemeChange {
+public class SearchActivity extends RootActivity implements ThemeChangeable {
 
     private int mSheetId;
     private SearchController mSearchController;

@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.SongInfo;
-import com.duan.musicoco.app.interfaces.OnContentUpdate;
+import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.interfaces.SubscriberAbstract;
@@ -37,7 +37,7 @@ import rx.schedulers.Schedulers;
 
 public class MainSheetsController implements
         View.OnClickListener,
-        OnContentUpdate,
+        ContentUpdatable,
         OnEmptyMediaLibrary {
 
     private TextView mTextAll;

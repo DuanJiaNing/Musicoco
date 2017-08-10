@@ -18,9 +18,9 @@ import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
-import com.duan.musicoco.app.interfaces.OnContentUpdate;
+import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
-import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.bean.DBSongInfo;
@@ -43,9 +43,9 @@ import rx.schedulers.Schedulers;
 
 public class RecentMostPlayController implements
         View.OnClickListener,
-        OnContentUpdate,
+        ContentUpdatable,
         OnEmptyMediaLibrary,
-        OnThemeChange {
+        ThemeChangeable {
 
     private TextView mType;
     private View mTypeLine;

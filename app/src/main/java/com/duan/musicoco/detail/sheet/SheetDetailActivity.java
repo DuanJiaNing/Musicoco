@@ -22,7 +22,7 @@ import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.interfaces.OnCompleteListener;
-import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.app.manager.MediaManager;
@@ -41,7 +41,7 @@ import com.duan.musicoco.view.AppBarStateChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SheetDetailActivity extends RootActivity implements OnThemeChange {
+public class SheetDetailActivity extends RootActivity implements ThemeChangeable {
 
     private static final String TAG = "SheetDetailActivity";
 

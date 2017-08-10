@@ -8,12 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.app.interfaces.OnViewVisibilityChange;
+import com.duan.musicoco.app.interfaces.ViewVisibilityChangeable;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.PullDownLinearLayout;
 
@@ -22,7 +21,7 @@ import com.duan.musicoco.view.PullDownLinearLayout;
  */
 
 public class OptionsDialog implements
-        OnViewVisibilityChange {
+        ViewVisibilityChangeable {
 
     private final Dialog mDialog;
 
@@ -124,16 +123,21 @@ public class OptionsDialog implements
 
     @Override
     public void show() {
-        if (!mDialog.isShowing()) {
+        if (!visible()) {
             mDialog.show();
         }
     }
 
     @Override
     public void hide() {
-        if (mDialog.isShowing()) {
+        if (visible()) {
             mDialog.dismiss();
         }
+    }
+
+    @Override
+    public boolean visible() {
+        return mDialog.isShowing();
     }
 
     public boolean isShowing() {

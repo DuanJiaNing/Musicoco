@@ -34,9 +34,9 @@ public class App extends Application {
 
     private void test() {
 
-        int color = Color.parseColor("#363151");
-        int color1 = Color.parseColor("#363151");
-        int color2 = Color.parseColor("#DF6EF2");
+        int color = Color.parseColor("#2979FF");
+        int color1 = Color.parseColor("#2979FF");
+        int color2 = Color.parseColor("#212121");
         appPreference.updateActionbarColor(color);
         appPreference.updateStatusBarColor(color1);
         appPreference.updateAccentColor(color2);

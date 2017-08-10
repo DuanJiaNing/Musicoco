@@ -10,7 +10,7 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.SongInfo;
-import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
@@ -31,7 +31,7 @@ import java.util.List;
  * Created by DuanJiaNing on 2017/8/6.
  */
 
-public class SearchController implements OnThemeChange, ResultsAdapter.OnItemClickListener {
+public class SearchController implements ThemeChangeable, ResultsAdapter.OnItemClickListener {
 
     private final List<DBSongInfo> mInfos;
     private TextView mResult;

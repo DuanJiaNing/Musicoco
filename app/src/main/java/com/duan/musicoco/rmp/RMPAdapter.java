@@ -19,7 +19,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.duan.musicoco.R;
-import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.util.BitmapUtils;
@@ -32,7 +32,7 @@ import java.util.List;
  * Created by DuanJiaNing on 2017/8/8.
  */
 
-public class RMPAdapter extends RecyclerView.Adapter<RMPAdapter.ViewHolder> implements OnThemeChange {
+public class RMPAdapter extends RecyclerView.Adapter<RMPAdapter.ViewHolder> implements ThemeChangeable {
 
     private Context context;
     private final List<DataHolder> data;

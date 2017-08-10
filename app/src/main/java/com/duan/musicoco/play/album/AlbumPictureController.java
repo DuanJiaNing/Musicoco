@@ -19,7 +19,7 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.app.Init;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.cache.BitmapCache;
-import com.duan.musicoco.image.AlbumBitmapProducer;
+import com.duan.musicoco.image.BitmapProducer;
 import com.duan.musicoco.util.ColorUtils;
 
 import static android.content.ContentValues.TAG;
@@ -43,7 +43,7 @@ public final class AlbumPictureController implements IAlbum {
 
     private final BitmapCache cache;
 
-    private final AlbumBitmapProducer bitmapProducer;
+    private final BitmapProducer bitmapProducer;
 
     private int defaultColor = Color.DKGRAY;
     private int defaultTextColor = Color.DKGRAY;
@@ -67,7 +67,7 @@ public final class AlbumPictureController implements IAlbum {
             defaultTextColor = context.getResources().getColor(R.color.default_play_text_color);
         }
 
-        this.bitmapProducer = new AlbumBitmapProducer(context, cache, defaultColor);
+        this.bitmapProducer = new BitmapProducer(context);
 
         colors = new int[]{
                 defaultColor,
@@ -101,7 +101,7 @@ public final class AlbumPictureController implements IAlbum {
         rotateAnim.cancel();
         view.getNextView().setRotation(0.0f);
 
-        Bitmap bitmap = bitmapProducer.get(song, size);
+        Bitmap bitmap = bitmapProducer.getBitmapForVisualizer(cache, song, size, defaultColor);
         if (bitmap != null) {
             if (updateColors)
                 ColorUtils.get4DarkColorWithTextFormBitmap(bitmap, defaultColor, defaultTextColor, this.colors);
@@ -134,7 +134,7 @@ public final class AlbumPictureController implements IAlbum {
         rotateAnim.cancel();
         view.getNextView().setRotation(0.0f);
 
-        Bitmap bitmap = bitmapProducer.get(song, size);
+        Bitmap bitmap = bitmapProducer.getBitmapForVisualizer(cache, song, size, defaultColor);
         if (bitmap != null) {
             if (updateColors)
                 ColorUtils.get4DarkColorWithTextFormBitmap(bitmap, defaultColor, defaultTextColor, this.colors);

@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.SongInfo;
-import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
@@ -27,7 +27,7 @@ import jp.wasabeef.glide.transformations.gpu.VignetteFilterTransformation;
  * Created by DuanJiaNing on 2017/7/23.
  */
 
-public class SheetInfoController implements OnThemeChange {
+public class SheetInfoController implements ThemeChangeable {
 
     private final boolean isDarkThem;
     private Activity activity;

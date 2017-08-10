@@ -18,7 +18,7 @@ import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
-import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.bean.Sheet;
@@ -45,7 +45,7 @@ import rx.schedulers.Schedulers;
  */
 
 public class MySheetsAdapter extends BaseAdapter implements
-        OnThemeChange,
+        ThemeChangeable,
         PlayView.OnCheckedChangeListener {
 
     private final Activity activity;

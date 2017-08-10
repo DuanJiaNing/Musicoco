@@ -6,7 +6,6 @@ import android.os.Build;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -14,9 +13,9 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.app.App;
-import com.duan.musicoco.app.interfaces.OnContentUpdate;
+import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
-import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
@@ -36,8 +35,8 @@ import java.util.List;
 public class MySheetsController implements
         View.OnClickListener,
         AdapterView.OnItemClickListener,
-        OnThemeChange,
-        OnContentUpdate,
+        ThemeChangeable,
+        ContentUpdatable,
         OnEmptyMediaLibrary {
 
     private static final int EMPTY_VIEW = 0x1;

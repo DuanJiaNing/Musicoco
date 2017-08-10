@@ -2,10 +2,8 @@ package com.duan.musicoco.newsheet;
 
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
@@ -17,7 +15,7 @@ import android.widget.TextView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.RootActivity;
-import com.duan.musicoco.app.interfaces.OnThemeChange;
+import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.bean.Sheet;
@@ -27,7 +25,7 @@ import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.view.TextInputHelper;
 
 public class SheetModifyActivity extends RootActivity implements
-        OnThemeChange,
+        ThemeChangeable,
         View.OnClickListener {
 
     private BroadcastManager broadcastManager;
