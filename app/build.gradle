@@ -43,9 +43,6 @@ dependencies {
 
     compile 'jp.wasabeef:glide-transformations:2.0.2'
     compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
-
-    compile 'com.mxn.soul:flowingdrawer-core:2.0.0'
-    compile 'com.nineoldandroids:library:2.4.0'
 }
 repositories {
     mavenCentral()

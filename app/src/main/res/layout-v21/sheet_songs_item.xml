@@ -22,8 +22,9 @@
 
     <TextView
         android:id="@+id/sheet_song_item_name"
-        android:layout_width="190dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="0dp"
         android:drawableTint="@android:color/black"
@@ -33,6 +34,7 @@
         android:textSize="@dimen/text_middle"
         android:textStyle="bold"
         android:typeface="normal"
+        app:layout_constraintLeft_toLeftOf="@+id/guideline8"
         app:layout_constraintRight_toLeftOf="@+id/sheet_song_item_more"
         app:layout_constraintTop_toTopOf="@+id/sheet_song_item_image" />
 
@@ -41,12 +43,12 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginRight="10dp"
         android:layout_marginTop="8dp"
         android:src="@drawable/default_album"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/sheet_song_item_name"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/guideline8"
+        android:layout_marginRight="8dp" />
 
     <ImageView
         android:id="@+id/sheet_song_item_favorite"
@@ -130,5 +132,12 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
+
+    <android.support.constraint.Guideline
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/guideline8"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.288" />
 
 </android.support.constraint.ConstraintLayout>

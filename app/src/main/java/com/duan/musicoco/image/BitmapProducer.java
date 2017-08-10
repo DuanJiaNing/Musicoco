@@ -5,7 +5,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.provider.Settings;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -13,6 +16,7 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.app.Init;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.cache.BitmapCache;
+import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.StringUtils;
 
@@ -109,30 +113,61 @@ public class BitmapProducer {
      * @param width   目标图片宽
      * @param height  目标图片高
      */
-    public Bitmap getKaleidoscope(String[] souPath, int width, int height, Bitmap defalt) {
+    public Bitmap getKaleidoscope(String[] souPath, int width, int height, @DrawableRes int defaultBitmap) {
 
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas();
+        final Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas();
         canvas.setBitmap(bitmap);
 
         int count = souPath.length;
+        // 传入数据源为奇数时减一使其成为偶数
         count = count % 2 == 0 ? count : count - 1;
 
-        String[] res = new String[count];
-        System.arraycopy(souPath, 0, res, 0, count);
-
-        Bitmap[] sous = new Bitmap[count];
-        float[][] coors = new float[count][2];
-
-
-        int[] c = new int[count / 2];
+        // 求出水平和垂直方向分别应该有几张图片
+        // 如 8 张: 1 2 4 8 。 水平 2，垂直 4
+        // 如 10 张: 1 2 5 10 。 水平 2，垂直 5
+        // 如 18 张: 1 2 3 6 9 18 。 水平 3，垂直 6
+        int[] c = new int[count];
         int j = 0;
         for (int i = 1; i <= count; i++) {
             if (count % i == 0) {
                 c[j++] = i;
             }
         }
+        int index = j / 2;
+        int tx = c[index];
+        int ty = count / tx;
+        int x = Math.min(tx, ty); // 水平上分为 x 份（即水平上 x 张图片）
+        int y = Math.max(tx, ty); // 垂直方向为 y 份
 
+        String[] res = new String[count];
+        System.arraycopy(souPath, 0, res, 0, count);
+
+        // 绘制
+        int w = width / x;
+        int h = height / y;
+        Paint paint = new Paint();
+        Bitmap default_ = null;
+        paint.setAntiAlias(true);
+        for (int i = 0; i < y; i++) {
+            for (int k = 0; k < x; k++) {
+                int resIndex = i * x + k;
+
+                Bitmap b = BitmapUtils.bitmapResizeFromFile(res[resIndex], w, h);
+                if (b == null) {
+                    if (default_ == null) {
+                        default_ = BitmapUtils.bitmapResizeFromResource(context.getResources(),
+                                defaultBitmap, w, h);
+                    }
+                    b = default_;
+                }
+
+                int top = h * i;
+                int left = w * k;
+
+                canvas.drawBitmap(b, left, top, paint);
+            }
+        }
 
         return bitmap;
     }

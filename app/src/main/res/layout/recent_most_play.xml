@@ -5,23 +5,23 @@
     android:layout_marginLeft="@dimen/activity_default_margin_l"
     android:layout_marginRight="@dimen/activity_default_margin_l"
     android:orientation="vertical"
-    android:paddingTop="@dimen/activity_default_margin_s"
-    android:weightSum="1">
+    android:paddingTop="@dimen/activity_default_margin_s">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="15dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <View
             android:id="@+id/rmp_type_line"
-            android:layout_width="3dp"
+            android:layout_width="2dp"
             android:layout_height="match_parent" />
 
         <TextView
+            android:padding="3dp"
             android:id="@+id/rmp_type"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:gravity="start|center_vertical"
             android:textSize="@dimen/text_small" />
@@ -169,7 +169,6 @@
 
     <View
         android:id="@+id/rmp_line"
-
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:background="@color/dark" />

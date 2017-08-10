@@ -65,6 +65,10 @@ public class AppPreference {
         return preferences.getInt(KEY_THEME_STATUS_BAR_COLOR, deC);
     }
 
+    /**
+     * MainActivity 由于透明状态栏的需要，状态栏颜色只能为 透明，即该值对 MainActivity 无效，其他 Activity 有效，
+     * 因此为了保持一致风格，updateActionbarColor 更改时应调用 updateStatusBarColor，使两者一致。
+     */
     public void updateStatusBarColor(@ColorInt int color) {
         editor = preferences.edit();
         editor.putInt(KEY_THEME_STATUS_BAR_COLOR, color);

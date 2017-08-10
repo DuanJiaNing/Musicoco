@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        android:theme="@style/AppTheme.AppBarOverlay"
         app:elevation="0dp">
 
         <android.support.design.widget.CollapsingToolbarLayout
@@ -22,6 +21,7 @@
             app:titleEnabled="false">
 
             <LinearLayout
+                android:id="@+id/activity_main_top_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="?attr/actionBarSize"
@@ -37,10 +37,8 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/activity_main_toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay" />
-
+                android:layout_height="wrap_content"
+                app:layout_collapseMode="pin" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
@@ -71,7 +69,6 @@
                 android:textStyle="italic" />
 
             <TextView
-                android:textSize="@dimen/text_middle"
                 android:id="@+id/my_sheet_add"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -82,7 +79,8 @@
                 android:background="?android:selectableItemBackgroundBorderless"
                 android:drawableBottom="@drawable/line_for_main_my_sheet_new"
                 android:gravity="center"
-                android:text="@string/new_" />
+                android:text="@string/new_"
+                android:textSize="@dimen/text_middle" />
 
         </RelativeLayout>
 

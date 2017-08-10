@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,10 +12,16 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
@@ -31,6 +38,7 @@ import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.shared.SheetsOperation;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.SongUtils;
+import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.AppBarStateChangeListener;
 
 import java.util.List;
@@ -40,6 +48,7 @@ public class MainActivity extends InspectActivity implements
         ThemeChangeable {
 
     private Toolbar toolbar;
+    private ActionBarDrawerToggle toggle;
     private Menu menu;
 
     // FIXME 内存泄漏
@@ -59,6 +68,8 @@ public class MainActivity extends InspectActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Utils.transitionStatusBar(this);
 
         broadcastManager = BroadcastManager.getInstance(this);
         bottomNavigationController = new BottomNavigationController(this, mediaManager, appPreference, playPreference);
@@ -124,11 +135,25 @@ public class MainActivity extends InspectActivity implements
         leftNavigationController.initViews();
 
         toolbar = (Toolbar) findViewById(R.id.activity_main_toolbar);
+        final View topContainer = findViewById(R.id.activity_main_top_container);
+        toolbar.post(new Runnable() {
+            @Override
+            public void run() {
+                // fitsSystemWindows 为 false ，这里要增加 padding 填满状态栏
+                toolbar.setPadding(0, Utils.getStatusBarHeight(MainActivity.this), 0, 0);
+                // CollapsingToolbarLayout 下的 LinearLayout 也需要增加 padding
+                topContainer.setPadding(0, Utils.getStatusBarHeight(MainActivity.this), 0, 0);
+            }
+        });
         setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        toolbar.setNavigationIcon(R.drawable.ic_menu);
 
-        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.activity_main_app_bar);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        final AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.activity_main_app_bar);
         AppBarStateChangeListener barStateChangeListener = new AppBarStateChangeListener() {
             @Override
             public void onStateChanged(AppBarLayout appBarLayout, State state) {
@@ -271,7 +296,7 @@ public class MainActivity extends InspectActivity implements
         mostPlayController.initData(dbController, getString(R.string.rmp_history));
         mainSheetsController.initData(dbController);
         mySheetsController.initData(sServiceConnection.takeControl());
-        leftNavigationController.initData();
+        leftNavigationController.initData(dbController);
 
         update();
         themeChange(null, null);
@@ -296,7 +321,7 @@ public class MainActivity extends InspectActivity implements
 
     // 文字和图标颜色
     private void updateToolbarColors() {
-        if (toolbar == null) {
+        if (toolbar == null || toggle == null) {
             return;
         }
 
@@ -304,9 +329,7 @@ public class MainActivity extends InspectActivity implements
 
         int mainTC = colors[0];
         toolbar.setTitleTextColor(mainTC);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            toolbar.getNavigationIcon().setTint(mainTC);
-        }
+        toggle.getDrawerArrowDrawable().setColor(mainTC);
 
         MenuItem search = menu.findItem(R.id.action_main_search);
         Drawable icon = search.getIcon();
@@ -322,8 +345,10 @@ public class MainActivity extends InspectActivity implements
         coll.setContentScrimColor(cs[1]);
 
         toolbar.setBackgroundColor(cs[1]);
+
+        // 为了使状态栏透明，不要设置颜色
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(cs[0]);
+//            getWindow().setStatusBarColor(cs[0]);
         }
     }
 

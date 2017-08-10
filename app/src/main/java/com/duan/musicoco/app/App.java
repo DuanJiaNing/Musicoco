@@ -34,14 +34,14 @@ public class App extends Application {
 
     private void test() {
 
-        int color = Color.parseColor("#2979FF");
-        int color1 = Color.parseColor("#2979FF");
-        int color2 = Color.parseColor("#212121");
+        int color = Color.parseColor("#B82525");
+        int color1 = Color.parseColor("#B82525");
+        int color2 = Color.parseColor("#B82525");
         appPreference.updateActionbarColor(color);
         appPreference.updateStatusBarColor(color1);
         appPreference.updateAccentColor(color2);
 
-        appPreference.updateTheme(ThemeEnum.WHITE);
+        appPreference.updateTheme(ThemeEnum.DARK);
         playPreference.updateTheme(ThemeEnum.VARYING);
         playPreference.updatePlayBgMode(PlayBackgroundModeEnum.GRADIENT_COLOR);
 
