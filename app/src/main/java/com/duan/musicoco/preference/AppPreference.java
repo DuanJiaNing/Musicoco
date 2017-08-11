@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.support.annotation.ColorInt;
 
+import com.duan.musicoco.R;
 import com.duan.musicoco.util.ColorUtils;
 
 /**
@@ -21,6 +22,13 @@ public class AppPreference {
     public static final String KEY_THEME_STATUS_BAR_COLOR = "key_theme_statusBar_color";
     public static final String KEY_THEME_ACCENT_COLOR = "key_theme_accent_color";
 
+    // 照片墙照片数
+    public static final String KEY_IMAGE_WALL_SIZE = "key_image_wall_size";
+    // 照片墙照片虚化程度
+    public static final String KEY_IMAGE_WALL_BLUR = "key_image_wall_blur";
+    // 照片墙照片透明度
+    public static final String KEY_IMAGE_WALL_ALPHA = "key_image_wall_alpha";
+
     private SharedPreferences.Editor editor;
     private final SharedPreferences preferences;
 
@@ -29,6 +37,62 @@ public class AppPreference {
     public AppPreference(Context context) {
         this.context = context;
         this.preferences = context.getSharedPreferences(APP_PREFERENCE, Context.MODE_PRIVATE);
+    }
+
+    public int getImageWallSize() {
+        int defaultSize = 10;
+        return preferences.getInt(KEY_IMAGE_WALL_SIZE, defaultSize);
+    }
+
+    /**
+     * @param size 0 - 100
+     */
+    public void updateImageWallSize(int size) {
+        int defaultSize = context.getResources().getInteger(R.integer.image_wall_max_size);
+        if (size < 0 || size > defaultSize) {
+            return;
+        }
+
+        editor = preferences.edit();
+        editor.putInt(KEY_IMAGE_WALL_SIZE, size);
+        editor.apply();
+    }
+
+    public int getImageWallBlur() {
+        int defaultBlur = 4; // 不能小于 1
+        return preferences.getInt(KEY_IMAGE_WALL_BLUR, defaultBlur);
+    }
+
+    /**
+     * @param size 1 - 100
+     */
+    public void updateImageWallBlur(int size) {
+        int max = context.getResources().getInteger(R.integer.image_wall_max_blur);
+        if (size < 1 || size > max) {
+            return;
+        }
+
+        editor = preferences.edit();
+        editor.putInt(KEY_IMAGE_WALL_BLUR, size);
+        editor.apply();
+    }
+
+    public int getImageWallAlpha() {
+        int defaultAlpha = context.getResources().getInteger(R.integer.image_wall_default_alpha);
+        return preferences.getInt(KEY_IMAGE_WALL_ALPHA, defaultAlpha);
+    }
+
+    /**
+     * @param alpha (全透明)0 - 255(不透明 黑色)
+     */
+    public void updateImageWallAlpha(int alpha) {
+        if (alpha < 0 || alpha > 255) {
+            return;
+        }
+
+        editor = preferences.edit();
+        editor.putInt(KEY_IMAGE_WALL_ALPHA, alpha);
+        editor.apply();
     }
 
     public void updateTheme(ThemeEnum themeEnum) {

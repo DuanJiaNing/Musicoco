@@ -148,8 +148,8 @@ public class BitmapUtils {
             final int height = options.outHeight;
             final int width = options.outWidth;
             if (height > reqHeight || width > reqHeight) {
-                final int halfHeight = height / 2;
-                final int halfWidth = width / 2;
+                int halfHeight = height / 2;
+                int halfWidth = width / 2;
                 while ((halfHeight / inSampleSize) >= reqHeight && (halfWidth / inSampleSize) >= reqWidth)
                     inSampleSize *= 2;
             }

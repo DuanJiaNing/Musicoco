@@ -3,9 +3,13 @@ package com.duan.musicoco.image;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.provider.Settings;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IdRes;
@@ -146,21 +150,60 @@ public class BitmapProducer {
         // 绘制
         int w = width / x;
         int h = height / y;
+
+        //避免挤压，使宽高相等
+        if (w > h) h = w;
+        else w = h;
+
         Paint paint = new Paint();
         Bitmap default_ = null;
         paint.setAntiAlias(true);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.LIGHTEN));
+
+//        Log.i(TAG, "getKaleidoscope: w=" + w + " h=" + h);
+//
+//        Bitmap b = BitmapUtils.bitmapResizeFromFile(res[0], w, h);
+//
+//        if (b == null) {
+//            if (default_ == null) {
+//                default_ = BitmapUtils.bitmapResizeFromResource(context.getResources(),
+//                        defaultBitmap, w, h);
+//            }
+//            b = default_;
+//        }
+//        Log.i(TAG, "bitmapResizeFromFile: w=" + b.getWidth() + " h=" + b.getHeight());
+//
+//        Matrix matrix = new Matrix();
+//        Bitmap bi = BitmapFactory.decodeFile(res[index]);
+//        float sx = bi.getWidth() / w;
+//        float sy = bi.getHeight() / h;
+//        matrix.setScale(sx, sy);
+//        b = Bitmap.createBitmap(b, 0, 0, w, h, matrix, true);
+//
+//        Log.i(TAG, "matrix: w=" + b.getWidth() + " h=" + b.getHeight());
+//
+//        b = Bitmap.createScaledBitmap(bi,w,h,true);
+//        Log.i(TAG, "createScaledBitmap: w=" + b.getWidth() + " h=" + b.getHeight());
+//
+//        return b;
+
         for (int i = 0; i < y; i++) {
             for (int k = 0; k < x; k++) {
                 int resIndex = i * x + k;
+                String path = res[resIndex];
 
-                Bitmap b = BitmapUtils.bitmapResizeFromFile(res[resIndex], w, h);
-                if (b == null) {
+                // 压缩得到的图片宽高大于目标宽高
+                Bitmap sou = BitmapUtils.bitmapResizeFromFile(path, w, h);
+                if (sou == null) {
                     if (default_ == null) {
                         default_ = BitmapUtils.bitmapResizeFromResource(context.getResources(),
                                 defaultBitmap, w, h);
                     }
-                    b = default_;
+                    sou = default_;
                 }
+
+                // 需要再次处理
+                Bitmap b = Bitmap.createScaledBitmap(sou, w, h, false);
 
                 int top = h * i;
                 int left = w * k;
@@ -170,6 +213,8 @@ public class BitmapProducer {
         }
 
         return bitmap;
+
     }
+
 
 }

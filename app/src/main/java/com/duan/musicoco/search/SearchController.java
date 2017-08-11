@@ -135,8 +135,9 @@ public class SearchController implements ThemeChangeable, ResultsAdapter.OnItemC
                 new OptionsAdapter.OptionClickListener() {
                     @Override
                     public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
-                        locationSongInSheet();
                         optionsDialog.hide();
+                        mActivity.finish();
+                        locationSongInSheet();
                     }
                 });
 
@@ -158,7 +159,6 @@ public class SearchController implements ThemeChangeable, ResultsAdapter.OnItemC
     }
 
     private void locationSongInSheet() {
-        mActivity.finish();
         Song song = new Song(currentClickItem.getData());
         activityManager.startSheetDetailActivity(mSheetId, song);
     }

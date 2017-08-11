@@ -1,38 +1,39 @@
 <resources>
-    <!-- // FIIXME 变量名整理-->
-
     <string name="app_name">我的音乐</string>
     <string name="app_name_us">Musicoco</string>
 
     <string name="album_save_path">image</string>
-
     <string name="cache_bitmap_album_visualizer">album_visualizer</string>
 
-    <string name="title_play_list">播放列表</string>
-    <string name="title_lyric">歌词</string>
-
-    <string name="song">歌曲</string>
-    <string name="sheet">歌单</string>
+    <!-- 权限相关 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <string name="permission_required">应用需要这些权限以读取歌曲文件，否则程序将无法正常工作并退出！</string>
     <string name="permission_media_read">媒体文件读取权限</string>
+
+    <!-- 播放模式 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <string name="play_mode_list_loop">列表循环</string>
     <string name="play_mode_single_loop">单曲循环</string>
     <string name="play_mode_random">随机播放</string>
 
+    <!-- 主页左侧导航 /////////////////////////////////////////////////////////////////////////////////////////// -->
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
+
+    <!-- 主页 主歌单歌单名/////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <string name="main_sheet_favorite">我的收藏</string>
     <string name="main_sheet_recent">最近播放</string>
     <string name="main_sheet_all">全部歌曲</string>
 
-    <string name="error_exception_remote">与播放服务连接断开啦:)，可以尝试退出应用，并重新打开。 </string>
+    <!-- 主页 我的歌单/////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <string name="my_sheet_title">创建的歌单</string>
     <string name="my_sheet_click_here_for_new_sheet">点击这里创建歌单</string>
+
+    <!-- 歌曲操作 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <string name="song_operation_collection_sheet">收藏到歌单</string>
     <string name="song_operation_detail">歌曲详情</string>
@@ -40,6 +41,8 @@
     <string name="song_operation_delete">删除</string>
     <string name="song_operation_add_to_favorite">收藏</string>
     <string name="song_operation_remove_from_favorite">取消收藏</string>
+
+    <!-- 歌单编辑/新建 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <string name="new_sheet">新建歌单</string>
     <string name="sheet_name">歌单名</string>
@@ -51,6 +54,9 @@
 
     <string name="modify_sheet">编辑歌单</string>
 
+    <!-- 操作失败/错误 /////////////////////////////////////////////////////////////////////////////////////////// -->
+
+    <string name="error_exception_remote">与播放服务连接断开啦:)，可以尝试退出应用，并重新打开。 </string>
     <string name="error_song_is_already_in_sheet">歌曲已在歌单中 :(</string>
     <string name="error_text_count_out_of_limit">字数超出限制啦 :(</string>
     <string name="error_name_required">名称不能为空 :(</string>
@@ -65,6 +71,8 @@
     <string name="error_load_sheet_fail">加载歌单失败 :(</string>
     <string name="error_not_modify">未修改</string>
 
+    <!-- 操作成功 /////////////////////////////////////////////////////////////////////////////////////////// -->
+
     <string name="success_create_sheet">创建歌单 :)</string>
     <string name="success_modify_sheet">歌单信息已修改 :)</string>
     <string name="success_add_to_sheet">成功添加到歌单 :)</string>
@@ -74,6 +82,8 @@
     <string name="success_add_all_song_to_favorite">已成功收藏全部 :)</string>
     <string name="success_add_select_song_to_favorite">成功收藏选中歌曲 :)</string>
     <string name="success_remove_select_song_from_favorite">选中歌曲已取消收藏 :)</string>
+
+    <!-- 公用短词 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <string name="warning">警告</string>
     <string name="unknown">出错了 :O</string>
@@ -95,10 +105,15 @@
     <string name="remove">移除</string>
     <string name="delete">删除</string>
     <string name="new_">新建</string>
+    <string name="song">歌曲</string>
+    <string name="sheet">歌单</string>
 
     <string name="cancel_collect">取消收藏</string>
     <string name="select_operation">选择操作</string>
     <string name="select_song">选择歌曲</string>
+    <string name="create_time">创建时间</string>
+
+    <!-- 提示 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <string name="info_add_all_songs_to_favorite">将所有歌曲加入[我的收藏]</string>
     <string name="info_add_select_songs_to_favorite">将选中歌曲加入[我的收藏]</string>
@@ -113,24 +128,53 @@
     <string name="info_search">搜索音乐</string>
     <string name="info_show_in_sheet">在歌单中显示</string>
 
+    <!-- 正在处理 /////////////////////////////////////////////////////////////////////////////////////////// -->
+
     <string name="in_progress_add_songs_to_favorite">正在收藏歌曲</string>
     <string name="in_progress_remove_songs_from_favorite">正在取消收藏</string>
     <string name="in_progress_remove_songs_from_sheet">正在移除</string>
     <string name="in_progress_delete">正在删除</string>
+
+    <!-- 替换 * 号/////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <string name="replace_play_all_song_random">随机播放 * 首歌曲</string>
     <string name="replace_search_from_songs">从 * 首歌曲中检索</string>
     <string name="replace_search_result_prompt">共检索到 * 首歌曲</string>
     <string name="replace_rmp_title">播放次数最多的 * 首歌</string>
 
-    <string name="create_time">创建时间</string>
+    <!-- 对话框等标题 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
-
+    <string name="title_play_list">播放列表</string>
+    <string name="title_lyric">歌词</string>
     <string name="title_activity_sheet_modify">SheetModifyActivity</string>
     <string name="title_activity_recent_most_play">RecentMostPlayActivity</string>
 
+    <!-- 主页 最近最多播放 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <string name="rmp_see_more">查看更多</string>
     <string name="rmp_history">历史最多播放</string>
+
+    <!-- 主页左侧导航及设置 /////////////////////////////////////////////////////////////////////////////////////////// -->
+
+    <string name="setting_scan">歌曲扫描</string>
+    <string name="setting_sleep">睡眠定时</string>
+    <string name="setting_play_ui_choice">播放界面设置</string>
+    <string name="setting_theme_color_custom">主题色定制</string>
+    <string name="setting_night_mode">夜间模式</string>
+    <string name="setting_guide_to_use">用户指南</string>
+    <string name="setting_about">关于</string>
+    <string name="setting_image_wall">图片墙</string>
+
+    <string name="setting_equalizer">均衡器</string> <!-- 升级 -->
+
+    <string name="setting_quit">退出</string>
+    <string name="setting_set">设置</string>
+
+    <string name="setting_set_open_auto_play">打开应用自动播放</string>
+    <string name="setting_set_memory_play">记忆播放</string>
+    <string name="setting_set_image_save_path">图片保存目录</string>
+    <string name="setting_set_image_clear_cache">清除缓存</string>
+    <string name="setting_set_feedback">反馈</string>
+
 
 </resources>

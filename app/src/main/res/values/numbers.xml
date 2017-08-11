@@ -11,7 +11,10 @@
     <integer name="rmp_count">10</integer>
 
     <!-- 主页左侧导航背景组合专辑图片数量 -->
-    <integer name="main_nav_image_count">80</integer>
+    <integer name="image_wall_max_size">100</integer>
+    <integer name="image_wall_max_blur">100</integer>
+    <integer name="image_wall_default_alpha">70</integer>
+    <integer name="image_wall_default_sampling">10</integer>
 
     <integer name="sheet_name_text_limit">13</integer>
     <integer name="sheet_remark_text_limit">50</integer>

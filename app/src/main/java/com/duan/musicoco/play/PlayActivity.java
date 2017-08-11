@@ -106,11 +106,13 @@ public class PlayActivity extends InspectActivity implements
 
     @Override
     public void onBackPressed() {
-        if (bottomNavigationController.isListShowing()) {
+        if (bottomNavigationController.visible()) {
             bottomNavigationController.hide();
-            return;
         } else {
+            //FIXME
             moveTaskToBack(true);
+//            super.onBackPressed();
+//            ActivityManager.getInstance(this).startMainActivity();
         }
     }
 
@@ -358,7 +360,7 @@ public class PlayActivity extends InspectActivity implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.play_fragment_container:
-                if (!bottomNavigationController.isListShowing())
+                if (!bottomNavigationController.visible())
                     bottomNavigationController.show();
                 break;
             case R.id.play_name_container:

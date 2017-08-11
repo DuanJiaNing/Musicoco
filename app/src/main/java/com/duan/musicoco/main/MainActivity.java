@@ -73,7 +73,7 @@ public class MainActivity extends InspectActivity implements
 
         broadcastManager = BroadcastManager.getInstance(this);
         bottomNavigationController = new BottomNavigationController(this, mediaManager, appPreference, playPreference);
-        leftNavigationController = new LeftNavigationController(this);
+        leftNavigationController = new LeftNavigationController(this, appPreference);
         mostPlayController = new RecentMostPlayController(this, mediaManager);
         mainSheetsController = new MainSheetsController(this, mediaManager);
         mySheetsController = new MySheetsController(this, dbController, mediaManager);
@@ -176,7 +176,7 @@ public class MainActivity extends InspectActivity implements
     @Override
     public void onBackPressed() {
         if (leftNavigationController.onBackPressed()) {
-            super.onBackPressed();
+            moveTaskToBack(true);
         }
     }
 

@@ -5,31 +5,37 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.DisplayMetrics;
 import android.view.MenuItem;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import com.bumptech.glide.load.engine.Resource;
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.app.interfaces.ContentUpdatable;
+import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.interfaces.ViewVisibilityChangeable;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.image.BitmapProducer;
-import com.duan.musicoco.util.BitmapUtils;
+import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.util.SongUtils;
-import com.duan.musicoco.util.Utils;
 
 import java.util.List;
 
 import jp.wasabeef.glide.transformations.BlurTransformation;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by DuanJiaNing on 2017/8/10.
@@ -37,16 +43,19 @@ import jp.wasabeef.glide.transformations.BlurTransformation;
 
 public class LeftNavigationController implements
         ViewVisibilityChangeable,
-        NavigationView.OnNavigationItemSelectedListener {
+        NavigationView.OnNavigationItemSelectedListener,
+        ContentUpdatable {
 
     private final Activity activity;
+    private final AppPreference appPreference;
     protected DBMusicocoController dbController;
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
 
-    public LeftNavigationController(Activity activity) {
+    public LeftNavigationController(Activity activity, AppPreference appPreference) {
         this.activity = activity;
+        this.appPreference = appPreference;
     }
 
     public void initViews() {
@@ -57,20 +66,31 @@ public class LeftNavigationController implements
 
     public void initData(DBMusicocoController dbController) {
         this.dbController = dbController;
-        initBackground();
+        navigationView.post(new Runnable() {
+            @Override
+            public void run() {
+                update(null, null);
+            }
+        });
 
     }
 
-    private void initBackground() {
-        // FIXME 异步执行
+    private Bitmap updateImageWallBitmap() {
         BitmapProducer producer = new BitmapProducer(activity);
         String[] res = getImagePath();
-//        DisplayMetrics metrics = Utils.getMetrics(activity);
+        if (res == null) {
+            return null;
+        }
+
         int w = navigationView.getWidth();
         int h = navigationView.getHeight();
 
+        int blur = appPreference.getImageWallBlur();
+        int defaultSam = activity.getResources().getInteger(R.integer.image_wall_default_sampling);
+        int sam = blur == 1 ? 1 : defaultSam;
+
         final Bitmap kaleidoscope = producer.getKaleidoscope(res, w, h, R.drawable.default_album);
-        final BlurTransformation btf = new BlurTransformation(activity, 1, 5);
+        final BlurTransformation btf = new BlurTransformation(activity, blur, sam);
         Resource<Bitmap> resource = btf.transform(new Resource<Bitmap>() {
             @Override
             public Bitmap get() {
@@ -101,14 +121,7 @@ public class LeftNavigationController implements
             }
         }, w, w);
 
-        BitmapDrawable bd = new BitmapDrawable(resource.get());
-        navigationView.setBackground(bd);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ColorDrawable cd = new ColorDrawable(Color.BLACK);
-            cd.setAlpha(100);
-            navigationView.setForeground(cd);
-        }
+        return resource.get();
     }
 
     public boolean onBackPressed() {
@@ -143,18 +156,75 @@ public class LeftNavigationController implements
         return false;
     }
 
+    @Nullable
     private String[] getImagePath() {
+        int size = appPreference.getImageWallSize();
+        if (size == 0) {
+            return null;
+        }
+
         MainSheetHelper h = new MainSheetHelper(activity, dbController);
         List<DBSongInfo> info = h.getAllSongInfo();
         List<SongInfo> list = SongUtils.DBSongInfoToSongInfoList(info, MediaManager.getInstance(activity));
+        if (info.size() == 0) {
+            return null;
+        }
 
-        int count = activity.getResources().getInteger(R.integer.main_nav_image_count);
-        count = list.size() > count ? count : list.size();
-
-        String[] strs = new String[count];
-        for (int i = 0; i < count; i++) {
+        size = size > list.size() ? list.size() : size;
+        String[] strs = new String[size];
+        for (int i = 0; i < size; i++) {
             strs[i] = list.get(i).getAlbum_path();
         }
         return strs;
+    }
+
+    @Override
+    public void update(Object obj, OnUpdateStatusChanged statusChanged) {
+        Observable.OnSubscribe<Bitmap> onSubscribe = new Observable.OnSubscribe<Bitmap>() {
+            @Override
+            public void call(Subscriber<? super Bitmap> subscriber) {
+                subscriber.onStart();
+
+                Bitmap bitmap = updateImageWallBitmap();
+                subscriber.onNext(bitmap);
+
+                subscriber.onCompleted();
+            }
+        };
+
+        Observable.create(onSubscribe)
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Bitmap>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(Bitmap bitmap) {
+                        if (bitmap != null) {
+
+                            BitmapDrawable bd = new BitmapDrawable(bitmap);
+                            navigationView.setBackground(bd);
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                ColorDrawable cd = new ColorDrawable(Color.BLACK);
+                                int alpha = appPreference.getImageWallAlpha();
+                                cd.setAlpha(alpha);
+                                navigationView.setForeground(cd);
+                            }
+
+                            Animation animation = AnimationUtils.loadAnimation(activity, android.R.anim.fade_in);
+                            navigationView.startAnimation(animation);
+                        }
+
+                    }
+                });
     }
 }

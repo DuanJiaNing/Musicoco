@@ -362,7 +362,7 @@ public class BottomNavigationController implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.play_dark_bg:
-                if (isListShowing()) {
+                if (visible()) {
                     hide();
                 }
                 break;
@@ -371,10 +371,6 @@ public class BottomNavigationController implements
 
     public boolean isListTitleHide() {
         return isListTitleHide;
-    }
-
-    public boolean isListShowing() {
-        return isListShowing;
     }
 
     @Override
@@ -643,7 +639,7 @@ public class BottomNavigationController implements
                     handleFavoriteStatusChange();
                     break;
                 case R.id.play_show_list:
-                    if (isListShowing()) {
+                    if (visible()) {
                         BottomNavigationController.this.hide();
                     } else {
                         BottomNavigationController.this.show();

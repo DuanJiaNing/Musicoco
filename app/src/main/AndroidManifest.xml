@@ -24,9 +24,10 @@
         <!-- 需要为 PlayActivity 开启硬件加速，Android 4.1 以上默认开启 -->
         <activity
             android:name=".play.PlayActivity"
+            android:excludeFromRecents="true"
             android:hardwareAccelerated="true"
             android:launchMode="singleInstance"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme" /> <!-- singleInstance 不受栈管理-->
 
         <service
             android:name=".service.PlayService"
@@ -49,7 +50,6 @@
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -60,17 +60,20 @@
         <activity
             android:name=".detail.sheet.SheetDetailActivity"
             android:launchMode="singleTask"
-            android:theme="@style/AppTheme.Sheet.Detail"></activity>
+            android:theme="@style/AppTheme.Sheet.Detail" />
         <activity
             android:name=".newsheet.SheetModifyActivity"
             android:label="@string/title_activity_sheet_modify"
-            android:theme="@style/AppTheme"></activity>
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".search.SearchActivity"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.Transparent" />
         <activity
             android:name=".rmp.RecentMostPlayActivity"
             android:label="@string/rmp_history"
+            android:launchMode="singleTask"
             android:parentActivityName=".app.RootActivity"
             android:theme="@style/AppTheme">
             <meta-data

@@ -2,6 +2,8 @@ package com.duan.musicoco.app;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;

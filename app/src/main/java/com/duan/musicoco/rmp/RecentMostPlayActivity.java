@@ -157,9 +157,9 @@ public class RecentMostPlayActivity extends RootActivity implements ThemeChangea
                     @Override
                     public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
                         Song song = new Song(currentClickItem.getData());
-                        activityManager.startSheetDetailActivity(MainSheetHelper.SHEET_ALL, song);
                         optionsDialog.hide();
                         finish();
+                        activityManager.startSheetDetailActivity(MainSheetHelper.SHEET_ALL, song);
 
                     }
                 });
@@ -189,8 +189,8 @@ public class RecentMostPlayActivity extends RootActivity implements ThemeChangea
                     @Override
                     public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
                         Song song = new Song(currentClickItem.getData());
-                        songOperation.reverseSongFavoriteStatus(song);
                         optionsDialog.hide();
+                        songOperation.reverseSongFavoriteStatus(song);
                     }
                 });
 

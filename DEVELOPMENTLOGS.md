@@ -297,14 +297,18 @@
 
 1 添加 RecentMostPlayActivity 和 RMPActivity 并完成功能<br>
 
-- 2017 -08-09
+- 2017-08-09
 
 1 修改 MainActivity 界面，改用 CollapsingToolbarLayout <br>
 2 可以定制状态栏和标题栏颜色以及'明显'(accentColor)文字和控件颜色<br>
 3 为 PlayBackgroundModeEnum 添加 GRADIENT_COLOR （渐变色）模式<br>
 
-- 2017 -08-10
+- 2017-08-10
 
 1 添加 FlowingDrawer ，LeftNavigationController<br>
 2 移除 LeftNavigationController，改回 NavigationView<br>
 3 BitmapProducer 添加 getKaleidoscope 方法，用于生成“万花筒”图片<br>
+
+- 2017-08-11
+
+1 照片墙可定制，数量，虚化度，透明度<br>
