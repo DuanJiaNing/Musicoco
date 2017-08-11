@@ -158,13 +158,16 @@
 
     <string name="setting_scan">歌曲扫描</string>
     <string name="setting_sleep">睡眠定时</string>
+
+    <string name="setting_theme_custom">外观定制</string>
     <string name="setting_play_ui_choice">播放界面设置</string>
     <string name="setting_theme_color_custom">主题色定制</string>
     <string name="setting_night_mode">夜间模式</string>
+
     <string name="setting_guide_to_use">用户指南</string>
     <string name="setting_about">关于</string>
-    <string name="setting_image_wall">图片墙</string>
 
+    <string name="setting_image_wall">图片墙</string>
     <string name="setting_equalizer">均衡器</string> <!-- 升级 -->
 
     <string name="setting_quit">退出</string>

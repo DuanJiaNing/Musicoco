@@ -59,7 +59,7 @@ public class AppPreference {
     }
 
     public int getImageWallBlur() {
-        int defaultBlur = 4; // 不能小于 1
+        int defaultBlur = 1; // 不能小于 1
         return preferences.getInt(KEY_IMAGE_WALL_BLUR, defaultBlur);
     }
 

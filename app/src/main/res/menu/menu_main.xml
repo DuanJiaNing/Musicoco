@@ -1,10 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/setting_g_1">
+        <item
+            android:id="@+id/setting_scan"
+            android:icon="@drawable/ic_audio_file"
+            android:title="@string/setting_scan" />
+        <item
+            android:id="@+id/setting_sleep"
+            android:icon="@drawable/ic_snooze"
+            android:title="@string/setting_sleep" />
+
+        <item
+            android:id="@+id/setting_image_wall"
+            android:icon="@drawable/ic_picture_scope"
+            android:title="@string/setting_image_wall" />
+
+    </group>
+
     <item
-        android:id="@+id/action_main_search"
-        android:orderInCategory="100"
-        android:title="@string/search"
-        android:icon="@drawable/ic_search_black_24dp"
-        app:showAsAction="always" />
+        android:title="@string/setting_theme_custom"
+        android:titleCondensed="@string/add">
+        <menu>
+
+            <group android:id="@+id/setting_g_2">
+                <item
+                    android:id="@+id/setting_play_ui"
+                    android:icon="@drawable/ic_play_theme"
+                    android:title="@string/setting_play_ui_choice" />
+                <item
+                    android:id="@+id/setting_theme_color_custom"
+                    android:icon="@drawable/ic_clothes"
+                    android:title="@string/setting_theme_color_custom" />
+            </group>
+
+            <item
+                android:id="@+id/setting_night_mode"
+                android:icon="@drawable/ic_night"
+                android:title="@string/setting_night_mode" />
+
+        </menu>
+    </item>
+
+    <group android:id="@+id/setting_g_3">
+        <item
+            android:id="@+id/setting_set"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/setting_set" />
+        <item
+            android:id="@+id/setting_quit"
+            android:icon="@drawable/ic_power_settings_new"
+            android:title="@string/setting_quit" />
+    </group>
+
 </menu>

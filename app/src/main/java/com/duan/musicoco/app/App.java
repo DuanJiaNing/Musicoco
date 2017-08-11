@@ -41,11 +41,11 @@ public class App extends Application {
         appPreference.updateStatusBarColor(color1);
         appPreference.updateAccentColor(color2);
 
-//        appPreference.updateImageWallAlpha(100);
-//        appPreference.updateImageWallBlur(5);
-//        appPreference.updateImageWallSize(50);
+        appPreference.updateImageWallAlpha(10);
+        appPreference.updateImageWallBlur(1);
+        appPreference.updateImageWallSize(30);
 
-        appPreference.updateTheme(ThemeEnum.WHITE);
+        appPreference.updateTheme(ThemeEnum.DARK);
         playPreference.updateTheme(ThemeEnum.VARYING);
         playPreference.updatePlayBgMode(PlayBackgroundModeEnum.GRADIENT_COLOR);
 

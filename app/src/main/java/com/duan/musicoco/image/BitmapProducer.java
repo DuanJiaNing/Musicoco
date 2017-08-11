@@ -141,24 +141,21 @@ public class BitmapProducer {
         int index = j / 2;
         int tx = c[index];
         int ty = count / tx;
+
+        // 断定高大于宽
         int x = Math.min(tx, ty); // 水平上分为 x 份（即水平上 x 张图片）
         int y = Math.max(tx, ty); // 垂直方向为 y 份
 
-        String[] res = new String[count];
-        System.arraycopy(souPath, 0, res, 0, count);
-
-        // 绘制
         int w = width / x;
         int h = height / y;
 
         //避免挤压，使宽高相等
-        if (w > h) h = w;
+        if (width > height) h = w; // 以长边为准
         else w = h;
 
         Paint paint = new Paint();
         Bitmap default_ = null;
         paint.setAntiAlias(true);
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.LIGHTEN));
 
 //        Log.i(TAG, "getKaleidoscope: w=" + w + " h=" + h);
 //
@@ -186,6 +183,10 @@ public class BitmapProducer {
 //        Log.i(TAG, "createScaledBitmap: w=" + b.getWidth() + " h=" + b.getHeight());
 //
 //        return b;
+
+        // 绘制
+        String[] res = new String[count];
+        System.arraycopy(souPath, 0, res, 0, count);
 
         for (int i = 0; i < y; i++) {
             for (int k = 0; k < x; k++) {

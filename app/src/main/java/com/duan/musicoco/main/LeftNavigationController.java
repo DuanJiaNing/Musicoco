@@ -12,8 +12,10 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 
 import com.bumptech.glide.load.engine.Resource;
 import com.duan.musicoco.R;
@@ -75,15 +77,16 @@ public class LeftNavigationController implements
 
     }
 
-    private Bitmap updateImageWallBitmap() {
+    private Bitmap getImageWallBitmap() {
         BitmapProducer producer = new BitmapProducer(activity);
         String[] res = getImagePath();
         if (res == null) {
             return null;
         }
 
-        int w = navigationView.getWidth();
-        int h = navigationView.getHeight();
+        ImageView iv = (ImageView) navigationView.findViewById(R.id.main_left_nav_image);
+        int w = iv.getWidth();
+        int h = iv.getHeight();
 
         int blur = appPreference.getImageWallBlur();
         int defaultSam = activity.getResources().getInteger(R.integer.image_wall_default_sampling);
@@ -122,6 +125,27 @@ public class LeftNavigationController implements
         }, w, w);
 
         return resource.get();
+    }
+
+    private void setImageWallBitmap(Bitmap bitmap) {
+        if (bitmap != null) {
+
+            // menu 中有图标时要通过 getHeaderView 查找子 view
+            View headerView = navigationView.getHeaderView(0);
+            ImageView iv = (ImageView) headerView.findViewById(R.id.main_left_nav_image);
+            iv.setImageBitmap(bitmap);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                ColorDrawable cd = new ColorDrawable(Color.BLACK);
+                int alpha = appPreference.getImageWallAlpha();
+                cd.setAlpha(alpha);
+                iv.setForeground(cd);
+            }
+
+            Animation animation = AnimationUtils.loadAnimation(activity, android.R.anim.fade_in);
+            navigationView.startAnimation(animation);
+        }
+
     }
 
     public boolean onBackPressed() {
@@ -185,7 +209,7 @@ public class LeftNavigationController implements
             public void call(Subscriber<? super Bitmap> subscriber) {
                 subscriber.onStart();
 
-                Bitmap bitmap = updateImageWallBitmap();
+                Bitmap bitmap = getImageWallBitmap();
                 subscriber.onNext(bitmap);
 
                 subscriber.onCompleted();
@@ -208,22 +232,7 @@ public class LeftNavigationController implements
 
                     @Override
                     public void onNext(Bitmap bitmap) {
-                        if (bitmap != null) {
-
-                            BitmapDrawable bd = new BitmapDrawable(bitmap);
-                            navigationView.setBackground(bd);
-
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                ColorDrawable cd = new ColorDrawable(Color.BLACK);
-                                int alpha = appPreference.getImageWallAlpha();
-                                cd.setAlpha(alpha);
-                                navigationView.setForeground(cd);
-                            }
-
-                            Animation animation = AnimationUtils.loadAnimation(activity, android.R.anim.fade_in);
-                            navigationView.startAnimation(animation);
-                        }
-
+                        setImageWallBitmap(bitmap);
                     }
                 });
     }

@@ -47,7 +47,9 @@
     <dimen name="play_more_radius">15dp</dimen>
     <dimen name="play_album_padding">25dp</dimen>
     <dimen name="nav_header_vertical_spacing">16dp</dimen>
-    <dimen name="nav_header_height">160dp</dimen>
+
+    <dimen name="nav_header_height">240dp</dimen>
+
     <dimen name="fab_margin">16dp</dimen>
 
     <dimen name="list_top_height">300dp</dimen>
