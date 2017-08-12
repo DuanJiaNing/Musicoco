@@ -30,7 +30,7 @@ import com.duan.musicoco.shared.SheetsOperation;
 import com.duan.musicoco.shared.OptionsAdapter;
 import com.duan.musicoco.shared.OptionsDialog;
 import com.duan.musicoco.util.BitmapUtils;
-import com.duan.musicoco.util.SongUtils;
+import com.duan.musicoco.util.MediaUtils;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.view.media.PlayView;
 
@@ -160,7 +160,7 @@ public class MySheetsAdapter extends BaseAdapter implements
 
                 MainSheetHelper helper = new MainSheetHelper(activity, dbMusicoco);
                 List<DBSongInfo> list = helper.getAllSongInfo();
-                List<Song> songs = SongUtils.DBSongInfoListToSongList(list);
+                List<Song> songs = MediaUtils.DBSongInfoListToSongList(list);
                 control.setPlayList(songs, 0, MainSheetHelper.SHEET_ALL);
                 control.pause();
             }
@@ -338,7 +338,7 @@ public class MySheetsAdapter extends BaseAdapter implements
     private void changePlayList(Sheet sheet) throws RemoteException {
         List<DBSongInfo> songInfos = dbMusicoco.getSongInfos(sheet.id);
         if (songInfos.size() > 0) {
-            List<Song> songs = SongUtils.DBSongInfoListToSongList(songInfos);
+            List<Song> songs = MediaUtils.DBSongInfoListToSongList(songInfos);
 
             //BottomNavigationController#onPlayListChange 被回调，在那里更新 PlayListAdapter
             control.setPlayList(songs, 0, sheet.id);

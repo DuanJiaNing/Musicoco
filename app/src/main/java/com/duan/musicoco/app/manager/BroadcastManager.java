@@ -18,8 +18,10 @@ public class BroadcastManager {
     public static final String FILTER_PLAY_SHEET_RANDOM = "filter_play_sheet_random";
     public static final String FILTER_SHEET_DETAIL_SONGS_CHANGE = "filter_sheet_detail_songs_change";
 
-    // 夜间日间模式切换，主题色定制
-    public static final String FILTER_APP_THEME_CHANGE = "filter_app_theme_change";
+    /**
+     * 通知播放界面白天/夜间主题切换
+     */
+    public static final String FILTER_PLAY_ACTIVITY_APP_THEME_CHANGE = "filter_play_activity_app_theme_change";
 
     private Context context;
 

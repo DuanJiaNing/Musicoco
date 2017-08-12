@@ -12,7 +12,7 @@ import java.util.List;
  * Created by DuanJiaNing on 2017/7/22.
  */
 
-public class SongUtils {
+public class MediaUtils {
 
     public static List<Song> DBSongInfoListToSongList(List<DBSongInfo> list) {
         List<Song> songs = new ArrayList<>();

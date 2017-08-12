@@ -46,7 +46,6 @@ public class PlayViewsController implements View.OnClickListener {
     private PeriodicTask periodicTask;
     private IPlayControl control;
 
-
     public PlayViewsController(Activity activity) {
         this.activity = activity;
     }
@@ -74,6 +73,7 @@ public class PlayViewsController implements View.OnClickListener {
         this.playPreference = preference;
         this.control = control;
 
+        // 初始化 歌名，艺术家 TextSwitch
         initSwitchers();
         initPeriodicer();
         initProgress();
@@ -218,7 +218,7 @@ public class PlayViewsController implements View.OnClickListener {
      * 2 进度条左右文字（进度，总时长）<br>
      * 3 歌曲名，艺术家<br>
      */
-    public void updateText(int duration, int progress, String title, String arts) {
+    void updateText(int duration, int progress, String title, String arts) {
 
         tvDuration.setText(StringUtils.getGenTimeMS(duration));
         tvPlayProgress.setText(StringUtils.getGenTimeMS(progress));
@@ -230,8 +230,19 @@ public class PlayViewsController implements View.OnClickListener {
         tsSongArts.setText(arts);
     }
 
-    public void updatePlayBtStatus(boolean playing) {
+    /**
+     * 更新播放按钮状态
+     */
+    void updatePlayButtonStatus(boolean playing) {
         btPlay.setChecked(playing);
+    }
+
+    void startProgressUpdateTask() {
+        periodicTask.start();
+    }
+
+    void stopProgressUpdateTask() {
+        periodicTask.stop();
     }
 
     @Override
@@ -270,11 +281,4 @@ public class PlayViewsController implements View.OnClickListener {
         }
     }
 
-    public void startProgressUpdateTask() {
-        periodicTask.start();
-    }
-
-    public void stopProgressUpdateTask() {
-        periodicTask.stop();
-    }
 }

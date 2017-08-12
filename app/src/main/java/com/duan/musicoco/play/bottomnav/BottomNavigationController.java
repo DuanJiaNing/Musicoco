@@ -1,4 +1,4 @@
-package com.duan.musicoco.play.bottom;
+package com.duan.musicoco.play.bottomnav;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -8,8 +8,6 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.ColorUtils;
@@ -18,47 +16,36 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.bean.DBSongInfo;
-import com.duan.musicoco.db.MainSheetHelper;
-import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.ThemeEnum;
-import com.duan.musicoco.shared.ExceptionHandler;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.ContentUpdatable;
-import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
-import com.duan.musicoco.app.interfaces.ViewVisibilityChangeable;
-import com.duan.musicoco.shared.OptionsAdapter;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.shared.PlayListAdapter;
 import com.duan.musicoco.shared.SongOperation;
 import com.duan.musicoco.util.AnimationUtils;
-import com.duan.musicoco.shared.OptionsDialog;
-import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.RealTimeBlurView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.duan.musicoco.preference.ThemeEnum.DARK;
@@ -72,7 +59,6 @@ public class BottomNavigationController implements
         View.OnClickListener,
         OnPlayListVisibilityChange,
         ContentUpdatable,
-        OnEmptyMediaLibrary,
         ThemeChangeable {
 
     private static final String TAG = "BottomNavigationControl";
@@ -82,7 +68,6 @@ public class BottomNavigationController implements
     private boolean isListTitleHide = false;
 
     private CardView mViewRoot;
-    private LinearLayout mPlayListContainer;
     private ListView mPlayList;
     private RealTimeBlurView mRealTimeView;
     private View mListTitleContainer;
@@ -93,8 +78,8 @@ public class BottomNavigationController implements
     private AppPreference appPreference;
 
     private DBMusicocoController dbMusicoco;
-    private IPlayControl control;
     private MediaManager mediaManager;
+    private IPlayControl control;
 
     private final SongOption songOption;
     private final ListOption listOption;
@@ -103,15 +88,26 @@ public class BottomNavigationController implements
     private PlayListAdapter playListAdapter;
     private final List<SongInfo> data = new ArrayList<>();
 
-    public BottomNavigationController(Activity activity) {
+    public BottomNavigationController(Activity activity, DBMusicocoController dbController, MediaManager mediaManager, PlayPreference playPreference, AppPreference appPreference) {
         this.activity = activity;
+        this.dbMusicoco = dbController;
+        this.mediaManager = mediaManager;
+        this.playPreference = playPreference;
+        this.appPreference = appPreference;
+
         this.listOption = new ListOption(activity);
         this.songOption = new SongOption(activity, this);
     }
 
     public void initViews() {
+
+        initSelfViews();
         listOption.initViews();
         songOption.initViews();
+
+    }
+
+    private void initSelfViews() {
 
         mViewRoot = (CardView) activity.findViewById(R.id.play_list);
         mPlayList = (ListView) activity.findViewById(R.id.play_play_list);
@@ -132,76 +128,47 @@ public class BottomNavigationController implements
         mViewRoot.setY(metrics.heightPixels - marginB);
         mViewRoot.setLayoutParams(params);
 
-        mPlayListContainer = (LinearLayout) activity.findViewById(R.id.play_nav_container);
-
     }
 
-    public void initData(IPlayControl control, DBMusicocoController dbMusicoco,
-                         MediaManager mediaManager, PlayPreference playPreference,
-                         AppPreference appPreference) {
+    public void initData(IPlayControl control) {
         this.control = control;
-        this.dbMusicoco = dbMusicoco;
-        this.mediaManager = mediaManager;
-        this.playPreference = playPreference;
-        this.appPreference = appPreference;
         this.songOperation = new SongOperation(activity, control, dbMusicoco);
 
+        initSelfDates();
         listOption.initData(control, mPlayList, dbMusicoco);
-        songOption.initData(songOperation);
+        songOption.initData(control, songOperation, mediaManager);
+
+        update(null, null);
+        songOption.updatePlayMode();
+        songOption.show();
+        listOption.hide();
+    }
+
+    private void initSelfDates() {
 
         playListAdapter = new PlayListAdapter(activity, data);
         initAdapterClickListener();
         mPlayList.setAdapter(playListAdapter);
 
-        //更新播放列表字体颜色模式（亮 暗）
-        ThemeEnum themeEnum = playPreference.getTheme();
-        int alpha = activity.getResources().getInteger(R.integer.play_list_bg_alpha);
-        int color;
-        switch (themeEnum) {
-            case DARK: {
-                color = activity.getResources().getColor(R.color.theme_dark_vic_text);
-                break;
-            }
-            case VARYING:
-            case WHITE:
-            default:
-                color = activity.getResources().getColor(R.color.theme_white_main_text);
-                break;
-        }
-        color = ColorUtils.setAlphaComponent(color, alpha);
-        mRealTimeView.setOverlayColor(color);
-        mListTitleContainer.setBackgroundColor(ColorUtils.setAlphaComponent(mRealTimeView.getOverlayColor(), 255));
-
-        songOption.updatePlayMode();
-        songOption.show();
-        listOption.hide();
-
-        int count = mViewRoot.getChildCount();
-        for (int i = 0; i < count; i++) {
-            View v = mViewRoot.getChildAt(i);
-            v.setEnabled(true);
-        }
-
-        update(null, null);
     }
 
     private void initAdapterClickListener() {
-        mPlayList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        playListAdapter.setOnItemClickListener(new PlayListAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(int position, SongInfo info) {
                 try {
 
                     int index = control.currentSongIndex();
                     if (position == index) {
                         Log.d(TAG, "onClick: the song is playing");
-                        if (control.status() != PlayController.STATUS_PLAYING)
+                        if (control.status() != PlayController.STATUS_PLAYING) {
                             control.resume();
+                        }
                         return;
                     }
 
                     SongInfo in = playListAdapter.getItem(position);
                     control.play(new Song(in.getData()));
-
 
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -214,13 +181,53 @@ public class BottomNavigationController implements
             public void onRemove(int position, SongInfo info) {
                 Song s = new Song(info.getData());
                 songOperation.removeSongFromCurrentPlayingSheet(null, s);
-
-                // PlayListAdapter 在 MainActivity 和 PlayActivity 中都有，所以需要发送广播通知 MainActivity 更新
-                // 【我的歌单】 列表
-                BroadcastManager.getInstance(activity).sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
-
             }
         });
+    }
+
+    @Override
+    public void themeChange(ThemeEnum themeEnum, int[] colors) {
+        themeEnum = appPreference.getTheme();
+        int[] cs = com.duan.musicoco.util.ColorUtils.get10ThemeColors(activity, themeEnum);
+
+        int statusC = cs[0];
+        int toolbarC = cs[1];
+        int accentC = cs[2];
+        int mainBC = cs[3];
+        int vicBC = cs[4];
+        int mainTC = cs[5];
+        int vicTC = cs[6];
+        int navC = cs[7];
+        int toolbarMainTC = cs[8];
+        int toolbarVicTC = cs[9];
+
+        playListAdapter.setMainTextColor(mainTC);
+        playListAdapter.setVicTextColor(vicTC);
+        playListAdapter.setSelectItemColor(accentC);
+
+        songOption.themeChange(themeEnum, cs);
+    }
+
+    @Override
+    public void update(Object obj, OnUpdateStatusChanged completed) {
+
+        if (mediaManager.emptyMediaLibrary(false)) {
+            noData();
+            return;
+        }
+
+        updatePlayListAdapter();
+        listOption.update(obj, completed);
+        songOption.update(obj, completed);
+    }
+
+    @Override
+    public void noData() {
+        //TODO noSongInService
+    }
+
+    public void noSongInService() {
+        // TODO noData
     }
 
     @Override
@@ -228,7 +235,7 @@ public class BottomNavigationController implements
         isListShowing = true;
 
         //更新列表数据（当前播放歌曲）
-        playListAdapter.notifyDataSetChanged();
+//        playListAdapter.notifyDataSetChanged();
 
         int duration = activity.getResources().getInteger(R.integer.play_list_anim_duration);
         int mb = (int) activity.getResources().getDimension(R.dimen.activity_default_margin);
@@ -240,7 +247,7 @@ public class BottomNavigationController implements
                 to,
                 duration,
                 mViewRoot,
-                new AccelerateInterpolator(), null);
+                new AccelerateDecelerateInterpolator(), null);
 
         songOption.hide();
         listOption.show();
@@ -327,7 +334,129 @@ public class BottomNavigationController implements
         return isListShowing;
     }
 
-    public void hidePlayListTitle() {
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.play_dark_bg:
+                if (visible()) {
+                    hide();
+                }
+                break;
+        }
+    }
+
+    private void updatePlayListAdapter() {
+        try {
+            Song song = control.currentSong();
+            SongInfo info = mediaManager.getSongInfo(song);
+            if (info == null) {
+                return;
+            }
+
+            // 更新列表数据
+            List<Song> ss = control.getPlayList();
+            data.clear();
+            for (Song s : ss) {
+                data.add(mediaManager.getSongInfo(s));
+            }
+
+            // 更新当前播放
+            int i = ss.indexOf(song);
+            if (i != -1) {
+                playListAdapter.setSelectItem(i);
+            }
+
+            // 更新是否为主歌单，非主歌单才有【移除】选项
+            if (control.getPlayListId() > 0) {
+                playListAdapter.setRemoveButtonEnable(true);
+            } else {
+                playListAdapter.setRemoveButtonEnable(false);
+            }
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void updatePlayMode() {
+        songOption.updatePlayMode();
+    }
+
+    public void updateFavorite() {
+        try {
+            Song song = control.currentSong();
+            if (song != null) {
+                DBSongInfo info = dbMusicoco.getSongInfo(song);
+                boolean isFavorite = info != null && info.favorite;
+                songOption.updateCurrentFavorite(isFavorite, false);
+
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // updateColors 在 VARYING 主题时才会不断调用
+    public void updateColors(int color, boolean isVarying) {
+        int alpha = activity.getResources().getInteger(R.integer.play_list_bg_alpha);
+        int colorA = ColorUtils.setAlphaComponent(color, alpha);
+
+        mRealTimeView.setOverlayColor(colorA);
+        ColorDrawable bd = new ColorDrawable(color);
+        bd.setAlpha(10);
+        mListTitleContainer.setBackground(bd);
+
+        ThemeEnum t;
+        double d = ColorUtils.calculateLuminance(colorA);
+        if (d - 0.400 > 0.000001) {
+            t = WHITE;
+        } else {
+            t = DARK;
+        }
+
+        int cs[] = new int[2];
+        switch (t) {
+            case WHITE: {
+                if (isVarying) {
+                    cs = com.duan.musicoco.util.ColorUtils.get2ColorWhiteThemeForPlayOptions();
+                } else {
+                    cs = com.duan.musicoco.util.ColorUtils.get2WhiteThemeTextColor();
+                }
+                break;
+            }
+            case DARK:
+            default: {
+                if (isVarying) {
+                    cs = com.duan.musicoco.util.ColorUtils.get2ColorDarkThemeForPlayOptions();
+                } else {
+                    cs = com.duan.musicoco.util.ColorUtils.get2DarkThemeTextColor();
+                }
+                break;
+            }
+        }
+        songOption.setDrawableColor(cs[0]);
+        listOption.setDrawableColor(cs[0]);
+
+        if (playListAdapter != null) {
+            playListAdapter.setMainTextColor(cs[0]);
+            playListAdapter.setVicTextColor(cs[1]);
+        }
+
+        listOption.updateColors();
+        songOption.updateColors();
+
+    }
+
+    boolean isListShowing() {
+        return isListShowing;
+    }
+
+    public boolean isListTitleHide() {
+        return isListTitleHide;
+    }
+
+    void hidePlayListTitle() {
         isListTitleHide = true;
 
         final int duration = activity.getResources().getInteger(R.integer.play_list_anim_duration);
@@ -404,157 +533,6 @@ public class BottomNavigationController implements
         if (listener != null)
             anim.addListener(listener);
         anim.start();
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.play_dark_bg:
-                if (visible()) {
-                    hide();
-                }
-                break;
-        }
-    }
-
-    public boolean isListTitleHide() {
-        return isListTitleHide;
-    }
-
-    @Override
-    public void themeChange(ThemeEnum themeEnum, int[] colors) {
-        themeEnum = appPreference.getTheme();
-        int[] cs = com.duan.musicoco.util.ColorUtils.get10ThemeColors(activity, themeEnum);
-
-        int statusC = cs[0];
-        int toolbarC = cs[1];
-        int accentC = cs[2];
-        int mainBC = cs[3];
-        int vicBC = cs[4];
-        int mainTC = cs[5];
-        int vicTC = cs[6];
-        int navC = cs[7];
-        int toolbarMainTC = cs[8];
-        int toolbarVicTC = cs[9];
-
-        playListAdapter.setMainTextColor(mainTC);
-        playListAdapter.setVicTextColor(vicTC);
-        playListAdapter.setSelectItemColor(accentC);
-
-        songOption.themeChange(themeEnum, cs);
-    }
-
-    @Override
-    public void update(Object obj, OnUpdateStatusChanged completed) {
-        updatePlayListAdapter();
-        listOption.update(obj, completed);
-        songOption.update(obj, completed);
-    }
-
-    private void updatePlayListAdapter() {
-        try {
-            Song song = control.currentSong();
-            SongInfo info = mediaManager.getSongInfo(song);
-            if (info == null) {
-                return;
-            }
-
-            List<Song> ss = control.getPlayList();
-            data.clear();
-            for (Song s : ss) {
-                data.add(mediaManager.getSongInfo(s));
-            }
-            playListAdapter.notifyDataSetChanged();
-
-            int i = ss.indexOf(song);
-            if (i != -1) {
-                playListAdapter.setSelectItem(i);
-            }
-
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public void updatePlayMode() {
-        songOption.updatePlayMode();
-    }
-
-    @Override
-    public void emptyMediaLibrary() {
-        int count = mViewRoot.getChildCount();
-        for (int i = 0; i < count; i++) {
-            View v = mViewRoot.getChildAt(i);
-            v.setEnabled(false);
-        }
-    }
-
-    public void updateFavorite() {
-        Log.d("updateCurrentPlay", "play/BottomNavigationController updateFavorite");
-        try {
-            Song song = control.currentSong();
-            if (song != null) {
-                DBSongInfo info = dbMusicoco.getSongInfo(song);
-                boolean isFavorite = info != null && info.favorite;
-                songOption.updateCurrentFavorite(isFavorite, false);
-
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // updateColors 在 VARYING 主题时才会不断调用
-    public void updateColors(int color, boolean isVarying) {
-        Log.d("updateCurrentPlay", "play/BottomNavigationController updateColors");
-        int alpha = activity.getResources().getInteger(R.integer.play_list_bg_alpha);
-        int colorA = ColorUtils.setAlphaComponent(color, alpha);
-
-        mRealTimeView.setOverlayColor(colorA);
-        ColorDrawable bd = new ColorDrawable(color);
-        bd.setAlpha(10);
-        mListTitleContainer.setBackground(bd);
-
-        ThemeEnum t;
-        double d = ColorUtils.calculateLuminance(colorA);
-        if (d - 0.400 > 0.000001) {
-            t = WHITE;
-        } else {
-            t = DARK;
-        }
-
-        int cs[] = new int[2];
-        switch (t) {
-            case WHITE: {
-                if (isVarying) {
-                    cs = com.duan.musicoco.util.ColorUtils.get2ColorWhiteThemeForPlayOptions();
-                } else {
-                    cs = com.duan.musicoco.util.ColorUtils.get2WhiteThemeTextColor();
-                }
-                break;
-            }
-            case DARK:
-            default: {
-                if (isVarying) {
-                    cs = com.duan.musicoco.util.ColorUtils.get2ColorDarkThemeForPlayOptions();
-                } else {
-                    cs = com.duan.musicoco.util.ColorUtils.get2DarkThemeTextColor();
-                }
-                break;
-            }
-        }
-        songOption.setDrawableColor(cs[0]);
-        listOption.setDrawableColor(cs[0]);
-
-        if (playListAdapter != null) {
-            playListAdapter.setMainTextColor(cs[0]);
-            playListAdapter.setVicTextColor(cs[1]);
-        }
-
-        listOption.updateColors();
-        songOption.updateColors();
-
     }
 
 }

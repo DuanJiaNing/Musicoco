@@ -129,12 +129,11 @@ public class PlayServiceConnection implements ServiceConnection {
         serviceConnect.onConnected(name, service);
     }
 
+    // 在 Service 移除终止时才会回调，所以在手动解绑时需要将 hasConnected 置为 false
     @Override
     public void onServiceDisconnected(ComponentName name) {
         hasConnected = false;
-
         serviceConnect.disConnected(name);
-
     }
 
     public void unregisterListener() {

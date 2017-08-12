@@ -36,8 +36,7 @@ public class MySheetsController implements
         View.OnClickListener,
         AdapterView.OnItemClickListener,
         ThemeChangeable,
-        ContentUpdatable,
-        OnEmptyMediaLibrary {
+        ContentUpdatable {
 
     private static final int EMPTY_VIEW = 0x1;
     private static final int EMPTY_VIEW_INDEX = 0;
@@ -80,7 +79,6 @@ public class MySheetsController implements
         this.control = control;
 
         sheetsOperation = new SheetsOperation(activity, control, dbMusicoco);
-
         adapter = new MySheetsAdapter(activity, sheets, dbMusicoco, mediaManager, control, sheetsOperation);
         mListView.setAdapter(adapter);
 
@@ -173,21 +171,18 @@ public class MySheetsController implements
     }
 
     @Override
-    public void emptyMediaLibrary() {
-        if (!isEmptyViewVisible()) {
-            View view = activity.getLayoutInflater().inflate(R.layout.sheets_empty, null);
-            TextView add = (TextView) view.findViewById(R.id.sheet_empty_add);
-            add.setOnClickListener(this);
-
-            view.setTag(EMPTY_VIEW);
-            mEmptyListNoticeContainer.setVisibility(View.VISIBLE);
-            mEmptyListNoticeContainer.addView(view, EMPTY_VIEW_INDEX);
-        }
-    }
-
-    @Override
     public void update(Object obj, OnUpdateStatusChanged completed) {
-        Log.d("updateCurrentPlay", "MySheetController updateCurrentPlay");
+
+        if (mediaManager.emptyMediaLibrary(false)) {
+            noData();
+            return;
+        } else {
+            mAddSheet.setEnabled(true);
+            mListView.setEnabled(true);
+            if (isEmptyViewVisible()) {
+                mEmptyListNoticeContainer.setEnabled(true);
+            }
+        }
 
         //注意不能修改 sheets 的引用，否则 notifyDataSetChanged 失效
         List<Sheet> newData = dbMusicoco.getSheets();
@@ -199,7 +194,7 @@ public class MySheetsController implements
         String title = activity.getString(R.string.my_sheet_title);
         if (sheets.size() == 0) {
             adapter.notifyDataSetChanged();
-            emptyMediaLibrary();
+            emptySheet();
             //需要检查主题
             emptyViewThemeChange(null);
             mTitle.setText(title + "(0)");
@@ -214,6 +209,27 @@ public class MySheetsController implements
             adapter.notifyDataSetChanged();
         }
 
+    }
+
+    private void emptySheet() {
+        if (!isEmptyViewVisible()) {
+            View view = activity.getLayoutInflater().inflate(R.layout.sheets_empty, null);
+            TextView add = (TextView) view.findViewById(R.id.sheet_empty_add);
+            add.setOnClickListener(this);
+
+            view.setTag(EMPTY_VIEW);
+            mEmptyListNoticeContainer.setVisibility(View.VISIBLE);
+            mEmptyListNoticeContainer.addView(view, EMPTY_VIEW_INDEX);
+        }
+    }
+
+    @Override
+    public void noData() {
+        mAddSheet.setEnabled(false);
+        mListView.setEnabled(false);
+        if (isEmptyViewVisible()) {
+            mEmptyListNoticeContainer.setEnabled(false);
+        }
     }
 
     private boolean isEmptyViewVisible() {

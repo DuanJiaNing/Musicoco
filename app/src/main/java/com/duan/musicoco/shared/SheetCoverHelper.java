@@ -10,7 +10,7 @@ import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.MainSheetHelper;
-import com.duan.musicoco.util.SongUtils;
+import com.duan.musicoco.util.MediaUtils;
 
 import java.util.List;
 
@@ -68,24 +68,24 @@ public class SheetCoverHelper {
                 if (sheetID < 0) {
                     switch (sheetID) {
                         case MainSheetHelper.SHEET_ALL: {
-                            List<SongInfo> infos = SongUtils.DBSongInfoToSongInfoList(helper.getAllSongInfo(), mediaManager);
+                            List<SongInfo> infos = MediaUtils.DBSongInfoToSongInfoList(helper.getAllSongInfo(), mediaManager);
                             songInfo = find(infos);
                             break;
                         }
                         case MainSheetHelper.SHEET_RECENT: {
-                            List<SongInfo> infos = SongUtils.DBSongInfoToSongInfoList(helper.getRecentSongInfo(), mediaManager);
+                            List<SongInfo> infos = MediaUtils.DBSongInfoToSongInfoList(helper.getRecentSongInfo(), mediaManager);
                             songInfo = find(infos);
                             break;
                         }
                         case MainSheetHelper.SHEET_FAVORITE: {
-                            List<SongInfo> infos = SongUtils.DBSongInfoToSongInfoList(helper.getFavoriteSongInfo(), mediaManager);
+                            List<SongInfo> infos = MediaUtils.DBSongInfoToSongInfoList(helper.getFavoriteSongInfo(), mediaManager);
                             songInfo = find(infos);
                             break;
                         }
                     }
                 } else {
                     List<DBSongInfo> ss = dbController.getSongInfos(sheetID);
-                    List<SongInfo> infos = SongUtils.DBSongInfoToSongInfoList(ss, mediaManager);
+                    List<SongInfo> infos = MediaUtils.DBSongInfoToSongInfoList(ss, mediaManager);
                     songInfo = find(infos);
                 }
                 subscriber.onNext(songInfo);

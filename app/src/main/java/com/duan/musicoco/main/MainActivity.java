@@ -13,7 +13,6 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,8 +26,10 @@ import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
+import com.duan.musicoco.app.manager.PlayServiceManager;
 import com.duan.musicoco.db.MainSheetHelper;
-import com.duan.musicoco.main.bottom.BottomNavigationController;
+import com.duan.musicoco.main.bottomnav.BottomNavigationController;
+import com.duan.musicoco.main.leftnav.LeftNavigationController;
 import com.duan.musicoco.play.PlayServiceConnection;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.ColorUtils;
@@ -46,6 +47,8 @@ public class MainActivity extends InspectActivity implements
 
     // FIXME 内存泄漏
     private static PlayServiceConnection sServiceConnection;
+    private PlayServiceManager playServiceManager;
+    private IPlayControl control;
 
     private BottomNavigationController bottomNavigationController;
     private LeftNavigationController leftNavigationController;
@@ -60,7 +63,11 @@ public class MainActivity extends InspectActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //权限检查完成后执行 permissionGranted 或 permissionDenied ，后回到此处
         Utils.transitionStatusBar(this);
+        setContentView(R.layout.activity_main);
+
+        playServiceManager = new PlayServiceManager(this);
         broadcastManager = BroadcastManager.getInstance(this);
         bottomNavigationController = new BottomNavigationController(this, mediaManager);
         leftNavigationController = new LeftNavigationController(this, appPreference);
@@ -68,60 +75,85 @@ public class MainActivity extends InspectActivity implements
         mainSheetsController = new MainSheetsController(this, mediaManager);
         mySheetsController = new MySheetsController(this, dbController, mediaManager);
 
-        setContentView(R.layout.activity_main);
         initViews();
+        bindService();
 
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.d(TAG, "onResume: main activity");
-        if (bottomNavigationController.hasInitData()) {
-            bottomNavigationController.update(null, null);
-        }
-
-        if (mySheetsController.hasInitData()) {
-            mySheetsController.update(null, null);
-        }
-
-        if (mainSheetsController.hasInitData()) {
-            mainSheetsController.update(null, null);
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        unbindService();
-        unregisterReceiver();
-
-        if (dbController != null) {
-            dbController.close();
-        }
-    }
-
-    private void unregisterReceiver() {
-
-        if (mySheetDataChangedReceiver != null) {
-            broadcastManager.unregisterReceiver(mySheetDataChangedReceiver);
-        }
-    }
-
-    private void unbindService() {
-        if (sServiceConnection != null && sServiceConnection.hasConnected) {
-            sServiceConnection.unregisterListener();
-            unbindService(sServiceConnection);
-        }
     }
 
     private void initViews() {
+        mySheetsController.initView();
+        initSelfViews();
         bottomNavigationController.initView();
         mostPlayController.initView();
         mainSheetsController.initView();
-        mySheetsController.initView();
         leftNavigationController.initViews();
+    }
+
+    private void bindService() {
+        // FIXME 耗时
+        startService();
+        // FIXME 耗时
+        prepareData();
+        // FIXME 耗时 !!
+        initAppDataIfNeed();
+
+        sServiceConnection = new PlayServiceConnection(bottomNavigationController, this, this);
+        // 绑定成功后回调 onConnected
+        playServiceManager.bindService(sServiceConnection);
+
+    }
+
+    @Override
+    public void onConnected(ComponentName name, IBinder service) {
+        this.control = IPlayControl.Stub.asInterface(service);
+
+        initSelfData();
+
+        // 初始化完成后进行数据更新
+        update(null, null);
+
+        // 最后更新界面
+        themeChange(null, null);
+
+        initBroadcastReceivers();
+    }
+
+    private void initSelfData() {
+
+        bottomNavigationController.initData(control, dbController);
+        mostPlayController.initData(dbController);
+        mainSheetsController.initData(dbController);
+        mySheetsController.initData(control);
+        leftNavigationController.initData(dbController);
+
+
+    }
+
+    @Override
+    public void update(Object obj, OnUpdateStatusChanged statusChanged) {
+
+        bottomNavigationController.update(obj, statusChanged);
+        mostPlayController.update(getString(R.string.rmp_history), statusChanged);
+        mainSheetsController.update(obj, statusChanged);
+        mySheetsController.update(obj, statusChanged);
+    }
+
+    @Override
+    public void noData() {
+        // 没有数据的处理行为在各个 Controller 中完成
+    }
+
+    private void initBroadcastReceivers() {
+        mySheetDataChangedReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                mySheetsController.update(null, null);
+            }
+        };
+        broadcastManager.registerBroadReceiver(mySheetDataChangedReceiver, BroadcastManager.FILTER_MY_SHEET_CHANGED);
+    }
+
+    private void initSelfViews() {
 
         toolbar = (Toolbar) findViewById(R.id.activity_main_toolbar);
         final View topContainer = findViewById(R.id.activity_main_top_container);
@@ -160,6 +192,56 @@ public class MainActivity extends InspectActivity implements
             }
         };
         appBarLayout.addOnOffsetChangedListener(barStateChangeListener);
+    }
+
+    //--------------------------------------------------------------------//--------------------------------------------------------------------
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (bottomNavigationController.hasInitData()) {
+            // 启动应用时不需要更新，在 initSelfData 中统一更新全部
+            bottomNavigationController.update(null, null);
+        }
+
+        if (mySheetsController.hasInitData()) {
+            mySheetsController.update(null, null);
+        }
+
+        if (mainSheetsController.hasInitData()) {
+            mainSheetsController.update(null, null);
+        }
+
+        if (mostPlayController.hasInitData()) {
+            mostPlayController.update(null, null);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        unbindService();
+        unregisterReceiver();
+
+        if (dbController != null) {
+            dbController.close();
+        }
+    }
+
+    private void unregisterReceiver() {
+
+        if (mySheetDataChangedReceiver != null) {
+            broadcastManager.unregisterReceiver(mySheetDataChangedReceiver);
+        }
+    }
+
+    private void unbindService() {
+        if (sServiceConnection != null && sServiceConnection.hasConnected) {
+            sServiceConnection.unregisterListener();
+            unbindService(sServiceConnection);
+            sServiceConnection.hasConnected = false;
+        }
     }
 
     @Override
@@ -201,57 +283,15 @@ public class MainActivity extends InspectActivity implements
     }
 
     @Override
-    public void permissionGranted(int requestCode) {
-        prepareData();
-        initAppDataIfNeed();
-
-        sServiceConnection = new PlayServiceConnection(bottomNavigationController, this, this);
-        playServiceManager.bindService(sServiceConnection);
-
-    }
-
-    @Override
     public void permissionDenied(int requestCode) {
         finish();
-    }
-
-    @Override
-    public void onConnected(ComponentName name, IBinder service) {
-
-        initSelfData();
-        initBroadcastReceivers();
-
-    }
-
-    private void initBroadcastReceivers() {
-        mySheetDataChangedReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.d(TAG, "onReceive: mySheetDataChangedReceiver");
-                mySheetsController.update(null, null);
-            }
-        };
-
-        broadcastManager.registerBroadReceiver(mySheetDataChangedReceiver, BroadcastManager.FILTER_MY_SHEET_CHANGED);
-    }
-
-    private void initSelfData() {
-
-        bottomNavigationController.initData(sServiceConnection.takeControl(), dbController);
-        mostPlayController.initData(dbController, getString(R.string.rmp_history));
-        mainSheetsController.initData(dbController);
-        mySheetsController.initData(sServiceConnection.takeControl());
-        leftNavigationController.initData(dbController);
-
-        update(null, null);
-        themeChange(null, null);
-
     }
 
     @Override
     public void disConnected(ComponentName name) {
         sServiceConnection = null;
         sServiceConnection = new PlayServiceConnection(bottomNavigationController, this, this);
+        // 重新绑定
         playServiceManager.bindService(sServiceConnection);
     }
 
@@ -277,10 +317,12 @@ public class MainActivity extends InspectActivity implements
         toggle.getDrawerArrowDrawable().setColor(mainTC);
 
         MenuItem search = menu.findItem(R.id.action_main_search);
-        Drawable icon = search.getIcon();
-        if (icon != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                icon.setTint(mainTC);
+        if (search != null) {
+            Drawable icon = search.getIcon();
+            if (icon != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    icon.setTint(mainTC);
+                }
             }
         }
 
@@ -297,20 +339,6 @@ public class MainActivity extends InspectActivity implements
         }
     }
 
-    public static IPlayControl getControl() {
-        return sServiceConnection.takeControl();
-    }
-
-    @Override
-    public void update(Object obj, OnUpdateStatusChanged statusChanged) {
-
-        Log.d("updateCurrentPlay", "MainActivity updateCurrentPlay");
-        bottomNavigationController.update(obj, statusChanged);
-        mostPlayController.update(getString(R.string.rmp_history), statusChanged);
-        mainSheetsController.update(obj, statusChanged);
-        mySheetsController.update(obj, statusChanged);
-    }
-
     /**
      * 白天模式和夜间模式主题切换
      */
@@ -323,5 +351,9 @@ public class MainActivity extends InspectActivity implements
         leftNavigationController.themeChange(theme, null);
         themeChange(null, null);
 
+    }
+
+    public static IPlayControl getControl() {
+        return sServiceConnection.takeControl();
     }
 }

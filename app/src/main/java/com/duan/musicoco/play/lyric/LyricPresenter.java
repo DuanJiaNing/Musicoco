@@ -7,7 +7,7 @@ import com.duan.musicoco.service.PlayServiceCallback;
 /**
  * Created by DuanJiaNing on 2017/5/30.
  */
-
+// TODO
 public class LyricPresenter implements PresenterContract {
 
     private ViewContract fragmentView;

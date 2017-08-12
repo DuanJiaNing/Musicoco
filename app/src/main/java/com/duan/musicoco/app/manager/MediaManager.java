@@ -137,4 +137,24 @@ public class MediaManager {
                 .getExternalStorageDirectory().getAbsolutePath()}, null, listener);
 
     }
+
+    /**
+     * 检查媒体库是否为空
+     *
+     * @param refresh 是否要重新获取数据之后再确定，这个过程可能比较耗时
+     * @return 为空返回 true
+     */
+    public boolean emptyMediaLibrary(boolean refresh) {
+        if (refresh) {
+            refreshData();
+        } else {
+            check();
+        }
+
+        if (songs.size() == 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

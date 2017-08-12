@@ -46,7 +46,6 @@ import rx.schedulers.Schedulers;
 public class RecentMostPlayController implements
         View.OnClickListener,
         ContentUpdatable,
-        OnEmptyMediaLibrary,
         ThemeChangeable {
 
     private TextView mType;
@@ -102,12 +101,8 @@ public class RecentMostPlayController implements
         mContainer.setOnClickListener(this);
     }
 
-    public void initData(@NonNull DBMusicocoController dbMusicoco, @NonNull String title) {
+    public void initData(@NonNull DBMusicocoController dbMusicoco) {
         this.dbMusicoco = dbMusicoco;
-
-        mShowMore.setEnabled(true);
-        mShowMore.setClickable(true);
-
         hasInitData = true;
     }
 
@@ -122,18 +117,6 @@ public class RecentMostPlayController implements
         }
     }
 
-    @Override
-    public void emptyMediaLibrary() {
-
-        mShowMore.setEnabled(true);
-        mShowMore.setClickable(true);
-
-        mName.setText("");
-        mArts.setText("");
-        mRemark.setText("");
-        mPlayTime.setText(String.valueOf(0));
-    }
-
     private class Data {
         SongInfo info;
         String remark;
@@ -145,7 +128,14 @@ public class RecentMostPlayController implements
 
     @Override
     public void update(Object obj, OnUpdateStatusChanged completed) {
-        Log.d("updateCurrentPlay", "RecentMostPlayController updateCurrentPlay");
+
+        if (mediaManager.emptyMediaLibrary(false)) {
+            noData();
+            return;
+        } else {
+            mContainer.setEnabled(true);
+            mShowMore.setEnabled(true);
+        }
 
         final Object ob = obj;
         Observable.OnSubscribe<Data> onSubscribe = new Observable.OnSubscribe<Data>() {
@@ -230,8 +220,19 @@ public class RecentMostPlayController implements
 
     }
 
+    @Override
+    public void noData() {
+
+        mContainer.setEnabled(false);
+        mShowMore.setEnabled(false);
+
+        mName.setText("");
+        mArts.setText("");
+        mRemark.setText("");
+        mPlayTime.setText(String.valueOf(0));
+    }
+
     private void updateImage(@NonNull Bitmap bitmap) {
-        Log.d("updateCurrentPlay", "RecentMostPlayController updateImage");
         mImage.setImageBitmap(bitmap);
         AlphaAnimation anim = new AlphaAnimation(0.4f, 1.0f);
         anim.setDuration(1000);
@@ -239,7 +240,6 @@ public class RecentMostPlayController implements
     }
 
     private void updateText(SongInfo info, String remark, int maxPlayTime, String type) {
-        Log.d("updateCurrentPlay", "RecentMostPlayController updateText");
 
         String name = info.getTitle();
         String arts = info.getArtist();
@@ -262,7 +262,6 @@ public class RecentMostPlayController implements
     }
 
     private void updateColors(@NonNull int[] colors) {
-        Log.d("updateCurrentPlay", "RecentMostPlayController updateColors");
 
         int startC = colors[0];
         int endC = colors[2];

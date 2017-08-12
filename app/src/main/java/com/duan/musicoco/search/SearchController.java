@@ -22,7 +22,7 @@ import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.shared.OptionsAdapter;
 import com.duan.musicoco.shared.OptionsDialog;
 import com.duan.musicoco.shared.SongOperation;
-import com.duan.musicoco.util.SongUtils;
+import com.duan.musicoco.util.MediaUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -206,7 +206,7 @@ public class SearchController implements ThemeChangeable, ResultsAdapter.OnItemC
         }
 
         MediaManager manager = MediaManager.getInstance(mActivity);
-        List<SongInfo> infos = SongUtils.DBSongInfoToSongInfoList(mInfos, manager);
+        List<SongInfo> infos = MediaUtils.DBSongInfoToSongInfoList(mInfos, manager);
 
         data.clear();
         for (SongInfo i : infos) {

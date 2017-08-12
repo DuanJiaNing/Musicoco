@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -25,7 +26,7 @@ public class OptionsDialog implements
 
     private final Dialog mDialog;
 
-    private PullDownLinearLayout contentView;
+    private LinearLayout contentView;
     private TextView titleText;
     private View divide;
     private ListView listView;
@@ -43,8 +44,7 @@ public class OptionsDialog implements
         View view = LayoutInflater.from(activity).inflate(R.layout.options_container, null);
         listView = (ListView) view.findViewById(R.id.options_list);
 
-        contentView = (PullDownLinearLayout) view.findViewById(R.id.options_container);
-        contentView.isListViewExist(true);
+        contentView = (LinearLayout) view.findViewById(R.id.options_container);
 
         titleText = (TextView) view.findViewById(R.id.options_title);
         divide = view.findViewById(R.id.options_divide);

@@ -22,7 +22,6 @@
         android:gravity="center_vertical|start"
         android:lines="1"
         android:textSize="@dimen/text_middle"
-        android:textStyle="bold"
         android:typeface="normal"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintLeft_toLeftOf="@+id/guideline3"
@@ -31,21 +30,21 @@
         app:layout_constraintVertical_bias="0.497" />
 
     <TextView
-        android:textStyle="bold"
         android:id="@+id/play_list_item_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:ellipsize="end"
         android:gravity="center"
         android:lines="1"
         android:maxEms="2"
-        android:ellipsize="end"
         android:textSize="@dimen/text_middle"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/guideline3"
-        android:layout_marginRight="8dp"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/play_list_item_arts"
@@ -72,7 +71,6 @@
         android:layout_marginRight="16dp"
         android:layout_marginTop="8dp"
         android:background="?android:selectableItemBackgroundBorderless"
-        android:clickable="true"
 
         android:padding="5dp"
         android:scaleX="0.9"

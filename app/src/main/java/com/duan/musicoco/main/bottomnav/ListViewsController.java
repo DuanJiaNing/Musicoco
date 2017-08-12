@@ -1,4 +1,4 @@
-package com.duan.musicoco.main.bottom;
+package com.duan.musicoco.main.bottomnav;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.RemoteException;
+import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -63,7 +65,7 @@ public class ListViewsController implements
 
     private ListView mList;
     private View mLine;
-    private PullDownLinearLayout mListContainer;
+    private View mListContainer;
     private ImageButton mPlayMode;
     private ImageButton mLocation;
     private TextView mSheet;
@@ -84,8 +86,7 @@ public class ListViewsController implements
         View contentView = activity.getLayoutInflater().inflate(R.layout.main_play_list, null);
         mList = (ListView) contentView.findViewById(R.id.main_play_list);
 
-        mListContainer = (PullDownLinearLayout) contentView.findViewById(R.id.main_play_list_container);
-        mListContainer.isListViewExist(true);
+        mListContainer = contentView.findViewById(R.id.main_play_list_container);
 
         mLocation = (ImageButton) contentView.findViewById(R.id.main_play_location);
         mPlayMode = (ImageButton) contentView.findViewById(R.id.main_play_mode);
@@ -186,9 +187,12 @@ public class ListViewsController implements
     }
 
     private void initAdapterClickListener() {
-        mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        // FIXME ListView 的 setOnItemClickListener 无效，点击时的涟漪背景也没了
+        // android:background="?android:selectableItemBackground"
+
+        adapter.setOnItemClickListener(new PlayListAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(int position, SongInfo info) {
                 try {
 
                     int index = control.currentSongIndex();
@@ -223,9 +227,14 @@ public class ListViewsController implements
         });
     }
 
-
     @Override
     public void update(Object obj, OnUpdateStatusChanged statusChanged) {
+
+        if (mediaManager.emptyMediaLibrary(false)) {
+            noData();
+            return;
+        }
+
         SongInfo info = (SongInfo) obj;
         if (info == null) {
             return;
@@ -254,6 +263,12 @@ public class ListViewsController implements
         }
 
 
+    }
+
+    @Override
+    public void noData() {
+        data.clear();
+        adapter.notifyDataSetChanged();
     }
 
     private void updateCurrentSheet() throws RemoteException {
@@ -307,7 +322,6 @@ public class ListViewsController implements
 
         return mod;
     }
-
 
     @Override
     public void show() {

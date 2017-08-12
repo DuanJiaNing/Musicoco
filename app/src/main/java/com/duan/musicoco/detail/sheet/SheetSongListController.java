@@ -33,7 +33,7 @@ import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.shared.OptionsAdapter;
 import com.duan.musicoco.shared.OptionsDialog;
 import com.duan.musicoco.shared.SongOperation;
-import com.duan.musicoco.util.SongUtils;
+import com.duan.musicoco.util.MediaUtils;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
 
@@ -416,7 +416,7 @@ public class SheetSongListController implements
                 } else {
                     ds = dbController.getSongInfos(sheetID);
                 }
-                List<SongInfo> da = SongUtils.DBSongInfoToSongInfoList(ds, mediaManager);
+                List<SongInfo> da = MediaUtils.DBSongInfoToSongInfoList(ds, mediaManager);
 
                 data.clear();
                 for (int i = 0; i < da.size(); i++) {

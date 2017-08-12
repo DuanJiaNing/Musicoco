@@ -1,6 +1,9 @@
 package com.duan.musicoco.play;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -17,13 +20,14 @@ import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.InspectActivity;
 import com.duan.musicoco.app.SongInfo;
-import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
+import com.duan.musicoco.app.manager.BroadcastManager;
+import com.duan.musicoco.app.manager.PlayServiceManager;
 import com.duan.musicoco.play.album.VisualizerFragment;
 import com.duan.musicoco.play.album.VisualizerPresenter;
-import com.duan.musicoco.play.bottom.BottomNavigationController;
+import com.duan.musicoco.play.bottomnav.BottomNavigationController;
 import com.duan.musicoco.play.lyric.LyricFragment;
 import com.duan.musicoco.play.lyric.LyricPresenter;
 import com.duan.musicoco.preference.PlayPreference;
@@ -42,16 +46,15 @@ public class PlayActivity extends InspectActivity implements
         PlayServiceCallback,
         OnServiceConnect,
         View.OnClickListener,
-        OnEmptyMediaLibrary,
         ThemeChangeable {
 
     private VisualizerFragment visualizerFragment;
     private LyricFragment lyricFragment;
-
     private VisualizerPresenter visualizerPresenter;
     private LyricPresenter lyricPresenter;
 
     private PlayServiceConnection mServiceConnection;
+    private PlayServiceManager playServiceManager;
     private IPlayControl control;
 
     private BottomNavigationController bottomNavigationController;
@@ -61,16 +64,114 @@ public class PlayActivity extends InspectActivity implements
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //权限检查完成后执行 permissionGranted 或 permissionDenied ，后回到此处
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_play);
 
+        playServiceManager = new PlayServiceManager(this);
         bgDrawableController = new PlayBgDrawableController(this, playPreference);
         viewsController = new PlayViewsController(this);
-        bottomNavigationController = new BottomNavigationController(this);
+        bottomNavigationController = new BottomNavigationController(this, dbController, mediaManager, playPreference, appPreference);
 
         initViews();
+        bindService();
 
     }
+
+    private void initViews() {
+
+        bgDrawableController.initViews();
+        viewsController.initViews();
+        bottomNavigationController.initViews();
+        initSelfViews();
+
+    }
+
+    private void initSelfViews() {
+        FrameLayout flFragmentContainer;
+        flFragmentContainer = (FrameLayout) findViewById(R.id.play_fragment_container);
+        flFragmentContainer.setClickable(true);
+        flFragmentContainer.setOnClickListener(this);
+        flFragmentContainer.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (bottomNavigationController.isListTitleHide()) {
+                    bottomNavigationController.showPlayListTitle();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        View nameContainer = findViewById(R.id.play_name_container);
+        nameContainer.setClickable(true);
+        nameContainer.setOnClickListener(this);
+
+        lyricFragment = new LyricFragment();
+        visualizerFragment = new VisualizerFragment();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        //顺序 依次叠放
+        transaction.add(R.id.play_fragment_container, visualizerFragment, VisualizerFragment.TAG);
+        transaction.add(R.id.play_fragment_container, lyricFragment, LyricFragment.TAG);
+        transaction.hide(lyricFragment);
+        transaction.commit();
+    }
+
+    private void bindService() {
+        mServiceConnection = new PlayServiceConnection(this, this, this);
+        // 绑定成功后回调 onConnected
+        playServiceManager.bindService(mServiceConnection);
+    }
+
+    @Override
+    public void onConnected(final ComponentName name, IBinder service) {
+        this.control = IPlayControl.Stub.asInterface(service);
+
+        visualizerPresenter = new VisualizerPresenter(this, control, visualizerFragment);
+        lyricPresenter = new LyricPresenter(this, lyricFragment, this);
+
+        initSelfData();
+        visualizerPresenter.initData(null);
+        lyricPresenter.initData(null);
+
+    }
+
+    private void initSelfData() {
+        try {
+            List<Song> songs = control.getPlayList();
+
+            if (songs == null || songs.size() == 0) { //检查播放列表是否为空
+                noSongInService();
+                viewsController.updateText(0, 0, "", "");
+            } else {
+
+                bottomNavigationController.initData(control);
+                // 在 synchronize 之前，initData 之后调用，synchronize 会模拟歌曲切换（仅在 VARYING 时）重新设置颜色
+                // 即非 VARYING 时，界面颜色是在这里设置的
+                themeChange(null, null);
+                viewsController.initData(playPreference, control);
+
+                // 服务端在 onCreate 时会回调 songChanged ，PlayActivity 第一次绑定可能接收不到此次回调
+                // 手动同步
+                Song song = control.currentSong();
+                synchronize(song, true);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    // 服务器的歌单是空的，这里不采用实现 ContentUpdatable 接口的原因是考虑到，将来播放界面可以单独以其他方式启动
+    // 如：在文件夹中选择了一首歌并播放，选择我们的播放器播放时，可以不启动 MainActivity ，只启动 PlayService 和
+    // PlayActivity 播放歌曲
+    public void noSongInService() {
+        bottomNavigationController.noSongInService();
+    }
+
+    //--------------------------------------------------------------------//--------------------------------------------------------------------
 
     @Override
     protected void onDestroy() {
@@ -78,6 +179,7 @@ public class PlayActivity extends InspectActivity implements
         if (mServiceConnection.hasConnected) {
             mServiceConnection.unregisterListener();
             unbindService(mServiceConnection);
+            mServiceConnection.hasConnected = false;
         }
     }
 
@@ -86,14 +188,6 @@ public class PlayActivity extends InspectActivity implements
         super.onPause();
         savePreference();
         visualizerPresenter.stopPlay();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (control != null) {
-            synchronize(null, true);
-        }
     }
 
     private void savePreference() {
@@ -121,24 +215,22 @@ public class PlayActivity extends InspectActivity implements
         } else {
             //FIXME
             moveTaskToBack(true);
-//            super.onBackPressed();
-//            ActivityManager.getInstance(this).startMainActivity();
         }
     }
 
     @Override
-    public void songChanged(Song song, int index, boolean isNext) {
-
-        //FIXME 次数计算策略完善
-        dbController.addSongPlayTimes(song);
-        synchronize(song, isNext);
-
+    protected void onResume() {
+        super.onResume();
+        if (control != null) {
+            synchronize(null, true);
+        }
     }
 
     /**
-     * 同步
-     * onResume null true
-     * songChanged -- --
+     * 同步当前播放歌曲信息，状态
+     *
+     * @param song   当前播放歌曲，在第一次打开 PlayActivity 时 传 null ，之后该方法只应该被 songChanged 回调
+     * @param isNext true 为下一首，false为上一首，由该值决定切歌时专辑图片进出方向
      */
     public void synchronize(@Nullable Song song, boolean isNext) {
 
@@ -154,6 +246,7 @@ public class PlayActivity extends InspectActivity implements
         if (song == null) {
             return;
         }
+
 
         //更新文字
         int pro = 0;
@@ -172,6 +265,7 @@ public class PlayActivity extends InspectActivity implements
 
         //更新状态 要在更新颜色之前更新
         updateStatus(song, isNext);
+        bottomNavigationController.updatePlayMode();
 
         //更新背景
         boolean updateBG = playPreference.getTheme().equals(ThemeEnum.VARYING);
@@ -181,15 +275,15 @@ public class PlayActivity extends InspectActivity implements
 
         //在 updateViews 后调用
         bottomNavigationController.updateFavorite();
+        bottomNavigationController.update(null, null);
 
     }
 
     private void updateStatus(Song song, boolean isNext) {
-        Log.d("updateCurrentPlay", "PlayActivity updateStatus");
 
         try {
             boolean playing = control.status() == PlayController.STATUS_PLAYING;
-            viewsController.updatePlayBtStatus(playing);
+            viewsController.updatePlayButtonStatus(playing);
             if (playing) {
                 visualizerPresenter.startPlay();
             } else {
@@ -203,22 +297,29 @@ public class PlayActivity extends InspectActivity implements
         boolean updateBg = playPreference.getTheme().equals(ThemeEnum.VARYING);
         visualizerPresenter.songChanged(song, isNext, updateBg);
 
-        bottomNavigationController.updatePlayMode();
+    }
+
+    @Override
+    public void songChanged(Song song, int index, boolean isNext) {
+
+        //FIXME 次数计算策略完善
+        dbController.addSongPlayTimes(song);
+        synchronize(song, isNext);
 
     }
 
     @Override
     public void startPlay(Song song, int index, int status) {
         viewsController.startProgressUpdateTask();
+        viewsController.updatePlayButtonStatus(true);
         visualizerPresenter.startPlay();
-        viewsController.updatePlayBtStatus(true);
     }
 
     @Override
     public void stopPlay(Song song, int index, int status) {
         viewsController.stopProgressUpdateTask();
+        viewsController.updatePlayButtonStatus(false);
         visualizerPresenter.stopPlay();
-        viewsController.updatePlayBtStatus(false);
     }
 
     @Override
@@ -289,55 +390,8 @@ public class PlayActivity extends InspectActivity implements
     }
 
     @Override
-    public void permissionGranted(int requestCode) {
-        mServiceConnection = new PlayServiceConnection(this, this, this);
-        playServiceManager.bindService(mServiceConnection);
-    }
-
-    @Override
     public void permissionDenied(int requestCode) {
         finish();
-    }
-
-    private void initViews() {
-
-        bgDrawableController.initViews();
-        viewsController.initViews();
-        bottomNavigationController.initViews();
-
-        initSelfViews();
-
-    }
-
-    private void initSelfViews() {
-        FrameLayout flFragmentContainer;
-        flFragmentContainer = (FrameLayout) findViewById(R.id.play_fragment_container);
-        flFragmentContainer.setClickable(true);
-        flFragmentContainer.setOnClickListener(this);
-        flFragmentContainer.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (bottomNavigationController.isListTitleHide()) {
-                    bottomNavigationController.showPlayListTitle();
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        View nameContainer = findViewById(R.id.play_name_container);
-        nameContainer.setClickable(true);
-        nameContainer.setOnClickListener(this);
-
-        lyricFragment = new LyricFragment();
-        visualizerFragment = new VisualizerFragment();
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        //顺序 依次叠放
-        transaction.add(R.id.play_fragment_container, visualizerFragment, VisualizerFragment.TAG);
-        transaction.add(R.id.play_fragment_container, lyricFragment, LyricFragment.TAG);
-        transaction.hide(lyricFragment);
-        transaction.commit();
     }
 
     @Override
@@ -361,56 +415,10 @@ public class PlayActivity extends InspectActivity implements
     }
 
     @Override
-    public void onConnected(final ComponentName name, IBinder service) {
-        this.control = mServiceConnection.takeControl();
-
-        visualizerPresenter = new VisualizerPresenter(this, control, visualizerFragment);
-        lyricPresenter = new LyricPresenter(this, lyricFragment, this);
-
-        initSelfData();
-
-        visualizerPresenter.initData(null);
-        lyricPresenter.initData(null);
-
-        themeChange(null, null);
-
-    }
-
-    private void initSelfData() {
-
-        try {
-            List<Song> songs = control.getPlayList();
-            if (songs == null) { //检查播放列表是否为空
-                emptyMediaLibrary();
-                viewsController.updateText(0, 0, "", "");
-            } else {
-                bottomNavigationController.initData(
-                        control,
-                        dbController,
-                        mediaManager,
-                        playPreference,
-                        appPreference);
-                viewsController.initData(playPreference, control);
-
-                Song song = control.currentSong();
-                int index = songs.indexOf(song);
-                //服务端在 onCreate 时会回调 songChanged ，PlayActivity 第一次绑定可能接收不到此次回调
-                songChanged(song, index, true);
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
     public void disConnected(ComponentName name) {
         mServiceConnection = null;
         mServiceConnection = new PlayServiceConnection(this, this, this);
         playServiceManager.bindService(mServiceConnection);
     }
 
-    @Override
-    public void emptyMediaLibrary() {
-        bottomNavigationController.emptyMediaLibrary();
-    }
 }

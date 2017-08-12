@@ -27,7 +27,6 @@ public abstract class InspectActivity extends RootActivity implements Permission
 
     protected MediaManager mediaManager;
     private PermissionManager permissionManager;
-    protected PlayServiceManager playServiceManager;
 
     @Override
     @CallSuper
@@ -35,7 +34,6 @@ public abstract class InspectActivity extends RootActivity implements Permission
         super.onCreate(savedInstanceState);
 
         permissionManager = PermissionManager.getInstance(this);
-        playServiceManager = PlayServiceManager.getInstance(this);
         mediaManager = MediaManager.getInstance(getApplicationContext());
 
         //检查权限
@@ -81,7 +79,7 @@ public abstract class InspectActivity extends RootActivity implements Permission
 
     @Override
     public void permissionGranted(int requestCode) {
-        Log.d(TAG, "onRequestPermissionsResult: 权限获取成功");
+        Log.d(TAG, "onRequestPermissionsResult: 已授权");
     }
 
     protected void prepareData() {
@@ -95,6 +93,15 @@ public abstract class InspectActivity extends RootActivity implements Permission
             init.initMusicocoDB(this, mediaManager);
             mediaManager.scanSdCard(null);
         }
+    }
+
+    /**
+     * 启动服务，应确保获得文件读写权限后再启动，启动服务后再绑定，这样即使绑定这解除绑定，
+     * 服务端也能继续运行 ？？？
+     */
+    // FIXME
+    protected void startService() {
+        PlayServiceManager.startPlayService(this);
     }
 
 }

@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.duan.musicoco.view.PullDownLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/main_play_list_container"
     android:layout_width="match_parent"
     android:layout_height="200dp"
-    android:layout_marginLeft="@dimen/activity_default_margin_s_s"
-    android:background="#fff"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -13,15 +11,13 @@
 
         <TextView
             android:id="@+id/main_play_sheet"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/activity_default_margin"
             android:gravity="center_vertical|start"
-            android:textSize="@dimen/text_middle_s"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            android:textSize="@dimen/text_middle_s" />
 
         <ImageButton
-            android:scaleType="fitCenter"
-            android:src="@drawable/ic_location_searching_black_24dp"
             android:id="@+id/main_play_location"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -30,19 +26,21 @@
             android:background="?android:selectableItemBackground"
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/activity_default_margin"
-            android:paddingRight="@dimen/activity_default_margin" />
+            android:paddingRight="@dimen/activity_default_margin"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_location_searching_black_24dp" />
 
         <ImageButton
-            android:scaleType="fitCenter"
-            android:layout_toLeftOf="@id/main_play_location"
-            android:src="@drawable/single_loop"
             android:id="@+id/main_play_mode"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/main_play_location"
             android:background="?android:selectableItemBackground"
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/activity_default_margin"
-            android:paddingRight="@dimen/activity_default_margin" />
+            android:paddingRight="@dimen/activity_default_margin"
+            android:scaleType="fitCenter"
+            android:src="@drawable/single_loop" />
 
     </RelativeLayout>
 
@@ -58,4 +56,4 @@
         android:layout_height="match_parent"
         android:dividerHeight="1px" />
 
-</com.duan.musicoco.view.PullDownLinearLayout>
+</LinearLayout>

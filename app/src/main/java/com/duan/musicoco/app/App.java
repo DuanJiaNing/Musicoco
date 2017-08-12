@@ -46,7 +46,7 @@ public class App extends Application {
         appPreference.updateImageWallBlur(1);
         appPreference.updateImageWallSize(10);
 
-        appPreference.updateTheme(ThemeEnum.WHITE);
+//        appPreference.updateTheme(ThemeEnum.WHITE);
         playPreference.updateTheme(ThemeEnum.VARYING);
         playPreference.updatePlayBgMode(PlayBackgroundModeEnum.GRADIENT_COLOR);
 

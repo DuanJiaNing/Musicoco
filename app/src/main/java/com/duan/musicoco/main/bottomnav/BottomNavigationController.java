@@ -1,23 +1,17 @@
-package com.duan.musicoco.main.bottom;
+package com.duan.musicoco.main.bottomnav;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
-import android.util.DisplayMetrics;
+import android.text.BoringLayout;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.duan.musicoco.R;
@@ -26,30 +20,21 @@ import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.DBMusicocoController;
-import com.duan.musicoco.db.MainSheetHelper;
-import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.preference.PlayPreference;
-import com.duan.musicoco.shared.ExceptionHandler;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
-import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.image.BitmapBuilder;
-import com.duan.musicoco.shared.PlayListAdapter;
-import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.service.PlayServiceCallback;
-import com.duan.musicoco.shared.SongOperation;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.shared.PeriodicTask;
 import com.duan.musicoco.util.ColorUtils;
-import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
-import com.duan.musicoco.view.PullDownLinearLayout;
 import com.duan.musicoco.view.media.PlayView;
 
 /**
@@ -60,7 +45,6 @@ public class BottomNavigationController implements
         View.OnClickListener,
         PlayServiceCallback,
         ContentUpdatable,
-        OnEmptyMediaLibrary,
         ThemeChangeable {
 
     private final static String TAG = "BottomNavigationController";
@@ -80,7 +64,6 @@ public class BottomNavigationController implements
     private TextView mArts;
     private PlayView mPlay;
     private ImageButton mShowList;
-
 
     private BitmapBuilder builder;
     private final PeriodicTask task;
@@ -142,20 +125,20 @@ public class BottomNavigationController implements
 
     public void initData(IPlayControl control, DBMusicocoController dbController) {
         this.mControl = control;
-
-        initSelfData();
         listViewsController.initData(control, dbController);
 
+        try {
+            // FIXME songChanged & onPlayListChange 回调会进行赋值，但应用第一次启动时的回调很有可能已经错过，
+            // 这是因为 MainActivity 中的 bindService 方法比较耗时导致，该方法会对 MediaManager 进行数
+            // 据初始化，这些数据时急需的，不能异步获取，只能阻塞
+            Song song = control.currentSong();
+            currentSong = mediaManager.getSongInfo(song);
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
         hasInitData = true;
-
-    }
-
-    private void initSelfData() {
-
-        mContainer.setEnabled(true);
-        mPlay.setEnabled(true);
-        mShowList.setEnabled(true);
-
     }
 
     public boolean hasInitData() {
@@ -222,6 +205,15 @@ public class BottomNavigationController implements
     @Override
     public void update(@Nullable Object obj, OnUpdateStatusChanged completed) {
 
+        if (mediaManager.emptyMediaLibrary(false)) {
+            noData();
+            return;
+        } else {
+            mContainer.setEnabled(true);
+            mPlay.setEnabled(true);
+            mShowList.setEnabled(true);
+        }
+
         try {
 
             if (mControl.status() == PlayController.STATUS_PLAYING) {
@@ -230,13 +222,22 @@ public class BottomNavigationController implements
                 mPlay.setPlayStatus(false);
             }
 
-            updateProgress();
-            updateSongInfo();
-            listViewsController.update(currentSong, null);
+            if (currentSong != null) {
+                updateProgress();
+                updateSongInfo();
+                listViewsController.update(currentSong, null);
+            }
 
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void noData() {
+        mContainer.setEnabled(false);
+        mPlay.setEnabled(false);
+        mShowList.setEnabled(false);
     }
 
     @Override
@@ -261,6 +262,7 @@ public class BottomNavigationController implements
 
     @Override
     public void onPlayListChange(Song current, int index, int id) {
+        currentSong = mediaManager.getSongInfo(current);
         update(null, null);
         playPreference.updateSheet(id);
 
@@ -332,13 +334,6 @@ public class BottomNavigationController implements
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mShowList.getDrawable().setTint(mainTC);
         }
-    }
-
-    @Override
-    public void emptyMediaLibrary() {
-        mContainer.setEnabled(false);
-        mPlay.setEnabled(false);
-        mShowList.setEnabled(false);
     }
 
 }

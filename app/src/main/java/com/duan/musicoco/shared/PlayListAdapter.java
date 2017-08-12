@@ -37,20 +37,29 @@ public class PlayListAdapter extends BaseAdapter {
     private final Context context;
 
     private int selectItem;
-    private boolean removeButtonEnable;
+    private boolean removeButtonEnable = false;
 
     private int mainC;
     private int vicC;
     private int accentC;
 
     private OnItemRemoveClickListener removeClickListener;
+    private OnItemClickListener itemClickListener;
 
     public interface OnItemRemoveClickListener {
         void onRemove(int position, SongInfo info);
     }
 
+    public interface OnItemClickListener {
+        void onItemClick(int position, SongInfo info);
+    }
+
     public void setOnRemoveClickListener(OnItemRemoveClickListener removeClickListener) {
         this.removeClickListener = removeClickListener;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
     }
 
     public PlayListAdapter(Context context, List<SongInfo> data) {
@@ -114,6 +123,17 @@ public class PlayListAdapter extends BaseAdapter {
         } else {
             holder.remove.setEnabled(false);
             holder.remove.setVisibility(View.INVISIBLE);
+        }
+
+        if (itemClickListener != null) {
+            final int pos = position;
+            final SongInfo in = info;
+            convertView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    itemClickListener.onItemClick(pos, in);
+                }
+            });
         }
 
         return convertView;

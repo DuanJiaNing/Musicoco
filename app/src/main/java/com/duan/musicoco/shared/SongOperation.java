@@ -27,7 +27,7 @@ import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.util.FileUtils;
-import com.duan.musicoco.util.SongUtils;
+import com.duan.musicoco.util.MediaUtils;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.util.ViewUtils;
@@ -239,10 +239,10 @@ public class SongOperation {
                 if (sheetID < 0 && sheetID != MainSheetHelper.SHEET_FAVORITE) {
                     MainSheetHelper helper = new MainSheetHelper(activity, dbMusicoco);
                     List<DBSongInfo> info = helper.getMainSheetSongInfo(sheetID);
-                    songs = SongUtils.DBSongInfoListToSongList(info);
+                    songs = MediaUtils.DBSongInfoListToSongList(info);
                 } else {
                     List<DBSongInfo> infos = dbMusicoco.getSongInfos(sheetID);
-                    songs = SongUtils.DBSongInfoListToSongList(infos);
+                    songs = MediaUtils.DBSongInfoListToSongList(infos);
                 }
 
                 for (Song song : songs) {

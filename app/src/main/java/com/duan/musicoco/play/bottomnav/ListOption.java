@@ -1,4 +1,4 @@
-package com.duan.musicoco.play.bottom;
+package com.duan.musicoco.play.bottomnav;
 
 import android.app.Activity;
 import android.os.Build;
@@ -128,6 +128,11 @@ public class ListOption implements
     @Override
     public void update(Object obj, OnUpdateStatusChanged statusChanged) {
         updateCurrentSheet();
+    }
+
+    @Override
+    public void noData() {
+        // 由 BottomNavigationController 处理
     }
 
     void setDrawableColor(int currentDrawableColor) {

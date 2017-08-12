@@ -1,4 +1,4 @@
-package com.duan.musicoco.play.bottom;
+package com.duan.musicoco.play.bottomnav;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -22,6 +22,7 @@ import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.interfaces.ViewVisibilityChangeable;
+import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.shared.ExceptionHandler;
@@ -59,9 +60,12 @@ public class SongOption implements
     private int currentDrawableColor;
     private IPlayControl control;
     private SongOperation songOperation;
+    private BottomNavigationController controller;
+    private MediaManager mediaManager;
 
-    public SongOption(Activity activity, BottomNavigationController bottomNavigationController) {
+    public SongOption(Activity activity, BottomNavigationController controller) {
         this.activity = activity;
+        this.controller = controller;
         this.mDialog = new OptionsDialog(activity);
 
     }
@@ -85,8 +89,10 @@ public class SongOption implements
         mDialog.setOnItemClickListener(this);
     }
 
-    void initData(SongOperation songOperation) {
+    void initData(IPlayControl control, SongOperation songOperation, MediaManager mediaManager) {
         this.songOperation = songOperation;
+        this.mediaManager = mediaManager;
+        this.control = control;
 
         moreOptionsAdapter = new OptionsAdapter(activity);
         mDialog.setAdapter(moreOptionsAdapter);
@@ -99,15 +105,15 @@ public class SongOption implements
                 handlePlayModeChange();
                 break;
             case R.id.play_list_hide_bar:
-                if (isListShowing) {
-                    BottomNavigationController.this.hide();
+                if (controller.isListShowing()) {
+                    controller.hide();
                 } else {
-                    BottomNavigationController.this.show();
+                    controller.show();
                 }
                 break;
             case R.id.play_list_hide:
-                if (!isListTitleHide) {
-                    hidePlayListTitle();
+                if (!controller.isListTitleHide()) {
+                    controller.hidePlayListTitle();
                 }
                 break;
             case R.id.play_favorite:
@@ -115,9 +121,9 @@ public class SongOption implements
                 break;
             case R.id.play_show_list:
                 if (visible()) {
-                    BottomNavigationController.this.hide();
+                    controller.hide();
                 } else {
-                    BottomNavigationController.this.show();
+                    controller.show();
                 }
                 break;
             case R.id.play_show_more:
@@ -202,7 +208,6 @@ public class SongOption implements
     }
 
     public void updateColors() {
-        Log.d("updateCurrentPlay", "play/BottomNavigationController SongOption#updateColors");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             hidePlayListBar.getDrawable().setTint(currentDrawableColor);
@@ -445,6 +450,11 @@ public class SongOption implements
     @Override
     public void update(Object obj, OnUpdateStatusChanged statusChanged) {
         updateDialogAdapter();
+    }
+
+    @Override
+    public void noData() {
+        // 由 BottomNavigationController 处理
     }
 
     public void setDrawableColor(int currentDrawableColor) {

@@ -37,8 +37,7 @@ import rx.schedulers.Schedulers;
 
 public class MainSheetsController implements
         View.OnClickListener,
-        ContentUpdatable,
-        OnEmptyMediaLibrary {
+        ContentUpdatable {
 
     private TextView mTextAll;
     private TextView mTextRecent;
@@ -94,11 +93,6 @@ public class MainSheetsController implements
     public void initData(DBMusicocoController controller) {
         this.dbController = controller;
         this.mainSheetHelper = new MainSheetHelper(activity, dbController);
-
-        mContainerAll.setClickable(true);
-        mContainerRecent.setClickable(true);
-        mContainerFavorite.setClickable(true);
-
         hasInitData = true;
     }
 
@@ -118,13 +112,6 @@ public class MainSheetsController implements
         }
     }
 
-    @Override
-    public void emptyMediaLibrary() {
-        mContainerAll.setClickable(false);
-        mContainerRecent.setClickable(false);
-        mContainerFavorite.setClickable(false);
-    }
-
     private static class Data {
         final static int ALL = 0;
         final static int RECENT = 1;
@@ -138,7 +125,15 @@ public class MainSheetsController implements
 
     @Override
     public void update(Object obj, final OnUpdateStatusChanged statusChanged) {
-        Log.d("updateCurrentPlay", "MainSheetController updateCurrentPlay");
+
+        if (mediaManager.emptyMediaLibrary(false)) {
+            noData();
+            return;
+        } else {
+            mContainerAll.setEnabled(true);
+            mContainerRecent.setEnabled(true);
+            mContainerFavorite.setEnabled(true);
+        }
 
         Observable.just(Data.ALL, Data.RECENT, Data.FAVORITE)
                 .map(new Func1<Integer, Data>() {
@@ -207,6 +202,13 @@ public class MainSheetsController implements
                 });
     }
 
+    @Override
+    public void noData() {
+        mContainerAll.setEnabled(false);
+        mContainerRecent.setEnabled(false);
+        mContainerFavorite.setEnabled(false);
+    }
+
     private Data getDataForFavorite() {
         Data data = new Data();
         List<DBSongInfo> favorite = mainSheetHelper.getFavoriteSongInfo();
@@ -234,21 +236,18 @@ public class MainSheetsController implements
     }
 
     private void updateFavorite(Data data) {
-        Log.d("updateCurrentPlay", "MainSheetController updateFavorite");
         Bitmap b = data.bitmap;
         mImageFavorite.setImageBitmap(createImage(b));
         updateTextAndColor(mTextFavorite, data.count, mCountFavorite, data.colors);
     }
 
     private void updateRecent(Data data) {
-        Log.d("updateCurrentPlay", "MainSheetController updateRecent");
         Bitmap b = data.bitmap;
         mImageRecent.setImageBitmap(createImage(b));
         updateTextAndColor(mTextRecent, data.count, mCountRecent, data.colors);
     }
 
     private void updateAll(Data data) {
-        Log.d("updateCurrentPlay", "MainSheetController updateAll");
         Bitmap b = data.bitmap;
         mImageAll.setImageBitmap(createImage(b));
         updateTextAndColor(mTextAll, data.count, mCountAll, data.colors);
@@ -274,7 +273,6 @@ public class MainSheetsController implements
     }
 
     private void updateTextAndColor(TextView categoryView, int count, TextView countView, int[] colors) {
-        Log.d("updateCurrentPlay", "MainSheetController updateTextAndColor");
 
         categoryView.setBackgroundColor(colors[2]);
         categoryView.setTextColor(colors[3]);

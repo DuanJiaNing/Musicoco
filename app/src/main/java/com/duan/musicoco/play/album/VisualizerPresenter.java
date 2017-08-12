@@ -9,8 +9,9 @@ import com.duan.musicoco.service.PlayController;
 
 /**
  * Created by DuanJiaNing on 2017/5/30.
+ *
  */
-
+// FIXME 重写
 public class VisualizerPresenter implements PresenterContract {
 
     private ViewContract fragmentView;
