@@ -437,16 +437,7 @@ public class RecentMostPlayActivity extends RootActivity implements ThemeChangea
     public void themeChange(ThemeEnum themeEnum, int[] colors) {
 
         ThemeEnum th = appPreference.getTheme();
-        int[] cs;
-        switch (th) {
-            case DARK:
-                cs = ColorUtils.get10DarkThemeColors(this);
-                break;
-            case WHITE:
-            default:
-                cs = ColorUtils.get10WhiteThemeColors(this);
-                break;
-        }
+        int[] cs = ColorUtils.get10ThemeColors(this, th);
 
         int statusC = cs[0];
         int toolbarC = cs[1];

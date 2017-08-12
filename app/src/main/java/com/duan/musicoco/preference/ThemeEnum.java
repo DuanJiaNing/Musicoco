@@ -13,4 +13,12 @@ public enum ThemeEnum {
 
     //随专辑图片变化
     VARYING;
+
+    public static ThemeEnum reversal(ThemeEnum theme) {
+        if (theme == WHITE || theme == VARYING) {
+            return DARK;
+        } else {
+            return WHITE;
+        }
+    }
 }

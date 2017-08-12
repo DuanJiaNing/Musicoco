@@ -2,8 +2,10 @@ package com.duan.musicoco.shared;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
 import android.os.RemoteException;
+import android.support.v4.view.ViewConfigurationCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,18 +15,14 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.manager.BroadcastManager;
-import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.app.manager.MediaManager;
-import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.SongInfo;
-import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
+import com.duan.musicoco.main.MainSheetsController;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
-import com.duan.musicoco.util.ColorUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,91 +31,41 @@ import java.util.List;
  * Created by DuanJiaNing on 2017/6/22.
  */
 
-public class PlayListAdapter extends BaseAdapter implements
-        ThemeChangeable,
-        ContentUpdatable {
+public class PlayListAdapter extends BaseAdapter {
 
-    private static final String TAG = "PlayListAdapter";
-
-    private final List<SongInfo> songs;
-
-    private final IPlayControl control;
+    private final List<SongInfo> data;
     private final Context context;
-    private DBMusicocoController dbController;
 
-    private View.OnClickListener removeClickListener;
-    private View.OnClickListener itemClickListener;
-
-    private final MediaManager mediaManager;
-    private SongOperation songOperation;
+    private int selectItem;
+    private boolean removeButtonEnable;
 
     private int mainC;
     private int vicC;
-    private final int choiceC;
+    private int accentC;
 
-    public PlayListAdapter(final Context context, final IPlayControl control,
-                           final DBMusicocoController dbMusicocoController,
-                           final SongOperation songOperation) {
+    private OnItemRemoveClickListener removeClickListener;
+
+    public interface OnItemRemoveClickListener {
+        void onRemove(int position, SongInfo info);
+    }
+
+    public void setOnRemoveClickListener(OnItemRemoveClickListener removeClickListener) {
+        this.removeClickListener = removeClickListener;
+    }
+
+    public PlayListAdapter(Context context, List<SongInfo> data) {
         this.context = context;
-        this.control = control;
-        this.dbController = dbMusicocoController;
-        this.songOperation = songOperation;
-        this.mediaManager = MediaManager.getInstance(context);
-
-        choiceC = ColorUtils.getAccentColor(context);
-
-        this.removeClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Song s = new Song((String) v.getTag(R.id.play_list_item_remove_path));
-                PlayListAdapter.this.songOperation.removeSongFromCurrentPlayingSheet(null, s);
-
-                // PlayListAdapter 在 MainActivity 和 PlayActivity 中都有，所以需要发送广播通知 MainActivity 更新
-                // 【我的歌单】 列表
-                BroadcastManager.getInstance(context).sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
-            }
-        };
-
-        this.itemClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-
-                    int pos = (int) v.getTag(R.id.play_list_item_position);
-
-                    int index = control.currentSongIndex();
-                    if (pos == index) {
-                        Log.d(TAG, "onClick: the song is playing");
-                        if (control.status() != PlayController.STATUS_PLAYING)
-                            control.resume();
-                        return;
-                    }
-
-                    SongInfo in = (SongInfo) getItem(pos);
-                    control.play(new Song(in.getData()));
-                    notifyDataSetChanged();
-
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                    new ExceptionHandler().handleRemoteException(context,
-                            context.getString(R.string.error_exception_remote), null
-                    );
-                }
-            }
-        };
-
-        this.songs = new ArrayList<>();
-        update(null, null);
+        this.data = data;
     }
 
     @Override
     public int getCount() {
-        return songs.size();
+        return data.size();
     }
 
     @Override
-    public Object getItem(int position) {
-        return songs.get(position);
+    public SongInfo getItem(int position) {
+        return data.get(position);
     }
 
     @Override
@@ -128,57 +76,44 @@ public class PlayListAdapter extends BaseAdapter implements
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
+        SongInfo info = getItem(position);
+
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.play_list_item, null);
-            holder = new ViewHolder();
-            holder.name = (TextView) convertView.findViewById(R.id.play_list_item_name);
-            holder.number = (TextView) convertView.findViewById(R.id.play_list_item_number);
-            holder.arts = (TextView) convertView.findViewById(R.id.play_list_item_arts);
-            holder.remove = (ImageButton) convertView.findViewById(R.id.play_list_item_remove);
+            holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        convertView.setTag(R.id.play_list_item_position, position);
-        convertView.setOnClickListener(itemClickListener);
-
-        SongInfo info = (SongInfo) getItem(position);
         holder.name.setText(info.getTitle());
         holder.arts.setText(info.getArtist());
         holder.number.setText(String.valueOf(getItemId(position) + 1));
 
-        try {
-            int sheetID = control.getPlayListId();
-            if (sheetID < 0) {
-                holder.remove.setEnabled(false);
-                holder.remove.setVisibility(View.INVISIBLE);
-            } else {
-                holder.remove.setEnabled(true);
-                holder.remove.setVisibility(View.VISIBLE);
-
-                holder.remove.setTag(R.id.play_list_item_remove_position, position);
-                holder.remove.setTag(R.id.play_list_item_remove_path, info.getData());
-                holder.remove.setOnClickListener(removeClickListener);
-            }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
-
-        int index = 0;
-        try {
-            index = control.currentSongIndex();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            new ExceptionHandler().handleRemoteException(context,
-                    context.getString(R.string.error_exception_remote), null
-            );
-        }
-
-        if (position == index) {
+        if (position == selectItem) {
             setSelectItem(holder);
         } else {
             setNormalItem(holder);
+        }
+
+        if (removeButtonEnable) {
+            holder.remove.setEnabled(true);
+            holder.remove.setVisibility(View.VISIBLE);
+
+            if (removeClickListener != null) {
+                final int pos = position;
+                final SongInfo in = info;
+                holder.remove.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        removeClickListener.onRemove(pos, in);
+                    }
+                });
+            }
+
+        } else {
+            holder.remove.setEnabled(false);
+            holder.remove.setVisibility(View.INVISIBLE);
         }
 
         return convertView;
@@ -190,7 +125,7 @@ public class PlayListAdapter extends BaseAdapter implements
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             drawable = context.getDrawable(R.drawable.ic_volume_up_black_24dp);
             if (drawable != null) {
-                drawable.setTint(choiceC);
+                drawable.setTint(accentC);
             }
         } else {
             drawable = context.getResources().getDrawable(R.drawable.ic_volume_up_black_24dp);
@@ -202,12 +137,12 @@ public class PlayListAdapter extends BaseAdapter implements
             holder.number.setText("");
         }
 
-        holder.name.setTextColor(choiceC);
-        holder.arts.setTextColor(choiceC);
-        holder.number.setTextColor(choiceC);
+        holder.name.setTextColor(accentC);
+        holder.arts.setTextColor(accentC);
+        holder.number.setTextColor(accentC);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            holder.remove.getDrawable().setTint(choiceC);
+            holder.remove.getDrawable().setTint(accentC);
         }
 
     }
@@ -225,37 +160,9 @@ public class PlayListAdapter extends BaseAdapter implements
 
     }
 
-    public void updateColors(ThemeEnum themeEnum, int[] colors) {
-        Log.d("updateCurrentPlay", "PlayListAdapter updateColors");
-
-        mainC = colors[0];
-        vicC = colors[1];
+    public void setSelectItem(int selectItem) {
+        this.selectItem = selectItem;
         notifyDataSetChanged();
-    }
-
-    @Override
-    public void themeChange(ThemeEnum themeEnum, int[] colors) {
-        updateColors(themeEnum, colors);
-    }
-
-    @Override
-    public void update(Object obj, OnUpdateStatusChanged statusChanged) {
-        Log.d("updateCurrentPlay", "PlayListAdapter updateCurrentPlay");
-        try {
-
-            List<Song> ss = control.getPlayList();
-            songs.clear();
-            for (Song s : ss) {
-                songs.add(mediaManager.getSongInfo(s));
-            }
-            notifyDataSetChanged();
-
-        } catch (RemoteException e) {
-            e.printStackTrace();
-            new ExceptionHandler().handleRemoteException(context,
-                    context.getString(R.string.error_exception_remote), null
-            );
-        }
     }
 
     private final class ViewHolder {
@@ -263,22 +170,46 @@ public class PlayListAdapter extends BaseAdapter implements
         TextView arts;
         TextView number;
         ImageButton remove;
+
+        ViewHolder(View convertView) {
+            name = (TextView) convertView.findViewById(R.id.play_list_item_name);
+            number = (TextView) convertView.findViewById(R.id.play_list_item_number);
+            arts = (TextView) convertView.findViewById(R.id.play_list_item_arts);
+            remove = (ImageButton) convertView.findViewById(R.id.play_list_item_remove);
+        }
+
     }
 
-    public int getColorMain() {
+    public void setRemoveButtonEnable(boolean enable) {
+        this.removeButtonEnable = enable;
+        notifyDataSetChanged();
+    }
+
+    public int getMainTextColor() {
         return mainC;
     }
 
-    public int getColorVic() {
+    public int getVicTextColor() {
         return vicC;
     }
 
-    public void setOnRemoveClickListener(View.OnClickListener removeClickListener) {
-        this.removeClickListener = removeClickListener;
+    public int getSelectItemColor() {
+        return accentC;
     }
 
-    public void setOnItemClickListener(View.OnClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
+    public void setMainTextColor(int color) {
+        this.mainC = color;
+        notifyDataSetChanged();
+    }
+
+    public void setVicTextColor(int color) {
+        this.vicC = color;
+        notifyDataSetChanged();
+    }
+
+    public void setSelectItemColor(int color) {
+        this.accentC = color;
+        notifyDataSetChanged();
     }
 
 }

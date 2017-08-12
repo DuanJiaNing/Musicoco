@@ -297,18 +297,7 @@ public class RecentMostPlayController implements
     @Override
     public void themeChange(ThemeEnum themeEnum, int[] colors) {
 
-        int[] cs;
-        switch (themeEnum) {
-            case DARK: {
-                cs = ColorUtils.get10DarkThemeColors(activity);
-                break;
-            }
-            case WHITE:
-            default: {
-                cs = ColorUtils.get10WhiteThemeColors(activity);
-                break;
-            }
-        }
+        int[] cs = ColorUtils.get10ThemeColors(activity, themeEnum);
 
         int statusC = cs[0];
         int toolbarC = cs[1];

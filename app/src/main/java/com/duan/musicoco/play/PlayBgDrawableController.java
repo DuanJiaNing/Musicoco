@@ -228,7 +228,7 @@ public class PlayBgDrawableController {
                 if (cd != null) {
                     if (cd.getColor() != mainBC) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            AnimationUtils.startColorGradientAnim(1000, flRootView, cd.getColor(), mainBC);
+                            AnimationUtils.startColorGradientAnim(1000, flRootView, null, cd.getColor(), mainBC);
                         } else {
                             flRootView.setBackgroundColor(mainBC);
                         }

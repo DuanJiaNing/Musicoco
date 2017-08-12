@@ -526,7 +526,7 @@ public class SheetSongListController implements
         int toolbarMainTC = colors[8];
         int toolbarVicTC = colors[9];
 
-        songAdapter.themeChange(themeEnum, new int[]{mainTC, vicTC});
+        songAdapter.themeChange(themeEnum, new int[]{mainTC, vicTC, accentC});
 
         playAllRandom.setTextColor(mainTC);
         line.setBackgroundColor(vicTC);

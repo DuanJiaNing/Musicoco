@@ -28,6 +28,7 @@ import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.MainSheetHelper;
+import com.duan.musicoco.main.bottom.BottomNavigationController;
 import com.duan.musicoco.play.PlayServiceConnection;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.ColorUtils;
@@ -60,15 +61,15 @@ public class MainActivity extends InspectActivity implements
         super.onCreate(savedInstanceState);
 
         Utils.transitionStatusBar(this);
-
         broadcastManager = BroadcastManager.getInstance(this);
-        bottomNavigationController = new BottomNavigationController(this, mediaManager, appPreference, playPreference);
+        bottomNavigationController = new BottomNavigationController(this, mediaManager);
         leftNavigationController = new LeftNavigationController(this, appPreference);
         mostPlayController = new RecentMostPlayController(this, mediaManager);
         mainSheetsController = new MainSheetsController(this, mediaManager);
         mySheetsController = new MySheetsController(this, dbController, mediaManager);
 
         setContentView(R.layout.activity_main);
+        initViews();
 
     }
 
@@ -115,8 +116,7 @@ public class MainActivity extends InspectActivity implements
         }
     }
 
-    @Override
-    protected void initViews() {
+    private void initViews() {
         bottomNavigationController.initView();
         mostPlayController.initView();
         mainSheetsController.initView();
@@ -173,7 +173,7 @@ public class MainActivity extends InspectActivity implements
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_search, menu);
         this.menu = menu;
-        updateToolbarAndBackgroundColors();
+        updateToolbarColors();
         return true;
     }
 
@@ -202,7 +202,8 @@ public class MainActivity extends InspectActivity implements
 
     @Override
     public void permissionGranted(int requestCode) {
-        super.permissionGranted(requestCode);
+        prepareData();
+        initAppDataIfNeed();
 
         sServiceConnection = new PlayServiceConnection(bottomNavigationController, this, this);
         playServiceManager.bindService(sServiceConnection);
@@ -234,7 +235,6 @@ public class MainActivity extends InspectActivity implements
         broadcastManager.registerBroadReceiver(mySheetDataChangedReceiver, BroadcastManager.FILTER_MY_SHEET_CHANGED);
     }
 
-
     private void initSelfData() {
 
         bottomNavigationController.initData(sServiceConnection.takeControl(), dbController);
@@ -261,11 +261,11 @@ public class MainActivity extends InspectActivity implements
         bottomNavigationController.themeChange(themeEnum, null);
         mostPlayController.themeChange(themeEnum, null);
         mySheetsController.themeChange(themeEnum, null);
-        updateToolbarAndBackgroundColors();
+        updateToolbarColors();
     }
 
     // 文字和图标颜色
-    private void updateToolbarAndBackgroundColors() {
+    private void updateToolbarColors() {
         if (toolbar == null || toggle == null) {
             return;
         }
@@ -297,7 +297,6 @@ public class MainActivity extends InspectActivity implements
         }
     }
 
-
     public static IPlayControl getControl() {
         return sServiceConnection.takeControl();
     }
@@ -310,5 +309,19 @@ public class MainActivity extends InspectActivity implements
         mostPlayController.update(getString(R.string.rmp_history), statusChanged);
         mainSheetsController.update(obj, statusChanged);
         mySheetsController.update(obj, statusChanged);
+    }
+
+    /**
+     * 白天模式和夜间模式主题切换
+     */
+    public void switchThemeMode(final ThemeEnum theme) {
+        int[] colors = ColorUtils.get10ThemeColors(this, theme);
+        int to = colors[3];
+
+        View view = getWindow().getDecorView();
+        view.setBackgroundColor(to);
+        leftNavigationController.themeChange(theme, null);
+        themeChange(null, null);
+
     }
 }

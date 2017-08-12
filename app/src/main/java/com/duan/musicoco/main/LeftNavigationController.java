@@ -1,6 +1,7 @@
 package com.duan.musicoco.main;
 
 import android.app.Activity;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -33,6 +34,7 @@ import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.image.BitmapProducer;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.ThemeEnum;
+import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.SongUtils;
 import com.duan.musicoco.view.discreteseekbar.internal.drawable.TrackOvalDrawable;
 
@@ -51,7 +53,8 @@ import rx.schedulers.Schedulers;
 public class LeftNavigationController implements
         ViewVisibilityChangeable,
         NavigationView.OnNavigationItemSelectedListener,
-        ContentUpdatable {
+        ContentUpdatable,
+        ThemeChangeable {
 
     private final Activity activity;
     private final AppPreference appPreference;
@@ -126,7 +129,6 @@ public class LeftNavigationController implements
                 });
             }
         });
-
 
     }
 
@@ -291,7 +293,7 @@ public class LeftNavigationController implements
         item.setTitle(title);
 
         appPreference.updateTheme(theme);
-        ((ThemeChangeable) activity).themeChange(theme, null);
+        ((MainActivity) activity).switchThemeMode(theme);
 
     }
 
@@ -350,5 +352,29 @@ public class LeftNavigationController implements
                         setImageWallBitmap(bitmap);
                     }
                 });
+    }
+
+    @Override
+    public void themeChange(ThemeEnum themeEnum, int[] colors) {
+        ThemeEnum th = appPreference.getTheme();
+        int[] cs = ColorUtils.get10ThemeColors(activity, th);
+        int mainBC = cs[3];
+        int mainTC = cs[5];
+        int vicTC = cs[6];
+        int accentC = cs[2];
+
+        navigationView.setItemTextColor(ColorStateList.valueOf(mainTC));
+        navigationView.setBackgroundColor(mainBC);
+
+        Menu menu = navigationView.getMenu();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            for (int i = 0; i < menu.size(); i++) {
+                MenuItem item = menu.getItem(0);
+                Drawable icon = item.getIcon();
+                if (icon != null) {
+                    icon.setTint(accentC);
+                }
+            }
+        }
     }
 }

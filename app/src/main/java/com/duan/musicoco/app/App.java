@@ -34,17 +34,17 @@ public class App extends Application {
 
     private void test() {
 
-        int color = Color.parseColor("#313335");
-        int color1 = Color.parseColor("#313335");
+        int color = Color.parseColor("#1BA260");
+        int color1 = Color.parseColor("#1BA260");
 
-        int color2 = Color.parseColor("#6871fb");
+        int color2 = Color.parseColor("#DD4E42");
         appPreference.updateActionbarColor(color);
         appPreference.updateStatusBarColor(color1);
         appPreference.updateAccentColor(color2);
 
         appPreference.updateImageWallAlpha(10);
         appPreference.updateImageWallBlur(1);
-        appPreference.updateImageWallSize(30);
+        appPreference.updateImageWallSize(10);
 
         appPreference.updateTheme(ThemeEnum.WHITE);
         playPreference.updateTheme(ThemeEnum.VARYING);

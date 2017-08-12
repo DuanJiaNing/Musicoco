@@ -216,18 +216,7 @@ public class SearchActivity extends RootActivity implements ThemeChangeable {
     public void themeChange(ThemeEnum themeEnum, int[] colors) {
 
         ThemeEnum theme = appPreference.getTheme();
-        int[] cs = new int[10];
-        switch (theme) {
-            case DARK: {
-                cs = ColorUtils.get10DarkThemeColors(this);
-                break;
-            }
-            case WHITE:
-            default: {
-                cs = ColorUtils.get10WhiteThemeColors(this);
-                break;
-            }
-        }
+        int[] cs = ColorUtils.get10ThemeColors(this, theme);
         mSearchController.themeChange(theme, cs);
 
         int statusC = cs[0];

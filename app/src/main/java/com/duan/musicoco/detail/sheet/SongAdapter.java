@@ -44,7 +44,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
 
     private int mainTC;
     private int vicTC;
-    private final int choiceC;
+    private int accentC;
 
     private OnMoreClickListener moreClickListener;
     private OnItemClickListener itemClickListener;
@@ -60,8 +60,6 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
         this.data = data;
         this.sheetID = id;
 
-        AppPreference ac = new AppPreference(context);
-        this.choiceC = ac.getAccentColor();
     }
 
     public boolean getMultiselectionModeEnable() {
@@ -307,7 +305,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
     private void bindStatAndColors(ViewHolder holder, int position, boolean isFavorite) {
 
         if (isCurrentSheetPlaying && position == currentIndex && !multiselectionMode) {
-            setNumberAsImage(true, holder.number, choiceC);
+            setNumberAsImage(true, holder.number, accentC);
         } else {
             setNumberAsImage(false, holder.number, vicTC);
         }
@@ -318,7 +316,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (isFavorite) {
-                holder.favorite.getDrawable().setTint(choiceC);
+                holder.favorite.getDrawable().setTint(accentC);
             } else {
                 holder.favorite.getDrawable().setTint(vicTC);
             }
@@ -366,6 +364,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
 
         mainTC = colors[0];
         vicTC = colors[1];
+        accentC = colors[2];
 
         notifyDataSetChanged();
     }

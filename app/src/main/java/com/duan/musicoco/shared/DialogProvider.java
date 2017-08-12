@@ -144,16 +144,7 @@ public class DialogProvider {
     }
 
     private void updateTheme() {
-        int[] colors;
-        switch (themeEnum) {
-            case DARK:
-                colors = ColorUtils.get10DarkThemeColors(context);
-                break;
-            case WHITE:
-            default:
-                colors = ColorUtils.get10WhiteThemeColors(context);
-                break;
-        }
+        int[] colors = ColorUtils.get10ThemeColors(context, themeEnum);
 
         int statusC = colors[0];
         int toolbarC = colors[1];

@@ -9,6 +9,7 @@ import android.support.v7.graphics.Palette;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.App;
+import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.view.RealTimeBlurView;
@@ -295,50 +296,6 @@ public class ColorUtils {
     }
 
     /**
-     * 0 状态栏背景色<br>
-     * 1 标题栏背景色<br>
-     * 2 控件首选色<br>
-     * 3 主背景色<br>
-     * 4 辅背景色<br>
-     * 5 主字体色<br>
-     * 6 辅字体色<br>
-     * 7 底部导航背景色<br>
-     * 8 标题栏主字体色<br>
-     * 9 标题栏辅字体色<br>
-     */
-    public static int[] get10WhiteThemeColors(Context context) {
-        int[] colors = new int[10];
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            colors[0] = context.getColor(R.color.theme_white_primary);
-            colors[1] = context.getColor(R.color.theme_white_primary_dark);
-            colors[2] = context.getColor(R.color.theme_white_accent);
-            colors[3] = context.getColor(R.color.theme_white_main_bg);
-            colors[4] = context.getColor(R.color.theme_white_vic_bg);
-            colors[5] = context.getColor(R.color.theme_white_main_text);
-            colors[6] = context.getColor(R.color.theme_white_vic_text);
-            colors[7] = context.getColor(R.color.theme_white_nav);
-            colors[8] = context.getColor(R.color.theme_white_toolbar_main_text);
-            colors[9] = context.getColor(R.color.theme_white_toolbar_vic_text);
-        } else {
-            colors[0] = context.getResources().getColor(R.color.theme_white_primary);
-            colors[1] = context.getResources().getColor(R.color.theme_white_primary_dark);
-            colors[2] = context.getResources().getColor(R.color.theme_white_accent);
-            colors[3] = context.getResources().getColor(R.color.theme_white_main_bg);
-            colors[4] = context.getResources().getColor(R.color.theme_white_vic_bg);
-            colors[5] = context.getResources().getColor(R.color.theme_white_main_text);
-            colors[6] = context.getResources().getColor(R.color.theme_white_vic_text);
-            colors[7] = context.getResources().getColor(R.color.theme_white_nav);
-            colors[8] = context.getResources().getColor(R.color.theme_white_toolbar_main_text);
-            colors[9] = context.getResources().getColor(R.color.theme_white_toolbar_vic_text);
-        }
-
-        AppPreference preference = new AppPreference(context);
-        colors[2] = preference.getAccentColor();
-
-        return colors;
-    }
-
-    /**
      * 0 状态栏背景色
      * 1 标题栏背景色
      */
@@ -381,6 +338,49 @@ public class ColorUtils {
      * 8 标题栏主字体色<br>
      * 9 标题栏辅字体色<br>
      */
+    public static int[] get10WhiteThemeColors(Context context) {
+        int[] colors = new int[10];
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            colors[0] = context.getColor(R.color.theme_white_primary);
+            colors[1] = context.getColor(R.color.theme_white_primary_dark);
+            colors[2] = context.getColor(R.color.theme_white_accent);
+            colors[3] = context.getColor(R.color.theme_white_main_bg);
+            colors[4] = context.getColor(R.color.theme_white_vic_bg);
+            colors[5] = context.getColor(R.color.theme_white_main_text);
+            colors[6] = context.getColor(R.color.theme_white_vic_text);
+            colors[7] = context.getColor(R.color.theme_white_nav);
+            colors[8] = context.getColor(R.color.theme_white_toolbar_main_text);
+            colors[9] = context.getColor(R.color.theme_white_toolbar_vic_text);
+        } else {
+            colors[0] = context.getResources().getColor(R.color.theme_white_primary);
+            colors[1] = context.getResources().getColor(R.color.theme_white_primary_dark);
+            colors[2] = context.getResources().getColor(R.color.theme_white_accent);
+            colors[3] = context.getResources().getColor(R.color.theme_white_main_bg);
+            colors[4] = context.getResources().getColor(R.color.theme_white_vic_bg);
+            colors[5] = context.getResources().getColor(R.color.theme_white_main_text);
+            colors[6] = context.getResources().getColor(R.color.theme_white_vic_text);
+            colors[7] = context.getResources().getColor(R.color.theme_white_nav);
+            colors[8] = context.getResources().getColor(R.color.theme_white_toolbar_main_text);
+            colors[9] = context.getResources().getColor(R.color.theme_white_toolbar_vic_text);
+        }
+
+        AppPreference preference = new AppPreference(context);
+        colors[2] = preference.getAccentColor();
+
+        return colors;
+    }
+    /**
+     * 0 状态栏背景色<br>
+     * 1 标题栏背景色<br>
+     * 2 控件首选色<br>
+     * 3 主背景色<br>
+     * 4 辅背景色<br>
+     * 5 主字体色<br>
+     * 6 辅字体色<br>
+     * 7 底部导航背景色<br>
+     * 8 标题栏主字体色<br>
+     * 9 标题栏辅字体色<br>
+     */
     public static int[] get10DarkThemeColors(Context context) {
         int[] colors = new int[10];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -408,6 +408,26 @@ public class ColorUtils {
         }
 
         return colors;
+    }
+
+    /**
+     * 0 状态栏背景色<br>
+     * 1 标题栏背景色<br>
+     * 2 控件首选色<br>
+     * 3 主背景色<br>
+     * 4 辅背景色<br>
+     * 5 主字体色<br>
+     * 6 辅字体色<br>
+     * 7 底部导航背景色<br>
+     * 8 标题栏主字体色<br>
+     * 9 标题栏辅字体色<br>
+     */
+    public static int[] get10ThemeColors(Context context, ThemeEnum themeEnum) {
+        if (themeEnum == ThemeEnum.WHITE || themeEnum == ThemeEnum.VARYING) {
+            return get10WhiteThemeColors(context);
+        } else {
+            return get10DarkThemeColors(context);
+        }
     }
 
     /**

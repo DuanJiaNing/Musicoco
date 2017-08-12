@@ -17,7 +17,7 @@ import android.view.View;
 public class AnimationUtils {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static void startColorGradientAnim(int duration, final View view, int... values) {
+    public static void startColorGradientAnim(int duration, final View view, @Nullable Animator.AnimatorListener listener, int... values) {
         final ValueAnimator anim = ObjectAnimator.ofArgb(values);
         anim.setDuration(duration);
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -27,6 +27,9 @@ public class AnimationUtils {
                 view.setBackgroundColor(va);
             }
         });
+        if (listener != null) {
+            anim.addListener(listener);
+        }
         anim.start();
     }
 

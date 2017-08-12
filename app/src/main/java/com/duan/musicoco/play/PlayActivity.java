@@ -23,12 +23,14 @@ import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.play.album.VisualizerFragment;
 import com.duan.musicoco.play.album.VisualizerPresenter;
+import com.duan.musicoco.play.bottom.BottomNavigationController;
 import com.duan.musicoco.play.lyric.LyricFragment;
 import com.duan.musicoco.play.lyric.LyricPresenter;
 import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.service.PlayServiceCallback;
+import com.duan.musicoco.util.ColorUtils;
 
 import java.util.List;
 
@@ -45,6 +47,7 @@ public class PlayActivity extends InspectActivity implements
 
     private VisualizerFragment visualizerFragment;
     private LyricFragment lyricFragment;
+
     private VisualizerPresenter visualizerPresenter;
     private LyricPresenter lyricPresenter;
 
@@ -60,6 +63,13 @@ public class PlayActivity extends InspectActivity implements
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_play);
+
+        bgDrawableController = new PlayBgDrawableController(this, playPreference);
+        viewsController = new PlayViewsController(this);
+        bottomNavigationController = new BottomNavigationController(this);
+
+        initViews();
+
     }
 
     @Override
@@ -223,21 +233,14 @@ public class PlayActivity extends InspectActivity implements
 
     @Override
     public void themeChange(ThemeEnum themeEnum, int[] colors) {
+        bottomNavigationController.themeChange(null, null);
+
         themeEnum = playPreference.getTheme();
-        int cs[];
-        switch (themeEnum) {
-            case DARK:
-                cs = com.duan.musicoco.util.ColorUtils.get10DarkThemeColors(this);
-                break;
-            case VARYING:
-                return; // 当主题为【随专辑变换】时，由 songChanged 控制颜色
-            default:
-            case WHITE:
-                cs = com.duan.musicoco.util.ColorUtils.get10WhiteThemeColors(this);
-                break;
+        if (themeEnum != ThemeEnum.VARYING) {
+            int cs[] = ColorUtils.get10ThemeColors(this, themeEnum);
+            updateViews(cs);
         }
 
-        updateViews(cs);
     }
 
     private void updateViews(int[] colors) {
@@ -287,8 +290,6 @@ public class PlayActivity extends InspectActivity implements
 
     @Override
     public void permissionGranted(int requestCode) {
-        super.permissionGranted(requestCode);
-
         mServiceConnection = new PlayServiceConnection(this, this, this);
         playServiceManager.bindService(mServiceConnection);
     }
@@ -298,28 +299,11 @@ public class PlayActivity extends InspectActivity implements
         finish();
     }
 
-    @Override
-    protected void initViews() {
+    private void initViews() {
 
-        //初始控件
-        if (bgDrawableController == null) {
-            bgDrawableController = new PlayBgDrawableController(this, playPreference);
-        }
         bgDrawableController.initViews();
-
-        if (viewsController == null) {
-            viewsController = new PlayViewsController(this);
-        }
         viewsController.initViews();
-
-        if (bottomNavigationController == null) {
-            bottomNavigationController = new BottomNavigationController(
-                    this,
-                    dbController,
-                    mediaManager,
-                    playPreference,
-                    appPreference);
-        }
+        bottomNavigationController.initViews();
 
         initSelfViews();
 
@@ -384,24 +368,28 @@ public class PlayActivity extends InspectActivity implements
         lyricPresenter = new LyricPresenter(this, lyricFragment, this);
 
         initSelfData();
-        themeChange(null, null);
-        bottomNavigationController.themeChange(null, null);
 
         visualizerPresenter.initData(null);
         lyricPresenter.initData(null);
 
+        themeChange(null, null);
+
     }
 
     private void initSelfData() {
+
         try {
             List<Song> songs = control.getPlayList();
             if (songs == null) { //检查播放列表是否为空
                 emptyMediaLibrary();
                 viewsController.updateText(0, 0, "", "");
             } else {
-                bottomNavigationController.initData(control);
-                bottomNavigationController.update(null, null);
-
+                bottomNavigationController.initData(
+                        control,
+                        dbController,
+                        mediaManager,
+                        playPreference,
+                        appPreference);
                 viewsController.initData(playPreference, control);
 
                 Song song = control.currentSong();

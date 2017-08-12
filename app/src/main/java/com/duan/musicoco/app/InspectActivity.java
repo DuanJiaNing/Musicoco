@@ -29,31 +29,18 @@ public abstract class InspectActivity extends RootActivity implements Permission
     private PermissionManager permissionManager;
     protected PlayServiceManager playServiceManager;
 
-    private boolean isGranted = false;
-
     @Override
     @CallSuper
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        playServiceManager = PlayServiceManager.getInstance(this);
         permissionManager = PermissionManager.getInstance(this);
+        playServiceManager = PlayServiceManager.getInstance(this);
         mediaManager = MediaManager.getInstance(getApplicationContext());
 
         //检查权限
         checkPermission();
 
-    }
-
-    @Override
-    public void onContentChanged() {
-        super.onContentChanged();
-
-        // FIXME onContentChanged 会多次回调
-        if (isGranted) {
-            // setContentView 后回调
-            permissionGranted(PermissionManager.PerMap.CATEGORY_MEDIA_READ);
-        }
     }
 
     protected void checkPermission() {
@@ -73,11 +60,11 @@ public abstract class InspectActivity extends RootActivity implements Permission
             permissionManager.showPermissionRequestTip(perMap, this, new PermissionManager.OnPermissionRequestRefuse() {
                 @Override
                 public void onRefuse() {
-                    finish();
+                    permissionDenied(PermissionManager.PerMap.CATEGORY_MEDIA_READ);
                 }
             });
         } else {
-            isGranted = true;
+            permissionGranted(PermissionManager.PerMap.CATEGORY_MEDIA_READ);
         }
     }
 
@@ -85,7 +72,6 @@ public abstract class InspectActivity extends RootActivity implements Permission
     public final void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == PermissionManager.PerMap.CATEGORY_MEDIA_READ) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Log.d(TAG, "onRequestPermissionsResult: 权限获取成功");
                 permissionGranted(requestCode);
             } else {
                 permissionDenied(requestCode);
@@ -93,25 +79,16 @@ public abstract class InspectActivity extends RootActivity implements Permission
         }
     }
 
-    //控件的初始化在获得权限后开始
-    //绑定服务应在 initView 完成之后绑定
     @Override
-    @CallSuper
     public void permissionGranted(int requestCode) {
-        prepareData();
-        initAppDataIfNeed();
-        initChildViews();
+        Log.d(TAG, "onRequestPermissionsResult: 权限获取成功");
     }
 
-    private void prepareData() {
+    protected void prepareData() {
         mediaManager.refreshData();
     }
 
-    private void initChildViews() {
-        initViews();
-    }
-
-    private void initAppDataIfNeed() {
+    protected void initAppDataIfNeed() {
         if (appPreference.appOpenTimes() == 0) {
             Init init = new Init();
             init.initAlbumVisualizerImageCache(this);
@@ -120,5 +97,4 @@ public abstract class InspectActivity extends RootActivity implements Permission
         }
     }
 
-    protected abstract void initViews();
 }

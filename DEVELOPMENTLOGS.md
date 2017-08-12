@@ -317,4 +317,6 @@
 - 2017-08-12
 
 1 将 MainActivity 中两个多余的广播接收器移除(contentUpdateReceiver & MainSheetChangeReceiver)<br>
+2 白天和夜间主题切换<br>
+3 修改两个 BottomNavigationController，解耦<br>
 

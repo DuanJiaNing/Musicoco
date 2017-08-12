@@ -179,6 +179,7 @@
     <string name="setting_set_image_save_path">图片保存目录</string>
     <string name="setting_set_image_clear_cache">清除缓存</string>
     <string name="setting_set_feedback">反馈</string>
+    <string name="setting_set_switch_theme_mode_auto">自动切换至夜间模式</string>
 
 
 </resources>

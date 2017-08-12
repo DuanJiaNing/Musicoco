@@ -2,7 +2,7 @@
 <resources>
     <item name="play_list_item_remove_position" type="id">0</item>
     <item name="play_list_item_remove_path" type="id">1</item>
-    <item name="play_list_item_position" type="id">3</item>
+    <!--<item name="play_list_item_position" type="id">3</item>-->
 
     <item name="rmp_first_three_song_path" type="id">4</item>
 </resources>
