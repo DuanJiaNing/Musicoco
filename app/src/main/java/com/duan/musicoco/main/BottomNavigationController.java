@@ -365,7 +365,6 @@ public class BottomNavigationController implements
         playPreference.updateSheet(id);
 
         //发送广播通知 MySheetController 更新列表（列表的选中播放状态）
-        //主要针对【移除】操作
         broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
     }
 

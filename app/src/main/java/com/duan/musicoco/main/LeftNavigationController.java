@@ -5,12 +5,14 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
@@ -22,6 +24,7 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
+import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.interfaces.ViewVisibilityChangeable;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
@@ -29,7 +32,9 @@ import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.image.BitmapProducer;
 import com.duan.musicoco.preference.AppPreference;
+import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.SongUtils;
+import com.duan.musicoco.view.discreteseekbar.internal.drawable.TrackOvalDrawable;
 
 import java.util.List;
 
@@ -64,16 +69,64 @@ public class LeftNavigationController implements
         drawerLayout = (DrawerLayout) activity.findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) activity.findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        initDaytimeOrNightMode();
+    }
+
+    private void initDaytimeOrNightMode() {
+        Menu menu = navigationView.getMenu();
+        MenuItem item = menu.findItem(R.id.setting_night_mode);
+
+        // 0 日间时应该显示的
+        // 1 夜间时应该显示的
+        Drawable[] ds = new Drawable[2];
+        String[] ts = new String[2];
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ds[0] = activity.getDrawable(R.drawable.ic_night);
+        } else {
+            ds[0] = activity.getResources().getDrawable(R.drawable.ic_night);
+        }
+        ts[0] = activity.getString(R.string.setting_night_mode);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            ds[1] = activity.getDrawable(R.drawable.ic_daytime);
+        } else {
+            ds[1] = activity.getResources().getDrawable(R.drawable.ic_daytime);
+        }
+        ts[1] = activity.getString(R.string.setting_daytime_mode);
+
+        Drawable icon;
+        String title;
+        ThemeEnum theme = appPreference.getTheme();
+        if (theme == ThemeEnum.WHITE || theme == ThemeEnum.VARYING) {
+            icon = ds[0];
+            title = ts[0];
+        } else {
+            icon = ds[1];
+            title = ts[1];
+        }
+
+        item.setIcon(icon);
+        item.setTitle(title);
     }
 
     public void initData(DBMusicocoController dbController) {
         this.dbController = dbController;
+
+        // FIXME null
         navigationView.post(new Runnable() {
             @Override
             public void run() {
-                update(null, null);
+                ImageView iv = (ImageView) navigationView.findViewById(R.id.main_left_nav_image);
+                iv.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        update(null, null);
+                    }
+                });
             }
         });
+
 
     }
 
@@ -175,9 +228,71 @@ public class LeftNavigationController implements
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.setting_scan: // 文件扫描
+
+                break;
+            case R.id.setting_sleep: // 睡眠定时
+
+                break;
+            case R.id.setting_image_wall: // 照片墙
+
+                break;
+            case R.id.setting_play_ui: // 播放界面设置
+
+                break;
+            case R.id.setting_theme_color_custom: // 主题色
+
+                break;
+            case R.id.setting_night_mode: // 夜间模式
+                handleModeSwitch(item);
+                break;
+            case R.id.setting_set: // 设置
+
+                break;
+            case R.id.setting_quit: // 退出
+
+                break;
+            default:
+                break;
+        }
 
         drawerLayout.closeDrawer(GravityCompat.START);
         return false;
+    }
+
+    private void handleModeSwitch(MenuItem item) {
+        ThemeEnum theme = appPreference.getTheme();
+
+        Drawable icon;
+        String title;
+
+        if (theme == ThemeEnum.WHITE || theme == ThemeEnum.VARYING) { // 切换到 夜间模式
+            theme = ThemeEnum.DARK;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                icon = activity.getDrawable(R.drawable.ic_daytime);
+            } else {
+                icon = activity.getResources().getDrawable(R.drawable.ic_daytime);
+            }
+            title = activity.getString(R.string.setting_daytime_mode);
+        } else { // 切换到 白天模式
+            theme = ThemeEnum.WHITE;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                icon = activity.getDrawable(R.drawable.ic_night);
+            } else { // 切换到 白天模式
+                icon = activity.getResources().getDrawable(R.drawable.ic_night);
+            }
+            title = activity.getString(R.string.setting_night_mode);
+        }
+
+        item.setIcon(icon);
+        item.setTitle(title);
+
+        appPreference.updateTheme(theme);
+        ((ThemeChangeable) activity).themeChange(theme, null);
+
     }
 
     @Nullable

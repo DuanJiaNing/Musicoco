@@ -16,10 +16,12 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.interfaces.OnCompleteListener;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.db.DBMusicocoController;
+import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.preference.ThemeEnum;
@@ -124,11 +126,47 @@ public class MySheetsAdapter extends BaseAdapter implements
         delete.clickListener = new OptionsAdapter.OptionClickListener() {
             @Override
             public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
-                sheetsOperation.handleDeleteSheet(currentClickMoreOperationItem);
+                sheetsOperation.handleDeleteSheet(currentClickMoreOperationItem, new OnCompleteListener<Boolean>() {
+                    @Override
+                    public void onComplete(Boolean aBoolean) {
+                        if (aBoolean) {
+                            String msg = activity.getString(R.string.success_delete_sheet) + " [" + currentClickMoreOperationItem.name + "]";
+                            ToastUtils.showShortToast(msg);
+
+                            notifyDataSetChanged();
+                            isCurrentPlayingSheetBeDelete(currentClickMoreOperationItem.id);
+
+                        } else {
+                            String msg = activity.getString(R.string.error_delete_sheet_fail);
+                            ToastUtils.showShortToast(msg);
+                        }
+                    }
+                });
                 mDialog.hide();
             }
         };
         moreOptionsAdapter.addOption(delete);
+
+    }
+
+    /**
+     * 当前播放歌单属于被删除歌单时需将播放列表置为【全部歌单】
+     */
+    public void isCurrentPlayingSheetBeDelete(int sheetID) {
+
+        try {
+            int cursid = control.getPlayListId();
+            if (sheetID == cursid) {
+
+                MainSheetHelper helper = new MainSheetHelper(activity, dbMusicoco);
+                List<DBSongInfo> list = helper.getAllSongInfo();
+                List<Song> songs = SongUtils.DBSongInfoListToSongList(list);
+                control.setPlayList(songs, 0, MainSheetHelper.SHEET_ALL);
+                control.pause();
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
 
     }
 

@@ -16,7 +16,7 @@
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/activity_main_coll_tool_bar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:titleEnabled="false">
 
@@ -45,42 +45,39 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="@dimen/activity_default_padding"
-            android:paddingTop="@dimen/activity_default_padding"
+            android:layout_marginLeft="@dimen/activity_default_margin"
+            android:layout_marginRight="@dimen/activity_default_margin"
+            android:paddingBottom="@dimen/activity_default_padding_l_l"
+            android:paddingTop="@dimen/activity_default_padding_l_l"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
-
-            <View
-                android:id="@+id/my_sheet_line"
-                android:layout_width="3dp"
-                android:layout_height="15dp"
-                android:layout_centerInParent="true"
-                android:background="@color/dark" />
 
             <TextView
                 android:id="@+id/my_sheet_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_toLeftOf="@id/my_sheet_line"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:drawableLeft="@drawable/line_for_main_title"
+                android:drawablePadding="@dimen/activity_default_padding"
                 android:gravity="center_vertical|start"
-                android:textSize="@dimen/text_middle_s"
-                android:textStyle="italic" />
+                android:textSize="@dimen/text_middle_s" />
 
             <TextView
                 android:id="@+id/my_sheet_add"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="8dp"
                 android:layout_marginStart="8dp"
-                android:layout_toRightOf="@id/my_sheet_line"
                 android:background="?android:selectableItemBackgroundBorderless"
-                android:drawableBottom="@drawable/line_for_main_my_sheet_new"
+                android:drawableRight="@drawable/ic_chevron_right"
                 android:gravity="center"
                 android:text="@string/new_"
-                android:textSize="@dimen/text_middle" />
+                android:textSize="@dimen/text_middle_s" />
 
         </RelativeLayout>
 

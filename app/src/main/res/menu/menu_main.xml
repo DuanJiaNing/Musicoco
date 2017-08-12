@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:id="@+id/setting_g_1">
-        <item
-            android:id="@+id/setting_scan"
-            android:icon="@drawable/ic_audio_file"
-            android:title="@string/setting_scan" />
-        <item
-            android:id="@+id/setting_sleep"
-            android:icon="@drawable/ic_snooze"
-            android:title="@string/setting_sleep" />
+    <item android:title="@string/setting_tools">
+        <menu>
+            <group android:id="@+id/setting_g_1">
+                <item
+                    android:id="@+id/setting_scan"
+                    android:icon="@drawable/ic_audio_file"
+                    android:title="@string/setting_scan" />
+                <item
+                    android:id="@+id/setting_sleep"
+                    android:icon="@drawable/ic_snooze"
+                    android:title="@string/setting_sleep" />
 
-        <item
-            android:id="@+id/setting_image_wall"
-            android:icon="@drawable/ic_picture_scope"
-            android:title="@string/setting_image_wall" />
+                <item
+                    android:id="@+id/setting_image_wall"
+                    android:icon="@drawable/ic_picture_scope"
+                    android:title="@string/setting_image_wall" />
+            </group>
+        </menu>
+    </item>
 
-    </group>
-
-    <item
-        android:title="@string/setting_theme_custom"
-        android:titleCondensed="@string/add">
+    <item android:title="@string/setting_theme_custom">
         <menu>
 
             <group android:id="@+id/setting_g_2">

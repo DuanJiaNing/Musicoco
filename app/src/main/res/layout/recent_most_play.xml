@@ -7,25 +7,15 @@
     android:orientation="vertical"
     android:paddingTop="@dimen/activity_default_margin_s">
 
-    <LinearLayout
+    <TextView
+        android:layout_marginBottom="@dimen/activity_default_margin_s_s_s"
+        android:id="@+id/rmp_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <View
-            android:id="@+id/rmp_type_line"
-            android:layout_width="2dp"
-            android:layout_height="match_parent" />
-
-        <TextView
-            android:padding="3dp"
-            android:id="@+id/rmp_type"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:gravity="start|center_vertical"
-            android:textSize="@dimen/text_small" />
-    </LinearLayout>
+        android:drawableLeft="@drawable/line_for_main_title"
+        android:drawablePadding="@dimen/activity_default_padding"
+        android:gravity="start|center_vertical"
+        android:textSize="@dimen/text_middle_s" />
 
     <FrameLayout
         android:id="@+id/rmp_container"
@@ -125,7 +115,7 @@
             android:layout_marginLeft="@dimen/activity_default_padding"
             android:gravity="center_vertical"
             android:text="@string/play"
-            android:textSize="@dimen/text_small" />
+            android:textSize="@dimen/text_middle_s" />
 
         <TextView
             android:id="@+id/rmp_play_time"
@@ -149,7 +139,7 @@
             android:layout_toRightOf="@+id/rmp_play_time"
             android:gravity="center_vertical"
             android:text="@string/count"
-            android:textSize="@dimen/text_small" />
+            android:textSize="@dimen/text_middle_s" />
 
 
         <TextView
@@ -164,7 +154,7 @@
             android:gravity="center_vertical"
             android:padding="@dimen/activity_default_padding"
             android:text="@string/rmp_see_more"
-            android:textSize="@dimen/text_small" />
+            android:textSize="@dimen/text_middle_s" />
     </RelativeLayout>
 
     <View

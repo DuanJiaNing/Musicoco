@@ -110,8 +110,6 @@ public class SongOperation {
                 boolean isFavorite = info.favorite;
                 boolean reverse = !isFavorite;
                 dbMusicoco.updateSongFavorite(song, reverse);
-                //广播通知 MainActivity 更新 MainSheetsController
-                BroadcastManager.getInstance(activity).sendMyBroadcast(BroadcastManager.FILTER_MAIN_SHEET_CHANGED, null);
 
                 return reverse;
             }
@@ -208,7 +206,6 @@ public class SongOperation {
 
                     private void sendBroadcast() {
                         broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
-                        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MAIN_SHEET_CHANGED, null);
                     }
 
                     @Override
@@ -284,7 +281,6 @@ public class SongOperation {
 
                     private void sendBroadcast() {
                         broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
-                        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MAIN_SHEET_CHANGED, null);
                     }
 
                     @Override
@@ -436,11 +432,10 @@ public class SongOperation {
 
                         String msg = activity.getString(R.string.success_add_to_sheet) + " [" + sheetName + "]";
                         ToastUtils.showShortToast(msg);
-                        end();
+                        callBack();
                     }
 
-                    private void end() {
-                        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
+                    private void callBack() {
                         if (complete != null) {
                             complete.onComplete(null);
                         }
@@ -453,7 +448,7 @@ public class SongOperation {
 
                         String msg = activity.getString(R.string.unknown);
                         ToastUtils.showShortToast(msg);
-                        end();
+                        callBack();
                     }
 
                     @Override
@@ -539,7 +534,6 @@ public class SongOperation {
                 ToastUtils.showShortToast(msg);
 
                 broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
-                broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MAIN_SHEET_CHANGED, null);
                 if (complete != null) {
                     complete.onComplete(null);
                 }
@@ -595,7 +589,6 @@ public class SongOperation {
 
                         private void sendBroadcast() {
                             broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
-                            broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MAIN_SHEET_CHANGED, null);
                             if (complete != null) {
                                 complete.onComplete(null);
                             }
@@ -646,7 +639,6 @@ public class SongOperation {
             ToastUtils.showShortToast(msg);
 
             broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
-            broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MAIN_SHEET_CHANGED, null);
             if (complete != null) {
                 complete.onComplete(null);
             }
@@ -691,7 +683,6 @@ public class SongOperation {
 
                         private void sendBroadcast() {
                             broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
-                            broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MAIN_SHEET_CHANGED, null);
                             if (complete != null) {
                                 complete.onComplete(null);
                             }
@@ -825,7 +816,6 @@ public class SongOperation {
 
                     private void sendBroadcast() {
                         broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
-                        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MAIN_DATA_UPDATE, null);
                         if (complete != null) {
                             complete.onComplete(null);
                         }

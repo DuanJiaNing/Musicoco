@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
@@ -48,7 +50,6 @@ public class RecentMostPlayController implements
         ThemeChangeable {
 
     private TextView mType;
-    private View mTypeLine;
 
     private TextView mName;
     private TextView mArts;
@@ -81,7 +82,6 @@ public class RecentMostPlayController implements
 
     public void initView() {
         mType = (TextView) activity.findViewById(R.id.rmp_type);
-        mTypeLine = activity.findViewById(R.id.rmp_type_line);
 
         mName = (TextView) activity.findViewById(R.id.rmp_info_name);
         mArts = (TextView) activity.findViewById(R.id.rmp_info_arts);
@@ -336,7 +336,14 @@ public class RecentMostPlayController implements
         mShowMore.setTextColor(vicTC);
         mLine.setBackgroundColor(vicTC);
         mType.setTextColor(mainTC);
-        mTypeLine.setBackgroundColor(accentC);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            for (Drawable d : mType.getCompoundDrawables()) {
+                if (d != null) {
+                    d.setTint(accentC);
+                }
+            }
+        }
 
     }
 

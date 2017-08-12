@@ -40,7 +40,7 @@
     <!--夜间主题基本色-->
     <color name="dark_primary">#17181A</color>
     <color name="dark_primary_dark">#17181a</color>
-    <color name="dark_accent">#FF002B</color>
+    <color name="dark_accent">#6871fb</color>
     <color name="dark_main_bg">#111214</color>
     <color name="dark_vic_bg">#151518</color>
     <color name="dark_main_text">#A2A3A3</color>

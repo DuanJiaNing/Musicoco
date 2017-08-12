@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
+import com.duan.musicoco.app.interfaces.OnCompleteListener;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.DBMusicocoController;
@@ -51,7 +52,7 @@ public class SheetsOperation {
         manager.startSheetModifyActivity(sheet.id);
     }
 
-    public void handleDeleteSheet(final Sheet sheet) {
+    public void handleDeleteSheet(final Sheet sheet, final OnCompleteListener<Boolean> onCompleteListener) {
         DialogProvider provider = new DialogProvider(activity);
         final Dialog dialog = provider.createPromptDialog(
                 activity.getString(R.string.warning),
@@ -59,7 +60,7 @@ public class SheetsOperation {
                 new DialogProvider.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        deleteSheet(sheet);
+                        deleteSheet(sheet, onCompleteListener);
                     }
                 },
                 null,
@@ -68,7 +69,7 @@ public class SheetsOperation {
         dialog.show();
     }
 
-    private void deleteSheet(final Sheet sheet) {
+    private void deleteSheet(final Sheet sheet, final OnCompleteListener<Boolean> onCompleteListener) {
 
         Observable.OnSubscribe<Boolean> onSubscribe = new Observable.OnSubscribe<Boolean>() {
             @Override
@@ -109,28 +110,18 @@ public class SheetsOperation {
                     public void onError(Throwable e) {
                         e.printStackTrace();
                         dialog.dismiss();
-                        String msg = activity.getString(R.string.unknown);
-                        ToastUtils.showShortToast(msg);
-                        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
+                        callBack(false);
                     }
 
                     @Override
                     public void onNext(Boolean s) {
-                        if (s) {
-                            String msg = activity.getString(R.string.success_delete_sheet) + " [" + sheet.name + "]";
-                            ToastUtils.showShortToast(msg);
-                            sendBroadcast(sheet);
-                        } else {
-                            String msg = activity.getString(R.string.error_delete_sheet_fail);
-                            ToastUtils.showShortToast(msg);
-                            broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
-                        }
+                        callBack(s);
                     }
 
-                    private void sendBroadcast(Sheet sheet) {
-                        Bundle extras = new Bundle();
-                        extras.putInt(DELETE_SHEET_ID, sheet.id);
-                        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, extras);
+                    private void callBack(boolean success) {
+                        if (onCompleteListener != null) {
+                            onCompleteListener.onComplete(success);
+                        }
                     }
                 });
     }

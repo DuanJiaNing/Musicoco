@@ -313,3 +313,8 @@
 
 1 照片墙可定制，数量，虚化度，透明度<br>
 2 完成主页面左侧导航界面<br>
+
+- 2017-08-12
+
+1 将 MainActivity 中两个多余的广播接收器移除(contentUpdateReceiver & MainSheetChangeReceiver)<br>
+

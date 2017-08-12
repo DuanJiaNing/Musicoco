@@ -34,9 +34,10 @@ public class App extends Application {
 
     private void test() {
 
-        int color = Color.parseColor("#B82525");
-        int color1 = Color.parseColor("#B82525");
-        int color2 = Color.parseColor("#B82525");
+        int color = Color.parseColor("#313335");
+        int color1 = Color.parseColor("#313335");
+
+        int color2 = Color.parseColor("#6871fb");
         appPreference.updateActionbarColor(color);
         appPreference.updateStatusBarColor(color1);
         appPreference.updateAccentColor(color2);
@@ -45,7 +46,7 @@ public class App extends Application {
         appPreference.updateImageWallBlur(1);
         appPreference.updateImageWallSize(30);
 
-        appPreference.updateTheme(ThemeEnum.DARK);
+        appPreference.updateTheme(ThemeEnum.WHITE);
         playPreference.updateTheme(ThemeEnum.VARYING);
         playPreference.updatePlayBgMode(PlayBackgroundModeEnum.GRADIENT_COLOR);
 

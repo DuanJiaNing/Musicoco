@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.interfaces.ContentUpdatable;
@@ -70,6 +71,10 @@ public class PlayListAdapter extends BaseAdapter implements
             public void onClick(View v) {
                 Song s = new Song((String) v.getTag(R.id.play_list_item_remove_path));
                 PlayListAdapter.this.songOperation.removeSongFromCurrentPlayingSheet(null, s);
+
+                // PlayListAdapter 在 MainActivity 和 PlayActivity 中都有，所以需要发送广播通知 MainActivity 更新
+                // 【我的歌单】 列表
+                BroadcastManager.getInstance(context).sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
             }
         };
 

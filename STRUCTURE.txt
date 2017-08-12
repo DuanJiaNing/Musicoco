@@ -1,0 +1,30 @@
+
+一 MainActivity 数据更新路径：
+1. onConnected 与服务器建立连接时
+1.1 update 更新全部
+(1) bottomNavigationController.update
+    底部播放导航
+(2) mostPlayController.update
+    最近最多播放
+(3) mainSheetsController.update
+    主歌单
+(4) mySheetsController.update
+    我的歌单
+
+2. onResume
+2.1 bottomNavigationController.update
+2.2 mySheetsController.update
+2.3 mainSheetsController.update
+
+3. BroadcastReceiver
+3.1 mySheetDataChangedReceiver
+3.1.1 处理的任务
+(1) mySheetsController.update
+(2) isNeedDeletePlayList
+    当前播放歌单属于被删除歌单时需将播放列表置为【全部歌单】
+3.1.2 广播发送位置
+(1) main/BottomNavigationController # startPlay & stopPlay & onPlayListChange
+    onPlayListChange，startPlay 和 stopPlay 在服务端播放状态改变时回调，此时要同步我的歌单列表中当前正在播放歌单的播放状态(这主要
+    通过切换列表项中图片上方的播放按钮状态实现)
+(2) PlayListAdapter # removeClickListener
+    PlayListAdapter 在 MainActivity 和 PlayActivity 中都有，所以需要发送广播通知 MainActivity 更新【我的歌单】 列表
