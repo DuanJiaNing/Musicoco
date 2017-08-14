@@ -19,9 +19,24 @@ public class BroadcastManager {
     public static final String FILTER_SHEET_DETAIL_SONGS_CHANGE = "filter_sheet_detail_songs_change";
 
     /**
-     * 通知播放界面白天/夜间主题切换
+     * 服务器退出
      */
-    public static final String FILTER_PLAY_ACTIVITY_APP_THEME_CHANGE = "filter_play_activity_app_theme_change";
+    public static final String FILTER_PLAY_SERVICE_QUIT = "filter_play_service_quit";
+
+    /**
+     * 播放界面界面主题改变
+     */
+    public static final String FILTER_PLAY_UI_MODE_CHANGE = "filter_play_ui_mode_change";
+    public static final String PLAY_THEME_CHANGE_TOKEN = "play_theme_change_token";
+    /**
+     * app 主题改变
+     */
+    public static final int PLAY_APP_THEME_CHANGE = 1;
+    /**
+     * 播放界面的主题改变
+     */
+    public static final int PLAY_PLAY_THEME_CHANGE = 2;
+
 
     private Context context;
 

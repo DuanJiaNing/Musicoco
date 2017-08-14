@@ -24,7 +24,7 @@ import rx.schedulers.Schedulers;
  * Created by DuanJiaNing on 2017/7/21.
  */
 
-public class SheetsOperation {
+public class SheetOperation {
 
     public static final String DELETE_SHEET_ID = "deletel_sheet_id";
     public static final String PLAY_SHEET_RANDOM = "play_sheet_random";
@@ -34,7 +34,7 @@ public class SheetsOperation {
     private DBMusicocoController dbMusicoco;
     private BroadcastManager broadcastManager;
 
-    public SheetsOperation(Activity activity, IPlayControl control, DBMusicocoController dbMusicoco) {
+    public SheetOperation(Activity activity, IPlayControl control, DBMusicocoController dbMusicoco) {
         this.activity = activity;
         this.control = control;
         this.dbMusicoco = dbMusicoco;
@@ -122,6 +122,9 @@ public class SheetsOperation {
                         if (onCompleteListener != null) {
                             onCompleteListener.onComplete(success);
                         }
+
+                        // 发送广播让 MainActivity mySheetDataChangedReceiver 进行歌单信息更新
+                        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
                     }
                 });
     }

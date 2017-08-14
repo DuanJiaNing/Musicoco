@@ -3,7 +3,6 @@ package com.duan.musicoco.main;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
@@ -14,7 +13,6 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.app.App;
 import com.duan.musicoco.app.interfaces.ContentUpdatable;
-import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.manager.ActivityManager;
@@ -22,7 +20,7 @@ import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.preference.ThemeEnum;
-import com.duan.musicoco.shared.SheetsOperation;
+import com.duan.musicoco.shared.SheetOperation;
 import com.duan.musicoco.util.ColorUtils;
 
 import java.util.ArrayList;
@@ -52,7 +50,7 @@ public class MySheetsController implements
     private MySheetsAdapter adapter;
     private final List<Sheet> sheets;
     private IPlayControl control;
-    private SheetsOperation sheetsOperation;
+    private SheetOperation sheetOperation;
 
     private boolean hasInitData = false;
 
@@ -78,8 +76,8 @@ public class MySheetsController implements
     public void initData(IPlayControl control) {
         this.control = control;
 
-        sheetsOperation = new SheetsOperation(activity, control, dbMusicoco);
-        adapter = new MySheetsAdapter(activity, sheets, dbMusicoco, mediaManager, control, sheetsOperation);
+        sheetOperation = new SheetOperation(activity, control, dbMusicoco);
+        adapter = new MySheetsAdapter(activity, sheets, dbMusicoco, mediaManager, control, sheetOperation);
         mListView.setAdapter(adapter);
 
         hasInitData = true;
@@ -91,7 +89,7 @@ public class MySheetsController implements
         switch (v.getId()) {
             case R.id.my_sheet_add:
             case R.id.sheet_empty_add:
-                sheetsOperation.addSheet();
+                sheetOperation.addSheet();
                 break;
         }
     }

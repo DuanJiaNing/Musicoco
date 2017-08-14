@@ -88,7 +88,7 @@ public class SongOperation {
         newSheet.clickListener = new OptionsAdapter.OptionClickListener() {
             @Override
             public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
-                new SheetsOperation(activity, control, dbMusicoco).addSheet();
+                new SheetOperation(activity, control, dbMusicoco).addSheet();
                 dialog.hide();
             }
         };

@@ -12,6 +12,7 @@ public class PeriodicTask {
     private TimerTask progressUpdateTask;
     private final Task task;
     private final int delay;
+    private boolean isSchedule = false;
 
     public interface Task {
         void execute();
@@ -23,11 +24,21 @@ public class PeriodicTask {
     }
 
     public void stop() {
-        if (progressUpdateTask != null)
+        if (!isSchedule()) {
+            return;
+        }
+
+        if (progressUpdateTask != null) {
             progressUpdateTask.cancel();
+            isSchedule = false;
+        }
     }
 
     public void start() {
+        if (isSchedule()) {
+            return;
+        }
+
         Timer timer = new Timer();
         progressUpdateTask = new TimerTask() {
             @Override
@@ -36,6 +47,11 @@ public class PeriodicTask {
             }
         };
         timer.schedule(progressUpdateTask, 0, delay);
+        isSchedule = true;
+    }
+
+    public boolean isSchedule() {
+        return isSchedule;
     }
 
 }

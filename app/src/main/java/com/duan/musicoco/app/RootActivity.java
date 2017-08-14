@@ -12,6 +12,7 @@ import com.duan.musicoco.preference.ThemeEnum;
 
 /**
  * Created by DuanJiaNing on 2017/8/6.
+ * 检查主题，打开获得数据库连接
  */
 
 public class RootActivity extends AppCompatActivity {

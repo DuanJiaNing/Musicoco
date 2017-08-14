@@ -17,6 +17,7 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.interfaces.OnCompleteListener;
+import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
@@ -26,7 +27,7 @@ import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
-import com.duan.musicoco.shared.SheetsOperation;
+import com.duan.musicoco.shared.SheetOperation;
 import com.duan.musicoco.shared.OptionsAdapter;
 import com.duan.musicoco.shared.OptionsDialog;
 import com.duan.musicoco.util.BitmapUtils;
@@ -54,7 +55,7 @@ public class MySheetsAdapter extends BaseAdapter implements
     private final List<Sheet> sheets;
     private final DBMusicocoController dbMusicoco;
     private final MediaManager mediaManager;
-    private final SheetsOperation sheetsOperation;
+    private final SheetOperation sheetOperation;
     private final IPlayControl control;
 
     private int mainTC;
@@ -75,13 +76,13 @@ public class MySheetsAdapter extends BaseAdapter implements
 
     public MySheetsAdapter(Activity activity, List<Sheet> sheets,
                            DBMusicocoController dbMusicoco, MediaManager mediaManager,
-                           IPlayControl control, SheetsOperation sheetsOperation) {
+                           IPlayControl control, SheetOperation sheetOperation) {
         this.activity = activity;
         this.sheets = sheets;
         this.control = control;
         this.dbMusicoco = dbMusicoco;
         this.mediaManager = mediaManager;
-        this.sheetsOperation = sheetsOperation;
+        this.sheetOperation = sheetOperation;
         this.mDialog = new OptionsDialog(activity);
 
         moreOptionsAdapter = new OptionsAdapter(activity);
@@ -113,7 +114,7 @@ public class MySheetsAdapter extends BaseAdapter implements
         modify.clickListener = new OptionsAdapter.OptionClickListener() {
             @Override
             public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
-                sheetsOperation.modifySheet(currentClickMoreOperationItem);
+                sheetOperation.modifySheet(currentClickMoreOperationItem);
                 mDialog.hide();
             }
         };
@@ -126,14 +127,13 @@ public class MySheetsAdapter extends BaseAdapter implements
         delete.clickListener = new OptionsAdapter.OptionClickListener() {
             @Override
             public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
-                sheetsOperation.handleDeleteSheet(currentClickMoreOperationItem, new OnCompleteListener<Boolean>() {
+                sheetOperation.handleDeleteSheet(currentClickMoreOperationItem, new OnCompleteListener<Boolean>() {
                     @Override
                     public void onComplete(Boolean aBoolean) {
                         if (aBoolean) {
                             String msg = activity.getString(R.string.success_delete_sheet) + " [" + currentClickMoreOperationItem.name + "]";
                             ToastUtils.showShortToast(msg);
 
-                            notifyDataSetChanged();
                             isCurrentPlayingSheetBeDelete(currentClickMoreOperationItem.id);
 
                         } else {
@@ -176,7 +176,7 @@ public class MySheetsAdapter extends BaseAdapter implements
     }
 
     @Override
-    public Object getItem(int position) {
+    public Sheet getItem(int position) {
         return sheets.get(position);
     }
 
@@ -188,7 +188,7 @@ public class MySheetsAdapter extends BaseAdapter implements
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder;
-        Sheet sheet = (Sheet) getItem(position);
+        Sheet sheet = getItem(position);
 
         if (convertView == null) {
             convertView = LayoutInflater.from(activity).inflate(R.layout.my_sheet_list_item, null);
@@ -241,10 +241,10 @@ public class MySheetsAdapter extends BaseAdapter implements
         holder.remark.setText(remark);
 
         holder.count.setTextColor(vicTC);
-        holder.count.setText(count + "首");
+        holder.count.setText(count + activity.getString(R.string.head));
 
         holder.playTimes.setTextColor(vicTC);
-        holder.playTimes.setText(playTimes + "次");
+        holder.playTimes.setText(playTimes + activity.getString(R.string.count));
 
         convertView.setBackgroundColor(itemBGC);
 

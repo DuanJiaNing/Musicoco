@@ -218,8 +218,10 @@ public class BottomNavigationController implements
 
             if (mControl.status() == PlayController.STATUS_PLAYING) {
                 mPlay.setPlayStatus(true);
+                startProgressUpdateTask();
             } else {
                 mPlay.setPlayStatus(false);
+                stopProgressUpdateTask();
             }
 
             if (currentSong != null) {
@@ -244,20 +246,28 @@ public class BottomNavigationController implements
     public void startPlay(Song song, int index, int status) {
         currentSong = mediaManager.getSongInfo(song);
 
-        task.start();
+        startProgressUpdateTask();
         mPlay.setChecked(true);
 
-        //??
+        // 列表上的播放按钮状态
         broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
     }
 
     @Override
     public void stopPlay(Song song, int index, int status) {
-        task.stop();
+        stopProgressUpdateTask();
         mPlay.setChecked(false);
 
         //??
         broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
+    }
+
+    public void startProgressUpdateTask() {
+        task.start();
+    }
+
+    public void stopProgressUpdateTask() {
+        task.stop();
     }
 
     @Override

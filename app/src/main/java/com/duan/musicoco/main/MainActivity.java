@@ -62,10 +62,16 @@ public class MainActivity extends InspectActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //权限检查完成后执行 permissionGranted 或 permissionDenied ，后回到此处
         Utils.transitionStatusBar(this);
         setContentView(R.layout.activity_main);
+
+        //权限检查完成后回调 permissionGranted 或 permissionDenied
+        checkPermission();
+
+    }
+
+    @Override
+    public void permissionGranted(int requestCode) {
 
         playServiceManager = new PlayServiceManager(this);
         broadcastManager = BroadcastManager.getInstance(this);
@@ -119,14 +125,11 @@ public class MainActivity extends InspectActivity implements
     }
 
     private void initSelfData() {
-
         bottomNavigationController.initData(control, dbController);
         mostPlayController.initData(dbController);
         mainSheetsController.initData(dbController);
         mySheetsController.initData(control);
         leftNavigationController.initData(dbController);
-
-
     }
 
     @Override
@@ -199,21 +202,21 @@ public class MainActivity extends InspectActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        if (bottomNavigationController.hasInitData()) {
+        if (bottomNavigationController != null && bottomNavigationController.hasInitData()) {
             // 启动应用时不需要更新，在 initSelfData 中统一更新全部
             bottomNavigationController.update(null, null);
         }
 
-        if (mySheetsController.hasInitData()) {
+        if (mySheetsController != null && mySheetsController.hasInitData()) {
             mySheetsController.update(null, null);
         }
 
-        if (mainSheetsController.hasInitData()) {
+        if (mainSheetsController != null && mainSheetsController.hasInitData()) {
             mainSheetsController.update(null, null);
         }
 
-        if (mostPlayController.hasInitData()) {
-            mostPlayController.update(null, null);
+        if (mostPlayController != null && mostPlayController.hasInitData()) {
+            mostPlayController.update(getString(R.string.rmp_history), null);
         }
     }
 
@@ -229,8 +232,13 @@ public class MainActivity extends InspectActivity implements
         }
     }
 
-    private void unregisterReceiver() {
+    @Override
+    public void finish() {
+        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_PLAY_SERVICE_QUIT, null);
+        super.finish();
+    }
 
+    private void unregisterReceiver() {
         if (mySheetDataChangedReceiver != null) {
             broadcastManager.unregisterReceiver(mySheetDataChangedReceiver);
         }
@@ -248,6 +256,14 @@ public class MainActivity extends InspectActivity implements
     public void onBackPressed() {
         if (leftNavigationController.onBackPressed()) {
             moveTaskToBack(true);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (bottomNavigationController != null) {
+            bottomNavigationController.stopProgressUpdateTask();
         }
     }
 
@@ -316,12 +332,14 @@ public class MainActivity extends InspectActivity implements
         toolbar.setTitleTextColor(mainTC);
         toggle.getDrawerArrowDrawable().setColor(mainTC);
 
-        MenuItem search = menu.findItem(R.id.action_main_search);
-        if (search != null) {
-            Drawable icon = search.getIcon();
-            if (icon != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    icon.setTint(mainTC);
+        if (menu != null) {
+            MenuItem search = menu.findItem(R.id.action_main_search);
+            if (search != null) {
+                Drawable icon = search.getIcon();
+                if (icon != null) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        icon.setTint(mainTC);
+                    }
                 }
             }
         }

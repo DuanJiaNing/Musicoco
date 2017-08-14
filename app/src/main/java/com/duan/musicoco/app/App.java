@@ -34,17 +34,18 @@ public class App extends Application {
 
     private void test() {
 
-        int color = Color.parseColor("#1BA260");
-        int color1 = Color.parseColor("#1BA260");
+        int color = Color.parseColor("#DD4617");
+        int color1 = Color.parseColor("#DD4617");
 
-        int color2 = Color.parseColor("#DD4E42");
+        int color2 = Color.parseColor("#F72597");
         appPreference.updateActionbarColor(color);
         appPreference.updateStatusBarColor(color1);
         appPreference.updateAccentColor(color2);
 
         appPreference.updateImageWallAlpha(10);
         appPreference.updateImageWallBlur(1);
-        appPreference.updateImageWallSize(10);
+        //FIXME 显示图片个数不正确
+        appPreference.updateImageWallSize(40);
 
 //        appPreference.updateTheme(ThemeEnum.WHITE);
         playPreference.updateTheme(ThemeEnum.VARYING);

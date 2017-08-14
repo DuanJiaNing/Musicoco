@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,6 +16,7 @@ import android.widget.ImageView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.interfaces.ViewVisibilityChangeable;
+import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.main.MainActivity;
 import com.duan.musicoco.preference.AppPreference;
@@ -170,7 +172,7 @@ public class LeftNavigationController implements
 
                 break;
             case R.id.setting_quit: // 退出
-
+                activity.finish();
                 break;
             default:
                 break;
@@ -210,6 +212,12 @@ public class LeftNavigationController implements
 
         appPreference.updateTheme(theme);
         ((MainActivity) activity).switchThemeMode(theme);
+
+        // 播放界面更新主题（底部弹出选项框）
+        BroadcastManager manager = BroadcastManager.getInstance(activity);
+        Bundle bundle = new Bundle();
+        bundle.putInt(BroadcastManager.PLAY_THEME_CHANGE_TOKEN, BroadcastManager.PLAY_APP_THEME_CHANGE);
+        manager.sendMyBroadcast(BroadcastManager.FILTER_PLAY_UI_MODE_CHANGE, bundle);
 
     }
 

@@ -30,7 +30,7 @@ import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.main.MainActivity;
 import com.duan.musicoco.preference.ThemeEnum;
-import com.duan.musicoco.shared.SheetsOperation;
+import com.duan.musicoco.shared.SheetOperation;
 import com.duan.musicoco.shared.SongOperation;
 import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.util.ColorUtils;
@@ -58,7 +58,7 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
     private RecyclerView songList;
 
     private AppBarStateChangeListener barStateChangeListener;
-    private SheetsOperation sheetsOperation;
+    private SheetOperation sheetOperation;
     private SongOperation songOperation;
     private IPlayControl control;
     private BroadcastReceiver songsChangeReceiver;
@@ -80,7 +80,7 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
         songListController = new SheetSongListController(this);
         mediaManager = MediaManager.getInstance(this);
         control = MainActivity.getControl();
-        sheetsOperation = new SheetsOperation(this, control, dbController);
+        sheetOperation = new SheetOperation(this, control, dbController);
         songOperation = new SongOperation(this, control, dbController);
         broadcastManager = BroadcastManager.getInstance(this);
 
@@ -261,7 +261,7 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
                 }
                 break;
             case R.id.sheet_detail_action_modify:
-                sheetsOperation.modifySheet(sheet);
+                sheetOperation.modifySheet(sheet);
                 break;
             case android.R.id.home:
                 if (songListController.onBackPressed()) {

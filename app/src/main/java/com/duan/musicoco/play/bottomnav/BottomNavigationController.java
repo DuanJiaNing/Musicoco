@@ -119,14 +119,26 @@ public class BottomNavigationController implements
 
         vDarkBg.setOnClickListener(this);
 
+        initNavPosition();
+
+    }
+
+    private void initNavPosition() {
+
         ViewGroup.LayoutParams params = mViewRoot.getLayoutParams();
-        DisplayMetrics metrics = Utils.getMetrics(activity);
+        final DisplayMetrics metrics = Utils.getMetrics(activity);
         params.width = ViewGroup.LayoutParams.MATCH_PARENT;
         params.height = metrics.heightPixels * 5 / 9;
-        mViewRoot.setX(0);
-        int marginB = (int) activity.getResources().getDimension(R.dimen.action_bar_default_height);
-        mViewRoot.setY(metrics.heightPixels - marginB);
         mViewRoot.setLayoutParams(params);
+
+        mListTitleContainer.post(new Runnable() {
+            @Override
+            public void run() {
+                int titleHeight = mListTitleContainer.getMeasuredHeight();
+                mViewRoot.setY(metrics.heightPixels - titleHeight);
+
+            }
+        });
 
     }
 
@@ -185,10 +197,74 @@ public class BottomNavigationController implements
         });
     }
 
+    // updateColors 在 VARYING 主题时才会不断调用
+    public void updateColors(int color, boolean isVarying) {
+        int alpha = activity.getResources().getInteger(R.integer.play_list_bg_alpha);
+        int colorA = ColorUtils.setAlphaComponent(color, alpha);
+
+        mRealTimeView.setOverlayColor(colorA);
+        ColorDrawable bd = new ColorDrawable(color);
+        bd.setAlpha(10);
+        mListTitleContainer.setBackground(bd);
+
+        ThemeEnum t;
+        double d = ColorUtils.calculateLuminance(colorA);
+        if (d - 0.400 > 0.000001) {
+            t = WHITE;
+        } else {
+            t = DARK;
+        }
+
+        int cs[] = new int[2];
+        switch (t) {
+            case WHITE: {
+                if (isVarying) {
+                    cs = com.duan.musicoco.util.ColorUtils.get2ColorWhiteThemeForPlayOptions();
+                } else {
+                    cs = com.duan.musicoco.util.ColorUtils.get2WhiteThemeTextColor();
+                }
+                break;
+            }
+            case DARK:
+            default: {
+                if (isVarying) {
+                    cs = com.duan.musicoco.util.ColorUtils.get2ColorDarkThemeForPlayOptions();
+                } else {
+                    cs = com.duan.musicoco.util.ColorUtils.get2DarkThemeTextColor();
+                }
+                break;
+            }
+        }
+        songOption.setDrawableColor(cs[0]);
+        listOption.setDrawableColor(cs[0]);
+
+        if (playListAdapter != null) {
+            playListAdapter.setMainTextColor(cs[0]);
+            playListAdapter.setVicTextColor(cs[1]);
+        }
+
+        listOption.updateColors();
+        songOption.updateColors();
+
+    }
+
     @Override
     public void themeChange(ThemeEnum themeEnum, int[] colors) {
         themeEnum = appPreference.getTheme();
         int[] cs = com.duan.musicoco.util.ColorUtils.get10ThemeColors(activity, themeEnum);
+
+        int accentC = cs[2];
+
+        // ItemColor 随主题改变而变化
+        playListAdapter.setSelectItemColor(accentC);
+
+        songOption.themeChange(themeEnum, cs);
+    }
+
+    public void playThemeChange() {
+
+        ThemeEnum theme = appPreference.getTheme();
+        int[] cs = com.duan.musicoco.util.ColorUtils.get10ThemeColors(activity, theme);
 
         int statusC = cs[0];
         int toolbarC = cs[1];
@@ -205,7 +281,6 @@ public class BottomNavigationController implements
         playListAdapter.setVicTextColor(vicTC);
         playListAdapter.setSelectItemColor(accentC);
 
-        songOption.themeChange(themeEnum, cs);
     }
 
     @Override
@@ -397,57 +472,6 @@ public class BottomNavigationController implements
         }
     }
 
-    // updateColors 在 VARYING 主题时才会不断调用
-    public void updateColors(int color, boolean isVarying) {
-        int alpha = activity.getResources().getInteger(R.integer.play_list_bg_alpha);
-        int colorA = ColorUtils.setAlphaComponent(color, alpha);
-
-        mRealTimeView.setOverlayColor(colorA);
-        ColorDrawable bd = new ColorDrawable(color);
-        bd.setAlpha(10);
-        mListTitleContainer.setBackground(bd);
-
-        ThemeEnum t;
-        double d = ColorUtils.calculateLuminance(colorA);
-        if (d - 0.400 > 0.000001) {
-            t = WHITE;
-        } else {
-            t = DARK;
-        }
-
-        int cs[] = new int[2];
-        switch (t) {
-            case WHITE: {
-                if (isVarying) {
-                    cs = com.duan.musicoco.util.ColorUtils.get2ColorWhiteThemeForPlayOptions();
-                } else {
-                    cs = com.duan.musicoco.util.ColorUtils.get2WhiteThemeTextColor();
-                }
-                break;
-            }
-            case DARK:
-            default: {
-                if (isVarying) {
-                    cs = com.duan.musicoco.util.ColorUtils.get2ColorDarkThemeForPlayOptions();
-                } else {
-                    cs = com.duan.musicoco.util.ColorUtils.get2DarkThemeTextColor();
-                }
-                break;
-            }
-        }
-        songOption.setDrawableColor(cs[0]);
-        listOption.setDrawableColor(cs[0]);
-
-        if (playListAdapter != null) {
-            playListAdapter.setMainTextColor(cs[0]);
-            playListAdapter.setVicTextColor(cs[1]);
-        }
-
-        listOption.updateColors();
-        songOption.updateColors();
-
-    }
-
     boolean isListShowing() {
         return isListShowing;
     }
@@ -460,9 +484,9 @@ public class BottomNavigationController implements
         isListTitleHide = true;
 
         final int duration = activity.getResources().getInteger(R.integer.play_list_anim_duration);
-        int marginB = (int) activity.getResources().getDimension(R.dimen.action_bar_default_height);
+        int titleHeight = mListTitleContainer.getMeasuredHeight();
         float from = mViewRoot.getY();
-        float to = from + marginB;
+        float to = from + titleHeight;
 
         startTranslateTitleAnim(from, to, duration);
     }
@@ -471,9 +495,9 @@ public class BottomNavigationController implements
         isListTitleHide = false;
 
         final int duration = activity.getResources().getInteger(R.integer.play_list_anim_duration);
-        int marginB = (int) activity.getResources().getDimension(R.dimen.action_bar_default_height);
+        int titleHeight = mListTitleContainer.getMeasuredHeight();
         float from = mViewRoot.getY();
-        float to = from - marginB;
+        float to = from - titleHeight;
 
         startTranslateTitleAnim(from, to, duration);
 
@@ -485,9 +509,9 @@ public class BottomNavigationController implements
 
         ValueAnimator animY = ObjectAnimator.ofFloat(from, to);
 
-        int marginB = (int) activity.getResources().getDimension(R.dimen.action_bar_default_height);
-        int fromM = isListTitleHide ? marginB : 0;
-        int toM = isListTitleHide ? 0 : marginB;
+        int titleHeight = mListTitleContainer.getMeasuredHeight();
+        int fromM = isListTitleHide ? titleHeight : 0;
+        int toM = isListTitleHide ? 0 : titleHeight;
         ValueAnimator animM = ObjectAnimator.ofInt(fromM, toM);
         animM.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
