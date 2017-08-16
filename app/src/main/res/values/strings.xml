@@ -70,6 +70,7 @@
     <string name="error_delete_sheet_fail">删除歌单失败 :(</string>
     <string name="error_load_sheet_fail">加载歌单失败 :(</string>
     <string name="error_not_modify">未修改</string>
+    <string name="action_did_not_support">不支持该操作</string>
 
     <!-- 操作成功 /////////////////////////////////////////////////////////////////////////////////////////// -->
 

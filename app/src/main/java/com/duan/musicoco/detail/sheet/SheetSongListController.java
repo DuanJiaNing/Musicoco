@@ -471,7 +471,12 @@ public class SheetSongListController implements
                 playAll(true);
                 break;
             case R.id.sheet_detail_play_all:
-                playAll(false);
+                if (songAdapter.getMultiselectionModeEnable()) {
+                    songAdapter.setMultiselectionModeEnable(false);
+                    switchMultiselectionMode(false);
+                } else {
+                    playAll(false);
+                }
                 break;
         }
     }

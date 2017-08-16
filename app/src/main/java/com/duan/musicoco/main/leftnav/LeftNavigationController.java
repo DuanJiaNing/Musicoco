@@ -73,12 +73,16 @@ public class LeftNavigationController implements
             @Override
             public void run() {
                 ImageView iv = (ImageView) navigationView.findViewById(R.id.main_left_nav_image);
-                iv.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        updateImageWall();
-                    }
-                });
+                if (iv != null) {
+
+                    iv.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            updateImageWall();
+                        }
+                    });
+                }
+
             }
         });
     }

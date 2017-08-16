@@ -63,7 +63,7 @@
             android:launchMode="singleTask"
             android:theme="@style/AppTheme.Sheet.Detail" />
         <activity
-            android:name=".newsheet.SheetModifyActivity"
+            android:name=".sheetmodify.SheetModifyActivity"
             android:label="@string/title_activity_sheet_modify"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme" />

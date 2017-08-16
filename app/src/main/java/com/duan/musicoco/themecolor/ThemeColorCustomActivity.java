@@ -15,12 +15,16 @@ import android.widget.ImageView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.RootActivity;
+import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.preference.ThemeEnum;
+import com.duan.musicoco.util.ColorUtils;
+import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.view.ColorPickerView;
 
 public class ThemeColorCustomActivity extends RootActivity implements
         ColorPickerView.OnColorPickerChangeListener,
-        View.OnClickListener {
+        View.OnClickListener,
+        ThemeChangeable {
 
     private Button modeStatus;
     private Button modeIcon;
@@ -30,6 +34,8 @@ public class ThemeColorCustomActivity extends RootActivity implements
     private ImageView picIcon_;
     private ColorPickerView pickerPrimary;
     private ColorPickerView pickerDark;
+
+    private Toolbar toolbar;
 
     private int colorActionStatus = Integer.MAX_VALUE;
     private int colorIcon = Integer.MAX_VALUE;
@@ -42,10 +48,11 @@ public class ThemeColorCustomActivity extends RootActivity implements
         setContentView(R.layout.activity_theme_color_custom);
 
         initViews();
+        themeChange(null, null);
     }
 
     private void initViews() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.theme_custom_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.theme_custom_toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
@@ -57,14 +64,6 @@ public class ThemeColorCustomActivity extends RootActivity implements
 
         modeStatus.setOnClickListener(this);
         modeIcon.setOnClickListener(this);
-
-        pickerDark.post(new Runnable() {
-            @Override
-            public void run() {
-                int co = appPreference.getStatusBarColor();
-                pickerDark.setColors(Color.TRANSPARENT, co);
-            }
-        });
 
         mode = false;
         updateMode();
@@ -142,6 +141,10 @@ public class ThemeColorCustomActivity extends RootActivity implements
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             updateColor();
+        } else {
+            String msg = getString(R.string.action_did_not_support);
+            ToastUtils.showShortToast(msg);
+            finish();
         }
 
     }
@@ -186,5 +189,29 @@ public class ThemeColorCustomActivity extends RootActivity implements
             mode = true;
             updateMode();
         }
+    }
+
+    @Override
+    public void themeChange(ThemeEnum themeEnum, int[] colors) {
+
+        final int[] ta = ColorUtils.get2ActionStatusBarColors(this);
+        toolbar.setBackgroundColor(ta[1]);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ta[0]);
+        }
+
+        pickerDark.post(new Runnable() {
+            @Override
+            public void run() {
+                pickerDark.setColors(Color.TRANSPARENT, ta[1]);
+            }
+        });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            picStatus_.getDrawable().setTint(ta[1]);
+            int ac = ColorUtils.getAccentColor(this);
+            picIcon_.getDrawable().setTint(ac);
+        }
+
     }
 }

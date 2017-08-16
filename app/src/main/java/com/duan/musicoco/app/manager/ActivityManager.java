@@ -1,16 +1,14 @@
 package com.duan.musicoco.app.manager;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
-import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.detail.sheet.SheetDetailActivity;
 import com.duan.musicoco.detail.song.SongDetailActivity;
 import com.duan.musicoco.main.MainActivity;
-import com.duan.musicoco.newsheet.SheetModifyActivity;
+import com.duan.musicoco.sheetmodify.SheetModifyActivity;
 import com.duan.musicoco.play.PlayActivity;
 import com.duan.musicoco.rmp.RecentMostPlayActivity;
 import com.duan.musicoco.search.SearchActivity;
