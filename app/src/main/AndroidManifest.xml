@@ -27,7 +27,7 @@
             android:excludeFromRecents="true"
             android:hardwareAccelerated="true"
             android:launchMode="singleInstance"
-            android:theme="@style/AppTheme" /> <!-- singleInstance 不受栈管理-->
+            android:theme="@style/AppTheme" /> <!-- singleInstance 不受栈管理 -->
 
         <service
             android:name=".service.PlayService"
@@ -50,6 +50,7 @@
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -80,6 +81,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.duan.musicoco.main.MainActivity" />
         </activity>
+        <activity
+            android:name=".themecolor.ThemeColorCustomActivity"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

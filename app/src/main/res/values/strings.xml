@@ -88,6 +88,7 @@
     <string name="warning">警告</string>
     <string name="unknown">出错了 :O</string>
     <string name="ensure">确认</string>
+    <string name="save">保存</string>
     <string name="collect">收藏</string>
     <string name="add">添加</string>
     <string name="tip">提示</string>
@@ -112,6 +113,9 @@
     <string name="select_operation">选择操作</string>
     <string name="select_song">选择歌曲</string>
     <string name="create_time">创建时间</string>
+
+    <string name="action_status_bar_color">标题栏颜色</string>
+    <string name="icon_color">图标颜色</string>
 
     <!-- 提示 /////////////////////////////////////////////////////////////////////////////////////////// -->
 

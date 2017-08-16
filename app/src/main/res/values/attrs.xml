@@ -11,6 +11,7 @@
     <attr name="dotColor" format="color" /> <!--小圆点颜色 -->
 
     <attr name="indicatorColor" format="color" /> <!--指示点颜色 -->
+
     <attr name="indicatorSize" format="dimension" /> <!--指示点大小 直径-->
     <attr name="indicatorPos" format="integer" /> <!--指示点位置，从1开始，水平最左面为1，纵向最上面为1-->
 
@@ -166,6 +167,15 @@
         <attr name="text" format="string" />
         <attr name="bitmap" format="reference" />
         <attr name="textSize" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="ColorPickerView">
+        <attr name="indicatorColor" /><!--指示点颜色-->
+        <attr name="indicatorEnable" format="boolean" /><!--是否启用指示点-->
+        <attr name="orientation" format="integer">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+        </attr>
     </declare-styleable>
 
 </resources>

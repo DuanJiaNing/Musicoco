@@ -59,6 +59,8 @@ public class MainActivity extends InspectActivity implements
     private BroadcastReceiver mySheetDataChangedReceiver;
     private BroadcastManager broadcastManager;
 
+    private boolean updateColorByCustomThemeColor = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -218,6 +220,12 @@ public class MainActivity extends InspectActivity implements
         if (mostPlayController != null && mostPlayController.hasInitData()) {
             mostPlayController.update(getString(R.string.rmp_history), null);
         }
+
+        if (updateColorByCustomThemeColor) {
+            themeChange(null, null);
+            switchThemeMode(appPreference.getTheme());
+            updateColorByCustomThemeColor = false;
+        }
     }
 
     @Override
@@ -369,6 +377,15 @@ public class MainActivity extends InspectActivity implements
         leftNavigationController.themeChange(theme, null);
         themeChange(null, null);
 
+    }
+
+    /**
+     * 设置标志需要更新主题
+     * LeftNavigationController【主题色定制】时调用
+     * 应用标题栏和图标颜色改变
+     */
+    public void updateColorByCustomThemeColor() {
+        this.updateColorByCustomThemeColor = true;
     }
 
     public static IPlayControl getControl() {

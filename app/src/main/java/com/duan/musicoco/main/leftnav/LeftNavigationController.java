@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.interfaces.ViewVisibilityChangeable;
+import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.main.MainActivity;
@@ -39,11 +40,13 @@ public class LeftNavigationController implements
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ImageWallController imageWallController;
+    private ActivityManager activityManager;
 
     public LeftNavigationController(Activity activity, AppPreference appPreference) {
         this.activity = activity;
         this.appPreference = appPreference;
         this.imageWallController = new ImageWallController(activity, appPreference);
+        activityManager = ActivityManager.getInstance(activity);
     }
 
     public void initViews() {
@@ -51,46 +54,9 @@ public class LeftNavigationController implements
         navigationView = (NavigationView) activity.findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         imageWallController.initViews(navigationView);
-        initDaytimeOrNightMode();
+        updateSwitchMenuIconAndText();
     }
 
-    private void initDaytimeOrNightMode() {
-        Menu menu = navigationView.getMenu();
-        MenuItem item = menu.findItem(R.id.setting_night_mode);
-
-        // 0 日间时应该显示的
-        // 1 夜间时应该显示的
-        Drawable[] ds = new Drawable[2];
-        String[] ts = new String[2];
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ds[0] = activity.getDrawable(R.drawable.ic_night);
-        } else {
-            ds[0] = activity.getResources().getDrawable(R.drawable.ic_night);
-        }
-        ts[0] = activity.getString(R.string.setting_night_mode);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            ds[1] = activity.getDrawable(R.drawable.ic_daytime);
-        } else {
-            ds[1] = activity.getResources().getDrawable(R.drawable.ic_daytime);
-        }
-        ts[1] = activity.getString(R.string.setting_daytime_mode);
-
-        Drawable icon;
-        String title;
-        ThemeEnum theme = appPreference.getTheme();
-        if (theme == ThemeEnum.WHITE || theme == ThemeEnum.VARYING) {
-            icon = ds[0];
-            title = ts[0];
-        } else {
-            icon = ds[1];
-            title = ts[1];
-        }
-
-        item.setIcon(icon);
-        item.setTitle(title);
-    }
 
     public void initData(DBMusicocoController dbController) {
         this.dbController = dbController;
@@ -163,10 +129,11 @@ public class LeftNavigationController implements
 
                 break;
             case R.id.setting_theme_color_custom: // 主题色
-
+                activityManager.startThemeColorCustomActivity();
+                ((MainActivity) activity).updateColorByCustomThemeColor();
                 break;
             case R.id.setting_night_mode: // 夜间模式
-                handleModeSwitch(item);
+                handleModeSwitch();
                 break;
             case R.id.setting_set: // 设置
 
@@ -182,42 +149,56 @@ public class LeftNavigationController implements
         return false;
     }
 
-    private void handleModeSwitch(MenuItem item) {
+    private void handleModeSwitch() {
+        ThemeEnum theme = ThemeEnum.reversal(appPreference.getTheme());
+
+        appPreference.updateTheme(theme);
+        ((MainActivity) activity).switchThemeMode(theme);
+
+        // 播放界面更新主题（底部弹出的选项框）
+        BroadcastManager manager = BroadcastManager.getInstance(activity);
+        Bundle bundle = new Bundle();
+        bundle.putInt(BroadcastManager.Play.PLAY_THEME_CHANGE_TOKEN, BroadcastManager.Play.PLAY_APP_THEME_CHANGE);
+        manager.sendMyBroadcast(BroadcastManager.FILTER_PLAY_UI_MODE_CHANGE, bundle);
+
+    }
+
+    private void updateSwitchMenuIconAndText() {
+        MenuItem item;
+        Menu menu = navigationView.getMenu();
+        if (menu != null) {
+            item = menu.findItem(R.id.setting_night_mode);
+            if (item == null) {
+                return;
+            }
+        } else {
+            return;
+        }
+
         ThemeEnum theme = appPreference.getTheme();
 
         Drawable icon;
         String title;
 
-        if (theme == ThemeEnum.WHITE || theme == ThemeEnum.VARYING) { // 切换到 夜间模式
-            theme = ThemeEnum.DARK;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                icon = activity.getDrawable(R.drawable.ic_daytime);
-            } else {
-                icon = activity.getResources().getDrawable(R.drawable.ic_daytime);
-            }
-            title = activity.getString(R.string.setting_daytime_mode);
-        } else { // 切换到 白天模式
-            theme = ThemeEnum.WHITE;
-
+        if (theme == ThemeEnum.WHITE || theme == ThemeEnum.VARYING) { // 白天模式
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 icon = activity.getDrawable(R.drawable.ic_night);
-            } else { // 切换到 白天模式
+            } else {
                 icon = activity.getResources().getDrawable(R.drawable.ic_night);
             }
             title = activity.getString(R.string.setting_night_mode);
+        } else { // 切换到 白天模式
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                icon = activity.getDrawable(R.drawable.ic_daytime);
+            } else { // 切换到 白天模式
+                icon = activity.getResources().getDrawable(R.drawable.ic_daytime);
+            }
+            title = activity.getString(R.string.setting_daytime_mode);
         }
 
         item.setIcon(icon);
         item.setTitle(title);
-
-        appPreference.updateTheme(theme);
-        ((MainActivity) activity).switchThemeMode(theme);
-
-        // 播放界面更新主题（底部弹出选项框）
-        BroadcastManager manager = BroadcastManager.getInstance(activity);
-        Bundle bundle = new Bundle();
-        bundle.putInt(BroadcastManager.PLAY_THEME_CHANGE_TOKEN, BroadcastManager.PLAY_APP_THEME_CHANGE);
-        manager.sendMyBroadcast(BroadcastManager.FILTER_PLAY_UI_MODE_CHANGE, bundle);
 
     }
 
@@ -232,6 +213,8 @@ public class LeftNavigationController implements
 
         navigationView.setItemTextColor(ColorStateList.valueOf(mainTC));
         navigationView.setBackgroundColor(mainBC);
+
+        updateSwitchMenuIconAndText();
 
         Menu menu = navigationView.getMenu();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

@@ -14,6 +14,7 @@ import com.duan.musicoco.newsheet.SheetModifyActivity;
 import com.duan.musicoco.play.PlayActivity;
 import com.duan.musicoco.rmp.RecentMostPlayActivity;
 import com.duan.musicoco.search.SearchActivity;
+import com.duan.musicoco.themecolor.ThemeColorCustomActivity;
 
 import java.io.File;
 
@@ -91,5 +92,9 @@ public class ActivityManager {
 
     public void startMainActivity() {
         context.startActivity(new Intent(context, MainActivity.class));
+    }
+
+    public void startThemeColorCustomActivity() {
+        context.startActivity(new Intent(context, ThemeColorCustomActivity.class));
     }
 }

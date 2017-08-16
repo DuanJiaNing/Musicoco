@@ -192,10 +192,10 @@ public class PlayActivity extends InspectActivity implements
         themeChangeReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                int which = intent.getIntExtra(BroadcastManager.PLAY_THEME_CHANGE_TOKEN, Integer.MAX_VALUE);
-                if (which == BroadcastManager.PLAY_APP_THEME_CHANGE) {
+                int which = intent.getIntExtra(BroadcastManager.Play.PLAY_THEME_CHANGE_TOKEN, Integer.MAX_VALUE);
+                if (which == BroadcastManager.Play.PLAY_APP_THEME_CHANGE) {
                     themeChange(null, null);
-                } else if (which == BroadcastManager.PLAY_PLAY_THEME_CHANGE) {
+                } else if (which == BroadcastManager.Play.PLAY_PLAY_THEME_CHANGE) {
                     updateViewsColorsIfNeed(null);
                 }
             }
