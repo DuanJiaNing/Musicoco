@@ -46,6 +46,7 @@ public class PlayService extends RootService {
                 if (iBinder.status() == PlayController.STATUS_PLAYING) {
                     iBinder.pause();
                 }
+                iBinder.releaseMediaPlayer();
                 stopSelf();
             }
         };

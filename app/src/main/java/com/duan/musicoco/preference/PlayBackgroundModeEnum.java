@@ -7,15 +7,15 @@ package com.duan.musicoco.preference;
 
 public enum PlayBackgroundModeEnum {
 
-    COLOR,  // 纯色
+    // 纯色
+    COLOR,
 
-    // 颜色过度
+    // 颜色渐变
     GRADIENT_COLOR,
 
-    PICTUREWITHMASK, // 带遮罩(黑边)的专辑图片
+    // 带遮罩(黑边)的专辑图片
+    PICTUREWITHMASK,
 
-    /**
-     * 虚化的专辑图片
-     */
+    //虚化的专辑图片
     PICTUREWITHBLUR,
 }

@@ -51,7 +51,7 @@ public class App extends Application {
 
 //        appPreference.updateTheme(ThemeEnum.WHITE);
         playPreference.updateTheme(ThemeEnum.VARYING);
-        playPreference.updatePlayBgMode(PlayBackgroundModeEnum.GRADIENT_COLOR);
+        playPreference.updatePlayBgMode(PlayBackgroundModeEnum.COLOR);
 
     }
 
