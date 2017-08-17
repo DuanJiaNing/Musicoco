@@ -369,6 +369,7 @@ public class ColorUtils {
 
         return colors;
     }
+
     /**
      * 0 状态栏背景色<br>
      * 1 标题栏背景色<br>
@@ -447,6 +448,19 @@ public class ColorUtils {
         }
 
         return colors;
+    }
+
+
+    /**
+     * 0 主字体颜色
+     * 1 辅字体颜色
+     */
+    public static int[] get2ThemeTextColor(Context context, ThemeEnum themeEnum) {
+        if (themeEnum == ThemeEnum.DARK) {
+            return get2DarkThemeTextColor();
+        } else {
+            return get2WhiteThemeTextColor();
+        }
     }
 
     /**

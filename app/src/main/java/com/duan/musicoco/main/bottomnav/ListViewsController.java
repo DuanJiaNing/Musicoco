@@ -6,15 +6,12 @@ import android.content.DialogInterface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.RemoteException;
-import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -38,7 +35,6 @@ import com.duan.musicoco.shared.PlayListAdapter;
 import com.duan.musicoco.shared.SongOperation;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
-import com.duan.musicoco.view.PullDownLinearLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -221,7 +217,7 @@ public class ListViewsController implements
 
                 // PlayListAdapter 在 MainActivity 和 PlayActivity 中都有，所以需要发送广播通知 MainActivity 更新
                 // 【我的歌单】 列表
-                BroadcastManager.getInstance(activity).sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
+                BroadcastManager.getInstance(activity).sendBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
 
             }
         });

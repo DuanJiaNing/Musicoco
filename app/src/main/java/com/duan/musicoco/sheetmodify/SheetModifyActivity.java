@@ -270,7 +270,7 @@ public class SheetModifyActivity extends RootActivity implements
         String newRemark = remarkModifyHolder.editText.getText().toString();
 
         if (newName.equals(oldName) && newRemark.equals(oldRemark)) {
-            ToastUtils.showShortToast(getString(R.string.error_not_modify));
+            ToastUtils.showShortToast(getString(R.string.info_not_modify));
             finish();
             return;
         }

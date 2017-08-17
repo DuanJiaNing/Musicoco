@@ -143,4 +143,8 @@
         <item name="android:activityOpenEnterAnimation">@anim/slide_in_right_no_alpha</item>
     </style>
 
+    <style name="NumberPicker">
+        <item name="textSize">30sp</item>
+    </style>
+
 </resources>

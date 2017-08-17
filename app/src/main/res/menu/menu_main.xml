@@ -12,7 +12,7 @@
                 <item
                     android:id="@+id/setting_sleep"
                     android:icon="@drawable/ic_snooze"
-                    android:title="@string/setting_sleep" />
+                    android:title="@string/setting_time_sleep" />
 
                 <item
                     android:id="@+id/setting_image_wall"

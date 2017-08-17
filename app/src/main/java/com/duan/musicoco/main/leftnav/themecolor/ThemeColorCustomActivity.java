@@ -142,7 +142,7 @@ public class ThemeColorCustomActivity extends RootActivity implements
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             updateColor();
         } else {
-            String msg = getString(R.string.action_did_not_support);
+            String msg = getString(R.string.error_action_did_not_support);
             ToastUtils.showShortToast(msg);
             finish();
         }

@@ -11,16 +11,25 @@ public class PeriodicTask {
 
     private TimerTask progressUpdateTask;
     private final Task task;
-    private final int delay;
+    private final int period;
     private boolean isSchedule = false;
 
     public interface Task {
+        /**
+         * 执行周期任务，注意该方法不在主线程执行，不能在其中访问 UI 控件
+         */
         void execute();
     }
 
-    public PeriodicTask(Task task, int delay) {
+    /**
+     * 执行周期性周期任务
+     *
+     * @param task   执行内容
+     * @param period 周期
+     */
+    public PeriodicTask(Task task, int period) {
         this.task = task;
-        this.delay = delay;
+        this.period = period;
     }
 
     public void stop() {
@@ -46,7 +55,7 @@ public class PeriodicTask {
                 task.execute();
             }
         };
-        timer.schedule(progressUpdateTask, 0, delay);
+        timer.schedule(progressUpdateTask, 0, period);
         isSchedule = true;
     }
 

@@ -13,12 +13,14 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
+import com.duan.musicoco.app.App;
 import com.duan.musicoco.app.InspectActivity;
 import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
@@ -33,6 +35,7 @@ import com.duan.musicoco.main.leftnav.LeftNavigationController;
 import com.duan.musicoco.play.PlayServiceConnection;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.ColorUtils;
+import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.AppBarStateChangeListener;
 
@@ -57,6 +60,7 @@ public class MainActivity extends InspectActivity implements
     private MySheetsController mySheetsController;
 
     private BroadcastReceiver mySheetDataChangedReceiver;
+    private BroadcastReceiver appQuitTimeCountdownReceiver;
     private BroadcastManager broadcastManager;
 
     private boolean updateColorByCustomThemeColor = false;
@@ -76,9 +80,10 @@ public class MainActivity extends InspectActivity implements
     public void permissionGranted(int requestCode) {
 
         playServiceManager = new PlayServiceManager(this);
+        // 单例持有的 Context 为 MainActivity 的，最早调用在此。
         broadcastManager = BroadcastManager.getInstance(this);
         bottomNavigationController = new BottomNavigationController(this, mediaManager);
-        leftNavigationController = new LeftNavigationController(this, appPreference);
+        leftNavigationController = new LeftNavigationController(this, appPreference, auxiliaryPreference);
         mostPlayController = new RecentMostPlayController(this, mediaManager);
         mainSheetsController = new MainSheetsController(this, mediaManager);
         mySheetsController = new MySheetsController(this, dbController, mediaManager);
@@ -155,7 +160,32 @@ public class MainActivity extends InspectActivity implements
                 mySheetsController.update(null, null);
             }
         };
+
+        appQuitTimeCountdownReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                int status = intent.getIntExtra(
+                        BroadcastManager.Countdown.APP_QUIT_TIME_COUNTDOWN_STATUS,
+                        BroadcastManager.Countdown.STOP_COUNTDOWN);
+                if (status == BroadcastManager.Countdown.STOP_COUNTDOWN) {
+                    leftNavigationController.stopQuitCountdown();
+                } else {
+                    leftNavigationController.startQuitCountdown();
+                }
+            }
+        };
+
+        broadcastManager.registerBroadReceiver(appQuitTimeCountdownReceiver, BroadcastManager.FILTER_APP_QUIT_TIME_COUNTDOWN);
         broadcastManager.registerBroadReceiver(mySheetDataChangedReceiver, BroadcastManager.FILTER_MY_SHEET_CHANGED);
+    }
+
+    /**
+     * 关闭服务并退出应用
+     */
+    public void shutDownServiceAndApp() {
+        broadcastManager.sendBroadcast(BroadcastManager.FILTER_PLAY_SERVICE_QUIT, null);
+        finish();
+        System.exit(0);
     }
 
     private void initSelfViews() {
@@ -238,17 +268,17 @@ public class MainActivity extends InspectActivity implements
         if (dbController != null) {
             dbController.close();
         }
-    }
 
-    @Override
-    public void finish() {
-        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_PLAY_SERVICE_QUIT, null);
-        super.finish();
+        auxiliaryPreference.setTimeSleepDisable();
+
     }
 
     private void unregisterReceiver() {
         if (mySheetDataChangedReceiver != null) {
             broadcastManager.unregisterReceiver(mySheetDataChangedReceiver);
+        }
+        if (appQuitTimeCountdownReceiver != null) {
+            broadcastManager.unregisterReceiver(appQuitTimeCountdownReceiver);
         }
     }
 
@@ -391,4 +421,5 @@ public class MainActivity extends InspectActivity implements
     public static IPlayControl getControl() {
         return sServiceConnection.takeControl();
     }
+
 }

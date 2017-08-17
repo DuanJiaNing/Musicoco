@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.duan.musicoco.R;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.AppPreference;
+import com.duan.musicoco.preference.AuxiliaryPreference;
 import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 
@@ -19,6 +20,8 @@ public class RootActivity extends AppCompatActivity {
 
     protected AppPreference appPreference;
     protected PlayPreference playPreference;
+    protected AuxiliaryPreference auxiliaryPreference;
+
     protected DBMusicocoController dbController;
 
     @Override
@@ -27,6 +30,7 @@ public class RootActivity extends AppCompatActivity {
 
         appPreference = new AppPreference(this);
         playPreference = new PlayPreference(this);
+        auxiliaryPreference = new AuxiliaryPreference(this);
 
         checkTheme();
         dbController = new DBMusicocoController(this, true);

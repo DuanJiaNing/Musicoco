@@ -21,8 +21,11 @@ import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.main.MainActivity;
 import com.duan.musicoco.preference.AppPreference;
+import com.duan.musicoco.preference.AuxiliaryPreference;
 import com.duan.musicoco.preference.ThemeEnum;
+import com.duan.musicoco.shared.PeriodicTask;
 import com.duan.musicoco.util.ColorUtils;
+import com.duan.musicoco.util.ToastUtils;
 
 /**
  * Created by DuanJiaNing on 2017/8/10.
@@ -41,10 +44,12 @@ public class LeftNavigationController implements
     private NavigationView navigationView;
     private HomeBackgroundController homeBackgroundController;
     private ActivityManager activityManager;
+    private AuxiliaryPreference auxiliaryPreference;
 
-    public LeftNavigationController(Activity activity, AppPreference appPreference) {
+    public LeftNavigationController(Activity activity, AppPreference appPreference, AuxiliaryPreference auxiliaryPreference) {
         this.activity = activity;
         this.appPreference = appPreference;
+        this.auxiliaryPreference = auxiliaryPreference;
         this.homeBackgroundController = new HomeBackgroundController(activity, appPreference);
         activityManager = ActivityManager.getInstance(activity);
     }
@@ -142,7 +147,7 @@ public class LeftNavigationController implements
 
                 break;
             case R.id.setting_quit: // 退出
-                activity.finish();
+                ((MainActivity) activity).shutDownServiceAndApp();
                 break;
             default:
                 break;
@@ -162,7 +167,7 @@ public class LeftNavigationController implements
         BroadcastManager manager = BroadcastManager.getInstance(activity);
         Bundle bundle = new Bundle();
         bundle.putInt(BroadcastManager.Play.PLAY_THEME_CHANGE_TOKEN, BroadcastManager.Play.PLAY_APP_THEME_CHANGE);
-        manager.sendMyBroadcast(BroadcastManager.FILTER_PLAY_UI_MODE_CHANGE, bundle);
+        manager.sendBroadcast(BroadcastManager.FILTER_PLAY_UI_MODE_CHANGE, bundle);
 
     }
 
@@ -230,4 +235,133 @@ public class LeftNavigationController implements
             }
         }
     }
+
+    /**
+     * 用于定时停止播放功能，执行期间不应该调用 stop 方法，只应该在 CountDown 结束时才调用
+     */
+    private PeriodicTask quitCountDown = null;
+    private CountDownTask task = null;
+
+    public void startQuitCountdown() {
+        if (quitCountDown == null) {
+            task = new CountDownTask();
+            quitCountDown = new PeriodicTask(task, 1000);
+        } else {
+            task.reset();
+        }
+        quitCountDown.start();
+    }
+
+    public void stopQuitCountdown() {
+        if (quitCountDown != null && quitCountDown.isSchedule()) {
+            quitCountDown.stop();
+        }
+        auxiliaryPreference.setTimeSleepDisable();
+        resetText();
+    }
+
+    private void resetText() {
+        Menu menu = navigationView.getMenu();
+        if (menu != null) {
+            MenuItem item = menu.findItem(R.id.setting_sleep);
+            item.setTitle(R.string.setting_time_sleep);
+        }
+    }
+
+    private class CountDownTask implements PeriodicTask.Task {
+        final MenuItem item;
+        int dur;
+        long startTime;
+        final String title;
+
+        // dur 的单位为 分
+        public CountDownTask() {
+            reset();
+
+            Menu menu = navigationView.getMenu();
+            if (menu != null) {
+                item = menu.findItem(R.id.setting_sleep);
+                title = item.getTitle().toString();
+            } else {
+                item = null;
+                title = "";
+            }
+
+        }
+
+        int sec = 59;
+
+        @Override
+        public void execute() {
+            if (dur >= 0 && item != null) {
+                if (dur == 0) {
+                    if (sec == 0) {
+                        countDownFinish();
+                    } else if (sec == 23) { // 倒数 23 秒提醒用户 20s 将退出
+                        navigationView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                String msg = activity.getString(R.string.info_app_wile_quit_after_20s);
+                                ToastUtils.showShortToast(msg);
+                            }
+                        });
+                    }
+                }
+
+                if (sec == 0) {
+                    sec = 59;
+                    dur--;
+                } else {
+                    sec--;
+                }
+                countDown();
+            } else {
+                countDownFinish();
+            }
+        }
+
+        private void countDownFinish() {
+            stopQuitCountdown();
+
+            //定时自然停止时应用也应关闭
+            ((MainActivity) activity).shutDownServiceAndApp();
+        }
+
+        private void countDown() {
+            navigationView.post(new Runnable() {
+                @Override
+                public void run() {
+                    String newTitle = title + "    " + getString();
+                    item.setTitle(newTitle);
+                }
+            });
+        }
+
+        private String getString() {
+            String sq = " : ";
+            String time;
+            if (dur >= 60) {
+                int h = dur / 60;
+                int m = dur % 60;
+                time = get2Str(h) + sq + get2Str(m) + sq + get2Str(sec);
+            } else {
+                int m = dur % 60;
+                time = get2Str(m) + sq + get2Str(sec);
+            }
+            return time;
+        }
+
+        private String get2Str(int m) {
+            return m < 10 ? ("0" + m) : (m + "");
+        }
+
+        private void reset() {
+            dur = auxiliaryPreference.getTimeSleepDuration();
+            startTime = auxiliaryPreference.getTimeSleepStartTime();
+            // dur = 2 ,开始倒数时从 1:59 开始
+            dur--;
+        }
+    }
+
+
 }

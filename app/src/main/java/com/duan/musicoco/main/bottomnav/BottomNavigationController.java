@@ -6,7 +6,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
-import android.text.BoringLayout;
 import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -24,7 +23,6 @@ import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.ContentUpdatable;
-import com.duan.musicoco.app.interfaces.OnEmptyMediaLibrary;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.image.BitmapBuilder;
@@ -156,7 +154,7 @@ public class BottomNavigationController implements
         update(null, null);
 
         // 如果此时正在浏览歌单详情 SheetDetailActivity ，需要通知更新
-        BroadcastManager.getInstance(activity).sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+        BroadcastManager.getInstance(activity).sendBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
     }
 
     private void updateProgress() {
@@ -250,7 +248,7 @@ public class BottomNavigationController implements
         mPlay.setChecked(true);
 
         // 列表上的播放按钮状态
-        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
+        broadcastManager.sendBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
     }
 
     @Override
@@ -259,7 +257,7 @@ public class BottomNavigationController implements
         mPlay.setChecked(false);
 
         //??
-        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
+        broadcastManager.sendBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
     }
 
     public void startProgressUpdateTask() {
@@ -277,7 +275,7 @@ public class BottomNavigationController implements
         playPreference.updateSheet(id);
 
         //发送广播通知 MySheetController 更新列表（列表的选中播放状态）
-        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
+        broadcastManager.sendBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
     }
 
     @Override

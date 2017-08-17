@@ -6,27 +6,42 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.text.method.Touch;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.app.App;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
+import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.util.ColorUtils;
+import com.duan.musicoco.util.StringUtils;
+import com.duan.musicoco.util.ToastUtils;
+
+import java.lang.reflect.Field;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
 
-
-    private int time;
-    private ViewHolder holder;
+    private ViewHolder viewHolder;
+    private NumberPickerHolder numberPickerHolder;
     private Toolbar toolbar;
+    private boolean enable;
+    private int time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,18 +54,24 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
     public void onEnterAnimationComplete() {
         super.onEnterAnimationComplete();
 
-        holder = new ViewHolder();
+        viewHolder = new ViewHolder();
+        numberPickerHolder = new NumberPickerHolder();
 
         initViews();
+        viewHolder.initViews();
         themeChange(null, null);
         initData();
     }
 
     private void initData() {
-        //TODO
-        time = 10;
-        boolean enable = true;
-        holder.initData(enable);
+        // 当且仅当已经设置了定时关闭而且时间还没到才为 true
+        enable = auxiliaryPreference.getTimeSleepEnable();
+        if (enable) {
+            time = auxiliaryPreference.getTimeSleepDuration();
+        } else {
+            time = 10;
+        }
+        viewHolder.initData(enable);
     }
 
     private void initViews() {
@@ -58,7 +79,6 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        holder.initViews();
     }
 
     @Override
@@ -74,7 +94,16 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
                 finish();
                 break;
             case R.id.action_save:
-                handleSave();
+                if (time == 0) {
+                    String msg = getString(R.string.error_time_sleep_time_must_more_then_zero);
+                    ToastUtils.showShortToast(msg);
+                } else {
+                    if (enable) {
+                        handleSave();
+                    } else {
+                        handleCancelIfEnableBefore();
+                    }
+                }
                 break;
             default:
                 break;
@@ -82,8 +111,74 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
         return super.onOptionsItemSelected(item);
     }
 
-    private void handleSave() {
+    private void handleCancelIfEnableBefore() {
+        boolean enableBefore = auxiliaryPreference.getTimeSleepEnable();
+        if (enableBefore) {
+            Bundle bundle = new Bundle();
+            bundle.putInt(BroadcastManager.Countdown.APP_QUIT_TIME_COUNTDOWN_STATUS,
+                    BroadcastManager.Countdown.STOP_COUNTDOWN);
+            BroadcastManager.getInstance(this)
+                    .sendBroadcast(BroadcastManager.FILTER_APP_QUIT_TIME_COUNTDOWN, bundle);
 
+            String msg = getString(R.string.info_time_sleep_is_canceled);
+            ToastUtils.showShortToast(msg);
+        }
+        finish();
+    }
+
+    private void handleSave() {
+        auxiliaryPreference.updateTimeSleep(time);
+
+        String ti = getString(R.string.replace_time_sleep_app_quit_at);
+        String re;
+        if (time > 60) {
+            re = time / 60 + getString(R.string.hour) + time % 60 + getString(R.string.minute);
+        } else {
+            re = time + getString(R.string.minute);
+        }
+        String str = ti.replace("*", re);
+        ToastUtils.showLongToast(str);
+
+        Bundle bundle = new Bundle();
+        bundle.putInt(BroadcastManager.Countdown.APP_QUIT_TIME_COUNTDOWN_STATUS, BroadcastManager.Countdown.START_COUNTDOWN);
+        BroadcastManager.getInstance(this)
+                .sendBroadcast(BroadcastManager.FILTER_APP_QUIT_TIME_COUNTDOWN, bundle);
+
+        finish();
+    }
+
+    private Date getFinishTime() {
+
+        Calendar c = Calendar.getInstance();
+        int h = time / 60;
+        int m = time % 60;
+        if (h > 0) {
+            c.add(Calendar.HOUR, h);
+        }
+        c.add(Calendar.MINUTE, m);
+
+        c.set(c.get(Calendar.YEAR),
+                c.get(Calendar.MONTH),
+                c.get(Calendar.DAY_OF_MONTH),
+                c.get(Calendar.HOUR_OF_DAY),
+                c.get(Calendar.MINUTE),
+                c.get(Calendar.SECOND));
+
+        /* 使用 APP_QUIT_TIME_COUNTDOWN_STATUS 计数可以完成定时关闭，因而不使用 AlarmManager 实现
+
+        Intent intent = new Intent(BroadcastManager.FILTER_APP_QUIT);
+        intent.putExtra(BroadcastManager.EXTRA_IS_TIME_SLEEP, true);
+        PendingIntent pi = PendingIntent.getBroadcast(this, 0, intent, 0);
+        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+        // 定时关闭应用
+        am.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pi);
+        */
+
+        Log.d(App.TAG, "getFinishTime: 设置定时关闭："
+                + StringUtils.getGenDateYMDHMS(c.getTimeInMillis())
+                + " 时长：" + h + "时" + m + "分");
+
+        return c.getTime();
     }
 
     @Override
@@ -95,13 +190,23 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
             getWindow().setStatusBarColor(ta[0]);
         }
 
-        int acc = appPreference.getAccentColor();
-//        holder.custom.setHighlightColor(acc);
+        int acc = ColorUtils.getAccentColor(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            holder.custom.setBackgroundTintList(ColorStateList.valueOf(acc));
+            viewHolder.custom.setBackgroundTintList(ColorStateList.valueOf(acc));
         } else {
-            holder.custom.setDrawingCacheBackgroundColor(acc);
+            viewHolder.custom.setDrawingCacheBackgroundColor(acc);
         }
+
+        // checkTheme 的文字颜色没生效，?.?
+        int tcs[] = ColorUtils.get2ThemeTextColor(this, appPreference.getTheme());
+        int mC = tcs[0];
+        viewHolder.status.setTextColor(mC);
+        for (View v : viewHolder.vs) {
+            ((TextView) v).setTextColor(mC);
+        }
+        viewHolder.line.setBackgroundColor(tcs[1]);
+        viewHolder.show.setTextColor(mC);
+
     }
 
     private class ViewHolder implements
@@ -115,13 +220,14 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
         TextView m60;
         Button custom;
         TextView show;
+        View line;
 
         View[] vs;
 
         final int color;
 
         public ViewHolder() {
-            color = appPreference.getAccentColor();
+            color = ColorUtils.getAccentColor(TimeSleepActivity.this);
         }
 
         View.OnClickListener checkListener = new View.OnClickListener() {
@@ -132,7 +238,7 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
                 int dur = getResources().getInteger(R.integer.anim_default_duration) * 2 / 3;
                 AnimationUtils.startScaleAnim(v, dur, null, 0.7f, 1.0f);
 
-                updateText();
+                updateCurrentTimeText();
                 updateSelected();
             }
         };
@@ -140,7 +246,10 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
         View.OnClickListener customListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (!numberPickerHolder.custom) {
+                    numberPickerHolder.init();
+                    AnimationUtils.startScaleAnim(v, 300, null, 1.0f, 0.0f);
+                }
             }
         };
 
@@ -154,6 +263,7 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
             m60 = (TextView) findViewById(R.id.time_sleep_60m);
             custom = (Button) findViewById(R.id.time_sleep_custom);
             show = (TextView) findViewById(R.id.time_sleep_custom_show);
+            line = findViewById(R.id.time_sleep_line);
 
             vs = new View[]{
                     m10,
@@ -163,18 +273,11 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
                     m60,
             };
 
-            initTexts();
-
             cwitch.setOnCheckedChangeListener(this);
-            m10.setClickable(true);
             m10.setOnClickListener(checkListener);
-            m20.setClickable(true);
             m20.setOnClickListener(checkListener);
-            m30.setClickable(true);
             m30.setOnClickListener(checkListener);
-            m45.setClickable(true);
             m45.setOnClickListener(checkListener);
-            m60.setClickable(true);
             m60.setOnClickListener(checkListener);
 
             custom.setOnClickListener(customListener);
@@ -187,14 +290,16 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
             for (View v : vs) {
                 ((TextView) v).setText(tagToInt(v) + s);
                 AnimationUtils.startScaleAnim(v, dur, null, 0.0f, 1.0f);
-                AnimationUtils.startAlphaAnim(v, dur, null, 0.0f, 1.0f);
+                AnimationUtils.startAlphaAnim(v, dur, null, 0.0f, enable ? 1.0f : 0.4f);
             }
         }
 
         private void initData(boolean enable) {
             cwitch.setChecked(enable);
-            updateText();
+            initTexts();
+            updateCurrentTimeText();
             updateSelected();
+            setEnable(enable);
         }
 
         void setEnable(boolean enable) {
@@ -205,10 +310,26 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
             }
             custom.setEnabled(enable);
             show.setEnabled(enable);
+
+            float alpha = 1.0f;
+            if (!enable) {
+                alpha = 0.4f;
+            }
+            for (View v : vs) {
+                v.setAlpha(alpha);
+            }
+            custom.setAlpha(alpha);
+            show.setAlpha(alpha);
+
+            if (numberPickerHolder.custom) {
+                numberPickerHolder.setEnable(enable);
+            }
+
         }
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            enable = isChecked;
             setEnable(isChecked);
         }
 
@@ -223,7 +344,7 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
             }
         }
 
-        void updateText() {
+        void updateCurrentTimeText() {
             String txt = getString(R.string.replace_time_sleep);
             String s = txt.replace("*", String.valueOf(time));
             show.setText(s);
@@ -238,4 +359,71 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
             return r;
         }
     }
+
+    private class NumberPickerHolder implements
+            NumberPicker.OnValueChangeListener {
+
+        TextView tHour;
+        TextView tMinute;
+        NumberPicker minute;
+        NumberPicker hour;
+
+        boolean custom = false;
+
+        void init() {
+            custom = true;
+            View v = findViewById(R.id.time_sleep_pickers);
+            v.setVisibility(View.VISIBLE);
+
+            tHour = (TextView) findViewById(R.id.time_sleep_custom_num_left_t);
+            tMinute = (TextView) findViewById(R.id.time_sleep_custom_num_right_t);
+            minute = (NumberPicker) findViewById(R.id.time_sleep_custom_num_right);
+            hour = (NumberPicker) findViewById(R.id.time_sleep_custom_num_left);
+            minute.setOnValueChangedListener(this);
+            hour.setOnValueChangedListener(this);
+
+            initTheme();
+            initPickersData();
+        }
+
+        private void initPickersData() {
+            minute.setMinValue(0);
+            hour.setMinValue(0);
+            minute.setMaxValue(59);
+            hour.setMaxValue(5);
+            hour.setValue(0);
+            minute.setValue(time);
+        }
+
+        private void initTheme() {
+            int[] cs = ColorUtils.get2ThemeTextColor(TimeSleepActivity.this, appPreference.getTheme());
+            tHour.setTextColor(cs[0]);
+            tMinute.setTextColor(cs[0]);
+        }
+
+        @Override
+        public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+            int min = minute.getValue();
+            int hou = hour.getValue();
+            time = hou * 60 + min;
+            viewHolder.updateCurrentTimeText();
+        }
+
+        public void setEnable(boolean enable) {
+            tHour.setEnabled(enable);
+            tMinute.setEnabled(enable);
+            minute.setEnabled(enable);
+            hour.setEnabled(enable);
+
+            float alpha = 1.0f;
+            if (!enable) {
+                alpha = 0.4f;
+            }
+            tHour.setAlpha(alpha);
+            tMinute.setAlpha(alpha);
+            minute.setAlpha(alpha);
+            hour.setAlpha(alpha);
+        }
+    }
+
 }

@@ -12,31 +12,18 @@ import com.duan.musicoco.service.PlayController;
  * Created by DuanJiaNing on 2017/6/2.
  */
 
-public class PlayPreference {
+public class PlayPreference extends BasePreference {
 
-    public static final String PLAY_PREFERENCE = "play_preference";
     public static final String KEY_PLAY_MODE = "key_play_mode";
     public static final String KEY_THEME = "key_theme";
     public static final String KEY_SHEET = "key_sheet";
     public static final String KEY_PLAY_BG_MODE = "key_play_bg_mode";
 
-    private SharedPreferences.Editor editor;
-    private SharedPreferences preferences;
-
-    private Context context;
-
     public PlayPreference(Context context) {
-        this.context = context;
-    }
-
-    private void check() {
-        if (preferences == null) {
-            preferences = context.getSharedPreferences(PLAY_PREFERENCE, Context.MODE_PRIVATE);
-        }
+        super(context, Preference.PLAY_PREFERENCE);
     }
 
     public void updateTheme(ThemeEnum themeEnum) {
-        check();
         editor = preferences.edit();
         editor.putString(KEY_THEME, themeEnum.name());
         editor.apply();
@@ -44,7 +31,6 @@ public class PlayPreference {
     }
 
     public void updatePlayBgMode(PlayBackgroundModeEnum mode) {
-        check();
         editor = preferences.edit();
         editor.putString(KEY_PLAY_BG_MODE, mode.name());
         editor.apply();
@@ -52,20 +38,17 @@ public class PlayPreference {
     }
 
     public ThemeEnum getTheme() {
-        check();
         String pa = preferences.getString(KEY_THEME, ThemeEnum.VARYING.name());
         return ThemeEnum.valueOf(pa);
     }
 
     public PlayBackgroundModeEnum getPlayBgMode() {
-        check();
         String str = preferences.getString(KEY_PLAY_BG_MODE, PlayBackgroundModeEnum.COLOR.name());
         return PlayBackgroundModeEnum.valueOf(str);
     }
 
 
     public int updatePlayMode(int mode) {
-        check();
         //不考虑默认模式
         // 21 列表循环
         // 22 单曲循环
@@ -79,13 +62,11 @@ public class PlayPreference {
     }
 
     public int getPlayMode() {
-        check();
         return preferences.getInt(KEY_PLAY_MODE, PlayController.MODE_LIST_LOOP);
     }
 
     //注意在多进程下的修改不可见问题
     public void updateSong(CurrentSong song) {
-        check();
 
         if (song == null) {
             return;
@@ -101,7 +82,6 @@ public class PlayPreference {
 
     @Nullable
     public CurrentSong getSong() {
-        check();
 
         String p = preferences.getString(CurrentSong.KEY_CURRENT_SONG_PATH, null);
         int in = preferences.getInt(CurrentSong.KEY_CURRENT_SONG_INDEX, 0);
@@ -114,7 +94,6 @@ public class PlayPreference {
      * 0 为全部，其它的歌单 信息 可从 {@link com.duan.musicoco.db.DBMusicocoController#getSheet(String)}等方法获得
      */
     public void updateSheet(int sheetID) {
-        check();
 
         editor = preferences.edit();
         editor.putInt(KEY_SHEET, sheetID);
@@ -125,7 +104,6 @@ public class PlayPreference {
      * 0 为全部，其它的歌单 信息 可从 {@link com.duan.musicoco.db.DBMusicocoController#getSheet(String)}等方法获得
      */
     public int getSheetID() {
-        check();
         return preferences.getInt(KEY_SHEET, MainSheetHelper.SHEET_ALL);
     }
 

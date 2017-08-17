@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -51,6 +52,8 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
+        android:background="?android:selectableItemBackgroundBorderless"
+        android:clickable="true"
         android:padding="8dp"
         android:tag="10"
         android:textSize="@dimen/text_middle"
@@ -67,6 +70,8 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
+        android:background="?android:selectableItemBackgroundBorderless"
+        android:clickable="true"
         android:padding="8dp"
         android:tag="20"
         android:textSize="@dimen/text_middle"
@@ -83,6 +88,8 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
+        android:background="?android:selectableItemBackgroundBorderless"
+        android:clickable="true"
         android:padding="8dp"
         android:tag="30"
         android:textSize="@dimen/text_middle"
@@ -99,6 +106,8 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
+        android:background="?android:selectableItemBackgroundBorderless"
+        android:clickable="true"
         android:padding="8dp"
         android:tag="45"
         android:textSize="@dimen/text_middle"
@@ -115,6 +124,8 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
+        android:background="?android:selectableItemBackgroundBorderless"
+        android:clickable="true"
         android:padding="8dp"
         android:tag="60"
         android:textSize="@dimen/text_middle"
@@ -130,30 +141,48 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="8dp"
         android:padding="15dp"
         android:text="@string/custom"
         android:textSize="@dimen/text_middle"
         app:layout_constraintHorizontal_bias="0.466"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/guideline11"
-        app:layout_constraintTop_toTopOf="@+id/guideline12" />
-
+        app:layout_constraintTop_toTopOf="@+id/guideline12"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline15" />
 
     <TextView
         android:id="@+id/time_sleep_custom_show"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="0dp"
-        android:layout_marginLeft="0dp"
-        android:layout_marginTop="0dp"
         android:background="#22000000"
         android:clickable="false"
         android:gravity="center_vertical|start"
         android:padding="3dp"
-        app:layout_constraintBottom_toBottomOf="@+id/time_sleep_custom"
-        app:layout_constraintLeft_toLeftOf="@+id/guideline11"
-        app:layout_constraintTop_toTopOf="@+id/time_sleep_custom" />
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline12"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline15" />
+
+    <include
+        android:id="@+id/time_sleep_pickers"
+        layout="@layout/time_sleep_content_pickers"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline15" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline9"
@@ -161,6 +190,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.66" />
+
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline11"
@@ -175,6 +205,13 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.42" />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.56" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline14"

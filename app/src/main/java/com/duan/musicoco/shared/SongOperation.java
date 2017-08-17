@@ -205,7 +205,7 @@ public class SongOperation {
                     }
 
                     private void sendBroadcast() {
-                        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+                        broadcastManager.sendBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
                     }
 
                     @Override
@@ -280,7 +280,7 @@ public class SongOperation {
                     }
 
                     private void sendBroadcast() {
-                        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+                        broadcastManager.sendBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
                     }
 
                     @Override
@@ -533,7 +533,7 @@ public class SongOperation {
                 String msg = activity.getString(R.string.success_remove_song_from_sheet);
                 ToastUtils.showShortToast(msg);
 
-                broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+                broadcastManager.sendBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
                 if (complete != null) {
                     complete.onComplete(null);
                 }
@@ -588,7 +588,7 @@ public class SongOperation {
                         }
 
                         private void sendBroadcast() {
-                            broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+                            broadcastManager.sendBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
                             if (complete != null) {
                                 complete.onComplete(null);
                             }
@@ -638,7 +638,7 @@ public class SongOperation {
             String msg = activity.getString(R.string.success_remove_song_from_sheet);
             ToastUtils.showShortToast(msg);
 
-            broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+            broadcastManager.sendBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
             if (complete != null) {
                 complete.onComplete(null);
             }
@@ -682,7 +682,7 @@ public class SongOperation {
                         }
 
                         private void sendBroadcast() {
-                            broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+                            broadcastManager.sendBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
                             if (complete != null) {
                                 complete.onComplete(null);
                             }
@@ -815,7 +815,7 @@ public class SongOperation {
                     }
 
                     private void sendBroadcast() {
-                        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+                        broadcastManager.sendBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
                         if (complete != null) {
                             complete.onComplete(null);
                         }

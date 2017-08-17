@@ -73,8 +73,8 @@
     <string name="error_non_song_select">还没有选择任何歌曲 :(</string>
     <string name="error_delete_sheet_fail">删除歌单失败 :(</string>
     <string name="error_load_sheet_fail">加载歌单失败 :(</string>
-    <string name="error_not_modify">未修改</string>
-    <string name="action_did_not_support">不支持该操作</string>
+    <string name="error_action_did_not_support">不支持该操作 :(</string>
+    <string name="error_time_sleep_time_must_more_then_zero">时间必须大于0 :(</string>
 
     <!-- 操作成功 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -87,6 +87,7 @@
     <string name="success_add_all_song_to_favorite">已成功收藏全部 :)</string>
     <string name="success_add_select_song_to_favorite">成功收藏选中歌曲 :)</string>
     <string name="success_remove_select_song_from_favorite">选中歌曲已取消收藏 :)</string>
+    <string name="success_set">设置成功 :)</string>
 
     <!-- 公用短词 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -114,6 +115,7 @@
     <string name="song">歌曲</string>
     <string name="sheet">歌单</string>
     <string name="minute">分钟</string>
+    <string name="hour">小时</string>
     <string name="custom">自定义</string>
 
     <string name="cancel_collect">取消收藏</string>
@@ -135,12 +137,15 @@
     <string name="info_remove_select_songs_from_sheet">从歌单中移除选中歌曲</string>
     <string name="info_delete_confirm">确认删除，删除后将无法恢复！</string>
     <string name="info_delete_select_confirm">确认删除选中歌曲，删除后将无法恢复！</string>
+    <string name="info_not_modify">未修改</string>
+    <string name="info_app_wile_quit_after_20s">应用将在 20 秒后退出</string>
+    <string name="info_search">搜索音乐</string>
+    <string name="info_show_in_sheet">在歌单中显示</string>
+    <string name="info_time_sleep_is_canceled">定时停止播放已取消</string>
 
     <string name="title_add_all_songs_to_favorite">收藏所有歌曲</string>
     <string name="title_add_to_sheet">添加至播放列表</string>
     <string name="title_add_to_favorite">添加至收藏</string>
-    <string name="info_search">搜索音乐</string>
-    <string name="info_show_in_sheet">在歌单中显示</string>
 
     <!-- 正在处理 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -156,6 +161,7 @@
     <string name="replace_search_result_prompt">共检索到 * 首歌曲</string>
     <string name="replace_rmp_title">播放次数最多的 * 首歌</string>
     <string name="replace_time_sleep">* 分钟后停止播放</string>
+    <string name="replace_time_sleep_app_quit_at">设置成功，将于 * 后关闭</string>
 
     <!-- 对话框等标题 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -173,7 +179,7 @@
 
     <string name="setting_tools">工具</string>
     <string name="setting_scan">歌曲扫描</string>
-    <string name="setting_sleep">定时停止播放</string>
+    <string name="setting_time_sleep">定时停止播放</string>
     <string name="setting_image_wall">图片墙</string>
     <string name="setting_equalizer">均衡器</string> <!-- 升级 -->
 

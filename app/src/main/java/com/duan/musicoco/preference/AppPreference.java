@@ -12,9 +12,8 @@ import com.duan.musicoco.util.ColorUtils;
  * Created by DuanJiaNing on 2017/6/2.
  */
 
-public class AppPreference {
+public class AppPreference extends BasePreference {
 
-    public static final String APP_PREFERENCE = "app_preference";
     public static final String KEY_THEME = "key_theme";
     public static final String KEY_OPEN_TIMES = "key_open_times";
 
@@ -29,14 +28,8 @@ public class AppPreference {
     // 照片墙照片透明度
     public static final String KEY_IMAGE_WALL_ALPHA = "key_image_wall_alpha";
 
-    private SharedPreferences.Editor editor;
-    private final SharedPreferences preferences;
-
-    private final Context context;
-
     public AppPreference(Context context) {
-        this.context = context;
-        this.preferences = context.getSharedPreferences(APP_PREFERENCE, Context.MODE_PRIVATE);
+        super(context, Preference.APP_PREFERENCE);
     }
 
     public int getImageWallSize() {
@@ -139,6 +132,12 @@ public class AppPreference {
         editor.apply();
     }
 
+    /**
+     * 不要直接调用该方法，除非你确定此时应用主题为【白天】，应该使用{@link ColorUtils#getAccentColor(Context)}
+     * 获取该值。
+     *
+     * @return 控件首选色
+     */
     @ColorInt
     public int getAccentColor() {
         int deC = Color.parseColor("#FF002B");

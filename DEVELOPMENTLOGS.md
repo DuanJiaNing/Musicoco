@@ -333,3 +333,4 @@
 - 2017-08-14
 
 1 添加 TimeSleepActivity 并完成界面设计和界面逻辑<br>
+2 添加 AuxiliaryPreference，完成 TimeSleepActivity 逻辑<br>

@@ -18,6 +18,8 @@ public class App extends Application {
     private PlayPreference playPreference;
     private AppPreference appPreference;
 
+    public static final String TAG = "musicoco";
+
     //FIXME 内存泄漏
     private static Context sCONTEXT;
 
@@ -28,7 +30,7 @@ public class App extends Application {
         appPreference = new AppPreference(this);
         playPreference = new PlayPreference(this);
 
-        //FIXME test
+        //FIXME double_number_picker
         test();
     }
 

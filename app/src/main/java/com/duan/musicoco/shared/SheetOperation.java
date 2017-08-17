@@ -2,7 +2,6 @@ package com.duan.musicoco.shared;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.os.Bundle;
 import android.view.View;
 
 import com.duan.musicoco.R;
@@ -12,7 +11,6 @@ import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.bean.Sheet;
-import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
 
 import rx.Observable;
@@ -124,7 +122,7 @@ public class SheetOperation {
                         }
 
                         // 发送广播让 MainActivity mySheetDataChangedReceiver 进行歌单信息更新
-                        broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
+                        broadcastManager.sendBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
                     }
                 });
     }

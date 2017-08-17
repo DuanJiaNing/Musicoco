@@ -12,30 +12,37 @@ import android.support.annotation.Nullable;
  */
 public class BroadcastManager {
 
-    public static final String FILTER_MY_SHEET_CHANGED = "filter_my_sheet_changed";
     public static final String FILTER_MAIN_DATA_UPDATE = "filter_main_data_update";
     public static final String FILTER_MAIN_SHEET_CHANGED = "filter_main_sheet_changed";
     public static final String FILTER_PLAY_SHEET_RANDOM = "filter_play_sheet_random";
+
+    public static final String FILTER_MY_SHEET_CHANGED = "filter_my_sheet_changed";
     public static final String FILTER_SHEET_DETAIL_SONGS_CHANGE = "filter_sheet_detail_songs_change";
+
     //服务器退出
     public static final String FILTER_PLAY_SERVICE_QUIT = "filter_play_service_quit";
+
+    // 标识当前的【关闭应用】操作是被【定时关闭】广播触发的
+    public static String EXTRA_IS_TIME_SLEEP;
+
 
     //播放界面界面主题改变
     public static final String FILTER_PLAY_UI_MODE_CHANGE = "filter_play_ui_mode_change";
 
-
-    public static class Play {
+    public static final class Play {
         public static final String PLAY_THEME_CHANGE_TOKEN = "play_theme_change_token";
-
-        /**
-         * app 主题改变
-         */
         public static final int PLAY_APP_THEME_CHANGE = 1;
-
-        /**
-         * 播放界面的主题改变
-         */
         public static final int PLAY_PLAY_THEME_CHANGE = 2;
+    }
+
+
+    // 定时关闭应用时在主界面左边导航栏显示倒计时
+    public static final String FILTER_APP_QUIT_TIME_COUNTDOWN = "filter_app_quit_time_countdown";
+
+    public static final class Countdown {
+        public static final String APP_QUIT_TIME_COUNTDOWN_STATUS = "app_quit_time_countdown_status";
+        public static final int START_COUNTDOWN = 1;
+        public static final int STOP_COUNTDOWN = 2;
     }
 
 
@@ -65,7 +72,7 @@ public class BroadcastManager {
     /**
      * 发送广播
      */
-    public void sendMyBroadcast(String identity, @Nullable Bundle extras) {
+    public void sendBroadcast(String identity, @Nullable Bundle extras) {
         Intent intent = new Intent();
         if (extras != null) {
             intent.putExtras(extras);
