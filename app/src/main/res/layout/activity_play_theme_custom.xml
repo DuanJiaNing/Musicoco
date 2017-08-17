@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".main.leftnav.themecolor.ThemeColorCustomActivity">
+
+    <ImageSwitcher
+        android:id="@+id/play_theme_custom_image_switch"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:inAnimation="@android:anim/fade_in"
+        android:outAnimation="@android:anim/fade_out" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/play_theme_custom_done"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/activity_default_margin"
+        android:src="@drawable/ic_done_black_24dp"
+        android:visibility="invisible" />
+
+    <FrameLayout
+        android:id="@+id/play_theme_custom_container"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:visibility="invisible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="?android:dividerHorizontal"
+            android:orientation="horizontal"
+            android:showDividers="middle">
+
+            <TextView
+                android:id="@+id/play_theme_custom_dark"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center"
+                android:text="@string/play_theme_custom_dark"
+                android:textSize="@dimen/text_middle" />
+
+            <TextView
+                android:id="@+id/play_theme_custom_white"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center"
+                android:text="@string/play_theme_custom_white"
+                android:textSize="@dimen/text_middle" />
+
+            <TextView
+                android:id="@+id/play_theme_custom_blur"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center"
+                android:text="@string/play_theme_custom_blur"
+                android:textSize="@dimen/text_middle" />
+
+            <TextView
+                android:id="@+id/play_theme_custom_color"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center"
+                android:text="@string/play_theme_custom_color"
+                android:textSize="@dimen/text_middle" />
+
+            <TextView
+                android:id="@+id/play_theme_custom_gradient"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center"
+                android:text="@string/play_theme_custom_gradient"
+                android:textSize="@dimen/text_middle" />
+
+            <TextView
+                android:id="@+id/play_theme_custom_mask"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center"
+                android:text="@string/play_theme_custom_mask"
+                android:textSize="@dimen/text_middle" />
+
+        </LinearLayout>
+    </FrameLayout>
+
+</FrameLayout>

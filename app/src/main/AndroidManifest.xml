@@ -82,16 +82,20 @@
                 android:value="com.duan.musicoco.main.MainActivity" />
         </activity>
         <activity
-            android:label="@string/label_theme_color_custom"
             android:name=".main.leftnav.themecolor.ThemeColorCustomActivity"
+            android:label="@string/label_theme_color_custom"
             android:theme="@style/AppTheme" />
         <activity
-            android:label="@string/label_image_wall"
             android:name=".main.leftnav.imagewall.ImageWallActivity"
+            android:label="@string/label_image_wall"
             android:theme="@style/AppTheme" />
         <activity
-            android:label="@string/label_time_sleep"
             android:name=".main.leftnav.timesleep.TimeSleepActivity"
+            android:label="@string/label_time_sleep"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:name=".main.leftnav.play.PlayThemeCustomActivity"
+            android:label="@string/label_play_theme_custom"
             android:theme="@style/AppTheme" />
     </application>
 

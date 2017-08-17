@@ -1,8 +1,10 @@
 package com.duan.musicoco.play.bottomnav;
 
+import android.animation.Animator;
 import android.app.Activity;
 import android.os.Build;
 import android.os.RemoteException;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -138,5 +140,4 @@ public class ListOption implements
     void setDrawableColor(int currentDrawableColor) {
         this.currentDrawableColor = currentDrawableColor;
     }
-
 }

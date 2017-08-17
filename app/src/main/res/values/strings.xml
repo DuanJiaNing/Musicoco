@@ -8,6 +8,7 @@
     <string name="label_theme_color_custom">主题色定制</string>
     <string name="label_image_wall">图片墙</string>
     <string name="label_time_sleep">定时停止播放</string>
+    <string name="label_play_theme_custom">播放界面风格</string>
 
     <!-- 权限相关 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -88,6 +89,7 @@
     <string name="success_add_select_song_to_favorite">成功收藏选中歌曲 :)</string>
     <string name="success_remove_select_song_from_favorite">选中歌曲已取消收藏 :)</string>
     <string name="success_set">设置成功 :)</string>
+    <string name="success_modify_saved">设置保存成功 :)</string>
 
     <!-- 公用短词 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -184,7 +186,7 @@
     <string name="setting_equalizer">均衡器</string> <!-- 升级 -->
 
     <string name="setting_theme_custom">外观定制</string>
-    <string name="setting_play_ui_choice">播放界面设置</string>
+    <string name="setting_play_ui_choice">播放界面风格</string>
     <string name="setting_theme_color_custom">主题色定制</string>
     <string name="setting_night_mode">夜间模式</string>
     <string name="setting_daytime_mode">白天模式</string>
@@ -202,5 +204,13 @@
     <string name="setting_set_feedback">反馈</string>
     <string name="setting_set_switch_theme_mode_auto">自动切换至夜间模式</string>
 
+    <!-- 播放界面主题自定义 /////////////////////////////////////////////////////////////////////////////////////////// -->
+
+    <string name="play_theme_custom_dark">夜间</string>
+    <string name="play_theme_custom_white">白天</string>
+    <string name="play_theme_custom_blur">虚化</string>
+    <string name="play_theme_custom_color">纯色</string>
+    <string name="play_theme_custom_gradient">渐变</string>
+    <string name="play_theme_custom_mask">遮罩</string>
 
 </resources>

@@ -133,8 +133,8 @@ public class LeftNavigationController implements
             case R.id.setting_image_wall: // 照片墙
                 activityManager.startImageWallActivity();
                 break;
-            case R.id.setting_play_ui: // 播放界面设置
-
+            case R.id.setting_play_ui: // 播放界面风格
+                activityManager.startPlayThemeCustomActivity();
                 break;
             case R.id.setting_theme_color_custom: // 主题色
                 activityManager.startThemeColorCustomActivity();

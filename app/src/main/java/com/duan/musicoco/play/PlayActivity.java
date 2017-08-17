@@ -10,7 +10,6 @@ import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -197,6 +196,7 @@ public class PlayActivity extends InspectActivity implements
                     themeChange(null, null);
                 } else if (which == BroadcastManager.Play.PLAY_PLAY_THEME_CHANGE) {
                     updateViewsColorsIfNeed(null);
+                    initViewsColors();
                 }
             }
         };
@@ -454,8 +454,9 @@ public class PlayActivity extends InspectActivity implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.play_fragment_container:
-                if (!bottomNavigationController.visible())
+                if (!bottomNavigationController.visible() && !bottomNavigationController.isAniming()) {
                     bottomNavigationController.show();
+                }
                 break;
             case R.id.play_name_container:
                 try {

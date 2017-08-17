@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -26,18 +25,17 @@ import android.widget.ListView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.manager.BroadcastManager;
-import com.duan.musicoco.db.bean.DBSongInfo;
-import com.duan.musicoco.preference.AppPreference;
-import com.duan.musicoco.preference.ThemeEnum;
-import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
-import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
+import com.duan.musicoco.app.interfaces.ThemeChangeable;
+import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
+import com.duan.musicoco.db.bean.DBSongInfo;
+import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.PlayPreference;
+import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.shared.PlayListAdapter;
 import com.duan.musicoco.shared.SongOperation;
@@ -87,6 +85,8 @@ public class BottomNavigationController implements
     private SongOperation songOperation;
     private PlayListAdapter playListAdapter;
     private final List<SongInfo> data = new ArrayList<>();
+
+    private boolean isAniming = false;
 
     public BottomNavigationController(Activity activity, DBMusicocoController dbController, MediaManager mediaManager, PlayPreference playPreference, AppPreference appPreference) {
         this.activity = activity;
@@ -322,7 +322,29 @@ public class BottomNavigationController implements
                 to,
                 duration,
                 mViewRoot,
-                new AccelerateDecelerateInterpolator(), null);
+                new AccelerateDecelerateInterpolator(), new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+                        isAniming = true;
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        isAniming = false;
+
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+                        isAniming = false;
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
 
         songOption.hide();
         listOption.show();
@@ -355,17 +377,19 @@ public class BottomNavigationController implements
                 new DecelerateInterpolator(), new Animator.AnimatorListener() {
                     @Override
                     public void onAnimationStart(Animator animation) {
-
+                        isAniming = true;
                     }
 
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         listOption.hide();
                         songOption.show();
+                        isAniming = false;
                     }
 
                     @Override
                     public void onAnimationCancel(Animator animation) {
+                        isAniming = false;
 
                     }
 
@@ -413,7 +437,7 @@ public class BottomNavigationController implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.play_dark_bg:
-                if (visible()) {
+                if (visible() && !isAniming()) {
                     hide();
                 }
                 break;
@@ -536,9 +560,29 @@ public class BottomNavigationController implements
             }
         });
 
-        set.play(animY).
+        set.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                isAniming = true;
+            }
 
-                with(animM);
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                isAniming = false;
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+                isAniming = false;
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
+        set.play(animY).with(animM);
         set.start();
     }
 
@@ -554,9 +598,13 @@ public class BottomNavigationController implements
                 view.setY(va);
             }
         });
-        if (listener != null)
+        if (listener != null) {
             anim.addListener(listener);
+        }
         anim.start();
     }
 
+    public boolean isAniming() {
+        return isAniming;
+    }
 }

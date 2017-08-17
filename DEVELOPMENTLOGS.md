@@ -334,3 +334,4 @@
 
 1 添加 TimeSleepActivity 并完成界面设计和界面逻辑<br>
 2 添加 AuxiliaryPreference，完成 TimeSleepActivity 逻辑<br>
+3 添加 PlayThemeCustomActivity，完成播放界面风格定制逻辑<br>
