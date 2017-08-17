@@ -39,13 +39,13 @@ public class LeftNavigationController implements
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
-    private ImageWallController imageWallController;
+    private HomeBackgroundController homeBackgroundController;
     private ActivityManager activityManager;
 
     public LeftNavigationController(Activity activity, AppPreference appPreference) {
         this.activity = activity;
         this.appPreference = appPreference;
-        this.imageWallController = new ImageWallController(activity, appPreference);
+        this.homeBackgroundController = new HomeBackgroundController(activity, appPreference);
         activityManager = ActivityManager.getInstance(activity);
     }
 
@@ -53,7 +53,7 @@ public class LeftNavigationController implements
         drawerLayout = (DrawerLayout) activity.findViewById(R.id.drawer_layout);
         navigationView = (NavigationView) activity.findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        imageWallController.initViews(navigationView);
+        homeBackgroundController.initViews(navigationView);
         updateSwitchMenuIconAndText();
     }
 
@@ -61,7 +61,7 @@ public class LeftNavigationController implements
     public void initData(DBMusicocoController dbController) {
         this.dbController = dbController;
 
-        imageWallController.initData(dbController);
+        homeBackgroundController.initData(dbController);
         initImageWall();
 
     }
@@ -78,7 +78,7 @@ public class LeftNavigationController implements
                     iv.post(new Runnable() {
                         @Override
                         public void run() {
-                            updateImageWall();
+                            updateHomeBackgroundImage();
                         }
                     });
                 }
@@ -87,8 +87,8 @@ public class LeftNavigationController implements
         });
     }
 
-    public void updateImageWall() {
-        imageWallController.updateImageWall();
+    public void updateHomeBackgroundImage() {
+        homeBackgroundController.updateImage();
     }
 
     public boolean onBackPressed() {
@@ -120,14 +120,13 @@ public class LeftNavigationController implements
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.setting_scan: // 文件扫描
-
-                break;
+//            case R.id.setting_scan: // 文件扫描
+//                break;
             case R.id.setting_sleep: // 睡眠定时
-
+                activityManager.startTimeSleepActivity();
                 break;
             case R.id.setting_image_wall: // 照片墙
-
+                activityManager.startImageWallActivity();
                 break;
             case R.id.setting_play_ui: // 播放界面设置
 

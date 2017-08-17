@@ -35,14 +35,14 @@ import rx.schedulers.Schedulers;
  * Created by DuanJiaNing on 2017/8/12.
  */
 
-public class ImageWallController {
+public class HomeBackgroundController {
 
     private final Activity activity;
     private final AppPreference appPreference;
     private NavigationView navigationView;
     private DBMusicocoController dbController;
 
-    public ImageWallController(Activity activity, AppPreference appPreference) {
+    public HomeBackgroundController(Activity activity, AppPreference appPreference) {
         this.activity = activity;
         this.appPreference = appPreference;
     }
@@ -53,17 +53,16 @@ public class ImageWallController {
 
     public void initData(DBMusicocoController dbController) {
         this.dbController = dbController;
-
     }
 
     // 更新照片墙专用
-    public void updateImageWall() {
+    public void updateImage() {
         Observable.OnSubscribe<Bitmap> onSubscribe = new Observable.OnSubscribe<Bitmap>() {
             @Override
             public void call(Subscriber<? super Bitmap> subscriber) {
                 subscriber.onStart();
 
-                Bitmap bitmap = getImageWallBitmap();
+                Bitmap bitmap = getImageBitmap();
                 subscriber.onNext(bitmap);
 
                 subscriber.onCompleted();
@@ -86,7 +85,7 @@ public class ImageWallController {
 
                     @Override
                     public void onNext(Bitmap bitmap) {
-                        setImageWallBitmap(bitmap);
+                        setImageBitmap(bitmap);
                     }
                 });
     }
@@ -113,7 +112,7 @@ public class ImageWallController {
         return strs;
     }
 
-    private Bitmap getImageWallBitmap() {
+    private Bitmap getImageBitmap() {
         BitmapProducer producer = new BitmapProducer(activity);
         String[] res = getImagePath();
         if (res == null) {
@@ -163,7 +162,7 @@ public class ImageWallController {
         return resource.get();
     }
 
-    private void setImageWallBitmap(Bitmap bitmap) {
+    private void setImageBitmap(Bitmap bitmap) {
         if (bitmap != null) {
 
             // menu 中有图标时要通过 getHeaderView 查找子 view
@@ -179,7 +178,7 @@ public class ImageWallController {
             }
 
             Animation animation = AnimationUtils.loadAnimation(activity, android.R.anim.fade_in);
-            navigationView.startAnimation(animation);
+            iv.startAnimation(animation);
         }
 
     }

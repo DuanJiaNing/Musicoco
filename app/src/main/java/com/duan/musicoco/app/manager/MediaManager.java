@@ -132,7 +132,6 @@ public class MediaManager {
     }
 
     public void scanSdCard(@Nullable MediaScannerConnection.OnScanCompletedListener listener) {
-
         MediaScannerConnection.scanFile(context, new String[]{Environment
                 .getExternalStorageDirectory().getAbsolutePath()}, null, listener);
 

@@ -5,6 +5,7 @@
         <menu>
             <group android:id="@+id/setting_g_1">
                 <item
+                    android:visible="false"
                     android:id="@+id/setting_scan"
                     android:icon="@drawable/ic_audio_file"
                     android:title="@string/setting_scan" />

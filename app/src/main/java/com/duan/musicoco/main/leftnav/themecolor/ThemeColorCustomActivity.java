@@ -1,4 +1,4 @@
-package com.duan.musicoco.themecolor;
+package com.duan.musicoco.main.leftnav.themecolor;
 
 import android.graphics.Color;
 import android.os.Build;
@@ -93,14 +93,14 @@ public class ThemeColorCustomActivity extends RootActivity implements
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_theme_color_custom, menu);
+        getMenuInflater().inflate(R.menu.menu_save, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_theme_color_custom_save:
+            case R.id.action_save:
                 handleSave();
                 finish();
                 break;

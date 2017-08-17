@@ -8,11 +8,13 @@ import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.detail.sheet.SheetDetailActivity;
 import com.duan.musicoco.detail.song.SongDetailActivity;
 import com.duan.musicoco.main.MainActivity;
+import com.duan.musicoco.main.leftnav.imagewall.ImageWallActivity;
+import com.duan.musicoco.main.leftnav.timesleep.TimeSleepActivity;
 import com.duan.musicoco.sheetmodify.SheetModifyActivity;
 import com.duan.musicoco.play.PlayActivity;
 import com.duan.musicoco.rmp.RecentMostPlayActivity;
 import com.duan.musicoco.search.SearchActivity;
-import com.duan.musicoco.themecolor.ThemeColorCustomActivity;
+import com.duan.musicoco.main.leftnav.themecolor.ThemeColorCustomActivity;
 
 import java.io.File;
 
@@ -94,5 +96,13 @@ public class ActivityManager {
 
     public void startThemeColorCustomActivity() {
         context.startActivity(new Intent(context, ThemeColorCustomActivity.class));
+    }
+
+    public void startImageWallActivity() {
+        context.startActivity(new Intent(context, ImageWallActivity.class));
+    }
+
+    public void startTimeSleepActivity() {
+        context.startActivity(new Intent(context, TimeSleepActivity.class));
     }
 }

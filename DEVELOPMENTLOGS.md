@@ -329,3 +329,7 @@
 - 2017-08-14
 
 1 添加 ThemeColorCustomActivity 并完成功能，可以动态设置标题栏颜色和图标颜色<br>
+
+- 2017-08-14
+
+1 添加 TimeSleepActivity 并完成界面设计和界面逻辑<br>

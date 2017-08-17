@@ -34,13 +34,13 @@ public class App extends Application {
 
     private void test() {
 
-        int color = Color.parseColor("#DD4617");
-        int color1 = Color.parseColor("#DD4617");
-
-        int color2 = Color.parseColor("#F72597");
-        appPreference.updateActionbarColor(color);
-        appPreference.updateStatusBarColor(color1);
-        appPreference.updateAccentColor(color2);
+//        int color = Color.parseColor("#DD4617");
+//        int color1 = Color.parseColor("#DD4617");
+//
+//        int color2 = Color.parseColor("#F72597");
+//        appPreference.updateActionbarColor(color);
+//        appPreference.updateStatusBarColor(color1);
+//        appPreference.updateAccentColor(color2);
 
         appPreference.updateImageWallAlpha(10);
         appPreference.updateImageWallBlur(1);

@@ -5,6 +5,10 @@
     <string name="album_save_path">image</string>
     <string name="cache_bitmap_album_visualizer">album_visualizer</string>
 
+    <string name="label_theme_color_custom">主题色定制</string>
+    <string name="label_image_wall">图片墙</string>
+    <string name="label_time_sleep">定时停止播放</string>
+
     <!-- 权限相关 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <string name="permission_required">应用需要这些权限以读取歌曲文件，否则程序将无法正常工作并退出！</string>
@@ -109,6 +113,8 @@
     <string name="new_">新建</string>
     <string name="song">歌曲</string>
     <string name="sheet">歌单</string>
+    <string name="minute">分钟</string>
+    <string name="custom">自定义</string>
 
     <string name="cancel_collect">取消收藏</string>
     <string name="select_operation">选择操作</string>
@@ -117,6 +123,9 @@
 
     <string name="action_status_bar_color">标题栏颜色</string>
     <string name="icon_color">图标颜色</string>
+
+    <string name="enable">开启</string>
+    <string name="disable">不开启</string>
 
     <!-- 提示 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -146,6 +155,7 @@
     <string name="replace_search_from_songs">从 * 首歌曲中检索</string>
     <string name="replace_search_result_prompt">共检索到 * 首歌曲</string>
     <string name="replace_rmp_title">播放次数最多的 * 首歌</string>
+    <string name="replace_time_sleep">* 分钟后停止播放</string>
 
     <!-- 对话框等标题 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -163,7 +173,7 @@
 
     <string name="setting_tools">工具</string>
     <string name="setting_scan">歌曲扫描</string>
-    <string name="setting_sleep">睡眠定时</string>
+    <string name="setting_sleep">定时停止播放</string>
     <string name="setting_image_wall">图片墙</string>
     <string name="setting_equalizer">均衡器</string> <!-- 升级 -->
 
