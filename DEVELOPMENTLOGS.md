@@ -340,3 +340,4 @@
 
 1 添加 ImageWallActivity 和 ImageAdapter 并完成功能<br>
 2 主页左部导航添加【用户指南】<br>
+3 添加 SettingsActivity 和 SettingFragment <br>

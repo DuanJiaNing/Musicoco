@@ -97,6 +97,10 @@
             android:name=".main.leftnav.play.PlayThemeCustomActivity"
             android:label="@string/label_play_theme_custom"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".main.leftnav.setting.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:theme="@style/AppTheme.Setting" />
     </application>
 
 </manifest>

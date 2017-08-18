@@ -13,6 +13,7 @@ android {
         testInstrumentationRunner "android.support.double_number_picker.runner.AndroidJUnitRunner"
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true    // Enable RS support
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -39,6 +40,7 @@ dependencies {
     compile 'com.android.support:support-v4:26.0.0-alpha1'
     compile 'jp.wasabeef:glide-transformations:2.0.2'
     compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
+    compile 'com.android.support:support-vector-drawable:25.3.1'
     testCompile 'junit:junit:4.12'
 }
 repositories {

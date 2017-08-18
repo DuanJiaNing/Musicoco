@@ -123,6 +123,8 @@ public class LeftNavigationController implements
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        drawerLayout.closeDrawer(GravityCompat.START);
         int id = item.getItemId();
         switch (id) {
 //            case R.id.setting_scan: // 文件扫描
@@ -144,7 +146,7 @@ public class LeftNavigationController implements
                 handleModeSwitch();
                 break;
             case R.id.setting_set: // 设置
-
+                activityManager.startSettingActivity();
                 break;
             case R.id.setting_quit: // 退出
                 ((MainActivity) activity).shutDownServiceAndApp();
@@ -156,7 +158,6 @@ public class LeftNavigationController implements
                 break;
         }
 
-        drawerLayout.closeDrawer(GravityCompat.START);
         return false;
     }
 
