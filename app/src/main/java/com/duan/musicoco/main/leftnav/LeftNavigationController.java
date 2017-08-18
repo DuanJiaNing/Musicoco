@@ -124,8 +124,11 @@ public class LeftNavigationController implements
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        drawerLayout.closeDrawer(GravityCompat.START);
         int id = item.getItemId();
+        if (id != R.id.setting_night_mode) {
+            //FIXME 在关闭动画结束后再启动新的 activity
+            drawerLayout.closeDrawer(GravityCompat.START);
+        }
         switch (id) {
 //            case R.id.setting_scan: // 文件扫描
 //                break;

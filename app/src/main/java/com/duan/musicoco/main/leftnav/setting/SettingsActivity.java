@@ -44,6 +44,16 @@ public class SettingsActivity extends RootActivity implements ThemeChangeable {
     }
 
     @Override
+    protected void checkTheme() {
+        ThemeEnum themeEnum = appPreference.getTheme();
+        if (themeEnum == ThemeEnum.DARK) {
+            this.setTheme(R.style.Theme_DARK);
+        } else {
+            this.setTheme(R.style.AppTheme_Setting);
+        }
+    }
+
+    @Override
     public void themeChange(ThemeEnum themeEnum, int[] colors) {
 
         final int[] ta = ColorUtils.get2ActionStatusBarColors(this);

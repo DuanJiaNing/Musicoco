@@ -10,10 +10,8 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
-import android.view.MenuItem;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.util.ToastUtils;
 
 /**
  * Created by DuanJiaNing on 2017/8/18.
@@ -25,16 +23,19 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.pref_general);
 
-        bindPreferenceSummaryToValue(findPreference("example_text"));
-        bindPreferenceSummaryToValue(findPreference("example_list"));
+//        bindPreferenceSummaryToValue(findPreference("example_text"));
+//        bindPreferenceSummaryToValue(findPreference("example_list"));
     }
 
     private void bindPreferenceSummaryToValue(Preference preference) {
-        preference.setOnPreferenceChangeListener(this);
-        onPreferenceChange(preference,
-                PreferenceManager
-                        .getDefaultSharedPreferences(preference.getContext())
-                        .getString(preference.getKey(), ""));
+        if (preference != null) {
+
+            preference.setOnPreferenceChangeListener(this);
+            onPreferenceChange(preference,
+                    PreferenceManager
+                            .getDefaultSharedPreferences(preference.getContext())
+                            .getString(preference.getKey(), ""));
+        }
     }
 
     @Override
@@ -58,7 +59,6 @@ public class SettingFragment extends PreferenceFragment implements Preference.On
             // using RingtoneManager.
             if (TextUtils.isEmpty(stringValue)) {
                 // Empty values correspond to 'silent' (no ringtone).
-                preference.setSummary(R.string.pref_ringtone_silent);
 
             } else {
                 Ringtone ringtone = RingtoneManager.getRingtone(

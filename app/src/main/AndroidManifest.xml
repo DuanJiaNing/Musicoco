@@ -99,8 +99,16 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".main.leftnav.setting.SettingsActivity"
-            android:label="@string/title_activity_settings"
+            android:label="@string/label_setting"
             android:theme="@style/AppTheme.Setting" />
+        <activity
+            android:label="@string/label_feed_back"
+            android:name=".app.FeedBackActivity"
+            android:theme="@style/AppTheme" />
+        <activity
+            android:label="@string/label_about"
+            android:name=".app.AboutActivity"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>
