@@ -257,7 +257,7 @@ public class SearchController implements ThemeChangeable, ResultsAdapter.OnItemC
     @Override
     public void onItemClick(View v, int position) {
         currentClickItem = adapter.getItem(position);
-        if (optionsDialog.isShowing()) {
+        if (optionsDialog.visible()) {
             optionsDialog.hide();
         } else {
             String title = mActivity.getString(R.string.song) + ": " + currentClickItem.getTitle();

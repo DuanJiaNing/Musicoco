@@ -259,7 +259,7 @@ public class SheetSongListController implements
             @Override
             public void onMore(SongAdapter.ViewHolder view, SongAdapter.DataHolder data, int position) {
                 currentSongData = data;
-                if (optionsDialog.isShowing()) {
+                if (optionsDialog.visible()) {
                     optionsDialog.hide();
                 } else {
                     updateSongFavoriteOptions();

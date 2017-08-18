@@ -1,11 +1,14 @@
 package com.duan.musicoco.util;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.App;
+import com.duan.musicoco.app.interfaces.OnCompleteListener;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,28 +50,49 @@ public class FileUtils {
         return d;
     }
 
-    public static String saveAlbumPicture(String imagePath) {
-        Context context = App.getContext();
-        File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        StringBuilder builder = new StringBuilder();
-        builder.append(file.getAbsoluteFile())
-                .append(File.separator)
-                .append(context.getString(R.string.app_name_us))
-                .append(File.separator)
-                .append(context.getString(R.string.album_save_path));
-        File imageF = new File(builder.toString());
-        if (!imageF.exists()) {
-            imageF.mkdirs();
+    public static void saveImage(final Context context, final String imagePath, @Nullable final OnCompleteListener<Boolean> completeListener) {
+
+        if (!StringUtils.isReal(imagePath)) {
+            if (completeListener != null) {
+                completeListener.onComplete(false);
+            }
+            return;
         }
-        File im = new File(imagePath);
-        String to = imageF.getAbsolutePath() + File.separator + im.getName() + ".jpeg";
-        if (copy(imagePath, to)) {
-            String re = "图片成功保存到：" + to;
-            Log.d("musicoco", "saveAlbumPicture: " + re);
-            return re;
-        } else {
-            return "图片保存失败";
-        }
+
+        new AsyncTask<String, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(String... params) {
+
+                File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                StringBuilder builder = new StringBuilder();
+                builder.append(file.getAbsoluteFile())
+                        .append(File.separator)
+                        .append(context.getString(R.string.app_name_us))
+                        .append(File.separator)
+                        .append(context.getString(R.string.album_save_path));
+                File imageF = new File(builder.toString());
+                if (!imageF.exists()) {
+                    imageF.mkdirs();
+                }
+                File im = new File(imagePath);
+                String to = imageF.getAbsolutePath() + File.separator + im.getName() + ".jpeg";
+                return copy(imagePath, to);
+            }
+
+            @Override
+            protected void onPostExecute(Boolean aBoolean) {
+                if (aBoolean) {
+                    if (completeListener != null) {
+                        completeListener.onComplete(true);
+                    }
+                } else {
+                    if (completeListener != null) {
+                        completeListener.onComplete(false);
+                    }
+                }
+            }
+        }.execute(imagePath);
+
     }
 
     public static boolean copy(String from, String to) {

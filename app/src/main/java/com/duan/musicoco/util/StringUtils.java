@@ -1,5 +1,7 @@
 package com.duan.musicoco.util;
 
+import android.text.TextUtils;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
@@ -52,6 +54,10 @@ public class StringUtils {
     public static String getGenDateYMD(long time) {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         return format.format(new Date(time));
+    }
+
+    public static boolean isReal(String string) {
+        return string != null && string.length() > 0 && !string.equals("null");
     }
 
 }

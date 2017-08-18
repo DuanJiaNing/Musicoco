@@ -53,6 +53,7 @@ public class ActivityManager {
     }
 
     public void startImageCheckActivity(String path) {
+        //FIXME android N 以下正常，N 报 FileUriExposedException
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.fromFile(new File(path)), "image/*");

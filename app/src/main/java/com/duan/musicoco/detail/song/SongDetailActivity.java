@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageButton;
@@ -20,9 +19,9 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.app.interfaces.OnCompleteListener;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
-import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.bean.Sheet;
 import com.duan.musicoco.util.BitmapUtils;
@@ -215,8 +214,18 @@ public class SongDetailActivity extends RootActivity implements View.OnClickList
             case R.id.song_detail_save_image: {
                 if (haveAlbumImage) {
                     String path = info.getAlbum_path();
-                    String to = FileUtils.saveAlbumPicture(path);
-                    ToastUtils.showLongToast(to);
+                    FileUtils.saveImage(this, path, new OnCompleteListener<Boolean>() {
+                        @Override
+                        public void onComplete(Boolean aBoolean) {
+                            String msg;
+                            if (aBoolean) {
+                                msg = getString(R.string.success_saved);
+                            } else {
+                                msg = getString(R.string.error_save_fail);
+                            }
+                            ToastUtils.showShortToast(msg);
+                        }
+                    });
                 } else {
                     ToastUtils.showShortToast(getString(R.string.error_no_album_image));
                 }

@@ -140,10 +140,6 @@ public class OptionsDialog implements
         return mDialog.isShowing();
     }
 
-    public boolean isShowing() {
-        return mDialog.isShowing();
-    }
-
     public void setTitle(String title) {
         titleText.setText(title);
     }

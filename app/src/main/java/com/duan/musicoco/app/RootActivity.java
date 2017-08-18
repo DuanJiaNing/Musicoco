@@ -44,4 +44,14 @@ public class RootActivity extends AppCompatActivity {
             this.setTheme(R.style.Theme_WHITE);
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (dbController != null) {
+            dbController.close();
+        }
+
+    }
 }

@@ -92,7 +92,7 @@ public class MySheetsAdapter extends BaseAdapter implements
         moreClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mDialog.isShowing()) {
+                if (mDialog.visible()) {
                     mDialog.hide();
                 } else {
                     Sheet sheet = (Sheet) v.getTag();

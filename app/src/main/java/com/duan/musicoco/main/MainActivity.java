@@ -265,10 +265,6 @@ public class MainActivity extends InspectActivity implements
         unbindService();
         unregisterReceiver();
 
-        if (dbController != null) {
-            dbController.close();
-        }
-
         auxiliaryPreference.setTimeSleepDisable();
 
     }

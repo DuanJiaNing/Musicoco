@@ -133,7 +133,7 @@ public class SongOption implements
     }
 
     private void handleShowMore() {
-        if (mDialog.isShowing()) {
+        if (mDialog.visible()) {
             mDialog.hide();
         } else {
             Song s = null;

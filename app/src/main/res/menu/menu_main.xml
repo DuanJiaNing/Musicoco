@@ -5,10 +5,10 @@
         <menu>
             <group android:id="@+id/setting_g_1">
                 <item
-                    android:visible="false"
                     android:id="@+id/setting_scan"
                     android:icon="@drawable/ic_audio_file"
-                    android:title="@string/setting_scan" />
+                    android:title="@string/setting_scan"
+                    android:visible="false" />
                 <item
                     android:id="@+id/setting_sleep"
                     android:icon="@drawable/ic_snooze"
@@ -45,6 +45,10 @@
     </item>
 
     <group android:id="@+id/setting_g_3">
+        <item
+            android:id="@+id/setting_user_guide"
+            android:icon="@drawable/ic_info_outline_black_24dp"
+            android:title="@string/setting_user_guide" />
         <item
             android:id="@+id/setting_set"
             android:icon="@drawable/ic_settings"

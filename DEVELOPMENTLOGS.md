@@ -326,12 +326,17 @@
 1 播放界面的主题同步修复，主页面歌单删除广播同步<br>
 2 应用退出功能实现，用广播通知服务器退出<br>
 
-- 2017-08-14
+- 2017-08-16
 
 1 添加 ThemeColorCustomActivity 并完成功能，可以动态设置标题栏颜色和图标颜色<br>
 
-- 2017-08-14
+- 2017-08-17
 
 1 添加 TimeSleepActivity 并完成界面设计和界面逻辑<br>
 2 添加 AuxiliaryPreference，完成 TimeSleepActivity 逻辑<br>
 3 添加 PlayThemeCustomActivity，完成播放界面风格定制逻辑<br>
+
+- 2017-08-18
+
+1 添加 ImageWallActivity 和 ImageAdapter 并完成功能<br>
+2 主页左部导航添加【用户指南】<br>

@@ -149,6 +149,9 @@ public class LeftNavigationController implements
             case R.id.setting_quit: // 退出
                 ((MainActivity) activity).shutDownServiceAndApp();
                 break;
+            case R.id.setting_user_guide: // 用户指南
+                ToastUtils.showShortToast("guide");
+                break;
             default:
                 break;
         }

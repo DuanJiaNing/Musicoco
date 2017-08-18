@@ -58,14 +58,6 @@ public class SheetModifyActivity extends RootActivity implements
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (dbController != null) {
-            dbController.close();
-        }
-    }
-
     private void initToolBarTitle() {
         ActionBar actionBar = getSupportActionBar();
         String title = getString(R.string.modify_sheet);

@@ -76,6 +76,7 @@
     <string name="error_load_sheet_fail">加载歌单失败 :(</string>
     <string name="error_action_did_not_support">不支持该操作 :(</string>
     <string name="error_time_sleep_time_must_more_then_zero">时间必须大于0 :(</string>
+    <string name="error_save_fail">保存失败 :(</string>
 
     <!-- 操作成功 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -90,6 +91,7 @@
     <string name="success_remove_select_song_from_favorite">选中歌曲已取消收藏 :)</string>
     <string name="success_set">设置成功 :)</string>
     <string name="success_modify_saved">设置保存成功 :)</string>
+    <string name="success_saved">保存成功 :)</string>
 
     <!-- 公用短词 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -119,6 +121,7 @@
     <string name="minute">分钟</string>
     <string name="hour">小时</string>
     <string name="custom">自定义</string>
+    <string name="detail">详情</string>
 
     <string name="cancel_collect">取消收藏</string>
     <string name="select_operation">选择操作</string>
@@ -144,6 +147,8 @@
     <string name="info_search">搜索音乐</string>
     <string name="info_show_in_sheet">在歌单中显示</string>
     <string name="info_time_sleep_is_canceled">定时停止播放已取消</string>
+    <string name="info_save_image">保存图片</string>
+    <string name="info_jump_to_source">跳到来源</string>
 
     <string name="title_add_all_songs_to_favorite">收藏所有歌曲</string>
     <string name="title_add_to_sheet">添加至播放列表</string>
@@ -169,6 +174,7 @@
 
     <string name="title_play_list">播放列表</string>
     <string name="title_lyric">歌词</string>
+    <string name="title_about_image">关于图片</string>
     <string name="title_activity_sheet_modify">SheetModifyActivity</string>
     <string name="title_activity_recent_most_play">RecentMostPlayActivity</string>
 
@@ -196,6 +202,7 @@
 
     <string name="setting_quit">退出</string>
     <string name="setting_set">设置</string>
+    <string name="setting_user_guide">用户指南</string>
 
     <string name="setting_set_open_auto_play">打开应用自动播放</string>
     <string name="setting_set_memory_play">记忆播放</string>

@@ -504,7 +504,7 @@ public class RecentMostPlayActivity extends RootActivity implements ThemeChangea
 
     private void showDialogIfNeed() {
 
-        if (optionsDialog.isShowing()) {
+        if (optionsDialog.visible()) {
             optionsDialog.hide();
         } else {
             if (currentClickItem != null) {
