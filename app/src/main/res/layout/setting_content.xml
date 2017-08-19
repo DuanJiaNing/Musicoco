@@ -15,7 +15,7 @@
 
         <fragment
             android:id="@+id/setting_fragment"
-            android:name="com.duan.musicoco.main.leftnav.setting.SettingFragment"
+            android:name="com.duan.musicoco.setting.SettingFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

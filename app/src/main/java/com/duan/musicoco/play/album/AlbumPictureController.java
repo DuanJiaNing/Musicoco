@@ -54,7 +54,7 @@ public final class AlbumPictureController implements IAlbum {
         this.view = view;
         this.size = size;
         this.context = context;
-        this.cache = new BitmapCache(context, context.getString(R.string.cache_bitmap_album_visualizer));
+        this.cache = new BitmapCache(context, BitmapCache.CACHE_ALBUM_VISUALIZER_IMAGE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             defaultColor = context.getColor(R.color.default_play_bg_color);
@@ -112,7 +112,7 @@ public final class AlbumPictureController implements IAlbum {
                 view.setImageDrawable(new BitmapDrawable(context.getResources(), cache.getDefaultBitmap()));
             } catch (Exception e) {
                 Log.d(TAG, "pre: create default bitmap for BitmapCache");
-                Bitmap b = new Init().initAlbumVisualizerImageCache((Activity) context);
+                Bitmap b = Init.initAlbumVisualizerImageCache((Activity) context);
                 view.setImageDrawable(new BitmapDrawable(context.getResources(), b));
             }
         }
@@ -145,7 +145,7 @@ public final class AlbumPictureController implements IAlbum {
                 view.setImageDrawable(new BitmapDrawable(context.getResources(), cache.getDefaultBitmap()));
             } catch (Exception e) {
                 Log.d(TAG, "pre: create default bitmap for BitmapCache");
-                Bitmap b = new Init().initAlbumVisualizerImageCache((Activity) context);
+                Bitmap b = Init.initAlbumVisualizerImageCache((Activity) context);
                 view.setImageDrawable(new BitmapDrawable(context.getResources(), b));
             }
         }

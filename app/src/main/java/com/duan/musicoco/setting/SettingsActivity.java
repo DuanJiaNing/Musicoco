@@ -1,6 +1,7 @@
-package com.duan.musicoco.main.leftnav.setting;
+package com.duan.musicoco.setting;
 
 
+import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,12 +10,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
+import com.duan.musicoco.cache.BitmapCache;
 import com.duan.musicoco.preference.ThemeEnum;
+import com.duan.musicoco.shared.DialogProvider;
 import com.duan.musicoco.util.ColorUtils;
+import com.duan.musicoco.util.ToastUtils;
+
+import java.io.IOException;
 
 public class SettingsActivity extends RootActivity implements ThemeChangeable, View.OnClickListener {
 
@@ -38,7 +45,6 @@ public class SettingsActivity extends RootActivity implements ThemeChangeable, V
     }
 
     private void initData() {
-
     }
 
     private void initViews() {
@@ -89,9 +95,9 @@ public class SettingsActivity extends RootActivity implements ThemeChangeable, V
         ThemeEnum theme = appPreference.getTheme();
         int[] cs = ColorUtils.get10ThemeColors(this, theme);
         int mainTC = cs[5];
-        int vicTC = cs[6];
+        int vicBC = cs[4];
         int accentC = cs[2];
-        int bc = theme == ThemeEnum.WHITE ? Color.WHITE : vicTC;
+        int bc = theme == ThemeEnum.WHITE ? Color.WHITE : vicBC;
 
         feedBack.setTextColor(mainTC);
         about.setTextColor(mainTC);
@@ -122,6 +128,37 @@ public class SettingsActivity extends RootActivity implements ThemeChangeable, V
     }
 
     private void handleClearCache() {
+        DialogProvider provider = new DialogProvider(this);
+        Dialog dialog = provider.createPromptDialog(
+                getString(R.string.tip),
+                getString(R.string.info_cleat_cache),
+                new DialogProvider.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        clearCache();
+                        String msg = SettingsActivity.this.getString(R.string.success_clear_cache);
+                        ToastUtils.showShortToast(msg);
+                    }
+                }, null, true);
+        dialog.show();
 
+    }
+
+    private void clearCache() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // 清除 Glide 缓存
+                Glide.get(SettingsActivity.this).clearDiskCache();
+
+                // 清除播放页专辑图片(圆形旋转图片)缓存
+                try {
+                    BitmapCache bc = new BitmapCache(SettingsActivity.this, BitmapCache.CACHE_ALBUM_VISUALIZER_IMAGE);
+                    bc.getCacheControl().delete();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }

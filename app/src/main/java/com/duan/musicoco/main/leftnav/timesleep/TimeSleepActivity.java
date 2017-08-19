@@ -147,40 +147,6 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
         finish();
     }
 
-    private Date getFinishTime() {
-
-        Calendar c = Calendar.getInstance();
-        int h = time / 60;
-        int m = time % 60;
-        if (h > 0) {
-            c.add(Calendar.HOUR, h);
-        }
-        c.add(Calendar.MINUTE, m);
-
-        c.set(c.get(Calendar.YEAR),
-                c.get(Calendar.MONTH),
-                c.get(Calendar.DAY_OF_MONTH),
-                c.get(Calendar.HOUR_OF_DAY),
-                c.get(Calendar.MINUTE),
-                c.get(Calendar.SECOND));
-
-        /* 使用 APP_QUIT_TIME_COUNTDOWN_STATUS 计数可以完成定时关闭，因而不使用 AlarmManager 实现
-
-        Intent intent = new Intent(BroadcastManager.FILTER_APP_QUIT);
-        intent.putExtra(BroadcastManager.EXTRA_IS_TIME_SLEEP, true);
-        PendingIntent pi = PendingIntent.getBroadcast(this, 0, intent, 0);
-        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-        // 定时关闭应用
-        am.set(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), pi);
-        */
-
-        Log.d(App.TAG, "getFinishTime: 设置定时关闭："
-                + StringUtils.getGenDateYMDHMS(c.getTimeInMillis())
-                + " 时长：" + h + "时" + m + "分");
-
-        return c.getTime();
-    }
-
     @Override
     public void themeChange(ThemeEnum themeEnum, int[] colors) {
 

@@ -28,11 +28,11 @@ public class BitmapCache {
 
     private Context mContext;
 
-//    private static volatile BitmapCache BITMAPCACHE;
-
     private final static String TAG = "BitmapCache";
 
     public final static String DEFAULT_PIC_KEY = "default_key";
+
+    public static final String CACHE_ALBUM_VISUALIZER_IMAGE = "album_visualizer";
 
     private final String name;
 

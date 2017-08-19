@@ -2,21 +2,19 @@ package com.duan.musicoco.app;
 
 import android.app.Application;
 import android.content.Context;
-import android.graphics.Color;
 
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.PlayBackgroundModeEnum;
 import com.duan.musicoco.preference.PlayPreference;
+import com.duan.musicoco.preference.SettingPreference;
 import com.duan.musicoco.preference.ThemeEnum;
+import com.duan.musicoco.setting.AutoSwitchThemeController;
 
 /**
  * Created by DuanJiaNing on 2017/5/25.
  */
 
 public class App extends Application {
-
-    private PlayPreference playPreference;
-    private AppPreference appPreference;
 
     public static final String TAG = "musicoco";
 
@@ -27,39 +25,22 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         sCONTEXT = this;
-        appPreference = new AppPreference(this);
-        playPreference = new PlayPreference(this);
 
-        //FIXME double_number_picker
-        test();
+        checkAutoThemeSwitch();
+
     }
 
-    private void test() {
-
-//        int color = Color.parseColor("#DD4617");
-//        int color1 = Color.parseColor("#DD4617");
-//
-//        int color2 = Color.parseColor("#F72597");
-//        appPreference.updateActionbarColor(color);
-//        appPreference.updateStatusBarColor(color1);
-//        appPreference.updateAccentColor(color2);
-
-        appPreference.updateImageWallAlpha(10);
-        appPreference.updateImageWallBlur(1);
-        //FIXME 显示图片个数不正确
-        appPreference.updateImageWallSize(40);
-
-//        appPreference.updateTheme(ThemeEnum.WHITE);
-        playPreference.updateTheme(ThemeEnum.VARYING);
-        playPreference.updatePlayBgMode(PlayBackgroundModeEnum.COLOR);
-
+    private void checkAutoThemeSwitch() {
+        SettingPreference settingPreference = new SettingPreference(this);
+        AutoSwitchThemeController instance = AutoSwitchThemeController.getInstance(this);
+        if (settingPreference.autoSwitchNightTheme() && !instance.isSet()) {
+            instance.setAlarm();
+        } else {
+            instance.cancelAlarm();
+        }
     }
 
     public static Context getContext() {
         return sCONTEXT;
-    }
-
-    public AppPreference getAppPreference() {
-        return appPreference;
     }
 }

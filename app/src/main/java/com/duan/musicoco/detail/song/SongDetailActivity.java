@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.BoolRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.text.TextUtils;
@@ -19,6 +20,7 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.app.interfaces.On2CompleteListener;
 import com.duan.musicoco.app.interfaces.OnCompleteListener;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
@@ -214,12 +216,12 @@ public class SongDetailActivity extends RootActivity implements View.OnClickList
             case R.id.song_detail_save_image: {
                 if (haveAlbumImage) {
                     String path = info.getAlbum_path();
-                    FileUtils.saveImage(this, path, new OnCompleteListener<Boolean>() {
+                    FileUtils.saveImage(this, path, new On2CompleteListener<Boolean, String>() {
                         @Override
-                        public void onComplete(Boolean aBoolean) {
+                        public void onComplete(Boolean aBoolean, String s) {
                             String msg;
                             if (aBoolean) {
-                                msg = getString(R.string.success_saved);
+                                msg = getString(R.string.success_save_image_to) + s;
                             } else {
                                 msg = getString(R.string.error_save_fail);
                             }

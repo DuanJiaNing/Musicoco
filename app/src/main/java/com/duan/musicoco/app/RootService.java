@@ -6,6 +6,7 @@ import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.PlayPreference;
+import com.duan.musicoco.preference.SettingPreference;
 
 /**
  * Created by DuanJiaNing on 2017/6/24.
@@ -13,10 +14,12 @@ import com.duan.musicoco.preference.PlayPreference;
 
 public abstract class RootService extends Service {
 
+    protected DBMusicocoController dbController;
     protected MediaManager mediaManager;
+
     protected PlayPreference playPreference;
     protected AppPreference appPreference;
-    protected DBMusicocoController dbController;
+    protected SettingPreference settingPreference;
 
     public RootService() {
     }
@@ -26,6 +29,7 @@ public abstract class RootService extends Service {
         super.onCreate();
         this.playPreference = new PlayPreference(this);
         this.appPreference = new AppPreference(this);
+        this.settingPreference = new SettingPreference(this);
         this.dbController = new DBMusicocoController(this, false);
         this.mediaManager = MediaManager.getInstance(getApplicationContext());
 

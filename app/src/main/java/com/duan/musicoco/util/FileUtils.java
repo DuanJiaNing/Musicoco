@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.App;
+import com.duan.musicoco.app.interfaces.On2CompleteListener;
 import com.duan.musicoco.app.interfaces.OnCompleteListener;
 
 import java.io.File;
@@ -50,32 +51,32 @@ public class FileUtils {
         return d;
     }
 
-    public static void saveImage(final Context context, final String imagePath, @Nullable final OnCompleteListener<Boolean> completeListener) {
+    public static void saveImage(final Context context, final String imagePath, @Nullable final On2CompleteListener<Boolean, String> completeListener) {
 
         if (!StringUtils.isReal(imagePath)) {
             if (completeListener != null) {
-                completeListener.onComplete(false);
+                completeListener.onComplete(false, null);
             }
             return;
         }
 
+        File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        String path = String.valueOf(file.getAbsoluteFile()) +
+                File.separator +
+                context.getString(R.string.app_name_us) +
+                File.separator +
+                context.getString(R.string.album_save_path);
+
+        File imageF = new File(path);
+        if (!imageF.exists()) {
+            imageF.mkdirs();
+        }
+        File im = new File(imagePath);
+        final String to = imageF.getAbsolutePath() + File.separator + im.getName() + ".jpeg";
+
         new AsyncTask<String, Void, Boolean>() {
             @Override
             protected Boolean doInBackground(String... params) {
-
-                File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                StringBuilder builder = new StringBuilder();
-                builder.append(file.getAbsoluteFile())
-                        .append(File.separator)
-                        .append(context.getString(R.string.app_name_us))
-                        .append(File.separator)
-                        .append(context.getString(R.string.album_save_path));
-                File imageF = new File(builder.toString());
-                if (!imageF.exists()) {
-                    imageF.mkdirs();
-                }
-                File im = new File(imagePath);
-                String to = imageF.getAbsolutePath() + File.separator + im.getName() + ".jpeg";
                 return copy(imagePath, to);
             }
 
@@ -83,11 +84,11 @@ public class FileUtils {
             protected void onPostExecute(Boolean aBoolean) {
                 if (aBoolean) {
                     if (completeListener != null) {
-                        completeListener.onComplete(true);
+                        completeListener.onComplete(true, to);
                     }
                 } else {
                     if (completeListener != null) {
-                        completeListener.onComplete(false);
+                        completeListener.onComplete(false, null);
                     }
                 }
             }

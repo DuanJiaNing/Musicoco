@@ -10,6 +10,7 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.app.interfaces.On2CompleteListener;
 import com.duan.musicoco.app.interfaces.OnCompleteListener;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
@@ -83,12 +84,12 @@ public class ImageWallActivity extends RootActivity implements
                 new OptionsAdapter.OptionClickListener() {
                     @Override
                     public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
-                        FileUtils.saveImage(ImageWallActivity.this, current.getAlbum_path(), new OnCompleteListener<Boolean>() {
+                        FileUtils.saveImage(ImageWallActivity.this, current.getAlbum_path(), new On2CompleteListener<Boolean, String>() {
                             @Override
-                            public void onComplete(Boolean aBoolean) {
+                            public void onComplete(Boolean aBoolean, String s) {
                                 String msg;
                                 if (aBoolean) {
-                                    msg = getString(R.string.success_saved);
+                                    msg = getString(R.string.success_save_image_to) + s;
                                 } else {
                                     msg = getString(R.string.error_save_fail);
                                 }

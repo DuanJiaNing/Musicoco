@@ -3,20 +3,13 @@ package com.duan.musicoco.image;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.provider.Settings;
 import android.support.annotation.DrawableRes;
-import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.duan.musicoco.R;
 import com.duan.musicoco.app.Init;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.cache.BitmapCache;
@@ -43,7 +36,7 @@ public class BitmapProducer {
     @Nullable
     public Bitmap getBitmapForVisualizer(BitmapCache cache, SongInfo info, int size, int defaultColor) {
 
-        if (!cache.getName().equals(context.getString(R.string.cache_bitmap_album_visualizer))) {
+        if (!cache.getName().equals(BitmapCache.CACHE_ALBUM_VISUALIZER_IMAGE)) {
             return null;
         }
 
@@ -85,7 +78,7 @@ public class BitmapProducer {
             try {
                 result = cache.getDefaultBitmap();
             } catch (Exception e) {
-                result = new Init().initAlbumVisualizerImageCache((Activity) context);
+                result = Init.initAlbumVisualizerImageCache((Activity) context);
             }
         return result;
     }

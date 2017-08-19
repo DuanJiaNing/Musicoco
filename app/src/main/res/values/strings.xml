@@ -3,7 +3,6 @@
     <string name="app_name_us">Musicoco</string>
 
     <string name="album_save_path">image</string>
-    <string name="cache_bitmap_album_visualizer">album_visualizer</string>
 
     <string name="label_theme_color_custom">主题色定制</string>
     <string name="label_image_wall">图片墙</string>
@@ -95,6 +94,8 @@
     <string name="success_set">设置成功 :)</string>
     <string name="success_modify_saved">设置保存成功 :)</string>
     <string name="success_saved">保存成功 :)</string>
+    <string name="success_save_image_to">图片成功保存到: </string>
+    <string name="success_clear_cache">缓存已清除 :)</string>
 
     <!-- 公用短词 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -152,6 +153,9 @@
     <string name="info_time_sleep_is_canceled">定时停止播放已取消</string>
     <string name="info_save_image">保存图片</string>
     <string name="info_jump_to_source">跳到来源</string>
+    <string name="info_cleat_cache">
+        清除缓存将清空歌单详情界面和播放界面的图片缓存，这会使应用在下次再次用到这些图片时需要重新生成，确认清除！
+    </string>
 
     <string name="title_add_all_songs_to_favorite">收藏所有歌曲</string>
     <string name="title_add_to_sheet">添加至播放列表</string>
@@ -207,7 +211,7 @@
     <!-- /////////////////////////////////////////////-->
     <string name="setting_set_open_auto_play">打开应用自动播放</string>
     <string name="setting_set_memory_play">记忆播放</string>
-    <string name="memory_play_enable">07:00 - 22:30 自动开启夜间模式</string>
+    <string name="memory_play_enable">22:30 - 07:00 自动开启夜间模式</string>
     <string name="setting_set_switch_theme_mode_auto">自动切换至夜间模式</string>
 
     <string name="setting_music_hardware">音乐硬件</string>

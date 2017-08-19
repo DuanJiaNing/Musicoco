@@ -1,19 +1,33 @@
 package com.duan.musicoco.app;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.text.format.Time;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.cache.BitmapCache;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.image.BitmapBuilder;
+import com.duan.musicoco.preference.AppPreference;
+import com.duan.musicoco.preference.SettingPreference;
+import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.util.Utils;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+import static android.content.Context.ALARM_SERVICE;
 
 /**
  * Created by DuanJiaNing on 2017/6/21.
@@ -23,10 +37,9 @@ public class Init {
 
     private static final String TAG = "Init";
 
-    public Bitmap initAlbumVisualizerImageCache(Activity activity) {
+    public static Bitmap initAlbumVisualizerImageCache(Activity activity) {
 
-        String name = activity.getString(R.string.cache_bitmap_album_visualizer);
-        BitmapCache cache = new BitmapCache(activity, name);
+        BitmapCache cache = new BitmapCache(activity, BitmapCache.CACHE_ALBUM_VISUALIZER_IMAGE);
 
         String key = StringUtils.stringToMd5(BitmapCache.DEFAULT_PIC_KEY);
         Bitmap result = cache.get(key);
@@ -46,7 +59,7 @@ public class Init {
         return result;
     }
 
-    public void initMusicocoDB(Context context, MediaManager mediaManager) {
+    public static void initMusicocoDB(Context context, MediaManager mediaManager) {
         DBMusicocoController db = new DBMusicocoController(context, true);
 
         db.truncate(DBMusicocoController.TABLE_SONG);

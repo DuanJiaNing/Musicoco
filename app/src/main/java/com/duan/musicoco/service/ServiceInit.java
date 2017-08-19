@@ -8,9 +8,10 @@ import com.duan.musicoco.aidl.PlayControlImpl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
-import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.MainSheetHelper;
+import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.preference.PlayPreference;
+import com.duan.musicoco.preference.SettingPreference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,15 +26,17 @@ class ServiceInit {
     private final MediaManager manager;
     private final PlayPreference preference;
     private final DBMusicocoController dbController;
+    private final SettingPreference settingPreference;
 
     private Context context;
 
-    public ServiceInit(Context context, PlayControlImpl control, MediaManager manager, PlayPreference preference, DBMusicocoController dbController) {
+    public ServiceInit(Context context, PlayControlImpl control, MediaManager manager, PlayPreference preference, DBMusicocoController dbController, SettingPreference settingPreference) {
         this.context = context;
         this.control = control;
         this.manager = manager;
         this.preference = preference;
         this.dbController = dbController;
+        this.settingPreference = settingPreference;
 
     }
 
@@ -49,35 +52,40 @@ class ServiceInit {
 
     }
 
-    //恢复上次播放状态
     private void initCurrentSong() {
         try {
-            Song song = null;
-            PlayPreference.CurrentSong cur = preference.getSong();
-            if (cur != null && cur.path != null) {
-                song = new Song(cur.path);
-            }
+            if (settingPreference.memoryPlay()) {
+                //恢复上次播放状态
+                Song song = null;
+                PlayPreference.CurrentSong cur = preference.getLastPlaySong();
+                if (cur != null && cur.path != null) {
+                    song = new Song(cur.path);
+                }
 
-            List<Song> songs = control.getPlayList();
+                List<Song> songs = control.getPlayList();
 
-            if (songs != null && songs.size() > 0) {
-                if (song == null) {  //配置文件没有保存【最后播放曲目】信息（通常为第一次打开应用）
-                    song = songs.get(0);
-                } else { //配置文件有保存
-                    if (!songs.contains(song)) { //确认服务端有此歌曲
+                if (songs != null && songs.size() > 0) {
+                    if (song == null) {  //配置文件没有保存【最后播放曲目】信息（通常为第一次打开应用）
                         song = songs.get(0);
+                    } else { //配置文件有保存
+                        if (!songs.contains(song)) { //确认服务端有此歌曲
+                            song = songs.get(0);
+                        }
+                    }
+
+                    // songChanged 将被回调
+                    control.setCurrentSong(song);
+                    Log.d("musicoco service init", "onCreate: current song: " + song.path);
+
+                    int pro = cur.progress;
+                    if (pro >= 0) {
+                        control.seekTo(pro);
                     }
                 }
-
-                // songChanged 将被回调
-                control.setCurrentSong(song);
-                Log.d("musicoco service init", "onCreate: current song: " + song.path);
-
-                int pro = cur.progress;
-                if (pro >= 0) {
-                    control.seekTo(pro);
-                }
+            } else {
+                control.setPlaySheet(MainSheetHelper.SHEET_ALL, 0);
             }
+
         } catch (RemoteException e) {
             e.printStackTrace();
         }

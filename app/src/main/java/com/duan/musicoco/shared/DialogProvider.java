@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.App;
+import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.ColorUtils;
 import com.victor.loading.rotate.RotateLoading;
@@ -133,7 +134,7 @@ public class DialogProvider {
         mTopLine = rootView.findViewById(R.id.dialog_line1);
         mMiddleLine = rootView.findViewById(R.id.dialog_line2);
 
-        themeEnum = ((App) context.getApplicationContext()).getAppPreference().getTheme();
+        themeEnum = new AppPreference(context).getTheme();
         updateTheme();
 
     }

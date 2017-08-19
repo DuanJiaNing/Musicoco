@@ -12,7 +12,7 @@ import com.duan.musicoco.detail.song.SongDetailActivity;
 import com.duan.musicoco.main.MainActivity;
 import com.duan.musicoco.main.leftnav.imagewall.ImageWallActivity;
 import com.duan.musicoco.main.leftnav.play.PlayThemeCustomActivity;
-import com.duan.musicoco.main.leftnav.setting.SettingsActivity;
+import com.duan.musicoco.setting.SettingsActivity;
 import com.duan.musicoco.main.leftnav.timesleep.TimeSleepActivity;
 import com.duan.musicoco.sheetmodify.SheetModifyActivity;
 import com.duan.musicoco.play.PlayActivity;

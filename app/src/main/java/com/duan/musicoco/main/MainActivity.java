@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.widget.DrawerLayout;
@@ -34,8 +35,9 @@ import com.duan.musicoco.main.bottomnav.BottomNavigationController;
 import com.duan.musicoco.main.leftnav.LeftNavigationController;
 import com.duan.musicoco.play.PlayServiceConnection;
 import com.duan.musicoco.preference.ThemeEnum;
+import com.duan.musicoco.service.PlayController;
+import com.duan.musicoco.setting.AutoSwitchThemeController;
 import com.duan.musicoco.util.ColorUtils;
-import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.AppBarStateChangeListener;
 
@@ -61,6 +63,7 @@ public class MainActivity extends InspectActivity implements
 
     private BroadcastReceiver mySheetDataChangedReceiver;
     private BroadcastReceiver appQuitTimeCountdownReceiver;
+    private BroadcastReceiver appThemeChangeAutomatic;
     private BroadcastManager broadcastManager;
 
     private boolean updateColorByCustomThemeColor = false;
@@ -129,6 +132,25 @@ public class MainActivity extends InspectActivity implements
         themeChange(null, null);
 
         initBroadcastReceivers();
+
+        // 应用偏好，打开应用自动播放 ?
+        initPlayStatus();
+
+    }
+
+    private void initPlayStatus() {
+
+        if (settingPreference.openAutoPlay()) {
+            try {
+
+                if (control.currentSong() != null && control.status() != PlayController.STATUS_PLAYING) {
+                    control.resume();
+                }
+
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void initSelfData() {
@@ -175,7 +197,19 @@ public class MainActivity extends InspectActivity implements
             }
         };
 
+        appThemeChangeAutomatic = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                int va = intent.getIntExtra(BroadcastManager.APP_THEME_CHANGE_AUTOMATIC_TOKEN, BroadcastManager.APP_THEME_CHANGE_AUTOMATIC_WHITE);
+                ThemeEnum theme = va == BroadcastManager.APP_THEME_CHANGE_AUTOMATIC_WHITE ?
+                        ThemeEnum.WHITE : ThemeEnum.DARK;
+                appPreference.updateTheme(theme);
+                switchThemeMode(theme);
+            }
+        };
+
         broadcastManager.registerBroadReceiver(appQuitTimeCountdownReceiver, BroadcastManager.FILTER_APP_QUIT_TIME_COUNTDOWN);
+        broadcastManager.registerBroadReceiver(appThemeChangeAutomatic, BroadcastManager.FILTER_APP_THEME_CHANGE_AUTOMATIC);
         broadcastManager.registerBroadReceiver(mySheetDataChangedReceiver, BroadcastManager.FILTER_MY_SHEET_CHANGED);
     }
 
@@ -267,6 +301,11 @@ public class MainActivity extends InspectActivity implements
 
         auxiliaryPreference.setTimeSleepDisable();
 
+        AutoSwitchThemeController instance = AutoSwitchThemeController.getInstance(this);
+        if (settingPreference.autoSwitchNightTheme() && instance.isSet()) {
+            instance.cancelAlarm();
+        }
+
     }
 
     private void unregisterReceiver() {
@@ -276,6 +315,11 @@ public class MainActivity extends InspectActivity implements
         if (appQuitTimeCountdownReceiver != null) {
             broadcastManager.unregisterReceiver(appQuitTimeCountdownReceiver);
         }
+
+        if (appThemeChangeAutomatic != null) {
+            broadcastManager.unregisterReceiver(appThemeChangeAutomatic);
+        }
+
     }
 
     private void unbindService() {
@@ -403,6 +447,7 @@ public class MainActivity extends InspectActivity implements
         leftNavigationController.themeChange(theme, null);
         themeChange(null, null);
 
+        Log.d(App.TAG, "switchThemeMode: ");
     }
 
     /**

@@ -9,6 +9,7 @@ import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.AuxiliaryPreference;
 import com.duan.musicoco.preference.PlayPreference;
+import com.duan.musicoco.preference.SettingPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 
 /**
@@ -20,6 +21,7 @@ public class RootActivity extends AppCompatActivity {
 
     protected AppPreference appPreference;
     protected PlayPreference playPreference;
+    protected SettingPreference settingPreference;
     protected AuxiliaryPreference auxiliaryPreference;
 
     protected DBMusicocoController dbController;
@@ -31,6 +33,7 @@ public class RootActivity extends AppCompatActivity {
         appPreference = new AppPreference(this);
         playPreference = new PlayPreference(this);
         auxiliaryPreference = new AuxiliaryPreference(this);
+        settingPreference = new SettingPreference(this);
 
         checkTheme();
         dbController = new DBMusicocoController(this, true);

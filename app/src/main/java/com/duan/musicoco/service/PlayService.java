@@ -32,7 +32,13 @@ public class PlayService extends RootService {
         broadcastManager = BroadcastManager.getInstance(this);
         iBinder = new PlayServiceIBinder(getApplicationContext());
 
-        new ServiceInit(this, iBinder, mediaManager, playPreference, dbController).start();
+        new ServiceInit(this,
+                iBinder,
+                mediaManager,
+                playPreference,
+                dbController,
+                settingPreference).start();
+
         iBinder.notifyDataIsReady();
 
         initBroadcast();

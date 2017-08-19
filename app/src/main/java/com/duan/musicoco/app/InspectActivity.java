@@ -79,9 +79,8 @@ public abstract class InspectActivity extends RootActivity implements Permission
 
     protected void initAppDataIfNeed() {
         if (appPreference.appOpenTimes() == 0) {
-            Init init = new Init();
-            init.initAlbumVisualizerImageCache(this);
-            init.initMusicocoDB(this, mediaManager);
+            Init.initAlbumVisualizerImageCache(this);
+            Init.initMusicocoDB(this, mediaManager);
             mediaManager.scanSdCard(null);
         }
     }

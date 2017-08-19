@@ -4,6 +4,7 @@ import android.content.Context;
 
 /**
  * Created by DuanJiaNing on 2017/6/2.
+ * 保存临时数据：定时停止播放时长、开始时间、是否启用
  */
 
 public class AuxiliaryPreference extends BasePreference {

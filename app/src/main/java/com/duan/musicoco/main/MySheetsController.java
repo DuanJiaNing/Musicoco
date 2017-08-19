@@ -19,6 +19,7 @@ import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.bean.Sheet;
+import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.shared.SheetOperation;
 import com.duan.musicoco.util.ColorUtils;
@@ -97,7 +98,7 @@ public class MySheetsController implements
     @Override
     public void themeChange(ThemeEnum themeEnum, int[] colors) {
         if (themeEnum == null) {
-            themeEnum = ((App) activity.getApplicationContext()).getAppPreference().getTheme();
+            themeEnum = new AppPreference(activity).getTheme();
         }
         int[] cs = ColorUtils.get10ThemeColors(activity, themeEnum);
 
@@ -144,7 +145,7 @@ public class MySheetsController implements
 
         int accentC;
         if (colors == null) {
-            ThemeEnum themeEnum = ((App) activity.getApplicationContext()).getAppPreference().getTheme();
+            ThemeEnum themeEnum = new AppPreference(activity).getTheme();
             int[] cs = ColorUtils.get10ThemeColors(activity, themeEnum);
 
             accentC = cs[2];

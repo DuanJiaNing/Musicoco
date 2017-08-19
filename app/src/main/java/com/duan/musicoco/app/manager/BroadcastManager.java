@@ -45,6 +45,12 @@ public class BroadcastManager {
         public static final int STOP_COUNTDOWN = 2;
     }
 
+    // 应用主题自动切换
+    public static final String FILTER_APP_THEME_CHANGE_AUTOMATIC = "filter_app_theme_change_automatic";
+    public static final String APP_THEME_CHANGE_AUTOMATIC_TOKEN = "filter_app_theme_change_automatic_token";
+    public static final int APP_THEME_CHANGE_AUTOMATIC_WHITE = 1;
+    public static final int APP_THEME_CHANGE_AUTOMATIC_DARK = 2;
+
 
     private Context context;
 

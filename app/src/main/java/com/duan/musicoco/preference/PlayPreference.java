@@ -10,6 +10,7 @@ import com.duan.musicoco.service.PlayController;
 
 /**
  * Created by DuanJiaNing on 2017/6/2.
+ * 播放界面配置：播放界面主题，播放模式，播放曲目、所属歌单、播放进度
  */
 
 public class PlayPreference extends BasePreference {
@@ -66,7 +67,7 @@ public class PlayPreference extends BasePreference {
     }
 
     //注意在多进程下的修改不可见问题
-    public void updateSong(CurrentSong song) {
+    public void updateLastPlaySong(CurrentSong song) {
 
         if (song == null) {
             return;
@@ -81,7 +82,7 @@ public class PlayPreference extends BasePreference {
     }
 
     @Nullable
-    public CurrentSong getSong() {
+    public CurrentSong getLastPlaySong() {
 
         String p = preferences.getString(CurrentSong.KEY_CURRENT_SONG_PATH, null);
         int in = preferences.getInt(CurrentSong.KEY_CURRENT_SONG_INDEX, 0);

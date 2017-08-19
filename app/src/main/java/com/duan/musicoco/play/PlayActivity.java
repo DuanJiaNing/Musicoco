@@ -240,7 +240,7 @@ public class PlayActivity extends InspectActivity implements
             int pro = control.getProgress();
             int mode = control.getPlayMode();
 
-            playPreference.updateSong(new PlayPreference.CurrentSong(path, pro, index));
+            playPreference.updateLastPlaySong(new PlayPreference.CurrentSong(path, pro, index));
             playPreference.updatePlayMode(mode);
 
         } catch (RemoteException e) {

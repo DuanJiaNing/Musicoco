@@ -10,6 +10,7 @@ import com.duan.musicoco.util.ColorUtils;
 
 /**
  * Created by DuanJiaNing on 2017/6/2.
+ * 应用配置：应用主题，颜色，照片墙属性
  */
 
 public class AppPreference extends BasePreference {
