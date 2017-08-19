@@ -5,6 +5,8 @@ import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.duan.musicoco.service.AudioFocusManager;
+import com.duan.musicoco.service.MediaSessionManager;
 import com.duan.musicoco.service.PlayController;
 
 import java.util.List;
@@ -18,17 +20,16 @@ import java.util.List;
 
 public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
 
-    protected RemoteCallbackList<IOnSongChangedListener> mSongChangeListeners;
+    protected final RemoteCallbackList<IOnSongChangedListener> mSongChangeListeners;
+    protected final RemoteCallbackList<IOnPlayStatusChangedListener> mStatusChangeListeners;
+    protected final RemoteCallbackList<IOnPlayListChangedListener> mPlayListChangeListeners;
+    protected final RemoteCallbackList<IOnDataIsReadyListener> mDataIsReadyListeners;
 
-    protected RemoteCallbackList<IOnPlayStatusChangedListener> mStatusChangeListeners;
+    private final PlayController manager;
+    private final AudioFocusManager focusManager;
+    private final MediaSessionManager sessionManager;
 
-    protected RemoteCallbackList<IOnPlayListChangedListener> mPlayListChangeListeners;
-
-    protected RemoteCallbackList<IOnDataIsReadyListener> mDataIsReadyListeners;
-
-    private PlayController manager;
-
-    private Context context;
+    private final Context context;
 
     public PlayControlImpl(Context context) {
         this.context = context;
@@ -36,8 +37,13 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
         this.mStatusChangeListeners = new RemoteCallbackList<>();
         this.mPlayListChangeListeners = new RemoteCallbackList<>();
         this.mDataIsReadyListeners = new RemoteCallbackList<>();
+
+        this.sessionManager = new MediaSessionManager(context, this);
+        this.focusManager = new AudioFocusManager(context, this);
         this.manager = PlayController.getMediaController(
                 context,
+                focusManager,
+                sessionManager,
                 new NotifyStatusChange(),
                 new NotifySongChange(),
                 new NotifyPlayListChange());
@@ -231,6 +237,12 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
 
     public void releaseMediaPlayer() {
         manager.releaseMediaPlayer();
+
+        if (focusManager != null) {
+            // 释放音乐焦点
+            focusManager.abandonAudioFocus();
+        }
+
     }
 
     public void notifyDataIsReady() {

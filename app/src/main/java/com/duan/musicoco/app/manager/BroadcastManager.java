@@ -51,6 +51,8 @@ public class BroadcastManager {
     public static final int APP_THEME_CHANGE_AUTOMATIC_WHITE = 1;
     public static final int APP_THEME_CHANGE_AUTOMATIC_DARK = 2;
 
+    // 耳机插入和拔出事件
+    public static final String FILTER_HEADSET_PLUG = "android.intent.action.HEADSET_PLUG";
 
     private Context context;
 

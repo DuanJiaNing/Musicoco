@@ -2,8 +2,6 @@ package com.duan.musicoco.app;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
@@ -11,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.app.interfaces.PermissionRequestCallback;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.manager.PermissionManager;
@@ -26,6 +25,8 @@ public abstract class InspectActivity extends RootActivity implements Permission
     protected final static String TAG = "InspectActivity";
 
     protected MediaManager mediaManager;
+    protected IPlayControl control;
+
     private PermissionManager permissionManager;
 
     @Override
@@ -34,6 +35,11 @@ public abstract class InspectActivity extends RootActivity implements Permission
         super.onCreate(savedInstanceState);
         permissionManager = PermissionManager.getInstance(this);
         mediaManager = MediaManager.getInstance(getApplicationContext());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     protected void checkPermission() {

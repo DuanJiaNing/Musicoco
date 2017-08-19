@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
@@ -53,7 +54,6 @@ public class MainActivity extends InspectActivity implements
     // FIXME 内存泄漏
     private static PlayServiceConnection sServiceConnection;
     private PlayServiceManager playServiceManager;
-    private IPlayControl control;
 
     private BottomNavigationController bottomNavigationController;
     private LeftNavigationController leftNavigationController;
@@ -63,10 +63,13 @@ public class MainActivity extends InspectActivity implements
 
     private BroadcastReceiver mySheetDataChangedReceiver;
     private BroadcastReceiver appQuitTimeCountdownReceiver;
-    private BroadcastReceiver appThemeChangeAutomatic;
+    private BroadcastReceiver appThemeChangeAutomaticReceiver;
+    private BroadcastReceiver headsetPlugReceiver;
     private BroadcastManager broadcastManager;
 
     private boolean updateColorByCustomThemeColor = false;
+    // 刚打开应用时忽略耳机是否插入的广播
+    private boolean justOpenTheApplication = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -197,7 +200,7 @@ public class MainActivity extends InspectActivity implements
             }
         };
 
-        appThemeChangeAutomatic = new BroadcastReceiver() {
+        appThemeChangeAutomaticReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 int va = intent.getIntExtra(BroadcastManager.APP_THEME_CHANGE_AUTOMATIC_TOKEN, BroadcastManager.APP_THEME_CHANGE_AUTOMATIC_WHITE);
@@ -208,8 +211,32 @@ public class MainActivity extends InspectActivity implements
             }
         };
 
+        headsetPlugReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (justOpenTheApplication) {
+                    justOpenTheApplication = false;
+                    return;
+                }
+                if (intent.hasExtra("state")) {
+                    if (intent.getIntExtra("state", 0) == 0) { // 耳机拔出
+                        try {
+                            if (control.status() == PlayController.STATUS_PLAYING) {
+                                control.pause();
+                            }
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }
+                    } else if (intent.getIntExtra("state", 0) == 1) { // 耳机插入
+
+                    }
+                }
+            }
+        };
+
+        broadcastManager.registerBroadReceiver(headsetPlugReceiver, BroadcastManager.FILTER_HEADSET_PLUG);
         broadcastManager.registerBroadReceiver(appQuitTimeCountdownReceiver, BroadcastManager.FILTER_APP_QUIT_TIME_COUNTDOWN);
-        broadcastManager.registerBroadReceiver(appThemeChangeAutomatic, BroadcastManager.FILTER_APP_THEME_CHANGE_AUTOMATIC);
+        broadcastManager.registerBroadReceiver(appThemeChangeAutomaticReceiver, BroadcastManager.FILTER_APP_THEME_CHANGE_AUTOMATIC);
         broadcastManager.registerBroadReceiver(mySheetDataChangedReceiver, BroadcastManager.FILTER_MY_SHEET_CHANGED);
     }
 
@@ -316,8 +343,12 @@ public class MainActivity extends InspectActivity implements
             broadcastManager.unregisterReceiver(appQuitTimeCountdownReceiver);
         }
 
-        if (appThemeChangeAutomatic != null) {
-            broadcastManager.unregisterReceiver(appThemeChangeAutomatic);
+        if (appThemeChangeAutomaticReceiver != null) {
+            broadcastManager.unregisterReceiver(appThemeChangeAutomaticReceiver);
+        }
+
+        if (headsetPlugReceiver != null) {
+            broadcastManager.unregisterReceiver(headsetPlugReceiver);
         }
 
     }

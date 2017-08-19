@@ -23,16 +23,15 @@ public class PlayController {
 
     private static final String TAG = "PlayController";
 
-    private Context context;
+    private final Context context;
+    private static volatile PlayController MANAGER = null;
+    private final AudioFocusManager focusManager;
+    private final MediaSessionManager sessionManager;
 
     private int mCurrentSong = 0;
-
     private int mPlayState;
 
-    private static volatile PlayController MANAGER = null;
-
     private List<Song> mPlayList = Collections.synchronizedList(new ArrayList<Song>());
-
     private final MediaPlayer mPlayer;
 
     private boolean isNext = true;
@@ -98,14 +97,15 @@ public class PlayController {
 
     private int mPlayMode = MODE_DEFAULT;
 
-    private PlayController(Context context, NotifyStatusChanged sl, NotifySongChanged sc, NotifyPlayListChanged pl) {
-
+    private PlayController(Context context, AudioFocusManager focusManager, MediaSessionManager sessionManager, NotifyStatusChanged sl, NotifySongChanged sc, NotifyPlayListChanged pl) {
         this.context = context;
+        this.focusManager = focusManager;
+        this.sessionManager = sessionManager;
         this.mNotifyStatusChanged = sl;
         this.mNotifySongChanged = sc;
         this.mNotifyPlayListChanged = pl;
-        mPlayState = STATUS_STOP;
 
+        mPlayState = STATUS_STOP;
         mPlayer = new MediaPlayer();
         mPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
@@ -116,11 +116,11 @@ public class PlayController {
 
     }
 
-    public static PlayController getMediaController(Context context, NotifyStatusChanged sl, NotifySongChanged sc, NotifyPlayListChanged pl) {
+    public static PlayController getMediaController(Context context, AudioFocusManager focusManager, MediaSessionManager sessionManager, NotifyStatusChanged sl, NotifySongChanged sc, NotifyPlayListChanged pl) {
         if (MANAGER == null) {
             synchronized (PlayController.class) {
                 if (MANAGER == null)
-                    MANAGER = new PlayController(context, sl, sc, pl);
+                    MANAGER = new PlayController(context, focusManager, sessionManager, sl, sc, pl);
             }
         }
         return MANAGER;
@@ -250,6 +250,8 @@ public class PlayController {
         if (mPlayer != null) {
             mPlayer.release();
             mPlayState = STATUS_STOP;
+
+            sessionManager.release();
         }
     }
 
@@ -330,6 +332,7 @@ public class PlayController {
     //暂停播放
     public int pause() {
         if (mPlayState == STATUS_PLAYING) {
+            sessionManager.updatePlaybackState();
             mPlayer.pause();
             mNotifyStatusChanged.notify(getCurrentSong(), mCurrentSong, STATUS_STOP);
             mPlayState = STATUS_PAUSE;
@@ -340,6 +343,8 @@ public class PlayController {
     //继续播放
     public int resume() {
         if (mPlayState != STATUS_PLAYING) {
+            focusManager.requestAudioFocus();
+            sessionManager.updatePlaybackState();
             mPlayer.start();
             mNotifyStatusChanged.notify(getCurrentSong(), mCurrentSong, STATUS_START);
             mPlayState = STATUS_PLAYING;
@@ -349,6 +354,7 @@ public class PlayController {
 
     //定位到
     public int seekTo(int to) {
+        sessionManager.updatePlaybackState();
         mPlayer.seekTo(to);
         return 1;
     }
@@ -380,6 +386,7 @@ public class PlayController {
         } else {
             String next = mPlayList.get(mCurrentSong).path;
             try {
+                sessionManager.updateMetaData(next);
                 mPlayer.setDataSource(next);
                 if (!hasMediaPlayerInit) {
                     hasMediaPlayerInit = true;
@@ -392,6 +399,8 @@ public class PlayController {
             }
 
             if (mPlayState == STATUS_PLAYING) {
+                focusManager.requestAudioFocus();
+                sessionManager.updatePlaybackState();
                 mPlayer.start();
             }
 

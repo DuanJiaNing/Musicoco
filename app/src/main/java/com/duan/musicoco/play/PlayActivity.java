@@ -54,7 +54,6 @@ public class PlayActivity extends InspectActivity implements
 
     private PlayServiceConnection mServiceConnection;
     private PlayServiceManager playServiceManager;
-    private IPlayControl control;
 
     private BottomNavigationController bottomNavigationController;
     private PlayBgDrawableController bgDrawableController;

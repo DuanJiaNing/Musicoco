@@ -56,17 +56,18 @@ public class AutoSwitchThemeController {
                 current.get(Calendar.YEAR),
                 current.get(Calendar.MONTH),
                 current.get(Calendar.DAY_OF_MONTH),
-                17, 15); // 22:30 切换到夜间模式
+                22, 30); // 22:30 切换到夜间模式
         nightThemeEnd = new GregorianCalendar(
                 current.get(Calendar.YEAR),
                 current.get(Calendar.MONTH),
                 current.get(Calendar.DAY_OF_MONTH),
-                17, 17); // 07:00 切换到白天模式
+                7, 0); // 07:00 切换到白天模式
         checkTheme();
         isSet = true;
 
         Intent intentS = new Intent();
         Intent intentE = new Intent();
+
         intentS.setAction(BroadcastManager.FILTER_APP_THEME_CHANGE_AUTOMATIC);
         intentS.putExtra(BroadcastManager.APP_THEME_CHANGE_AUTOMATIC_TOKEN,
                 BroadcastManager.APP_THEME_CHANGE_AUTOMATIC_DARK);
@@ -76,12 +77,11 @@ public class AutoSwitchThemeController {
                 BroadcastManager.APP_THEME_CHANGE_AUTOMATIC_WHITE);
 
         piS = PendingIntent.getBroadcast(context, 0, intentS, 0);
-        piE = PendingIntent.getBroadcast(context, 0, intentE, 0);
+        piE = PendingIntent.getBroadcast(context, 1, intentE, 0);
 
         alarmManager.set(AlarmManager.RTC_WAKEUP, nightThemeStart.getTimeInMillis(), piS);
         alarmManager.set(AlarmManager.RTC_WAKEUP, nightThemeEnd.getTimeInMillis(), piE);
 
-        Log.d(App.TAG, "setAlarm: ");
     }
 
     public void cancelAlarm() {
@@ -92,7 +92,6 @@ public class AutoSwitchThemeController {
             alarmManager.cancel(piS);
         }
         isSet = false;
-        Log.d(App.TAG, "cancelAlarm: ");
     }
 
     private void checkTheme() {
