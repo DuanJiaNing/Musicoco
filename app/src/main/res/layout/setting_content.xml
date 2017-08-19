@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:divider="?android:dividerVertical"
+    android:orientation="vertical"
+    android:showDividers="middle"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <LinearLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <fragment
+            android:id="@+id/setting_fragment"
+            android:name="com.duan.musicoco.main.leftnav.setting.SettingFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/setting_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_default_margin"
+        android:background="?android:selectableItemBackground"
+        android:clickable="true"
+        android:gravity="center_vertical|start"
+        android:padding="@dimen/activity_default_margin"
+        android:text="@string/setting_set_feedback" />
+
+    <TextView
+        android:id="@+id/setting_about"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:selectableItemBackground"
+        android:clickable="true"
+        android:gravity="center_vertical|start"
+        android:padding="@dimen/activity_default_margin"
+        android:text="@string/setting_set_about" />
+
+    <TextView
+        android:id="@+id/setting_clear_cache"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_default_margin"
+        android:background="?android:selectableItemBackground"
+        android:clickable="true"
+        android:gravity="center"
+        android:padding="@dimen/activity_default_margin"
+        android:text="@string/setting_set_image_clear_cache" />
+
+</LinearLayout>

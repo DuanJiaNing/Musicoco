@@ -28,7 +28,7 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">设置</string>
 
     <!-- 主页 主歌单歌单名/////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -208,11 +208,11 @@
     <string name="setting_set_open_auto_play">打开应用自动播放</string>
     <string name="setting_set_memory_play">记忆播放</string>
     <string name="memory_play_enable">07:00 - 22:30 自动开启夜间模式</string>
-    <string name="memory_play_disable">关闭</string>
     <string name="setting_set_switch_theme_mode_auto">自动切换至夜间模式</string>
 
     <string name="setting_music_hardware">音乐硬件</string>
     <string name="setting_set_headphone_wire">线控切歌</string>
+    <string name="setting_set_headphone_wire_enable">单击：播放/暂停；双击：下一首；三击：上一首</string>
 
     <string name="setting_about">关于</string>
     <string name="setting_set_feedback">反馈</string>

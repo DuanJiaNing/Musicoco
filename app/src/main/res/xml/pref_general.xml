@@ -19,7 +19,7 @@
         <SwitchPreference
             android:defaultValue="true"
             android:key="pre_auto_switch_night_theme"
-            android:summaryOff="@string/memory_play_disable"
+            android:summaryOff="@string/disable"
             android:summaryOn="@string/memory_play_enable"
             android:title="@string/setting_set_switch_theme_mode_auto" />
 
@@ -31,7 +31,7 @@
             android:defaultValue="true"
             android:key="pre_headphone_wire"
             android:summaryOff="@string/disable"
-            android:summaryOn="@string/enable"
+            android:summaryOn="@string/setting_set_headphone_wire_enable"
             android:title="@string/setting_set_headphone_wire" />
 
     </PreferenceCategory>

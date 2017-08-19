@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.net.Uri;
 
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.AboutActivity;
+import com.duan.musicoco.app.FeedBackActivity;
 import com.duan.musicoco.detail.sheet.SheetDetailActivity;
 import com.duan.musicoco.detail.song.SongDetailActivity;
 import com.duan.musicoco.main.MainActivity;
@@ -115,5 +117,13 @@ public class ActivityManager {
 
     public void startSettingActivity() {
         context.startActivity(new Intent(context, SettingsActivity.class));
+    }
+
+    public void startFeedBackActivity() {
+        context.startActivity(new Intent(context, FeedBackActivity.class));
+    }
+
+    public void startAboutActivity() {
+        context.startActivity(new Intent(context, AboutActivity.class));
     }
 }

@@ -16,11 +16,6 @@
             android:layout_height="?actionBarSize" />
     </android.support.design.widget.AppBarLayout>
 
-    <fragment
-        android:id="@+id/setting_fragment"
-        android:name="com.duan.musicoco.main.leftnav.setting.SettingFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+    <include layout="@layout/setting_content" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -11,6 +11,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.duan.musicoco.R;
@@ -46,12 +47,15 @@ public class LeftNavigationController implements
     private ActivityManager activityManager;
     private AuxiliaryPreference auxiliaryPreference;
 
+    private DrawerListener drawerListener;
+
     public LeftNavigationController(Activity activity, AppPreference appPreference, AuxiliaryPreference auxiliaryPreference) {
         this.activity = activity;
         this.appPreference = appPreference;
         this.auxiliaryPreference = auxiliaryPreference;
         this.homeBackgroundController = new HomeBackgroundController(activity, appPreference);
-        activityManager = ActivityManager.getInstance(activity);
+        this.activityManager = ActivityManager.getInstance(activity);
+        this.drawerListener = new DrawerListener();
     }
 
     public void initViews() {
@@ -59,6 +63,7 @@ public class LeftNavigationController implements
         navigationView = (NavigationView) activity.findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         homeBackgroundController.initViews(navigationView);
+        drawerLayout.addDrawerListener(drawerListener);
         updateSwitchMenuIconAndText();
     }
 
@@ -125,40 +130,12 @@ public class LeftNavigationController implements
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         int id = item.getItemId();
-        if (id != R.id.setting_night_mode) {
-            //FIXME 在关闭动画结束后再启动新的 activity
+        if (id == R.id.setting_night_mode) {
+            handleModeSwitch();
+        } else {
+            drawerListener.id = id;
+            drawerListener.actionAfterClose = true;
             drawerLayout.closeDrawer(GravityCompat.START);
-        }
-        switch (id) {
-//            case R.id.setting_scan: // 文件扫描
-//                break;
-            case R.id.setting_sleep: // 睡眠定时
-                activityManager.startTimeSleepActivity();
-                break;
-            case R.id.setting_image_wall: // 照片墙
-                activityManager.startImageWallActivity();
-                break;
-            case R.id.setting_play_ui: // 播放界面风格
-                activityManager.startPlayThemeCustomActivity();
-                break;
-            case R.id.setting_theme_color_custom: // 主题色
-                activityManager.startThemeColorCustomActivity();
-                ((MainActivity) activity).updateColorByCustomThemeColor();
-                break;
-            case R.id.setting_night_mode: // 夜间模式
-                handleModeSwitch();
-                break;
-            case R.id.setting_set: // 设置
-                activityManager.startSettingActivity();
-                break;
-            case R.id.setting_quit: // 退出
-                ((MainActivity) activity).shutDownServiceAndApp();
-                break;
-            case R.id.setting_user_guide: // 用户指南
-                ToastUtils.showShortToast("guide");
-                break;
-            default:
-                break;
         }
 
         return false;
@@ -370,5 +347,59 @@ public class LeftNavigationController implements
         }
     }
 
+    private class DrawerListener implements DrawerLayout.DrawerListener {
 
+        int id;
+        boolean actionAfterClose = false;
+
+        @Override
+        public void onDrawerSlide(View drawerView, float slideOffset) {
+
+        }
+
+        @Override
+        public void onDrawerOpened(View drawerView) {
+
+        }
+
+        @Override
+        public void onDrawerClosed(View drawerView) {
+
+            if (actionAfterClose) {
+                switch (id) {
+                    case R.id.setting_sleep: // 睡眠定时
+                        activityManager.startTimeSleepActivity();
+                        break;
+                    case R.id.setting_image_wall: // 照片墙
+                        activityManager.startImageWallActivity();
+                        break;
+                    case R.id.setting_play_ui: // 播放界面风格
+                        activityManager.startPlayThemeCustomActivity();
+                        break;
+                    case R.id.setting_theme_color_custom: // 主题色
+                        activityManager.startThemeColorCustomActivity();
+                        ((MainActivity) activity).updateColorByCustomThemeColor();
+                        break;
+                    case R.id.setting_set: // 设置
+                        activityManager.startSettingActivity();
+                        break;
+                    case R.id.setting_quit: // 退出
+                        ((MainActivity) activity).shutDownServiceAndApp();
+                        break;
+                    case R.id.setting_user_guide: // 用户指南
+                        ToastUtils.showShortToast("guide");
+                        break;
+                    default:
+                        break;
+                }
+                actionAfterClose = false;
+            }
+
+        }
+
+        @Override
+        public void onDrawerStateChanged(int newState) {
+
+        }
+    }
 }
