@@ -17,6 +17,7 @@ import com.duan.musicoco.util.StringUtils;
 
 /**
  * Created by DuanJiaNing on 2017/8/19.
+ * * 参考文章 http://www.jianshu.com/p/bc2f779a5400;
  */
 
 public class MediaSessionManager {

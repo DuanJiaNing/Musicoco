@@ -11,6 +11,7 @@ import static android.content.Context.AUDIO_SERVICE;
 /**
  * Created by DuanJiaNing on 2017/8/19.
  * 服务端调用
+ *  * 参考文章 http://www.jianshu.com/p/bc2f779a5400;
  */
 
 public class AudioFocusManager implements AudioManager.OnAudioFocusChangeListener {

@@ -346,3 +346,4 @@
 
 1 添加 AudioFocusManager 处理音乐焦点问题<br>
 2 添加 MediaSessionManager <br>
+3 为 FeedBackActivity 更新 Layout<br>

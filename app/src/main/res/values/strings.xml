@@ -156,6 +156,15 @@
     <string name="info_cleat_cache">
         清除缓存将清空歌单详情界面和播放界面的图片缓存，这会使应用在下次再次用到这些图片时需要重新生成，确认清除！
     </string>
+    <string name="info_will_speed_few_cent">
+        点击发送以短信的方式向我反馈您的问题\n这可能需要您支付少许短信费用！
+    </string>
+    <string name="info_contact_me_other_where">
+        也可以通过以下方式联系我：\n
+        电话：17628287313 \n
+        QQ：2213994603 \n
+        邮箱：2213994603@qq.com \n
+    </string>
 
     <string name="title_add_all_songs_to_favorite">收藏所有歌曲</string>
     <string name="title_add_to_sheet">添加至播放列表</string>

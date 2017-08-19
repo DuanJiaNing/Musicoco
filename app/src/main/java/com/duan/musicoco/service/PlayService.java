@@ -30,7 +30,7 @@ public class PlayService extends RootService {
         super.onCreate();
 
         broadcastManager = BroadcastManager.getInstance(this);
-        iBinder = new PlayServiceIBinder(getApplicationContext());
+        iBinder = new PlayServiceIBinder(this);
 
         new ServiceInit(this,
                 iBinder,
