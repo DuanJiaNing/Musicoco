@@ -19,9 +19,9 @@
     <application
         android:name=".app.App"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/logo_round"
         android:supportsRtl="true">
 
         <!-- 需要为 PlayActivity 开启硬件加速，Android 4.1 以上默认开启 -->
@@ -105,10 +105,10 @@
             android:label="@string/label_setting"
             android:theme="@style/AppTheme.Setting" />
         <activity
-            android:windowSoftInputMode="adjustPan"
             android:name=".app.FeedBackActivity"
             android:label="@string/label_feed_back"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".app.AboutActivity"
             android:label="@string/label_about"
