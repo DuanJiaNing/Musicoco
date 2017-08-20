@@ -4,10 +4,13 @@
     package="com.duan.musicoco">
 
     <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 屏幕常亮 -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.duan.musicoco.permission.ACCESS_PLAY_SERVICE" />
+
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.SEND_SMS" />
 
     <permission
         android:name="com.duan.musicoco.permission.ACCESS_PLAY_SERVICE"
@@ -102,12 +105,13 @@
             android:label="@string/label_setting"
             android:theme="@style/AppTheme.Setting" />
         <activity
-            android:label="@string/label_feed_back"
+            android:windowSoftInputMode="adjustPan"
             android:name=".app.FeedBackActivity"
+            android:label="@string/label_feed_back"
             android:theme="@style/AppTheme" />
         <activity
-            android:label="@string/label_about"
             android:name=".app.AboutActivity"
+            android:label="@string/label_about"
             android:theme="@style/AppTheme" />
     </application>
 

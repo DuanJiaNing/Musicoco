@@ -16,6 +16,7 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.shared.DialogProvider;
 
 import static android.R.attr.dial;
+import static android.R.attr.preferenceCategoryStyle;
 import static android.R.attr.targetSdkVersion;
 
 /**
@@ -72,7 +73,7 @@ public final class PermissionManager {
     }
 
     //检查权限是否获取
-    public boolean checkPermission(String permission) {
+    public boolean checkPermission_(String permission) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int re = ContextCompat.checkSelfPermission(context, permission);
             return re == PackageManager.PERMISSION_GRANTED;
@@ -115,6 +116,10 @@ public final class PermissionManager {
 
     public interface OnPermissionRequestRefuse {
         void onRefuse();
+    }
+
+    public void requestPermissions(Activity activity, String[] des, int requestCode) {
+        ActivityCompat.requestPermissions(activity, des, requestCode);
     }
 
     //请求权限

@@ -3,6 +3,7 @@
     <string name="app_name_us">Musicoco</string>
 
     <string name="album_save_path">image</string>
+    <string name="feedback_phone_number">17628287313</string>
 
     <string name="label_theme_color_custom">主题色定制</string>
     <string name="label_image_wall">图片墙</string>
@@ -79,6 +80,7 @@
     <string name="error_action_did_not_support">不支持该操作 :(</string>
     <string name="error_time_sleep_time_must_more_then_zero">时间必须大于0 :(</string>
     <string name="error_save_fail">保存失败 :(</string>
+    <string name="error_too_many_words_for_300">字数不能超过 300  :(</string>
 
     <!-- 操作成功 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -96,6 +98,7 @@
     <string name="success_saved">保存成功 :)</string>
     <string name="success_save_image_to">图片成功保存到: </string>
     <string name="success_clear_cache">缓存已清除 :)</string>
+    <string name="success_feedback">短信已发送，我会认真参考你的意见和建议，谢谢反馈 :)</string>
 
     <!-- 公用短词 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -126,6 +129,7 @@
     <string name="hour">小时</string>
     <string name="custom">自定义</string>
     <string name="detail">详情</string>
+    <string name="send">发送</string>
 
     <string name="cancel_collect">取消收藏</string>
     <string name="select_operation">选择操作</string>
@@ -157,14 +161,16 @@
         清除缓存将清空歌单详情界面和播放界面的图片缓存，这会使应用在下次再次用到这些图片时需要重新生成，确认清除！
     </string>
     <string name="info_will_speed_few_cent">
-        点击发送以短信的方式向我反馈您的问题\n这可能需要您支付少许短信费用！
+        点击发送以短信的方式向我反馈\n这可能需要你支付少许短信费用！
     </string>
     <string name="info_contact_me_other_where">
-        也可以通过以下方式联系我：\n
+        也可以通过以下方式联系我：\n\n
         电话：17628287313 \n
         QQ：2213994603 \n
         邮箱：2213994603@qq.com \n
     </string>
+    <string name="info_feedback_input_hint">输入意见或建议...</string>
+    <string name="info_feedback_input_empty">你还没有输入内容哦</string>
 
     <string name="title_add_all_songs_to_favorite">收藏所有歌曲</string>
     <string name="title_add_to_sheet">添加至播放列表</string>
@@ -176,6 +182,7 @@
     <string name="in_progress_remove_songs_from_favorite">正在取消收藏</string>
     <string name="in_progress_remove_songs_from_sheet">正在移除</string>
     <string name="in_progress_delete">正在删除</string>
+    <string name="in_progress_send_feedback">正在发送短信</string>
 
     <!-- 替换 * 号/////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -245,6 +252,5 @@
     <string name="play_theme_custom_color">纯色</string>
     <string name="play_theme_custom_gradient">渐变</string>
     <string name="play_theme_custom_mask">遮罩</string>
-    <string name="title_activity_settings">Settings</string>
 
 </resources>
