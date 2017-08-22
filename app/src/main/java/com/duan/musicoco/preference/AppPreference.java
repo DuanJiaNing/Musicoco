@@ -3,6 +3,7 @@ package com.duan.musicoco.preference;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.ColorInt;
 
 import com.duan.musicoco.R;
@@ -34,7 +35,7 @@ public class AppPreference extends BasePreference {
     }
 
     public int getImageWallSize() {
-        int defaultSize = 10;
+        int defaultSize = 30;
         return preferences.getInt(KEY_IMAGE_WALL_SIZE, defaultSize);
     }
 
@@ -105,8 +106,12 @@ public class AppPreference extends BasePreference {
 
     @ColorInt
     public int getActionbarColor() {
-        // 默认为 R.color.white_accent
-        int deC = Color.parseColor("#de3a31");
+        int deC;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            deC = context.getColor(R.color.colorPrimary);
+        } else {
+            deC = context.getResources().getColor(R.color.colorPrimary);
+        }
         return preferences.getInt(KEY_THEME_ACTIONBAR_COLOR, deC);
     }
 
@@ -118,8 +123,12 @@ public class AppPreference extends BasePreference {
 
     @ColorInt
     public int getStatusBarColor() {
-        // 默认为 R.color.white_accent
-        int deC = Color.parseColor("#de3a31");
+        int deC;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            deC = context.getColor(R.color.colorPrimary);
+        } else {
+            deC = context.getResources().getColor(R.color.colorPrimary);
+        }
         return preferences.getInt(KEY_THEME_STATUS_BAR_COLOR, deC);
     }
 
@@ -141,7 +150,12 @@ public class AppPreference extends BasePreference {
      */
     @ColorInt
     public int getAccentColor() {
-        int deC = Color.parseColor("#FF002B");
+        int deC;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            deC = context.getColor(R.color.colorPrimary);
+        } else {
+            deC = context.getResources().getColor(R.color.colorPrimary);
+        }
         return preferences.getInt(KEY_THEME_ACCENT_COLOR, deC);
     }
 

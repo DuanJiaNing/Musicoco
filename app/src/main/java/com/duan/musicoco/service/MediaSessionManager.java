@@ -50,8 +50,10 @@ public class MediaSessionManager {
      */
     private void setupMediaSession() {
         mMediaSession = new MediaSessionCompat(context, TAG);
-        mMediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
-                | MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS);
+        mMediaSession.setFlags(
+                MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
+                        MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS
+        );
         mMediaSession.setCallback(callback);
         mMediaSession.setActive(true);
     }

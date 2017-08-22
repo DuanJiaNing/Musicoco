@@ -761,4 +761,8 @@ public class DBMusicocoController {
 
         Log.i(TAG, "removeSheetFromSheetTableOnly: " + sheet.name);
     }
+
+    public DBSongInfo getSongInfo(String data) {
+        return getSongInfo(new Song(data));
+    }
 }
