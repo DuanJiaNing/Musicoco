@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="110dp"
+    android:orientation="horizontal"
+    android:weightSum="13">
+
+    <ImageView
+        android:id="@+id/play_notify_cover"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:scaleType="centerCrop"
+        android:src="@drawable/default_album" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_weight="9"
+        android:orientation="vertical"
+        android:weightSum="11">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="6"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/play_notify_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|start"
+                android:lines="1"
+                android:text="name"
+                android:textColor="@color/dark"
+                android:textSize="@dimen/text_middle_l" />
+
+            <TextView
+                android:id="@+id/play_notify_arts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical|start"
+                android:lines="1"
+                android:text="name"
+                android:textColor="@color/dark_l_l"
+                android:textSize="@dimen/text_small" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/white_d_d_d" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="5"
+            android:orientation="horizontal"
+            android:weightSum="12">
+
+            <ImageButton
+                android:id="@+id/play_notify_favorite"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                app:srcCompat="@drawable/ic_favorite" />
+
+            <ImageButton
+                android:id="@+id/play_notify_pre"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:src="@drawable/ic_skip_previous"
+                android:tint="@color/white_d_d_d_d" />
+
+            <ImageButton
+                android:id="@+id/play_notify_play"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+
+                android:src="@drawable/ic_play_arrow"
+                android:tint="@color/dark_l_l_l_l_l" />
+
+            <ImageButton
+                android:id="@+id/play_notify_next"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+
+                android:src="@drawable/ic_skip_next_black_24dp"
+                android:tint="@color/white_d_d_d_d" />
+
+            <ImageButton
+                android:id="@+id/play_notify_close"
+                style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+
+                android:src="@drawable/ic_clear_gray_24dp"
+                android:tint="@color/white_d_d_d" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -68,6 +68,7 @@ public class MainActivity extends InspectActivity implements
     private BroadcastManager broadcastManager;
 
     private boolean updateColorByCustomThemeColor = false;
+
     // 刚打开应用时忽略耳机是否插入的广播
     private boolean justOpenTheApplication = true;
 
@@ -325,6 +326,7 @@ public class MainActivity extends InspectActivity implements
 
         unbindService();
         unregisterReceiver();
+        bottomNavigationController.unregisterReceiver();
 
         auxiliaryPreference.setTimeSleepDisable();
 

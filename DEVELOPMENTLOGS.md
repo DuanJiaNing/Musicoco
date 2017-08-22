@@ -352,3 +352,7 @@
 
 1 完成 FeedBackActivity 的逻辑<br>
 2 更新 logo <br>
+
+- 2017-08-22
+
+1 添加 PlayNotifyManager，完成通知栏控制播放<br>

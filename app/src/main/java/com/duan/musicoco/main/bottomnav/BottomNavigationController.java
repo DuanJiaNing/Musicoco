@@ -16,21 +16,22 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.manager.ActivityManager;
-import com.duan.musicoco.app.manager.BroadcastManager;
-import com.duan.musicoco.db.DBMusicocoController;
-import com.duan.musicoco.preference.PlayPreference;
-import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.ContentUpdatable;
-import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
+import com.duan.musicoco.app.interfaces.ThemeChangeable;
+import com.duan.musicoco.app.manager.ActivityManager;
+import com.duan.musicoco.app.manager.BroadcastManager;
+import com.duan.musicoco.app.manager.MediaManager;
+import com.duan.musicoco.app.manager.PlayNotifyManager;
+import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.image.BitmapBuilder;
+import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.service.PlayServiceCallback;
-import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.shared.PeriodicTask;
+import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.media.PlayView;
@@ -68,8 +69,9 @@ public class BottomNavigationController implements
     private ListViewsController listViewsController;
 
     private SongInfo currentSong;
-
     private boolean hasInitData = false;
+
+    private PlayNotifyManager playNotifyManager;
 
     public BottomNavigationController(Activity activity, MediaManager mediaManager) {
         this.activity = activity;
@@ -123,6 +125,18 @@ public class BottomNavigationController implements
 
     public void initData(IPlayControl control, DBMusicocoController dbController) {
         this.mControl = control;
+        this.playNotifyManager = new PlayNotifyManager(activity, control, dbController);
+
+        // songChanged 错过，手动赋值为 playNotifyManager # currentSong
+        try {
+            playNotifyManager.updateSong(mediaManager.getSongInfo(control.currentSong()));
+            playNotifyManager.init(control.status() == PlayController.STATUS_PLAYING);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        playNotifyManager.show();
+        playNotifyManager.initBroadcastReceivers();
+
         listViewsController.initData(control, dbController);
 
         try {
@@ -130,7 +144,7 @@ public class BottomNavigationController implements
             // 这是因为 MainActivity 中的 bindService 方法比较耗时导致，该方法会对 MediaManager 进行数
             // 据初始化，这些数据时急需的，不能异步获取，只能阻塞
             Song song = control.currentSong();
-            currentSong = mediaManager.getSongInfo(song);
+            currentSong = this.mediaManager.getSongInfo(song);
 
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -151,6 +165,7 @@ public class BottomNavigationController implements
         }
 
         currentSong = mediaManager.getSongInfo(song);
+        playNotifyManager.updateSong(currentSong);
         update(null, null);
 
         // 如果此时正在浏览歌单详情 SheetDetailActivity ，需要通知更新
@@ -212,6 +227,8 @@ public class BottomNavigationController implements
             mShowList.setEnabled(true);
         }
 
+        playNotifyManager.updateFavorite();
+
         try {
 
             if (mControl.status() == PlayController.STATUS_PLAYING) {
@@ -243,6 +260,7 @@ public class BottomNavigationController implements
     @Override
     public void startPlay(Song song, int index, int status) {
         currentSong = mediaManager.getSongInfo(song);
+        playNotifyManager.updateSong(currentSong);
 
         startProgressUpdateTask();
         mPlay.setChecked(true);
@@ -255,6 +273,7 @@ public class BottomNavigationController implements
     public void stopPlay(Song song, int index, int status) {
         stopProgressUpdateTask();
         mPlay.setChecked(false);
+        playNotifyManager.updateSong(mediaManager.getSongInfo(song));
 
         //??
         broadcastManager.sendBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
@@ -344,4 +363,8 @@ public class BottomNavigationController implements
         }
     }
 
+    public void unregisterReceiver() {
+        playNotifyManager.unregisterReceiver();
+        playNotifyManager.hide();
+    }
 }
