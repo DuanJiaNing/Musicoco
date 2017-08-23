@@ -1,5 +1,6 @@
 package com.duan.musicoco.app.manager;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -7,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
@@ -21,6 +24,8 @@ import com.duan.musicoco.app.interfaces.ViewVisibilityChangeable;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.main.MainActivity;
+import com.duan.musicoco.service.PlayController;
+import com.duan.musicoco.util.ColorUtils;
 
 /**
  * Created by DuanJiaNing on 2017/8/22.
@@ -39,7 +44,7 @@ public class PlayNotifyManager implements
     private static final int PLAY_NOTIFY_CLOSE = 4;
 
     private static final int PLAY_NOTIFY_ID = 0x1213;
-    private final Context context;
+    private final Activity activity;
     private final NotificationManagerCompat manager;
     private final IPlayControl control;
     private final DBMusicocoController dbController;
@@ -49,36 +54,47 @@ public class PlayNotifyManager implements
     private boolean play = false;
     private boolean favorite;
 
-    public PlayNotifyManager(Context context, IPlayControl control, DBMusicocoController dbController) {
-        this.context = context;
+    public PlayNotifyManager(Activity activity, IPlayControl control, DBMusicocoController dbController) {
+        this.activity = activity;
         this.control = control;
         this.dbController = dbController;
-        this.manager = NotificationManagerCompat.from(context);
+        this.manager = NotificationManagerCompat.from(activity);
         this.playNotifyReceiver = new PlayNotifyReceiver();
     }
 
 
     private Notification buildNotification() {
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(activity);
 
-        Intent intent = new Intent(context, MainActivity.class);
-        PendingIntent startMainActivity = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent intent = new Intent(activity, MainActivity.class);
+        PendingIntent startMainActivity = PendingIntent.getActivity(activity, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        int sc = Color.BLACK;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            sc = activity.getWindow().getStatusBarColor();
+        }
+        int smallIcon;
+        if (ColorUtils.isBrightSeriesColor(sc)) {
+            smallIcon = R.drawable.ic_music_note_black_24dp;
+        } else {
+            smallIcon = R.drawable.ic_music_note_white_24dp;
+        }
 
         builder.setContentIntent(startMainActivity)
-                .setTicker(context.getString(R.string.app_name_us))
-                .setSmallIcon(R.drawable.ic_musicoco)
+                .setTicker(activity.getString(R.string.app_name_us))
+                .setSmallIcon(smallIcon)
                 .setWhen(System.currentTimeMillis())
                 .setOngoing(true)
                 .setCustomContentView(createContentView())
                 .setCustomBigContentView(createContentBigView())
-                .setPriority(Notification.PRIORITY_MAX);
+                .setPriority(Notification.PRIORITY_HIGH);
 
         return builder.build();
     }
 
     private RemoteViews createContentBigView() {
-        final RemoteViews view = new RemoteViews(context.getPackageName(), R.layout.play_notify_big_view);
+        final RemoteViews view = new RemoteViews(activity.getPackageName(), R.layout.play_notify_big_view);
         setCommonView(view);
         setCommonClickPending(view);
 
@@ -88,19 +104,19 @@ public class PlayNotifyManager implements
 
         Intent pre = new Intent(PLAY_NOTIFY);
         pre.putExtra(PLAY_NOTIFY_CODE, PLAY_PREVIOUS);
-        PendingIntent p3 = PendingIntent.getBroadcast(context, PLAY_PREVIOUS, pre, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent p3 = PendingIntent.getBroadcast(activity, PLAY_PREVIOUS, pre, PendingIntent.FLAG_UPDATE_CURRENT);
         view.setOnClickPendingIntent(R.id.play_notify_pre, p3);
 
         Intent favorite = new Intent(PLAY_NOTIFY);
         favorite.putExtra(PLAY_NOTIFY_CODE, PLAY_FAVORITE_STATUS_SWITCH);
-        PendingIntent p4 = PendingIntent.getBroadcast(context, PLAY_FAVORITE_STATUS_SWITCH, favorite, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent p4 = PendingIntent.getBroadcast(activity, PLAY_FAVORITE_STATUS_SWITCH, favorite, PendingIntent.FLAG_UPDATE_CURRENT);
         view.setOnClickPendingIntent(R.id.play_notify_favorite, p4);
 
         return view;
     }
 
     private RemoteViews createContentView() {
-        final RemoteViews view = new RemoteViews(context.getPackageName(), R.layout.play_notify_view);
+        final RemoteViews view = new RemoteViews(activity.getPackageName(), R.layout.play_notify_view);
         setCommonView(view);
         setCommonClickPending(view);
         return view;
@@ -116,7 +132,7 @@ public class PlayNotifyManager implements
         view.setImageViewBitmap(R.id.play_notify_cover, cover);
 
         view.setTextViewText(R.id.play_notify_name, name);
-        view.setTextViewText(R.id.play_notify_arts, arts);
+        view.setTextViewText(R.id.play_notify_arts, arts + " - " + name);
 
         view.setImageViewResource(R.id.play_notify_play,
                 play ? R.drawable.ic_pause
@@ -128,17 +144,17 @@ public class PlayNotifyManager implements
     private void setCommonClickPending(RemoteViews view) {
         Intent playOrPause = new Intent(PLAY_NOTIFY);
         playOrPause.putExtra(PLAY_NOTIFY_CODE, PLAY_STATUS_SWITCH);
-        PendingIntent p1 = PendingIntent.getBroadcast(context, PLAY_STATUS_SWITCH, playOrPause, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent p1 = PendingIntent.getBroadcast(activity, PLAY_STATUS_SWITCH, playOrPause, PendingIntent.FLAG_UPDATE_CURRENT);
         view.setOnClickPendingIntent(R.id.play_notify_play, p1);
 
         Intent next = new Intent(PLAY_NOTIFY);
         next.putExtra(PLAY_NOTIFY_CODE, PLAY_NEXT);
-        PendingIntent p2 = PendingIntent.getBroadcast(context, PLAY_NEXT, next, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent p2 = PendingIntent.getBroadcast(activity, PLAY_NEXT, next, PendingIntent.FLAG_UPDATE_CURRENT);
         view.setOnClickPendingIntent(R.id.play_notify_next, p2);
 
         Intent close = new Intent(PLAY_NOTIFY);
         close.putExtra(PLAY_NOTIFY_CODE, PLAY_NOTIFY_CLOSE);
-        PendingIntent p3 = PendingIntent.getBroadcast(context, PLAY_NOTIFY_CLOSE, close, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent p3 = PendingIntent.getBroadcast(activity, PLAY_NOTIFY_CLOSE, close, PendingIntent.FLAG_UPDATE_CURRENT);
         view.setOnClickPendingIntent(R.id.play_notify_close, p3);
     }
 
@@ -146,7 +162,7 @@ public class PlayNotifyManager implements
     private Bitmap createCover(String path) {
         Bitmap b = BitmapFactory.decodeFile(path);
         if (b == null) {
-            b = BitmapFactory.decodeResource(context.getResources(), R.drawable.default_song);
+            b = BitmapFactory.decodeResource(activity.getResources(), R.drawable.default_song);
         }
         return b;
     }
@@ -159,6 +175,13 @@ public class PlayNotifyManager implements
         this.currentSong = info;
         DBSongInfo dbi = dbController.getSongInfo(info.getData());
         favorite = dbi.favorite;
+
+        try {
+            play = control.status() == PlayController.STATUS_PLAYING;
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            play = false;
+        }
 
         show();
     }
@@ -174,6 +197,14 @@ public class PlayNotifyManager implements
         }
 
         favorite = dbi.favorite;
+
+        try {
+            play = control.status() == PlayController.STATUS_PLAYING;
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            play = false;
+        }
+
         show();
     }
 
@@ -198,22 +229,18 @@ public class PlayNotifyManager implements
     }
 
     public void initBroadcastReceivers() {
-        BroadcastManager bd = BroadcastManager.getInstance(context);
+        BroadcastManager bd = BroadcastManager.getInstance(activity);
         bd.registerBroadReceiver(playNotifyReceiver, PLAY_NOTIFY);
     }
 
     public void unregisterReceiver() {
-        BroadcastManager.getInstance(context).unregisterReceiver(playNotifyReceiver);
-    }
-
-    public void init(boolean b) {
-        play = b;
+        BroadcastManager.getInstance(activity).unregisterReceiver(playNotifyReceiver);
     }
 
     private class PlayNotifyReceiver extends BroadcastReceiver {
 
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(Context activity, Intent intent) {
             int code = intent.getIntExtra(PLAY_NOTIFY_CODE, -1);
             if (code == -1) {
                 return;
@@ -239,9 +266,17 @@ public class PlayNotifyManager implements
                     break;
                 case PLAY_FAVORITE_STATUS_SWITCH:
                     dbController.updateSongFavorite(new Song(currentSong.getData()), !favorite);
-                    updateFavorite();
+                    BroadcastManager.getInstance(activity).sendBroadcast(BroadcastManager.FILTER_MAIN_SHEET_CHANGED, null);
                     break;
                 case PLAY_NOTIFY_CLOSE:
+                    try {
+                        if (control.status() == PlayController.STATUS_PLAYING) {
+                            control.pause();
+                        }
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+
                     hide();
                     break;
                 default:
@@ -251,7 +286,7 @@ public class PlayNotifyManager implements
 
         private void handlePlayStatusSwitch() {
             try {
-                if (play) {
+                if (control.status() == PlayController.STATUS_PLAYING) {
                     control.pause();
                 } else {
                     control.resume();

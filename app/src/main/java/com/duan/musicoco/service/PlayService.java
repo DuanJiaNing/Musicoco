@@ -74,9 +74,7 @@ public class PlayService extends RootService {
 
     @Override
     public void onDestroy() {
-        if (iBinder.isBinderAlive()) {
-            iBinder.releaseMediaPlayer();
-        }
+        iBinder.releaseMediaPlayer();
         unregisterReceiver();
         super.onDestroy();
     }

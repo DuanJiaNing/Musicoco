@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.App;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
@@ -130,7 +131,6 @@ public class BottomNavigationController implements
         // songChanged 错过，手动赋值为 playNotifyManager # currentSong
         try {
             playNotifyManager.updateSong(mediaManager.getSongInfo(control.currentSong()));
-            playNotifyManager.init(control.status() == PlayController.STATUS_PLAYING);
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -215,6 +215,10 @@ public class BottomNavigationController implements
 
     }
 
+    public void updateNotifyFavorite() {
+        playNotifyManager.updateFavorite();
+    }
+
     @Override
     public void update(@Nullable Object obj, OnUpdateStatusChanged completed) {
 
@@ -226,8 +230,6 @@ public class BottomNavigationController implements
             mPlay.setEnabled(true);
             mShowList.setEnabled(true);
         }
-
-        playNotifyManager.updateFavorite();
 
         try {
 
@@ -366,5 +368,11 @@ public class BottomNavigationController implements
     public void unregisterReceiver() {
         playNotifyManager.unregisterReceiver();
         playNotifyManager.hide();
+    }
+
+    public void hidePlayNotify() {
+        if (playNotifyManager.visible()) {
+            playNotifyManager.hide();
+        }
     }
 }

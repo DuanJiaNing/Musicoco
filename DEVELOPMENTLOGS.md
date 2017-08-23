@@ -356,3 +356,7 @@
 - 2017-08-22
 
 1 添加 PlayNotifyManager，完成通知栏控制播放<br>
+
+- 2017-08-23
+
+1 完成 PlayNotifyManager 逻辑<br>

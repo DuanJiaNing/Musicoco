@@ -30,6 +30,7 @@ import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
+import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.bean.DBSongInfo;
@@ -489,7 +490,6 @@ public class BottomNavigationController implements
                 DBSongInfo info = dbMusicoco.getSongInfo(song);
                 boolean isFavorite = info != null && info.favorite;
                 songOption.updateCurrentFavorite(isFavorite, false);
-
             }
         } catch (RemoteException e) {
             e.printStackTrace();

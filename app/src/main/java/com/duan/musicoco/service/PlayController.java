@@ -334,8 +334,10 @@ public class PlayController {
         if (mPlayState == STATUS_PLAYING) {
             sessionManager.updatePlaybackState();
             mPlayer.pause();
-            mNotifyStatusChanged.notify(getCurrentSong(), mCurrentSong, STATUS_STOP);
             mPlayState = STATUS_PAUSE;
+
+            // 放在最后 mPlayState 修改之后
+            mNotifyStatusChanged.notify(getCurrentSong(), mCurrentSong, STATUS_STOP);
         }
         return mPlayState;
     }
@@ -346,8 +348,9 @@ public class PlayController {
             focusManager.requestAudioFocus();
             sessionManager.updatePlaybackState();
             mPlayer.start();
-            mNotifyStatusChanged.notify(getCurrentSong(), mCurrentSong, STATUS_START);
             mPlayState = STATUS_PLAYING;
+
+            mNotifyStatusChanged.notify(getCurrentSong(), mCurrentSong, STATUS_START);
         }
         return 1;
     }

@@ -60,6 +60,7 @@ public class PlayActivity extends InspectActivity implements
     private PlayViewsController viewsController;
 
     private BroadcastReceiver themeChangeReceiver;
+    private BroadcastReceiver songFavoriteChangeReceiver;
     private BroadcastManager broadcastManager;
 
     @Override
@@ -199,6 +200,15 @@ public class PlayActivity extends InspectActivity implements
                 }
             }
         };
+
+        songFavoriteChangeReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                bottomNavigationController.updateFavorite();
+            }
+        };
+
+        broadcastManager.registerBroadReceiver(songFavoriteChangeReceiver, BroadcastManager.FILTER_MAIN_SHEET_CHANGED);
         broadcastManager.registerBroadReceiver(themeChangeReceiver, BroadcastManager.FILTER_PLAY_UI_MODE_CHANGE);
     }
 
@@ -218,6 +228,10 @@ public class PlayActivity extends InspectActivity implements
     private void unregisterReceiver() {
         if (themeChangeReceiver != null) {
             broadcastManager.unregisterReceiver(themeChangeReceiver);
+        }
+
+        if (songFavoriteChangeReceiver != null) {
+            broadcastManager.unregisterReceiver(songFavoriteChangeReceiver);
         }
     }
 

@@ -2,31 +2,28 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="110dp"
-    android:orientation="horizontal"
-    android:weightSum="13">
+    android:layout_height="113dp"
+    android:orientation="horizontal">
 
     <ImageView
         android:id="@+id/play_notify_cover"
-        android:layout_width="0dp"
+        android:layout_width="113dp"
         android:layout_height="match_parent"
-        android:layout_weight="4"
         android:scaleType="centerCrop"
         android:src="@drawable/default_album" />
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="5dp"
-        android:layout_weight="9"
         android:orientation="vertical"
-        android:weightSum="11">
+        android:weightSum="13">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginLeft="10dp"
-            android:layout_weight="6"
+            android:layout_weight="7.5"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
@@ -34,10 +31,10 @@
                 android:id="@+id/play_notify_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:gravity="center_vertical|start"
                 android:lines="1"
-                android:text="name"
-                android:textColor="@color/dark"
+                android:textColor="@color/dark_l"
                 android:textSize="@dimen/text_middle_l" />
 
             <TextView
@@ -45,10 +42,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:ellipsize="end"
                 android:gravity="center_vertical|start"
                 android:lines="1"
-                android:text="name"
-                android:textColor="@color/dark_l_l"
+                android:textColor="@color/dark_l_l_l"
                 android:textSize="@dimen/text_small" />
 
         </LinearLayout>
@@ -56,12 +53,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="@color/white_d_d_d" />
+            android:background="@color/white_d_d" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="5"
+            android:layout_weight="5.5"
             android:orientation="horizontal"
             android:weightSum="12">
 
@@ -80,7 +77,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="2"
                 android:src="@drawable/ic_skip_previous"
-                android:tint="@color/white_d_d_d_d" />
+                android:tint="@color/white_d_d_d" />
 
             <ImageButton
                 android:id="@+id/play_notify_play"
@@ -90,7 +87,7 @@
                 android:layout_weight="2"
 
                 android:src="@drawable/ic_play_arrow"
-                android:tint="@color/dark_l_l_l_l_l" />
+                android:tint="@color/white_d_d_d_d" />
 
             <ImageButton
                 android:id="@+id/play_notify_next"
@@ -100,7 +97,7 @@
                 android:layout_weight="2"
 
                 android:src="@drawable/ic_skip_next_black_24dp"
-                android:tint="@color/white_d_d_d_d" />
+                android:tint="@color/white_d_d_d" />
 
             <ImageButton
                 android:id="@+id/play_notify_close"
@@ -110,7 +107,7 @@
                 android:layout_weight="3"
 
                 android:src="@drawable/ic_clear_gray_24dp"
-                android:tint="@color/white_d_d_d" />
+                android:tint="@color/white_d_d" />
 
         </LinearLayout>
 

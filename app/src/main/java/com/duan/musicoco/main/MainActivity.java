@@ -65,6 +65,7 @@ public class MainActivity extends InspectActivity implements
     private BroadcastReceiver appQuitTimeCountdownReceiver;
     private BroadcastReceiver appThemeChangeAutomaticReceiver;
     private BroadcastReceiver headsetPlugReceiver;
+    private BroadcastReceiver mainSheetChangeReceiver;
     private BroadcastManager broadcastManager;
 
     private boolean updateColorByCustomThemeColor = false;
@@ -235,6 +236,15 @@ public class MainActivity extends InspectActivity implements
             }
         };
 
+        mainSheetChangeReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                bottomNavigationController.updateNotifyFavorite();
+                mainSheetsController.update(null, null);
+            }
+        };
+
+        broadcastManager.registerBroadReceiver(mainSheetChangeReceiver, BroadcastManager.FILTER_MAIN_SHEET_CHANGED);
         broadcastManager.registerBroadReceiver(headsetPlugReceiver, BroadcastManager.FILTER_HEADSET_PLUG);
         broadcastManager.registerBroadReceiver(appQuitTimeCountdownReceiver, BroadcastManager.FILTER_APP_QUIT_TIME_COUNTDOWN);
         broadcastManager.registerBroadReceiver(appThemeChangeAutomaticReceiver, BroadcastManager.FILTER_APP_THEME_CHANGE_AUTOMATIC);
@@ -245,7 +255,12 @@ public class MainActivity extends InspectActivity implements
      * 关闭服务并退出应用
      */
     public void shutDownServiceAndApp() {
+        // 关闭服务
         broadcastManager.sendBroadcast(BroadcastManager.FILTER_PLAY_SERVICE_QUIT, null);
+
+        // 关闭通知栏通知
+        bottomNavigationController.hidePlayNotify();
+
         finish();
         System.exit(0);
     }
@@ -341,6 +356,7 @@ public class MainActivity extends InspectActivity implements
         if (mySheetDataChangedReceiver != null) {
             broadcastManager.unregisterReceiver(mySheetDataChangedReceiver);
         }
+
         if (appQuitTimeCountdownReceiver != null) {
             broadcastManager.unregisterReceiver(appQuitTimeCountdownReceiver);
         }
@@ -353,6 +369,9 @@ public class MainActivity extends InspectActivity implements
             broadcastManager.unregisterReceiver(headsetPlugReceiver);
         }
 
+        if (mainSheetChangeReceiver != null) {
+            broadcastManager.unregisterReceiver(mainSheetChangeReceiver);
+        }
     }
 
     private void unbindService() {

@@ -22,6 +22,7 @@ import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.interfaces.ViewVisibilityChangeable;
+import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
@@ -156,6 +157,8 @@ public class SongOption implements
                 boolean after = songOperation.reverseSongFavoriteStatus(song);
                 updateCurrentFavorite(after, true);
             }
+            BroadcastManager.getInstance(activity).sendBroadcast(BroadcastManager.FILTER_MAIN_SHEET_CHANGED, null);
+
         } catch (RemoteException e) {
             e.printStackTrace();
         }
