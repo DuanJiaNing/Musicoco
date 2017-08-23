@@ -72,7 +72,7 @@ public class PlayNotifyManager implements
 
         builder.setContentIntent(startMainActivity)
                 .setTicker(activity.getString(R.string.app_name_us))
-                .setSmallIcon(R.drawable.small_icon)
+                .setSmallIcon(R.drawable.logo_small_icon)
                 .setWhen(System.currentTimeMillis())
                 .setOngoing(true)
                 .setCustomContentView(createContentView())

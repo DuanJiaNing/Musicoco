@@ -14,11 +14,10 @@ import com.duan.musicoco.R;
  * Created by DuanJiaNing on 2017/5/30.
  */
 
-public class LyricFragment extends Fragment implements ViewContract, View.OnClickListener {
+public class LyricFragment extends Fragment implements View.OnClickListener {
 
     public static final String TAG = "LyricFragment";
 
-    private PresenterContract presenter;
 
     private View view;
 
@@ -30,22 +29,8 @@ public class LyricFragment extends Fragment implements ViewContract, View.OnClic
         return view;
     }
 
-    @Override
-    public void setPresenter(PresenterContract presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
     public void initViews(@Nullable View view, Object obj) {
 
-    }
-
-    @Override
-    public void showFragment() {
-    }
-
-    @Override
-    public void hideFragment() {
     }
 
     @Override

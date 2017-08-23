@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.ViewSwitcher;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.App;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.util.Utils;
@@ -23,23 +25,18 @@ import com.duan.musicoco.util.Utils;
  * Created by DuanJiaNing on 2017/5/30.
  */
 
-public class VisualizerFragment extends Fragment implements ViewContract {
+public class VisualizerFragment extends Fragment {
 
-    public static final String TAG = "VisualizerFragment";
-
-    private PresenterContract presenter;
+    public static String TAG = "VisualizerFragment";
 
     private View view;
-
     private ImageSwitcher albumView;
-
     private AlbumPictureController albumPictureController;
 
     // PlayActivity 需要改颜色数组
     private int[] currColors = new int[4];
 
     private MediaManager mediaManager;
-
     private Song currentSong;
 
     @Nullable
@@ -48,8 +45,7 @@ public class VisualizerFragment extends Fragment implements ViewContract {
         view = inflater.inflate(R.layout.fragment_play_visualizer, null);
 
         mediaManager = MediaManager.getInstance(getActivity().getApplicationContext());
-
-        initViews(view, null);
+        initViews();
 
         return view;
     }
@@ -57,16 +53,9 @@ public class VisualizerFragment extends Fragment implements ViewContract {
     @Override
     public void onResume() {
         super.onResume();
-        updateSpinner();
     }
 
-    @Override
-    public void setPresenter(PresenterContract presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public void initViews(@Nullable View view, Object obj) {
+    private void initViews() {
 
         albumView = (ImageSwitcher) view.findViewById(R.id.play_album_is);
         albumView.setFactory(new ViewSwitcher.ViewFactory() {
@@ -88,17 +77,14 @@ public class VisualizerFragment extends Fragment implements ViewContract {
 
     }
 
-    @Override
     public void startSpin() {
         albumPictureController.startSpin();
     }
 
-    @Override
     public void stopSpin() {
         albumPictureController.stopSpin();
     }
 
-    @Override
     public void songChanged(Song song, boolean isNext, boolean updateColors) {
         if (currentSong != null && currentSong.equals(song)) {
             return;
@@ -106,22 +92,16 @@ public class VisualizerFragment extends Fragment implements ViewContract {
             currentSong = song;
         }
 
-        final SongInfo info = song == null ? null : mediaManager.getSongInfo(song);
-        if (info == null)
+        SongInfo info = song == null ? null : mediaManager.getSongInfo(song);
+        if (info == null) {
             return;
+        }
 
         if (isNext) {
             currColors = albumPictureController.next(info, updateColors);
         } else {
             currColors = albumPictureController.pre(info, updateColors);
         }
-
-    }
-
-    @Override
-    public void updateSpinner() {
-        if (albumPictureController != null && albumPictureController.isSpin())
-            startSpin();
     }
 
     public int[] getCurrColors() {

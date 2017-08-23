@@ -81,7 +81,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:ellipsize="none"
+                    android:ellipsize="end"
                     android:lines="1"
                     android:textSize="@dimen/text_middle_s"
                     app:layout_constraintLeft_toLeftOf="@+id/guideline4"

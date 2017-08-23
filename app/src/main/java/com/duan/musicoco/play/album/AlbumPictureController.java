@@ -31,7 +31,7 @@ import static android.content.ContentValues.TAG;
  * 播放动画
  */
 
-public final class AlbumPictureController implements IAlbum {
+public final class AlbumPictureController {
 
     private final ImageSwitcher view;
 
@@ -157,7 +157,6 @@ public final class AlbumPictureController implements IAlbum {
         return colors;
     }
 
-    @Override
     public void startSpin() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -173,7 +172,6 @@ public final class AlbumPictureController implements IAlbum {
         isSpin = true;
     }
 
-    @Override
     public void stopSpin() {
 
         if (rotateAnim.isRunning()) {

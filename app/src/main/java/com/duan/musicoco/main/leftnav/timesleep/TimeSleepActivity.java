@@ -6,34 +6,23 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.text.method.Touch;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.app.App;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.util.ColorUtils;
-import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.util.ToastUtils;
-
-import java.lang.reflect.Field;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
 
@@ -46,7 +35,7 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_timme_sleep);
+        setContentView(R.layout.activity_time_sleep);
 
     }
 

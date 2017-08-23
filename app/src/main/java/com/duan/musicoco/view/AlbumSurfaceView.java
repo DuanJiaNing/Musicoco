@@ -22,7 +22,6 @@ import android.view.animation.LinearInterpolator;
 import com.duan.musicoco.R;
 import com.duan.musicoco.cache.BitmapCache;
 import com.duan.musicoco.app.SongInfo;
-import com.duan.musicoco.play.album.IAlbum;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.StringUtils;
@@ -31,7 +30,7 @@ import com.duan.musicoco.util.StringUtils;
  * Created by DuanJiaNing on 2017/5/27.
  */
 
-public class AlbumSurfaceView extends SurfaceView implements SurfaceHolder.Callback, IAlbum {
+public class AlbumSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
     private static final String TAG = "AlbumAlbumSurfaceView";
     private final String DEFAULT_PIC = "defalut_album_pic";
@@ -135,13 +134,11 @@ public class AlbumSurfaceView extends SurfaceView implements SurfaceHolder.Callb
     }
 
     //确保在 surfaceCreated 和 surfaceDestroyed 之间调用
-    @Override
     public void startSpin() {
         mDrawThread.getHandler().sendEmptyMessage(START_SPIN);
     }
 
     //确保在 surfaceCreated 和 surfaceDestroyed 之间调用
-    @Override
     public void stopSpin() {
         mDrawThread.getHandler().sendEmptyMessage(STOP_SPIN);
     }

@@ -32,7 +32,6 @@ public class SplashActivity extends InspectActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.splash_activity);
 
         //权限检查完成后回调 permissionGranted 或 permissionDenied

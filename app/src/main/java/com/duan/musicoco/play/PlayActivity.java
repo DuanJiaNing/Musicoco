@@ -25,10 +25,8 @@ import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.app.manager.PlayServiceManager;
 import com.duan.musicoco.play.album.VisualizerFragment;
-import com.duan.musicoco.play.album.VisualizerPresenter;
 import com.duan.musicoco.play.bottomnav.BottomNavigationController;
 import com.duan.musicoco.play.lyric.LyricFragment;
-import com.duan.musicoco.play.lyric.LyricPresenter;
 import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
@@ -49,8 +47,6 @@ public class PlayActivity extends InspectActivity implements
 
     private VisualizerFragment visualizerFragment;
     private LyricFragment lyricFragment;
-    private VisualizerPresenter visualizerPresenter;
-    private LyricPresenter lyricPresenter;
     protected IPlayControl control;
 
     private PlayServiceConnection mServiceConnection;
@@ -139,22 +135,16 @@ public class PlayActivity extends InspectActivity implements
     public void onConnected(final ComponentName name, IBinder service) {
         this.control = IPlayControl.Stub.asInterface(service);
 
-        visualizerPresenter = new VisualizerPresenter(this, control, visualizerFragment);
-        lyricPresenter = new LyricPresenter(this, lyricFragment, this);
-
         initSelfData();
-        visualizerPresenter.initData(null);
-        lyricPresenter.initData(null);
-
         initBroadcastReceivers();
 
     }
 
     private void initSelfData() {
         try {
-            List<Song> songs = control.getPlayList();
+            Song song = control.currentSong();
 
-            if (songs == null || songs.size() == 0) { //检查播放列表是否为空
+            if (song == null) { //检查播放列表是否为空
                 noSongInService();
                 viewsController.updateText(0, 0, "", "");
             } else {
@@ -169,7 +159,6 @@ public class PlayActivity extends InspectActivity implements
 
                 // 服务端在 onCreate 时会回调 songChanged ，PlayActivity 第一次绑定可能接收不到此次回调
                 // 手动同步歌曲信息
-                Song song = control.currentSong();
                 updateCurrentSongInfo(song, true);
                 updateViewsColorsIfNeed(song);
 
@@ -239,7 +228,7 @@ public class PlayActivity extends InspectActivity implements
     protected void onPause() {
         super.onPause();
         savePreference();
-        visualizerPresenter.stopPlay();
+        visualizerFragment.stopSpin();
         viewsController.stopProgressUpdateTask();
     }
 
@@ -301,6 +290,10 @@ public class PlayActivity extends InspectActivity implements
             return;
         }
 
+        SongInfo info = mediaManager.getSongInfo(song);
+        if (info == null) {
+            return;
+        }
 
         //更新文字
         int pro = 0;
@@ -309,17 +302,19 @@ public class PlayActivity extends InspectActivity implements
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-
-        SongInfo info = mediaManager.getSongInfo(song);
         int duration = (int) info.getDuration();
         int progress = pro;
         String name = info.getTitle();
         String arts = info.getArtist();
         viewsController.updateText(duration, progress, name, arts);
 
-        //更新状态 要在更新颜色之前更新
-        updateStatus(song, isNext);
+        //更新状态
+        updateStatus();
         bottomNavigationController.updatePlayMode();
+
+        // 更新专辑图片，需要的话（当前歌曲已经切换了）
+        boolean updateBg = playPreference.getTheme().equals(ThemeEnum.VARYING);
+        visualizerFragment.songChanged(song, isNext, updateBg);
 
         //在 initViewsColors 后调用
         bottomNavigationController.updateFavorite();
@@ -327,27 +322,23 @@ public class PlayActivity extends InspectActivity implements
 
     }
 
-    private void updateStatus(Song song, boolean isNext) {
+    private void updateStatus() {
 
         try {
             boolean playing = control.status() == PlayController.STATUS_PLAYING;
 
             viewsController.updatePlayButtonStatus(playing);
             if (playing) {
-                visualizerPresenter.startPlay();
+                visualizerFragment.startSpin();
                 viewsController.startProgressUpdateTask();
             } else {
-                visualizerPresenter.stopPlay();
+                visualizerFragment.stopSpin();
                 viewsController.stopProgressUpdateTask();
             }
 
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-
-        boolean updateBg = playPreference.getTheme().equals(ThemeEnum.VARYING);
-        visualizerPresenter.songChanged(song, isNext, updateBg);
-
     }
 
     @Override
@@ -365,14 +356,14 @@ public class PlayActivity extends InspectActivity implements
     public void startPlay(Song song, int index, int status) {
         viewsController.startProgressUpdateTask();
         viewsController.updatePlayButtonStatus(true);
-        visualizerPresenter.startPlay();
+        visualizerFragment.startSpin();
     }
 
     @Override
     public void stopPlay(Song song, int index, int status) {
         viewsController.stopProgressUpdateTask();
         viewsController.updatePlayButtonStatus(false);
-        visualizerPresenter.stopPlay();
+        visualizerFragment.stopSpin();
     }
 
     @Override

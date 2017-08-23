@@ -120,6 +120,7 @@ public class SheetModifyActivity extends RootActivity implements
                 oldName
         );
         nameModifyHolder.editText.setLines(1);
+        nameModifyHolder.editText.setSingleLine(true);
 
         remarkModifyHolder = helper.createLimitedTexInputLayoutView(
                 hintRemark,
