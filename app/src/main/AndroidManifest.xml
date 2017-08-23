@@ -46,17 +46,21 @@
         </service>
 
         <activity
-            android:name=".main.MainActivity"
-            android:alwaysRetainTaskState="true"
-            android:label="@string/app_name"
-            android:launchMode="singleTask"
+            android:name=".app.SplashActivity"
             android:theme="@style/AppTheme">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".main.MainActivity"
+            android:alwaysRetainTaskState="true"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".detail.song.SongDetailActivity"
             android:launchMode="singleTask"

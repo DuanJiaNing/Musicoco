@@ -25,8 +25,6 @@ public abstract class InspectActivity extends RootActivity implements Permission
     protected final static String TAG = "InspectActivity";
 
     protected MediaManager mediaManager;
-    protected IPlayControl control;
-
     private PermissionManager permissionManager;
 
     @Override

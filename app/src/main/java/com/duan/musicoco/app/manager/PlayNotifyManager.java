@@ -70,20 +70,9 @@ public class PlayNotifyManager implements
         Intent intent = new Intent(activity, MainActivity.class);
         PendingIntent startMainActivity = PendingIntent.getActivity(activity, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        int sc = Color.BLACK;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            sc = activity.getWindow().getStatusBarColor();
-        }
-        int smallIcon;
-        if (ColorUtils.isBrightSeriesColor(sc)) {
-            smallIcon = R.drawable.ic_music_note_black_24dp;
-        } else {
-            smallIcon = R.drawable.ic_music_note_white_24dp;
-        }
-
         builder.setContentIntent(startMainActivity)
                 .setTicker(activity.getString(R.string.app_name_us))
-                .setSmallIcon(smallIcon)
+                .setSmallIcon(R.drawable.small_icon)
                 .setWhen(System.currentTimeMillis())
                 .setOngoing(true)
                 .setCustomContentView(createContentView())

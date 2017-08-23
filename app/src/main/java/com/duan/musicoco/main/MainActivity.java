@@ -18,18 +18,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.app.App;
-import com.duan.musicoco.app.InspectActivity;
+import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
+import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.manager.PlayServiceManager;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.main.bottomnav.BottomNavigationController;
@@ -42,7 +42,7 @@ import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.AppBarStateChangeListener;
 
-public class MainActivity extends InspectActivity implements
+public class MainActivity extends RootActivity implements
         OnServiceConnect,
         ThemeChangeable,
         ContentUpdatable {
@@ -54,6 +54,8 @@ public class MainActivity extends InspectActivity implements
     // FIXME 内存泄漏
     private static PlayServiceConnection sServiceConnection;
     private PlayServiceManager playServiceManager;
+    protected MediaManager mediaManager;
+    protected IPlayControl control;
 
     private BottomNavigationController bottomNavigationController;
     private LeftNavigationController leftNavigationController;
@@ -79,15 +81,9 @@ public class MainActivity extends InspectActivity implements
         Utils.transitionStatusBar(this);
         setContentView(R.layout.activity_main);
 
-        //权限检查完成后回调 permissionGranted 或 permissionDenied
-        checkPermission();
-
-    }
-
-    @Override
-    public void permissionGranted(int requestCode) {
-
         playServiceManager = new PlayServiceManager(this);
+        mediaManager = MediaManager.getInstance(this);
+
         // 单例持有的 Context 为 MainActivity 的，最早调用在此。
         broadcastManager = BroadcastManager.getInstance(this);
         bottomNavigationController = new BottomNavigationController(this, mediaManager);
@@ -111,12 +107,6 @@ public class MainActivity extends InspectActivity implements
     }
 
     private void bindService() {
-        // FIXME 耗时
-        startService();
-        // FIXME 耗时
-        prepareData();
-        // FIXME 耗时 !!
-        initAppDataIfNeed();
 
         sServiceConnection = new PlayServiceConnection(bottomNavigationController, this, this);
         // 绑定成功后回调 onConnected
@@ -136,6 +126,7 @@ public class MainActivity extends InspectActivity implements
         // 最后更新界面
         themeChange(null, null);
 
+        //注册广播
         initBroadcastReceivers();
 
         // 应用偏好，打开应用自动播放 ?
@@ -426,11 +417,6 @@ public class MainActivity extends InspectActivity implements
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void permissionDenied(int requestCode) {
-        finish();
     }
 
     @Override

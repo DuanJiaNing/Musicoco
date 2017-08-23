@@ -51,6 +51,7 @@ public class PlayActivity extends InspectActivity implements
     private LyricFragment lyricFragment;
     private VisualizerPresenter visualizerPresenter;
     private LyricPresenter lyricPresenter;
+    protected IPlayControl control;
 
     private PlayServiceConnection mServiceConnection;
     private PlayServiceManager playServiceManager;
@@ -66,7 +67,6 @@ public class PlayActivity extends InspectActivity implements
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_play);
 

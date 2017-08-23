@@ -360,3 +360,4 @@
 - 2017-08-23
 
 1 完成 PlayNotifyManager 逻辑<br>
+2 添加 SplashActivity，完成闪屏页动画<br>
