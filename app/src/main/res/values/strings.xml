@@ -251,4 +251,11 @@
     <string name="play_theme_custom_gradient">渐变</string>
     <string name="play_theme_custom_mask">遮罩</string>
 
+    <!-- 关于 /////////////////////////////////////////////////////////////////////////////////////////// -->
+
+    <string name="about_guide">用户指南</string>
+    <string name="about_welcome">欢迎页</string>
+    <string name="about_star">给应用评分</string>
+    <string name="about_me">关于开发者</string>
+
 </resources>

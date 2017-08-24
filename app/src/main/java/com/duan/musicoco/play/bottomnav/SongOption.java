@@ -432,7 +432,7 @@ public class SongOption implements
                         songOperation.checkSongDetail(song);
                         break;
                     case 2: //彻底删除
-                        songOperation.handleDeleteSongForever(song);
+                        songOperation.handleDeleteSongForever(song, null);
                         break;
                     case 3: {//从歌单中移除(非主歌单才有)
                         songOperation.removeSongFromCurrentPlayingSheet(null, song);

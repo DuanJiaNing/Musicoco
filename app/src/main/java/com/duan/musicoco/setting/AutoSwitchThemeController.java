@@ -51,6 +51,7 @@ public class AutoSwitchThemeController {
     // 设置切换提醒
     public void setAlarm() {
 
+        // UPDATE: 2017/8/24 更新 时间段自定义
         current = Calendar.getInstance();
         nightThemeStart = new GregorianCalendar(
                 current.get(Calendar.YEAR),
@@ -61,7 +62,7 @@ public class AutoSwitchThemeController {
                 current.get(Calendar.YEAR),
                 current.get(Calendar.MONTH),
                 current.get(Calendar.DAY_OF_MONTH),
-                7, 0); // 07:00 切换到白天模式
+                7, 00); // 07:00 切换到白天模式
         checkTheme();
         isSet = true;
 
@@ -103,7 +104,8 @@ public class AutoSwitchThemeController {
         int endH = nightThemeEnd.get(Calendar.HOUR_OF_DAY);
         int endM = nightThemeEnd.get(Calendar.MINUTE);
 
-        if (curH >= startH && curM >= startM && curH < endH && curM < endM) {
+        if (curH > startH || (curH == startH && curM >= startM)
+                && curH < endH + 24 || (curH == endH && curM < endM)) {
             //  切换夜间
             appPreference.updateTheme(ThemeEnum.DARK);
 

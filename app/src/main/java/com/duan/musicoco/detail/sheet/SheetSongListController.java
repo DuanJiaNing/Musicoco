@@ -22,6 +22,7 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.app.interfaces.OnCompleteListener;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
@@ -181,8 +182,12 @@ public class SheetSongListController implements
                         songOperation.checkSongDetail(song);
                         break;
                     case 2: //彻底删除
-                        songOperation.handleDeleteSongForever(song);
-                        update();
+                        songOperation.handleDeleteSongForever(song, new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(Void aVoid) {
+                                update();
+                            }
+                        });
                         break;
                     case 3: //收藏
                         songOperation.reverseSongFavoriteStatus(song);

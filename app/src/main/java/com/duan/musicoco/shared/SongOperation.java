@@ -549,7 +549,7 @@ public class SongOperation {
 
                     try {
                         //需要在服务器移除前修改数据库
-                        // FIXME 移除歌曲里包括正在播放的歌曲时出错
+                        // UPDATE: 2017/8/24 更新 移除歌曲里包括正在播放的歌曲时出错
                         int sheetID = control.getPlayListId();
                         for (Song song : songs) {
                             dbMusicoco.removeSongInfoFromSheet(song, sheetID);
@@ -706,7 +706,7 @@ public class SongOperation {
         }
     }
 
-    public void handleDeleteSongForever(final Song song) {
+    public void handleDeleteSongForever(final Song song, final OnCompleteListener<Void> complete) {
         DialogProvider manager = new DialogProvider(activity);
         final Dialog dialog = manager.createPromptDialog(
                 activity.getString(R.string.warning),
@@ -716,6 +716,9 @@ public class SongOperation {
                     public void onClick(View view) {
                         deleteSongFromDiskAndLibraryForever(song);
                         checkIsPlaying(song);
+                        if (complete != null) {
+                            complete.onComplete(null);
+                        }
                     }
                 },
                 null,
@@ -815,10 +818,10 @@ public class SongOperation {
                     }
 
                     private void sendBroadcast() {
-                        broadcastManager.sendBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
                         if (complete != null) {
                             complete.onComplete(null);
                         }
+                        broadcastManager.sendBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
                     }
 
 

@@ -130,6 +130,7 @@ public class DBMusicocoController {
         }
     }
 
+    // 歌单中歌曲总数减一
     private int minusSheetCount(int sheetID) {
         Sheet sheet = getSheet(sheetID);
         if (sheet != null) {

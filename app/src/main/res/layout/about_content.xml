@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <ImageView
+        android:id="@+id/about_logo"
+        android:layout_width="120dp"
+        android:layout_height="130dp"
+        android:layout_marginBottom="0dp"
+        android:src="@mipmap/logo"
+        app:layout_constraintBottom_toTopOf="@+id/about_version"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/about_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:gravity="center"
+        android:lines="1"
+        android:padding="5dp"
+        android:text="@string/app_name_us"
+        android:textSize="@dimen/text_middle"
+        app:layout_constraintBottom_toTopOf="@+id/about_container"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/about_container"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:divider="?android:dividerVertical"
+        android:orientation="vertical"
+        android:showDividers="middle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/about_guide"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackground"
+            android:clickable="true"
+            android:gravity="center_vertical|start"
+            android:padding="@dimen/activity_default_margin"
+            android:text="@string/about_guide"
+            android:textSize="@dimen/text_middle" />
+
+        <TextView
+            android:id="@+id/about_welcome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackground"
+            android:clickable="true"
+            android:gravity="center_vertical|start"
+            android:padding="@dimen/activity_default_margin"
+            android:text="@string/about_welcome"
+            android:textSize="@dimen/text_middle" />
+
+        <TextView
+            android:id="@+id/about_star"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackground"
+            android:clickable="true"
+            android:gravity="center_vertical|start"
+            android:padding="@dimen/activity_default_margin"
+            android:text="@string/about_star"
+            android:textSize="@dimen/text_middle" />
+
+        <TextView
+            android:id="@+id/about_me"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackground"
+            android:clickable="true"
+            android:gravity="center_vertical|start"
+            android:padding="@dimen/activity_default_margin"
+            android:text="@string/about_me"
+            android:textSize="@dimen/text_middle" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/about_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:gravity="center"
+        android:lines="1"
+        android:padding="5dp"
+        android:text="@string/app_name"
+        android:textSize="@dimen/text_middle_s"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+</android.support.constraint.ConstraintLayout>
