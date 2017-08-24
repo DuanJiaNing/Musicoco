@@ -66,6 +66,7 @@
             android:text="@string/about_welcome"
             android:textSize="@dimen/text_middle" />
 
+
         <TextView
             android:id="@+id/about_star"
             android:layout_width="match_parent"
