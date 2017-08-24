@@ -361,3 +361,7 @@
 
 1 完成 PlayNotifyManager 逻辑<br>
 2 添加 SplashActivity，完成闪屏页动画<br>
+
+- 2017-08-24
+
+1 添加 WebActivity ，可以查看简叔上的【Musicoco 用户指南】<br>

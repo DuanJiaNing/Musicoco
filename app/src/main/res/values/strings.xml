@@ -5,6 +5,9 @@
     <string name="album_save_path">image</string>
     <string name="feedback_phone_number">17628287313</string>
 
+    <string name="guide_url">http://www.jianshu.com/p/051e214ebc2e</string>
+    <string name="share_to_friends">棒棒，顶呱呱，Musicoco。</string>
+
     <string name="label_theme_color_custom">主题色定制</string>
     <string name="label_image_wall">图片墙</string>
     <string name="label_time_sleep">定时停止播放</string>
@@ -12,6 +15,8 @@
     <string name="label_setting">设置</string>
     <string name="label_feed_back">反馈</string>
     <string name="label_about">关于</string>
+    <string name="label_web">网页</string>
+    <string name="label_me">关于我</string>
 
     <!-- 权限相关 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -130,6 +135,7 @@
     <string name="custom">自定义</string>
     <string name="detail">详情</string>
     <string name="send">发送</string>
+    <string name="share">分享</string>
 
     <string name="cancel_collect">取消收藏</string>
     <string name="select_operation">选择操作</string>
@@ -138,6 +144,7 @@
 
     <string name="action_status_bar_color">标题栏颜色</string>
     <string name="icon_color">图标颜色</string>
+    <string name="open_whit_browser">在系统浏览器中打开</string>
 
     <string name="enable">开启</string>
     <string name="disable">不开启</string>
@@ -180,6 +187,7 @@
     <string name="in_progress_remove_songs_from_favorite">正在取消收藏</string>
     <string name="in_progress_remove_songs_from_sheet">正在移除</string>
     <string name="in_progress_delete">正在删除</string>
+    <string name="in_progress">加载中...</string>
     <string name="in_progress_send_feedback">正在发送短信</string>
 
     <!-- 替换 * 号/////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -256,6 +264,10 @@
     <string name="about_guide">用户指南</string>
     <string name="about_welcome">欢迎页</string>
     <string name="about_star">给应用评分</string>
+    <string name="about_share">推荐给朋友</string>
     <string name="about_me">关于开发者</string>
+
+    <string name="title_activity_web">WebActivity</string>
+    <string name="title_activity_me">MeActivity</string>
 
 </resources>

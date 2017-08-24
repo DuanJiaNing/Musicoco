@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/about_logo"
-        android:layout_width="120dp"
-        android:layout_height="130dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_marginBottom="0dp"
         android:src="@mipmap/logo"
         app:layout_constraintBottom_toTopOf="@+id/about_version"
@@ -36,7 +36,8 @@
         android:id="@+id/about_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:divider="?android:dividerVertical"
+        android:divider="@drawable/divider_vertical"
+        android:dividerPadding="@dimen/activity_default_margin"
         android:orientation="vertical"
         android:showDividers="middle"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -56,18 +57,6 @@
             android:textSize="@dimen/text_middle" />
 
         <TextView
-            android:id="@+id/about_welcome"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?android:selectableItemBackground"
-            android:clickable="true"
-            android:gravity="center_vertical|start"
-            android:padding="@dimen/activity_default_margin"
-            android:text="@string/about_welcome"
-            android:textSize="@dimen/text_middle" />
-
-
-        <TextView
             android:id="@+id/about_star"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -76,6 +65,18 @@
             android:gravity="center_vertical|start"
             android:padding="@dimen/activity_default_margin"
             android:text="@string/about_star"
+            android:textSize="@dimen/text_middle" />
+
+
+        <TextView
+            android:id="@+id/about_share"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:selectableItemBackground"
+            android:clickable="true"
+            android:gravity="center_vertical|start"
+            android:padding="@dimen/activity_default_margin"
+            android:text="@string/about_share"
             android:textSize="@dimen/text_middle" />
 
         <TextView

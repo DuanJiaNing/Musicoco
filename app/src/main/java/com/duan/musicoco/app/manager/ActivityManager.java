@@ -3,10 +3,14 @@ package com.duan.musicoco.app.manager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 
+import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.AboutActivity;
 import com.duan.musicoco.app.FeedBackActivity;
+import com.duan.musicoco.app.MeActivity;
+import com.duan.musicoco.app.WebActivity;
 import com.duan.musicoco.detail.sheet.SheetDetailActivity;
 import com.duan.musicoco.detail.song.SongDetailActivity;
 import com.duan.musicoco.main.MainActivity;
@@ -36,6 +40,8 @@ public class ActivityManager {
     public static final String SHEET_DETAIL_ID = "sheet_detail_id";
     public static final String SHEET_DETAIL_LOCATION_AT = "sheet_detail_location_at";
 
+    public static final String WEB_URL = "web_url";
+
     private static ActivityManager mInstance;
 
     private ActivityManager(Context context) {
@@ -61,6 +67,21 @@ public class ActivityManager {
         intent.setAction(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.fromFile(new File(path)), "image/*");
         context.startActivity(intent);
+    }
+
+
+    public void startSystemBrower(@NonNull String url) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        context.startActivity(intent);
+    }
+
+    public void startSystemShare(String text) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, text);
+        context.startActivity(Intent.createChooser(intent, context.getString(R.string.share)));
     }
 
     /**
@@ -125,5 +146,15 @@ public class ActivityManager {
 
     public void startAboutActivity() {
         context.startActivity(new Intent(context, AboutActivity.class));
+    }
+
+    public void startWebActivity(@NonNull String url) {
+        Intent intent = new Intent(context, WebActivity.class);
+        intent.putExtra(WEB_URL, url);
+        context.startActivity(intent);
+    }
+
+    public void startMeActivity() {
+        context.startActivity(new Intent(context, MeActivity.class));
     }
 }

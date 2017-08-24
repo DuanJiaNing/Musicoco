@@ -37,6 +37,8 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_time_sleep);
 
+        initToolbar();
+
     }
 
     @Override
@@ -53,7 +55,6 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
         viewHolder = new ViewHolder();
         numberPickerHolder = new NumberPickerHolder();
 
-        initViews();
         viewHolder.initViews();
         themeChange(null, null);
         initData();
@@ -70,11 +71,16 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
         viewHolder.initData(enable);
     }
 
-    private void initViews() {
+    private void initToolbar() {
         toolbar = (Toolbar) findViewById(R.id.time_sleep_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        final int[] ta = ColorUtils.get2ActionStatusBarColors(this);
+        toolbar.setBackgroundColor(ta[1]);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(ta[0]);
+        }
     }
 
     @Override
@@ -145,12 +151,6 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
 
     @Override
     public void themeChange(ThemeEnum themeEnum, int[] colors) {
-
-        final int[] ta = ColorUtils.get2ActionStatusBarColors(this);
-        toolbar.setBackgroundColor(ta[1]);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(ta[0]);
-        }
 
         int acc = ColorUtils.getAccentColor(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

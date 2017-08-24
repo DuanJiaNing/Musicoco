@@ -387,7 +387,7 @@ public class LeftNavigationController implements
                         ((MainActivity) activity).shutDownServiceAndApp();
                         break;
                     case R.id.setting_user_guide: // 用户指南
-                        ToastUtils.showShortToast("guide");
+                        ActivityManager.getInstance(activity).startWebActivity(activity.getString(R.string.guide_url));
                         break;
                     default:
                         break;

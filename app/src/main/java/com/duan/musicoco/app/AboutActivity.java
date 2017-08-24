@@ -1,16 +1,18 @@
 package com.duan.musicoco.app;
 
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.duan.musicoco.BuildConfig;
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
+import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.ColorUtils;
 
@@ -21,19 +23,28 @@ public class AboutActivity extends RootActivity implements
     private TextView version;
     private View container;
     private TextView guide;
-    private TextView welcome;
     private TextView star;
+    private TextView share;
     private TextView me;
     private TextView name;
+
+    private ActivityManager activityManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
+        activityManager = ActivityManager.getInstance(this);
+
         initViews();
         themeChange(null, null);
+        initData();
 
+    }
+
+    private void initData() {
+        version.setText(getString(R.string.app_name_us) + " v " + BuildConfig.VERSION_NAME);
     }
 
     private void initViews() {
@@ -44,14 +55,14 @@ public class AboutActivity extends RootActivity implements
         version = (TextView) findViewById(R.id.about_version);
         container = findViewById(R.id.about_container);
         guide = (TextView) findViewById(R.id.about_guide);
-        welcome = (TextView) findViewById(R.id.about_welcome);
         star = (TextView) findViewById(R.id.about_star);
+        share = (TextView) findViewById(R.id.about_share);
         me = (TextView) findViewById(R.id.about_me);
         name = (TextView) findViewById(R.id.about_name);
 
         guide.setOnClickListener(this);
-        welcome.setOnClickListener(this);
         star.setOnClickListener(this);
+        share.setOnClickListener(this);
         me.setOnClickListener(this);
     }
 
@@ -84,28 +95,41 @@ public class AboutActivity extends RootActivity implements
         int mainTC = cs[5];
         int vicTC = cs[6];
         guide.setTextColor(mainTC);
-        welcome.setTextColor(mainTC);
         star.setTextColor(mainTC);
+        share.setTextColor(mainTC);
         me.setTextColor(mainTC);
         name.setTextColor(vicTC);
         version.setTextColor(mainTC);
         container.setBackgroundColor(vicBC);
+
+        Drawable d;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            d = getDrawable(R.drawable.ic_navigate_next);
+            d.setTint(vicTC);
+        } else {
+            d = getResources().getDrawable(R.drawable.ic_navigate_next);
+        }
+        d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+        d.setAlpha(150);
+        guide.setCompoundDrawables(null, null, d, null);
+        star.setCompoundDrawables(null, null, d, null);
+        share.setCompoundDrawables(null, null, d, null);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.about_guide:
-
-                break;
-            case R.id.about_welcome:
-
+                activityManager.startWebActivity(getString(R.string.guide_url));
                 break;
             case R.id.about_star:
 
                 break;
             case R.id.about_me:
-
+                activityManager.startMeActivity();
+                break;
+            case R.id.about_share:
+                activityManager.startSystemShare(getString(R.string.share_to_friends));
                 break;
             default:
                 break;
