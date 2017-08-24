@@ -24,7 +24,8 @@ import com.duan.musicoco.app.manager.ActivityManager;
 
 public class SplashActivity extends InspectActivity {
 
-    private TextHolder tvs;
+    private TextView[] ts;
+
     private int index;
     private boolean animComplete;
     private boolean initComplete;
@@ -32,6 +33,7 @@ public class SplashActivity extends InspectActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.splash_activity);
 
         //权限检查完成后回调 permissionGranted 或 permissionDenied
@@ -54,11 +56,20 @@ public class SplashActivity extends InspectActivity {
                 });
         v.setBackground(gd);
 
-        tvs = new TextHolder();
-        tvs.ts[0].post(new Runnable() {
+        ts = new TextView[]{
+                (TextView) findViewById(R.id.splash_m),
+                (TextView) findViewById(R.id.splash_u),
+                (TextView) findViewById(R.id.splash_s),
+                (TextView) findViewById(R.id.splash_i),
+                (TextView) findViewById(R.id.splash_c),
+                (TextView) findViewById(R.id.splash_o),
+                (TextView) findViewById(R.id.splash_c1),
+                (TextView) findViewById(R.id.splash_o1)
+        };
+        ts[0].post(new Runnable() {
             @Override
             public void run() {
-                startTextInAnim(tvs.ts[index]);
+                startTextInAnim(ts[index]);
             }
         });
     }
@@ -80,8 +91,8 @@ public class SplashActivity extends InspectActivity {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (index != tvs.ts.length - 1) {
-                    startTextInAnim(tvs.ts[++index]);
+                if (index != ts.length - 1) {
+                    startTextInAnim(ts[++index]);
                 } else {
                     startFinalAnim();
                 }
@@ -172,11 +183,11 @@ public class SplashActivity extends InspectActivity {
             @Override
             protected Void doInBackground(Void... params) {
 
-                // FIXME 耗时
+                //   耗时
                 startService();
-                // FIXME 耗时
+                //   耗时
                 prepareData();
-                // FIXME 耗时 !!
+                //   耗时 !!
                 initAppDataIfNeed();
 
                 return null;
@@ -202,23 +213,6 @@ public class SplashActivity extends InspectActivity {
     @Override
     public void permissionDenied(int requestCode) {
         finish();
-    }
-
-    private class TextHolder {
-        TextView[] ts;
-
-        public TextHolder() {
-            ts = new TextView[]{
-                    (TextView) findViewById(R.id.splash_m),
-                    (TextView) findViewById(R.id.splash_u),
-                    (TextView) findViewById(R.id.splash_s),
-                    (TextView) findViewById(R.id.splash_i),
-                    (TextView) findViewById(R.id.splash_c),
-                    (TextView) findViewById(R.id.splash_o),
-                    (TextView) findViewById(R.id.splash_c1),
-                    (TextView) findViewById(R.id.splash_o1)
-            };
-        }
     }
 
 }

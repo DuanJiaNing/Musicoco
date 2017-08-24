@@ -113,9 +113,19 @@ public class FeedBackActivity extends RootActivity implements
 
         TextView cent = (TextView) findViewById(R.id.feedback_tip_msg);
         TextView other = (TextView) findViewById(R.id.feedback_tip_other_where);
+        TextView tip = (TextView) findViewById(R.id.feedback_tip);
+        View tipLine = findViewById(R.id.feedback_tip_line);
+        TextView tipO = (TextView) findViewById(R.id.feedback_tip_ow);
+        View tipOL = findViewById(R.id.feedback_tip_ow_line);
         cent.setTextColor(vicTC);
         other.setTextColor(vicTC);
+        other.setLinkTextColor(accentC);
 
+        tipLine.setBackgroundColor(vicTC);
+        tip.setTextColor(mainTC);
+
+        tipOL.setBackgroundColor(vicTC);
+        tipO.setTextColor(mainTC);
 
         int[] cs2 = ColorUtils.get2ActionStatusBarColors(this);
         int actionC = cs2[0];

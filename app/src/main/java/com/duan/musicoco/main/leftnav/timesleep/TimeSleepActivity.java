@@ -40,6 +40,13 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        viewHolder = null;
+        numberPickerHolder = null;
+    }
+
+    @Override
     public void onEnterAnimationComplete() {
         super.onEnterAnimationComplete();
 

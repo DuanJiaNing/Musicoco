@@ -6,6 +6,7 @@
     <color name="colorAccentLight">#40393b</color>
 
     <color name="colorPrimaryLight">#d40164</color>
+    <color name="colorPrimaryLight_l">#b9497d</color>
     <color name="text_gray">#ababab</color>
 
     <color name="gold">#FFAE22</color>

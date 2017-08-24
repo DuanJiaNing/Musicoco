@@ -163,13 +163,11 @@
     <string name="info_will_speed_few_cent">
         点击发送以短信的方式向我反馈\n这可能需要你支付少许短信费用！
     </string>
-    <string name="info_contact_me_other_where">
-        也可以通过以下方式联系我：\n\n
-        电话：17628287313 \n
-        QQ：2213994603 \n
-        邮箱：2213994603@qq.com \n
+    <string name="info_contact_me_other_where">也可以通过以下方式联系我</string>
+    <string name="info_contact_me_other_where_detail">
+        电话：17628287313 \n邮箱：2213994603@qq.com \nQQ：2213994603 \n
     </string>
-    <string name="info_feedback_input_hint">输入意见或建议...</string>
+    <string name="info_feedback_input_hint">输入意见或建议</string>
     <string name="info_feedback_input_empty">你还没有输入内容哦</string>
 
     <string name="title_add_all_songs_to_favorite">收藏所有歌曲</string>
