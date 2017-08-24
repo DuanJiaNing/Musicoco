@@ -8,10 +8,10 @@
     android:paddingTop="@dimen/activity_default_margin_s">
 
     <TextView
-        android:layout_marginBottom="@dimen/activity_default_margin_s_s_s"
         android:id="@+id/rmp_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_default_margin_s_s_s"
         android:drawableLeft="@drawable/line_for_main_title"
         android:drawablePadding="@dimen/activity_default_padding"
         android:gravity="start|center_vertical"
@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            android:src="@mipmap/splash" />
+            android:src="@drawable/default_album" />
 
         <RelativeLayout
             android:id="@+id/rmp_info_container"

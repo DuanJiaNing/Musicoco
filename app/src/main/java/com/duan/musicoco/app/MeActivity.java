@@ -2,6 +2,8 @@ package com.duan.musicoco.app;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
@@ -13,6 +15,7 @@ import com.duan.musicoco.util.ColorUtils;
 public class MeActivity extends RootActivity implements ThemeChangeable {
 
     private Toolbar toolbar;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +24,12 @@ public class MeActivity extends RootActivity implements ThemeChangeable {
 
         initViews();
         themeChange(null, null);
+        initData();
+    }
+
+    private void initData() {
+
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 
     }
 
@@ -29,6 +38,8 @@ public class MeActivity extends RootActivity implements ThemeChangeable {
         toolbar = (Toolbar) findViewById(R.id.me_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        recyclerView = (RecyclerView) findViewById(R.id.me_recycle_view);
 
     }
 

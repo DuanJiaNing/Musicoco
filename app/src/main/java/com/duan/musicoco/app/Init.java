@@ -48,7 +48,7 @@ public class Init {
             int r = metrics.widthPixels * 2 / 3;
 
             BitmapBuilder builder = new BitmapBuilder(activity);
-            builder.resizeForDefault(r, r, R.mipmap.default_album);
+            builder.resizeForDefault(r, r, R.drawable.default_album);
             builder.toRoundBitmap();
             builder.addOuterCircle(0, 10, Color.parseColor("#df3b43"))
                     .addOuterCircle(7, 1, Color.WHITE);
@@ -68,10 +68,6 @@ public class Init {
         db.addSongInfo(mediaManager.getSongList());
 
         db.addSheet("我喜欢的", "收藏我所喜欢", 0);
-        //FIXME double_number_picker
-        db.addSheet("新的歌单 --", "", 0);
-        db.addSheet("song sheet", "double_number_picker for remark", 0);
-        db.addSheet("nice song", "double_number_picker 胜多负少的法法阿达是否阿达的说法大师傅大厦法定是否大厦法定是否for remark", 0);
 
         db.close();
         Log.d(TAG, "initMusicocoDB: initialization database success ");

@@ -267,7 +267,17 @@
     <string name="about_share">推荐给朋友</string>
     <string name="about_me">关于开发者</string>
 
-    <string name="title_activity_web">WebActivity</string>
-    <string name="title_activity_me">MeActivity</string>
+    <!-- 关于我 /////////////////////////////////////////////////////////////////////////////////////////// -->
+
+    <string name="me_github">GitHub</string>
+    <string name="me_github_url">https://github.com/DuanJiaNing</string>
+    <string name="me_csdn">CSDN</string>
+    <string name="me_csdn_url">http://blog.csdn.net/aimeimeits?viewmode=list</string>
+    <string name="me_jianshu">简书</string>
+    <string name="me_jianshu_url">http://www.jianshu.com/u/897bb1600def</string>
+    <string name="me_qq">QQ</string>
+    <string name="me_qq_url">2213994603</string>
+    <string name="me_phone">电话</string>
+    <string name="me_phone_url">17628287313</string>
 
 </resources>

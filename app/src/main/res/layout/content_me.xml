@@ -8,4 +8,9 @@
     tools:context="com.duan.musicoco.app.MeActivity"
     tools:showIn="@layout/activity_me">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/me_recycle_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
 </android.support.constraint.ConstraintLayout>

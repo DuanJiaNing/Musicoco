@@ -41,7 +41,7 @@
             android:id="@+id/list_album"
             android:layout_width="@dimen/list_bottom_nav_height"
             android:layout_height="match_parent"
-            android:src="@mipmap/default_album" />
+            android:src="@drawable/default_album" />
 
         <com.duan.musicoco.view.media.PlayView
             android:id="@+id/list_play"
