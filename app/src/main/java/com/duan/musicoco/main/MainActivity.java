@@ -245,8 +245,12 @@ public class MainActivity extends RootActivity implements
         broadcastManager.registerBroadReceiver(appThemeChangeAutomaticReceiver, BroadcastManager.FILTER_APP_THEME_CHANGE_AUTOMATIC);
         broadcastManager.registerBroadReceiver(mySheetDataChangedReceiver, BroadcastManager.FILTER_MY_SHEET_CHANGED);
 
-        headphoneWireControlReceiver = new ComponentName(getPackageName(), HeadphoneWireControlReceiver.class.getName());
-        ((AudioManager) getSystemService(Context.AUDIO_SERVICE)).registerMediaButtonEventReceiver(headphoneWireControlReceiver);
+        if (settingPreference.preHeadphoneWire()) {
+            headphoneWireControlReceiver = new ComponentName(getPackageName(), HeadphoneWireControlReceiver.class.getName());
+            ((AudioManager) getSystemService(Context.AUDIO_SERVICE)).registerMediaButtonEventReceiver(headphoneWireControlReceiver);
+        } else {
+            headphoneWireControlReceiver = null;
+        }
 
     }
 
@@ -372,7 +376,10 @@ public class MainActivity extends RootActivity implements
             broadcastManager.unregisterReceiver(mainSheetChangeReceiver);
         }
 
-        ((AudioManager) getSystemService(Context.AUDIO_SERVICE)).unregisterMediaButtonEventReceiver(headphoneWireControlReceiver);
+        if (headphoneWireControlReceiver != null) {
+            ((AudioManager) getSystemService(Context.AUDIO_SERVICE)).unregisterMediaButtonEventReceiver(headphoneWireControlReceiver);
+        }
+
     }
 
     private void unbindService() {
