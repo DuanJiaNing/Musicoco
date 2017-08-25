@@ -1,11 +1,16 @@
 package com.duan.musicoco.service;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.AudioManager;
 import android.os.IBinder;
+import android.os.RemoteException;
+import android.support.v4.media.session.MediaButtonReceiver;
 import android.util.Log;
+import android.view.KeyEvent;
 
 import com.duan.musicoco.app.RootService;
 import com.duan.musicoco.app.manager.BroadcastManager;
@@ -21,9 +26,10 @@ public class PlayService extends RootService {
 
     private static final String TAG = "PlayService";
 
-    private PlayServiceIBinder iBinder;
+    public PlayServiceIBinder iBinder;
     private BroadcastManager broadcastManager;
-    private BroadcastReceiver serviceQuit;
+
+    private BroadcastReceiver serviceQuitReceiver;
 
     @Override
     public void onCreate() {
@@ -46,7 +52,7 @@ public class PlayService extends RootService {
     }
 
     private void initBroadcast() {
-        serviceQuit = new BroadcastReceiver() {
+        serviceQuitReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 if (iBinder.status() == PlayController.STATUS_PLAYING) {
@@ -56,7 +62,8 @@ public class PlayService extends RootService {
                 stopSelf();
             }
         };
-        broadcastManager.registerBroadReceiver(serviceQuit, BroadcastManager.FILTER_PLAY_SERVICE_QUIT);
+
+        broadcastManager.registerBroadReceiver(serviceQuitReceiver, BroadcastManager.FILTER_PLAY_SERVICE_QUIT);
     }
 
     @Override
@@ -80,9 +87,10 @@ public class PlayService extends RootService {
     }
 
     private void unregisterReceiver() {
-        if (serviceQuit != null) {
-            broadcastManager.unregisterReceiver(serviceQuit);
+        if (serviceQuitReceiver != null) {
+            broadcastManager.unregisterReceiver(serviceQuitReceiver);
         }
+
     }
 
 }

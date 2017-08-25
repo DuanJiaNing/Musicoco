@@ -122,6 +122,12 @@
             android:name=".app.MeActivity"
             android:label="@string/label_me"
             android:theme="@style/AppTheme" />
+
+        <receiver android:name=".service.HeadphoneWireControlReceiver">
+            <intent-filter android:priority="2000">
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -36,6 +37,7 @@ import com.duan.musicoco.main.bottomnav.BottomNavigationController;
 import com.duan.musicoco.main.leftnav.LeftNavigationController;
 import com.duan.musicoco.play.PlayServiceConnection;
 import com.duan.musicoco.preference.ThemeEnum;
+import com.duan.musicoco.service.HeadphoneWireControlReceiver;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.setting.AutoSwitchThemeController;
 import com.duan.musicoco.util.ColorUtils;
@@ -74,6 +76,8 @@ public class MainActivity extends RootActivity implements
 
     // 刚打开应用时忽略耳机是否插入的广播
     private boolean justOpenTheApplication = true;
+
+    private ComponentName headphoneWireControlReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -240,6 +244,10 @@ public class MainActivity extends RootActivity implements
         broadcastManager.registerBroadReceiver(appQuitTimeCountdownReceiver, BroadcastManager.FILTER_APP_QUIT_TIME_COUNTDOWN);
         broadcastManager.registerBroadReceiver(appThemeChangeAutomaticReceiver, BroadcastManager.FILTER_APP_THEME_CHANGE_AUTOMATIC);
         broadcastManager.registerBroadReceiver(mySheetDataChangedReceiver, BroadcastManager.FILTER_MY_SHEET_CHANGED);
+
+        headphoneWireControlReceiver = new ComponentName(getPackageName(), HeadphoneWireControlReceiver.class.getName());
+        ((AudioManager) getSystemService(Context.AUDIO_SERVICE)).registerMediaButtonEventReceiver(headphoneWireControlReceiver);
+
     }
 
     /**
@@ -363,6 +371,8 @@ public class MainActivity extends RootActivity implements
         if (mainSheetChangeReceiver != null) {
             broadcastManager.unregisterReceiver(mainSheetChangeReceiver);
         }
+
+        ((AudioManager) getSystemService(Context.AUDIO_SERVICE)).unregisterMediaButtonEventReceiver(headphoneWireControlReceiver);
     }
 
     private void unbindService() {
@@ -498,7 +508,7 @@ public class MainActivity extends RootActivity implements
     }
 
     public static IPlayControl getControl() {
-        return sServiceConnection.takeControl();
+        return sServiceConnection == null ? null : sServiceConnection.takeControl();
     }
 
 }
