@@ -25,7 +25,6 @@ public class AboutActivity extends RootActivity implements
     private TextView guide;
     private TextView star;
     private TextView share;
-    private TextView me;
     private TextView name;
 
     private ActivityManager activityManager;
@@ -57,13 +56,11 @@ public class AboutActivity extends RootActivity implements
         guide = (TextView) findViewById(R.id.about_guide);
         star = (TextView) findViewById(R.id.about_star);
         share = (TextView) findViewById(R.id.about_share);
-        me = (TextView) findViewById(R.id.about_me);
         name = (TextView) findViewById(R.id.about_name);
 
         guide.setOnClickListener(this);
         star.setOnClickListener(this);
         share.setOnClickListener(this);
-        me.setOnClickListener(this);
     }
 
     @Override
@@ -97,7 +94,6 @@ public class AboutActivity extends RootActivity implements
         guide.setTextColor(mainTC);
         star.setTextColor(mainTC);
         share.setTextColor(mainTC);
-        me.setTextColor(mainTC);
         name.setTextColor(vicTC);
         version.setTextColor(mainTC);
         container.setBackgroundColor(vicBC);
@@ -124,9 +120,6 @@ public class AboutActivity extends RootActivity implements
                 break;
             case R.id.about_star:
 
-                break;
-            case R.id.about_me:
-                activityManager.startMeActivity();
                 break;
             case R.id.about_share:
                 activityManager.startSystemShare(getString(R.string.share_to_friends));

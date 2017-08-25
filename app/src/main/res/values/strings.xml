@@ -246,7 +246,7 @@
 
     <string name="setting_about">关于</string>
     <string name="setting_set_feedback">反馈</string>
-    <string name="setting_set_about">关于 Musicoco </string>
+    <string name="setting_set_about">应用信息</string>
 
     <string name="setting_cache">缓存</string>
     <string name="setting_set_image_clear_cache">清除缓存</string>

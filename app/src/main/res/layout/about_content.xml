@@ -78,18 +78,6 @@
             android:padding="@dimen/activity_default_margin"
             android:text="@string/about_share"
             android:textSize="@dimen/text_middle" />
-
-        <TextView
-            android:id="@+id/about_me"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?android:selectableItemBackground"
-            android:clickable="true"
-            android:gravity="center_vertical|start"
-            android:padding="@dimen/activity_default_margin"
-            android:text="@string/about_me"
-            android:textSize="@dimen/text_middle" />
-
     </LinearLayout>
 
     <TextView

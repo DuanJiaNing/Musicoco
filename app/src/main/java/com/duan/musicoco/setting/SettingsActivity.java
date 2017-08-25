@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.BitmapDecoder;
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
@@ -28,8 +29,8 @@ public class SettingsActivity extends RootActivity implements ThemeChangeable, V
     private Toolbar toolbar;
     private TextView feedBack;
     private TextView about;
+    private TextView aboutMe;
     private TextView clearCache;
-    private View fragmentContainer;
 
     private ActivityManager activityManager;
 
@@ -52,12 +53,13 @@ public class SettingsActivity extends RootActivity implements ThemeChangeable, V
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        fragmentContainer = findViewById(R.id.fragment_container);
         feedBack = (TextView) findViewById(R.id.setting_feedback);
         about = (TextView) findViewById(R.id.setting_about);
+        aboutMe = (TextView) findViewById(R.id.setting_about_me);
         clearCache = (TextView) findViewById(R.id.setting_clear_cache);
         feedBack.setOnClickListener(this);
         about.setOnClickListener(this);
+        aboutMe.setOnClickListener(this);
         clearCache.setOnClickListener(this);
     }
 
@@ -101,11 +103,11 @@ public class SettingsActivity extends RootActivity implements ThemeChangeable, V
 
         feedBack.setTextColor(mainTC);
         about.setTextColor(mainTC);
+        aboutMe.setTextColor(mainTC);
         clearCache.setTextColor(accentC);
 
-        fragmentContainer.setBackgroundColor(bc);
-        feedBack.setBackgroundColor(bc);
-        about.setBackgroundColor(bc);
+        findViewById(R.id.setting_container).setBackgroundColor(bc);
+        findViewById(R.id.fragment_container).setBackgroundColor(bc);
         clearCache.setBackgroundColor(bc);
     }
 
@@ -120,6 +122,9 @@ public class SettingsActivity extends RootActivity implements ThemeChangeable, V
                 break;
             case R.id.setting_clear_cache:
                 handleClearCache();
+                break;
+            case R.id.setting_about_me:
+                activityManager.startMeActivity();
                 break;
             default:
                 break;
