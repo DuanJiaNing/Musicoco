@@ -1,6 +1,8 @@
 package com.duan.musicoco.app;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -119,6 +121,15 @@ public class WebActivity extends RootActivity implements ThemeChangeable {
         toolbar = (Toolbar) findViewById(R.id.web_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Drawable d;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            d = getDrawable(R.drawable.ic_clear_gray_24dp);
+            d.setTint(Color.WHITE);
+        } else {
+            d = getResources().getDrawable(R.drawable.ic_clear_gray_24dp);
+        }
+        toolbar.setNavigationIcon(d);
 
         stub = (TextView) findViewById(R.id.web_stub);
         webView = (WebView) findViewById(R.id.web_web);

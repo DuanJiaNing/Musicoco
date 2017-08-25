@@ -79,4 +79,6 @@
 
     <dimen name="sheet_modify_linear_layout_divide_height">20dp</dimen>
 
+    <dimen name="me_social_item_height">100dp</dimen>
+
 </resources>

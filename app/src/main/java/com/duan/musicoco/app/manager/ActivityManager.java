@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.ExploreByTouchHelper;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
@@ -23,6 +24,7 @@ import com.duan.musicoco.play.PlayActivity;
 import com.duan.musicoco.rmp.RecentMostPlayActivity;
 import com.duan.musicoco.search.SearchActivity;
 import com.duan.musicoco.main.leftnav.themecolor.ThemeColorCustomActivity;
+import com.duan.musicoco.util.ToastUtils;
 
 import java.io.File;
 
@@ -156,5 +158,32 @@ public class ActivityManager {
 
     public void startMeActivity() {
         context.startActivity(new Intent(context, MeActivity.class));
+    }
+
+    public void startQQChartPanel(String qqId) {
+        try {
+            //可以跳转到添加好友，如果qq号是好友了，直接聊天
+            String url = "mqqwpa://im/chat?chat_type=wpa&uin=" + qqId;//uin是发送过去的qq号码
+            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+        } catch (Exception e) {
+            e.printStackTrace();
+            String msg = context.getString(R.string.error_check_qq_install);
+            ToastUtils.showShortToast(msg);
+        }
+    }
+
+    public void startSystemPhoneCallPanel(String phoneNumber) {
+        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phoneNumber));
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    public void startSystemEmailPanel(String email) {
+        Uri uri = Uri.parse("mailto:" + email);
+        Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
+        intent.putExtra(Intent.EXTRA_CC, email); // 抄送人
+        intent.putExtra(Intent.EXTRA_SUBJECT, ""); // 主题
+        intent.putExtra(Intent.EXTRA_TEXT, ""); // 正文
+        context.startActivity(Intent.createChooser(intent, context.getString(R.string.info_choice_email_app)));
     }
 }

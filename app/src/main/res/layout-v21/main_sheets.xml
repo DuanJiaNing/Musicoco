@@ -20,52 +20,46 @@
 
         app:cardElevation="2dp">
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <ImageView
+                android:id="@+id/sheet_all_image"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/sheet_all_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/main_sheets_height"
-                    android:scaleType="centerCrop" />
-
-                <TextView
-                    android:id="@+id/sheet_all_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-
-                    android:padding="4dp"
-                    android:text="@string/main_sheet_all"
-                    android:textSize="@dimen/text_middle_s"
-                    android:typeface="serif" />
-
-            </LinearLayout>
+                android:layout_height="@dimen/main_sheets_height"
+                android:scaleType="centerCrop" />
 
             <TextView
-                android:id="@+id/sheet_all_count"
-                android:layout_width="wrap_content"
+                android:id="@+id/sheet_all_text"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top|right"
-                android:layout_margin="3dp"
-                android:ellipsize="end"
                 android:gravity="center"
-                android:lines="1"
-                android:maxEms="3"
-                android:minWidth="20dp"
-                android:padding="4dp"
-                android:text="0"
-                android:textSize="@dimen/text_small_s"
-                android:textStyle="bold" />
 
-        </FrameLayout>
+                android:padding="4dp"
+                android:text="@string/main_sheet_all"
+                android:textSize="@dimen/text_middle_s"
+                android:typeface="serif" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/sheet_all_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right"
+            android:layout_margin="3dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:lines="1"
+            android:maxEms="3"
+            android:minWidth="20dp"
+            android:padding="4dp"
+            android:text="0"
+            android:textSize="@dimen/text_small_s"
+            android:textStyle="bold" />
 
     </android.support.v7.widget.CardView>
 
@@ -79,53 +73,48 @@
         app:cardCornerRadius="2dp"
         app:cardElevation="2dp">
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <ImageView
+                android:id="@+id/sheet_recent_image"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/sheet_recent_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/main_sheets_height"
-                    android:scaleType="centerCrop" />
-
-                <TextView
-                    android:id="@+id/sheet_recent_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-
-                    android:padding="4dp"
-                    android:text="@string/main_sheet_recent"
-                    android:textSize="@dimen/text_middle_s"
-                    android:typeface="serif" />
-
-            </LinearLayout>
+                android:layout_height="@dimen/main_sheets_height"
+                android:scaleType="centerCrop" />
 
             <TextView
-                android:id="@+id/sheet_recent_count"
-                android:layout_width="wrap_content"
+                android:id="@+id/sheet_recent_text"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top|right"
-                android:layout_margin="3dp"
-                android:ellipsize="end"
                 android:gravity="center"
 
-                android:lines="1"
-                android:maxEms="3"
-                android:minWidth="20dp"
                 android:padding="4dp"
-                android:text="0"
-                android:textSize="@dimen/text_small_s"
-                android:textStyle="bold" />
+                android:text="@string/main_sheet_recent"
+                android:textSize="@dimen/text_middle_s"
+                android:typeface="serif" />
 
-        </FrameLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/sheet_recent_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right"
+            android:layout_margin="3dp"
+            android:ellipsize="end"
+            android:gravity="center"
+
+            android:lines="1"
+            android:maxEms="3"
+            android:minWidth="20dp"
+            android:padding="4dp"
+            android:text="0"
+            android:textSize="@dimen/text_small_s"
+            android:textStyle="bold" />
+
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
@@ -140,52 +129,47 @@
         app:cardCornerRadius="2dp"
         app:cardElevation="2dp">
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
 
-            <LinearLayout
+            <ImageView
+                android:id="@+id/sheet_favorite_image"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/sheet_favorite_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/main_sheets_height"
-                    android:scaleType="centerCrop" />
-
-                <TextView
-                    android:id="@+id/sheet_favorite_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-
-                    android:gravity="center"
-                    android:padding="4dp"
-                    android:text="@string/main_sheet_favorite"
-                    android:textSize="@dimen/text_middle_s"
-                    android:typeface="serif" />
-
-            </LinearLayout>
+                android:layout_height="@dimen/main_sheets_height"
+                android:scaleType="centerCrop" />
 
             <TextView
-                android:id="@+id/sheet_favorite_count"
-                android:layout_width="wrap_content"
+                android:id="@+id/sheet_favorite_text"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top|right"
-                android:layout_margin="3dp"
-                android:ellipsize="end"
-                android:gravity="center"
 
-                android:lines="1"
-                android:maxEms="3"
-                android:minWidth="20dp"
+                android:gravity="center"
                 android:padding="4dp"
-                android:text="0"
-                android:textSize="@dimen/text_small_s"
-                android:textStyle="bold" />
-        </FrameLayout>
+                android:text="@string/main_sheet_favorite"
+                android:textSize="@dimen/text_middle_s"
+                android:typeface="serif" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/sheet_favorite_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right"
+            android:layout_margin="3dp"
+            android:ellipsize="end"
+            android:gravity="center"
+
+            android:lines="1"
+            android:maxEms="3"
+            android:minWidth="20dp"
+            android:padding="4dp"
+            android:text="0"
+            android:textSize="@dimen/text_small_s"
+            android:textStyle="bold" />
     </android.support.v7.widget.CardView>
 
 </LinearLayout>

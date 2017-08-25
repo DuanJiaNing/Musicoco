@@ -1,16 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="@dimen/activity_default_margin"
+    android:divider="@drawable/divider_vertical"
+    android:orientation="vertical"
+    android:showDividers="middle"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.duan.musicoco.app.MeActivity"
     tools:showIn="@layout/activity_me">
 
+    <TextView
+        android:id="@+id/me_social"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="start|center_vertical"
+        android:padding="@dimen/activity_default_padding"
+        android:text="@string/me_social"
+        android:textSize="@dimen/text_middle_l" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/me_recycle_view"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:id="@+id/me_open_source"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_default_margin_l"
+        android:gravity="start|center_vertical"
+        android:padding="@dimen/activity_default_padding"
+        android:text="@string/me_open_source"
+        android:textSize="@dimen/text_middle_l" />
+
+    <TextView
+        android:id="@+id/me_open_source_url"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autoLink="web"
+        android:gravity="start|center_vertical"
+        android:linksClickable="true"
+        android:padding="@dimen/activity_default_padding"
+        android:text="@string/me_open_source_url"
+        android:textSize="@dimen/text_small" />
+
+</LinearLayout>

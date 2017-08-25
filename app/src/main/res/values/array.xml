@@ -8,4 +8,22 @@
         <item>@string/song_operation_delete</item>
     </string-array>
 
+    <string-array name="about_me_social">
+        <item>@string/me_github</item>
+        <item>@string/me_csdn</item>
+        <item>@string/me_jianshu</item>
+        <item>@string/me_qq</item>
+        <item>@string/me_email</item>
+        <item>@string/me_phone</item>
+    </string-array>
+
+    <string-array name="about_me_social_url">
+        <item>@string/me_github_url</item>
+        <item>@string/me_csdn_url</item>
+        <item>@string/me_jianshu_url</item>
+        <item>@string/me_qq_url</item>
+        <item>@string/me_email_url</item>
+        <item>@string/me_phone_url</item>
+    </string-array>
+
 </resources>

@@ -189,7 +189,7 @@ public class FeedBackActivity extends RootActivity implements
             @Override
             protected Void doInBackground(Void... params) {
 
-                String phone = getString(R.string.feedback_phone_number);
+                String phone = getString(R.string.phone);
                 SmsManager manager = SmsManager.getDefault();
                 //因为一条短信有字数限制，因此要将长短信拆分
                 ArrayList<String> list = manager.divideMessage(str);
