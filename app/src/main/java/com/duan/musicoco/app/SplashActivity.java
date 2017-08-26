@@ -130,11 +130,16 @@ public class SplashActivity extends InspectActivity {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                if (initComplete) {
-                    startMainActivity();
-                } else {
-                    animComplete = true;
-                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (initComplete) {
+                            startMainActivity();
+                        } else {
+                            animComplete = true;
+                        }
+                    }
+                });
             }
 
             @Override
@@ -207,8 +212,8 @@ public class SplashActivity extends InspectActivity {
     }
 
     private void startMainActivity() {
-        finish();
         ActivityManager.getInstance(SplashActivity.this).startMainActivity();
+        finish();
     }
 
     @Override
