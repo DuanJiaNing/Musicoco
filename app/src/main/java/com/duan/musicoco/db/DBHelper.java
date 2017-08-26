@@ -13,19 +13,6 @@ import java.io.File;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-//    private volatile static DBHelper DB_HELPER;
-//
-//    static DBHelper getInstance(Context context, String dbName) {
-//        if (DB_HELPER == null) {
-//            synchronized (DBHelper.class) {
-//                if (DB_HELPER == null) {
-//                    //String path = context.getFilesDir().getAbsolutePath() + File.separator + dbName;
-//                    DB_HELPER = new DBHelper(context, dbName);
-//                }
-//            }
-//        }
-//        return DB_HELPER;
-//    }
 
     public DBHelper(Context context, String name) {
         super(context, name, null, 1);

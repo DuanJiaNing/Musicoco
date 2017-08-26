@@ -184,11 +184,12 @@ public class SplashActivity extends InspectActivity {
             protected Void doInBackground(Void... params) {
 
                 //   耗时
-                startService();
-                //   耗时
                 prepareData();
-                //   耗时 !!
+                //   耗时
                 initAppDataIfNeed();
+
+                //   耗时，启动服务之前先准备好数据
+                startService();
 
                 return null;
             }

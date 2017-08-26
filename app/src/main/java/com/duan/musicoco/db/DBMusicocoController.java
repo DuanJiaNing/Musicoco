@@ -52,7 +52,7 @@ public class DBMusicocoController {
     public static final String SHEET_COUNT = "sheet_count"; //歌曲数目
 
     static void createSongTable(SQLiteDatabase db) {
-        String sql = "create table " + DBMusicocoController.TABLE_SONG + "(" +
+        String sql = "create table if not exists " + DBMusicocoController.TABLE_SONG + "(" +
                 DBMusicocoController.SONG_ID + " integer primary key autoincrement," +
                 DBMusicocoController.SONG_PATH + " text unique," +
                 DBMusicocoController.SONG_LASTPLAYTIME + " char(20)," +
@@ -66,7 +66,7 @@ public class DBMusicocoController {
 
     static void createSheetTable(SQLiteDatabase db) {
 
-        String sql = "create table " + DBMusicocoController.TABLE_SHEET + "(" +
+        String sql = "create table if not exists " + DBMusicocoController.TABLE_SHEET + "(" +
                 DBMusicocoController.SHEET_ID + " integer primary key autoincrement," +
                 DBMusicocoController.SHEET_NAME + " text unique," +
                 DBMusicocoController.SHEET_REMARK + " text," +

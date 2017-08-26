@@ -151,7 +151,7 @@ public class SearchActivity extends RootActivity implements ThemeChangeable {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                mResultContainer.setVisibility(View.VISIBLE);
+                mResultContainer.setVisibility(View.GONE);
                 SearchActivity.super.finish();
                 overridePendingTransition(
                         R.anim.slide_in_right_no_alpha,
