@@ -1,33 +1,19 @@
 package com.duan.musicoco.app;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.text.format.Time;
 import android.util.DisplayMetrics;
 import android.util.Log;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.cache.BitmapCache;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.image.BitmapBuilder;
-import com.duan.musicoco.preference.AppPreference;
-import com.duan.musicoco.preference.SettingPreference;
-import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.util.Utils;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-
-import static android.content.Context.ALARM_SERVICE;
 
 /**
  * Created by DuanJiaNing on 2017/6/21.

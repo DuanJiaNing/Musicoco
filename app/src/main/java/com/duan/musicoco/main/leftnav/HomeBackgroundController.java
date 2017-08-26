@@ -14,11 +14,11 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.load.engine.Resource;
 import com.duan.musicoco.R;
-import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
-import com.duan.musicoco.db.bean.DBSongInfo;
+import com.duan.musicoco.db.modle.DBSongInfo;
 import com.duan.musicoco.image.BitmapProducer;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.util.MediaUtils;

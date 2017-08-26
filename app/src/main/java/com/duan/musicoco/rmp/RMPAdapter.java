@@ -84,7 +84,6 @@ public class RMPAdapter extends RecyclerView.Adapter<RMPAdapter.ViewHolder> impl
                 .asBitmap()
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .placeholder(R.drawable.default_song)
-                // FIXME 获取 View 宽高为 0
                 .into(new SimpleTarget<Bitmap>(imageWidth, imageHeight) {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {

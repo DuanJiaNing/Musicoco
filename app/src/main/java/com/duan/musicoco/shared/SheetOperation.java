@@ -10,7 +10,7 @@ import com.duan.musicoco.app.interfaces.OnCompleteListener;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.DBMusicocoController;
-import com.duan.musicoco.db.bean.Sheet;
+import com.duan.musicoco.db.modle.Sheet;
 import com.duan.musicoco.util.Utils;
 
 import rx.Observable;

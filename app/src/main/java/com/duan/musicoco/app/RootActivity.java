@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.AuxiliaryPreference;
@@ -37,6 +38,8 @@ public class RootActivity extends AppCompatActivity {
 
         checkTheme();
         dbController = new DBMusicocoController(this, true);
+
+        ActivityManager.getInstance(this).addActivity(this);
     }
 
     protected void checkTheme() {

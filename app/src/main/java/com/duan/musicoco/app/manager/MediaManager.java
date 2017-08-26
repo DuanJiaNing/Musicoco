@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.modle.SongInfo;
 
 import java.util.ArrayList;
 import java.util.HashSet;

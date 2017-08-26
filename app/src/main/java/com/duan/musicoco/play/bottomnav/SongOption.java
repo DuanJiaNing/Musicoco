@@ -17,7 +17,8 @@ import android.widget.ImageButton;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.app.manager.ActivityManager;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
@@ -185,7 +186,7 @@ public class SongOption implements
                     builder.append(activity.getString(R.string.play_mode_random));
                     break;
             }
-            ToastUtils.showShortToast(builder.toString());
+            ToastUtils.showShortToast(builder.toString(), activity);
         } catch (RemoteException e) {
             e.printStackTrace();
             new ExceptionHandler().handleRemoteException(activity,
@@ -429,7 +430,7 @@ public class SongOption implements
                         songOperation.handleAddSongToSheet(info);
                         break;
                     case 1: // 查看详情
-                        songOperation.checkSongDetail(song);
+                        ActivityManager.getInstance(activity).startSongDetailActivity(song, true);
                         break;
                     case 2: //彻底删除
                         songOperation.handleDeleteSongForever(song, null);

@@ -21,7 +21,7 @@ import android.view.animation.LinearInterpolator;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.cache.BitmapCache;
-import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.StringUtils;
@@ -154,7 +154,7 @@ public class AlbumSurfaceView extends SurfaceView implements SurfaceHolder.Callb
 
             if (result == null) { //处理
                 Bitmap b = BitmapUtils.bitmapResizeFromFile(mCurrentSong.getAlbum_path(), mPicWidth, mPicWidth);
-                Bitmap bm = BitmapUtils.jpgToPng(b);
+                Bitmap bm = BitmapUtils.jpgToPng(context, b);
                 result = BitmapUtils.getCircleBitmap(bm);
             } else {
                 mCurrentPic = result;

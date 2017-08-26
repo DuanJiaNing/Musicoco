@@ -18,9 +18,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.duan.musicoco.R;
-import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
-import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.StringUtils;
 

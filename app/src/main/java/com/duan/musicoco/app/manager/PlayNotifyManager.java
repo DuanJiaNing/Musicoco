@@ -8,8 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
@@ -19,13 +17,12 @@ import android.widget.RemoteViews;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.ViewVisibilityChangeable;
 import com.duan.musicoco.db.DBMusicocoController;
-import com.duan.musicoco.db.bean.DBSongInfo;
+import com.duan.musicoco.db.modle.DBSongInfo;
 import com.duan.musicoco.main.MainActivity;
 import com.duan.musicoco.service.PlayController;
-import com.duan.musicoco.util.ColorUtils;
 
 /**
  * Created by DuanJiaNing on 2017/8/22.

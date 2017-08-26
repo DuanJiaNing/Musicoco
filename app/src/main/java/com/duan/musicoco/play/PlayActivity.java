@@ -10,6 +10,7 @@ import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -17,8 +18,9 @@ import android.widget.FrameLayout;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.app.App;
 import com.duan.musicoco.app.InspectActivity;
-import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
@@ -32,8 +34,6 @@ import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.service.PlayServiceCallback;
 import com.duan.musicoco.util.ColorUtils;
-
-import java.util.List;
 
 /**
  * Created by DuanJiaNing on 2017/5/23.
@@ -206,12 +206,16 @@ public class PlayActivity extends InspectActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mServiceConnection.hasConnected) {
+        unbindService();
+        unregisterReceiver();
+    }
+
+    private void unbindService() {
+        if (mServiceConnection != null && mServiceConnection.hasConnected) {
             mServiceConnection.unregisterListener();
             unbindService(mServiceConnection);
             mServiceConnection.hasConnected = false;
         }
-        unregisterReceiver();
     }
 
     private void unregisterReceiver() {
@@ -255,7 +259,6 @@ public class PlayActivity extends InspectActivity implements
         if (bottomNavigationController.visible()) {
             bottomNavigationController.hide();
         } else {
-            //FIXME
             moveTaskToBack(true);
         }
     }
@@ -344,7 +347,7 @@ public class PlayActivity extends InspectActivity implements
     @Override
     public void songChanged(Song song, int index, boolean isNext) {
 
-        //FIXME 次数计算策略完善
+        // UPDATE: 2017/8/26 更新 次数计算策略完善
         dbController.addSongPlayTimes(song);
         updateCurrentSongInfo(song, isNext);
 
@@ -465,7 +468,7 @@ public class PlayActivity extends InspectActivity implements
             case R.id.play_name_container:
                 try {
                     Song song = control.currentSong();
-                    ActivityManager.getInstance(this).startSongDetailActivity(song);
+                    ActivityManager.getInstance(this).startSongDetailActivity(song, true);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }

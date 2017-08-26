@@ -11,7 +11,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.duan.musicoco.app.Init;
-import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.cache.BitmapCache;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;

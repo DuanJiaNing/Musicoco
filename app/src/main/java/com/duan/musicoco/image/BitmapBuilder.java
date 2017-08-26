@@ -79,7 +79,7 @@ public class BitmapBuilder {
     }
 
     public BitmapBuilder jpgToPng() {
-        bitM = BitmapUtils.jpgToPng(bitM);
+        bitM = BitmapUtils.jpgToPng(context, bitM);
         return this;
     }
 

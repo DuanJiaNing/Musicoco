@@ -82,7 +82,6 @@ public class OptionsDialog implements
         if (listView == null) {
             return;
         }
-        //FIXME getHeight == 0
         int totalHeight = activity.getResources().getDimensionPixelSize(R.dimen.action_bar_default_height);
 
         totalHeight += Utils.getListViewHeight(listView);

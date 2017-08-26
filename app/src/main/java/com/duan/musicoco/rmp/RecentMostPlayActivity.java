@@ -23,12 +23,12 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.RootActivity;
-import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.MainSheetHelper;
-import com.duan.musicoco.db.bean.DBSongInfo;
+import com.duan.musicoco.db.modle.DBSongInfo;
 import com.duan.musicoco.main.MainActivity;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.shared.OptionsAdapter;
@@ -141,7 +141,7 @@ public class RecentMostPlayActivity extends RootActivity implements ThemeChangea
                         Song song = new Song(currentClickItem.getData());
                         songOperation.playSongAtSheetAll(song);
                         optionsDialog.hide();
-                        finish(); // FIXME finish 调用顺序
+                        finish();
                         activityManager.startPlayActivity();
 
                     }
@@ -175,7 +175,7 @@ public class RecentMostPlayActivity extends RootActivity implements ThemeChangea
                     public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
                         Song song = new Song(currentClickItem.getData());
                         optionsDialog.hide();
-                        songOperation.checkSongDetail(song);
+                        activityManager.startSongDetailActivity(song, false);
                     }
                 });
 
@@ -408,7 +408,6 @@ public class RecentMostPlayActivity extends RootActivity implements ThemeChangea
         title = (TextView) findViewById(R.id.rmp_a_title);
         toolbar = (Toolbar) findViewById(R.id.rmp_a_toolbar);
         setSupportActionBar(toolbar);
-        // FIXME 点击无效 只能在 onOptionsItemSelected 中设置
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         first = new FirstThreeViewHolder(FirstThreeViewHolder.FIRST);

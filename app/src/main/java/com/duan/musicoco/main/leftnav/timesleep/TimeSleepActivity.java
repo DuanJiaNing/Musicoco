@@ -98,7 +98,7 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
             case R.id.action_save:
                 if (time == 0) {
                     String msg = getString(R.string.error_time_sleep_time_must_more_then_zero);
-                    ToastUtils.showShortToast(msg);
+                    ToastUtils.showShortToast(msg, this);
                 } else {
                     if (enable) {
                         handleSave();
@@ -123,7 +123,7 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
                     .sendBroadcast(BroadcastManager.FILTER_APP_QUIT_TIME_COUNTDOWN, bundle);
 
             String msg = getString(R.string.info_time_sleep_is_canceled);
-            ToastUtils.showShortToast(msg);
+            ToastUtils.showShortToast(msg, this);
         }
         finish();
     }
@@ -139,7 +139,7 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
             re = time + getString(R.string.minute);
         }
         String str = ti.replace("*", re);
-        ToastUtils.showLongToast(str);
+        ToastUtils.showLongToast(this, str);
 
         Bundle bundle = new Bundle();
         bundle.putInt(BroadcastManager.Countdown.APP_QUIT_TIME_COUNTDOWN_STATUS, BroadcastManager.Countdown.START_COUNTDOWN);

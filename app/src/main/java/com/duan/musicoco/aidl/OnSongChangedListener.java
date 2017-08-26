@@ -1,7 +1,6 @@
 package com.duan.musicoco.aidl;
 
 import android.os.IBinder;
-import android.os.RemoteException;
 
 /**
  * Created by DuanJiaNing on 2017/5/24.

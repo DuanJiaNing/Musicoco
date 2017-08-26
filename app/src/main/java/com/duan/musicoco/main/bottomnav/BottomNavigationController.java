@@ -16,8 +16,7 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.App;
-import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
@@ -140,7 +139,7 @@ public class BottomNavigationController implements
         listViewsController.initData(control, dbController);
 
         try {
-            // FIXME songChanged & onPlayListChange 回调会进行赋值，但应用第一次启动时的回调很有可能已经错过，
+            // songChanged & onPlayListChange 回调会对 currentSong 进行赋值，但应用第一次启动时的回调很有可能已经错过，
             // 这是因为 MainActivity 中的 bindService 方法比较耗时导致，该方法会对 MediaManager 进行数
             // 据初始化，这些数据时急需的，不能异步获取，只能阻塞
             Song song = control.currentSong();
@@ -205,6 +204,7 @@ public class BottomNavigationController implements
 
         if (b == null) {
             b = BitmapUtils.getDefaultPictureForAlbum(
+                    activity,
                     mAlbum.getWidth(),
                     mAlbum.getHeight());
         }

@@ -48,7 +48,7 @@ public class BitmapCache {
 
     private void initDiskCacheControl(Context context, String name) {
         try {
-            File cacheDir = FileUtils.getDiskCacheDirFile(name);
+            File cacheDir = FileUtils.getDiskCacheDirFile(context, name);
             if (!cacheDir.exists()) {
                 cacheDir.mkdirs();
             }

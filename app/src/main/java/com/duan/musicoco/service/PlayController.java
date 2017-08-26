@@ -6,8 +6,8 @@ import android.support.annotation.NonNull;
 
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.db.DBMusicocoController;
-import com.duan.musicoco.db.bean.DBSongInfo;
 import com.duan.musicoco.db.MainSheetHelper;
+import com.duan.musicoco.db.modle.DBSongInfo;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -305,7 +305,7 @@ public class PlayController {
                 break;
             }
             case MODE_RANDOM: {
-                // FIXME 正在播放的歌单最后一首歌曲被移除歌单时 mPlayList.size() == 0 使 nextInt 方法出错
+                // UPDATE: 2017/8/26 修复 正在播放的歌单最后一首歌曲被移除歌单时 mPlayList.size() == 0 使 nextInt 方法出错
                 int next = new Random().nextInt(mPlayList.size());
                 if (next != mCurrentSong) {
                     mCurrentSong = next;

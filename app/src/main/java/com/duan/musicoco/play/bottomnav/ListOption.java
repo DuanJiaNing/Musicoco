@@ -1,10 +1,8 @@
 package com.duan.musicoco.play.bottomnav;
 
-import android.animation.Animator;
 import android.app.Activity;
 import android.os.Build;
 import android.os.RemoteException;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -18,7 +16,7 @@ import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.interfaces.ViewVisibilityChangeable;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
-import com.duan.musicoco.db.bean.Sheet;
+import com.duan.musicoco.db.modle.Sheet;
 import com.duan.musicoco.shared.ExceptionHandler;
 import com.duan.musicoco.util.AnimationUtils;
 

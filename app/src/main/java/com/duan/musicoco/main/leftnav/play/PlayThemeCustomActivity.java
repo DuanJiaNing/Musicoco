@@ -62,8 +62,6 @@ public class PlayThemeCustomActivity extends RootActivity implements
 
     private void update() {
         viewHolder.imageSwitch.setImageResource(dataHolder.images[select]);
-        //TODO
-
         for (int i = 0; i < viewHolder.texts.length; i++) {
             TextView view = viewHolder.texts[i];
             if (i == select) {
@@ -116,7 +114,7 @@ public class PlayThemeCustomActivity extends RootActivity implements
         }
 
         String msg = getString(R.string.success_modify_saved);
-        ToastUtils.showShortToast(msg);
+        ToastUtils.showShortToast(msg, this);
 
         // 播放界面更新主题（底部弹出的选项框）
         BroadcastManager manager = BroadcastManager.getInstance(this);

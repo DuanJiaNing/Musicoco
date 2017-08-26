@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <external-path
+        path="Android/data/com.duan.musicoco/"
+        name="share_files_path" />
+    <external-path
+        path="."
+        name="root_path" />
+</paths>

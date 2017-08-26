@@ -23,8 +23,7 @@ import java.io.InputStream;
 
 public class FileUtils {
 
-    public static File getDiskCacheDirFile(String uniqueName) {
-        Context context = App.getContext();
+    public static File getDiskCacheDirFile(Context context, String uniqueName) {
         String cachePath;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
                 || !Environment.isExternalStorageRemovable()) {

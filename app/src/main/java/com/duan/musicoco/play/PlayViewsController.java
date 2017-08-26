@@ -11,12 +11,9 @@ import android.widget.ViewSwitcher;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
-import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
-import com.duan.musicoco.shared.ExceptionHandler;
 import com.duan.musicoco.shared.PeriodicTask;
 import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.view.discreteseekbar.DiscreteSeekBar;

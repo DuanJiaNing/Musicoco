@@ -143,7 +143,7 @@ public class ThemeColorCustomActivity extends RootActivity implements
             updateColor();
         } else {
             String msg = getString(R.string.error_action_did_not_support);
-            ToastUtils.showShortToast(msg);
+            ToastUtils.showShortToast(msg, this);
             finish();
         }
 

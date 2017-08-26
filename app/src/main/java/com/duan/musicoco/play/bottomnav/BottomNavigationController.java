@@ -25,15 +25,14 @@ import android.widget.ListView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
-import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
-import com.duan.musicoco.db.bean.DBSongInfo;
+import com.duan.musicoco.db.modle.DBSongInfo;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.ThemeEnum;
@@ -220,18 +219,18 @@ public class BottomNavigationController implements
         switch (t) {
             case WHITE: {
                 if (isVarying) {
-                    cs = com.duan.musicoco.util.ColorUtils.get2ColorWhiteThemeForPlayOptions();
+                    cs = com.duan.musicoco.util.ColorUtils.get2ColorWhiteThemeForPlayOptions(activity);
                 } else {
-                    cs = com.duan.musicoco.util.ColorUtils.get2WhiteThemeTextColor();
+                    cs = com.duan.musicoco.util.ColorUtils.get2WhiteThemeTextColor(activity);
                 }
                 break;
             }
             case DARK:
             default: {
                 if (isVarying) {
-                    cs = com.duan.musicoco.util.ColorUtils.get2ColorDarkThemeForPlayOptions();
+                    cs = com.duan.musicoco.util.ColorUtils.get2ColorDarkThemeForPlayOptions(activity);
                 } else {
-                    cs = com.duan.musicoco.util.ColorUtils.get2DarkThemeTextColor();
+                    cs = com.duan.musicoco.util.ColorUtils.get2DarkThemeTextColor(activity);
                 }
                 break;
             }
@@ -299,11 +298,11 @@ public class BottomNavigationController implements
 
     @Override
     public void noData() {
-        //TODO noSongInService
+        // UPDATE: 2017/8/26 更新
     }
 
     public void noSongInService() {
-        // TODO noData
+        // UPDATE: 2017/8/26 更新
     }
 
     @Override
@@ -311,7 +310,6 @@ public class BottomNavigationController implements
         isListShowing = true;
 
         //更新列表数据（当前播放歌曲）
-//        playListAdapter.notifyDataSetChanged();
 
         int duration = activity.getResources().getInteger(R.integer.play_list_anim_duration);
         int mb = (int) activity.getResources().getDimension(R.dimen.activity_default_margin);

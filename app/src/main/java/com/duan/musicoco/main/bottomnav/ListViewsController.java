@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
@@ -27,7 +27,7 @@ import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
-import com.duan.musicoco.db.bean.Sheet;
+import com.duan.musicoco.db.modle.Sheet;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.shared.ExceptionHandler;
@@ -141,9 +141,6 @@ public class ListViewsController implements
             mList.smoothScrollToPosition(index);
         } catch (RemoteException e) {
             e.printStackTrace();
-            new ExceptionHandler().handleRemoteException(activity,
-                    activity.getString(R.string.error_exception_remote), null
-            );
         }
     }
 
@@ -155,7 +152,7 @@ public class ListViewsController implements
             control.setPlayMode(mode);
 
             String str = updatePlayMode();
-            ToastUtils.showShortToast(str);
+            ToastUtils.showShortToast(str, activity);
 
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -183,9 +180,6 @@ public class ListViewsController implements
     }
 
     private void initAdapterClickListener() {
-        // FIXME ListView 的 setOnItemClickListener 无效，点击时的涟漪背景也没了
-        // android:background="?android:selectableItemBackground"
-
         adapter.setOnItemClickListener(new PlayListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position, SongInfo info) {

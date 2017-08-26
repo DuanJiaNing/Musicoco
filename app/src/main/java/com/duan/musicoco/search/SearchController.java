@@ -9,14 +9,14 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
-import com.duan.musicoco.db.bean.DBSongInfo;
-import com.duan.musicoco.db.bean.Sheet;
+import com.duan.musicoco.db.modle.DBSongInfo;
+import com.duan.musicoco.db.modle.Sheet;
 import com.duan.musicoco.main.MainActivity;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.shared.OptionsAdapter;
@@ -79,7 +79,6 @@ public class SearchController implements ThemeChangeable, ResultsAdapter.OnItemC
         mList = (ListView) mActivity.findViewById(R.id.search_list);
 
         mList.setAdapter(adapter);
-        // FIXME mList 的 setOnItemClickListener 点击无效
         adapter.setOnItemClickListener(this);
     }
 
@@ -152,7 +151,7 @@ public class SearchController implements ThemeChangeable, ResultsAdapter.OnItemC
                     public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
                         Song song = new Song(currentClickItem.getData());
                         optionsDialog.hide();
-                        songOperation.checkSongDetail(song);
+                        activityManager.startSongDetailActivity(song, false);
                     }
                 });
 

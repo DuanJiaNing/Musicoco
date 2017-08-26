@@ -18,14 +18,14 @@ import android.widget.ListView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.OnCompleteListener;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
-import com.duan.musicoco.db.bean.DBSongInfo;
-import com.duan.musicoco.db.bean.Sheet;
+import com.duan.musicoco.db.modle.DBSongInfo;
+import com.duan.musicoco.db.modle.Sheet;
 import com.duan.musicoco.util.FileUtils;
 import com.duan.musicoco.util.MediaUtils;
 import com.duan.musicoco.util.ToastUtils;
@@ -96,10 +96,6 @@ public class SongOperation {
 
         optionsAdapter.addOption(newSheet);
         optionsAdapter.notifyDataSetChanged();
-    }
-
-    public void checkSongDetail(Song song) {
-        ActivityManager.getInstance(activity).startSongDetailActivity(song);
     }
 
     //反转歌曲收藏状态
@@ -200,7 +196,7 @@ public class SongOperation {
                         } else {
                             msg = activity.getString(R.string.success_remove_select_song_from_favorite);
                         }
-                        ToastUtils.showShortToast(msg);
+                        ToastUtils.showShortToast(msg, activity);
                         sendBroadcast();
                     }
 
@@ -218,7 +214,7 @@ public class SongOperation {
                         }
 
                         String msg = activity.getString(R.string.unknown);
-                        ToastUtils.showShortToast(msg);
+                        ToastUtils.showShortToast(msg, activity);
                         sendBroadcast();
                     }
 
@@ -275,7 +271,7 @@ public class SongOperation {
                         progressDialog.dismiss();
 
                         String msg = activity.getString(R.string.success_add_all_song_to_favorite);
-                        ToastUtils.showShortToast(msg);
+                        ToastUtils.showShortToast(msg, activity);
                         sendBroadcast();
                     }
 
@@ -289,7 +285,7 @@ public class SongOperation {
                         progressDialog.dismiss();
 
                         String msg = activity.getString(R.string.unknown);
-                        ToastUtils.showShortToast(msg);
+                        ToastUtils.showShortToast(msg, activity);
                         sendBroadcast();
                     }
 
@@ -309,9 +305,9 @@ public class SongOperation {
                 Song song = new Song(info.getData());
                 if (dbMusicoco.addSongToSheet(sheetName, song)) {
                     String msg = activity.getString(R.string.success_add_to_sheet) + " [" + sheetName + "]";
-                    ToastUtils.showShortToast(msg);
+                    ToastUtils.showShortToast(msg, activity);
                 } else {
-                    ToastUtils.showShortToast(activity.getString(R.string.error_song_is_already_in_sheet));
+                    ToastUtils.showShortToast(activity.getString(R.string.error_song_is_already_in_sheet), activity);
                 }
                 dialog.dismiss();
             }
@@ -431,7 +427,7 @@ public class SongOperation {
                         progressDialog.dismiss();
 
                         String msg = activity.getString(R.string.success_add_to_sheet) + " [" + sheetName + "]";
-                        ToastUtils.showShortToast(msg);
+                        ToastUtils.showShortToast(msg, activity);
                         callBack();
                     }
 
@@ -447,7 +443,7 @@ public class SongOperation {
                         progressDialog.dismiss();
 
                         String msg = activity.getString(R.string.unknown);
-                        ToastUtils.showShortToast(msg);
+                        ToastUtils.showShortToast(msg, activity);
                         callBack();
                     }
 
@@ -531,7 +527,7 @@ public class SongOperation {
                 control.remove(songs[0]);
 
                 String msg = activity.getString(R.string.success_remove_song_from_sheet);
-                ToastUtils.showShortToast(msg);
+                ToastUtils.showShortToast(msg, activity);
 
                 broadcastManager.sendBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
                 if (complete != null) {
@@ -583,7 +579,7 @@ public class SongOperation {
                             progressDialog.dismiss();
 
                             String msg = activity.getString(R.string.success_remove_song_from_sheet);
-                            ToastUtils.showShortToast(msg);
+                            ToastUtils.showShortToast(msg, activity);
                             sendBroadcast();
                         }
 
@@ -601,7 +597,7 @@ public class SongOperation {
                             progressDialog.dismiss();
 
                             String msg = activity.getString(R.string.unknown);
-                            ToastUtils.showShortToast(msg);
+                            ToastUtils.showShortToast(msg, activity);
                             sendBroadcast();
                         }
 
@@ -636,7 +632,7 @@ public class SongOperation {
             dbMusicoco.removeSongInfoFromSheet(songs[0], sheetID);
 
             String msg = activity.getString(R.string.success_remove_song_from_sheet);
-            ToastUtils.showShortToast(msg);
+            ToastUtils.showShortToast(msg, activity);
 
             broadcastManager.sendBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
             if (complete != null) {
@@ -677,7 +673,7 @@ public class SongOperation {
                             progressDialog.dismiss();
 
                             String msg = activity.getString(R.string.success_remove_song_from_sheet);
-                            ToastUtils.showShortToast(msg);
+                            ToastUtils.showShortToast(msg, activity);
                             sendBroadcast();
                         }
 
@@ -695,7 +691,7 @@ public class SongOperation {
                             progressDialog.dismiss();
 
                             String msg = activity.getString(R.string.unknown);
-                            ToastUtils.showShortToast(msg);
+                            ToastUtils.showShortToast(msg, activity);
                             sendBroadcast();
                         }
 
@@ -747,7 +743,7 @@ public class SongOperation {
             msg = activity.getString(R.string.success_delete_file);
         }
 
-        ToastUtils.showShortToast(msg);
+        ToastUtils.showShortToast(msg, activity);
     }
 
     public void handleDeleteSongForever(final OnCompleteListener<Void> complete, final int sheetID, final List<Song> songs) {
@@ -775,7 +771,7 @@ public class SongOperation {
                 subscriber.onStart();
 
                 try {
-                    // FIXME 删除多首歌曲时，删除歌曲里包含正在播放的歌曲时，服务器的播放列表和歌单显示的列表不一样
+                    // UPDATE: 2017/8/26 更新 删除多首歌曲时，删除歌曲里包含正在播放的歌曲时，服务器的播放列表和歌单显示的列表不一样
                     Song song = control.currentSong();
 
                     for (Song s : songs) {
@@ -813,7 +809,7 @@ public class SongOperation {
                         progressDialog.dismiss();
 
                         String msg = activity.getString(R.string.success_delete_file);
-                        ToastUtils.showShortToast(msg);
+                        ToastUtils.showShortToast(msg, activity);
                         sendBroadcast();
                     }
 
@@ -831,7 +827,7 @@ public class SongOperation {
                         progressDialog.dismiss();
 
                         String msg = activity.getString(R.string.unknown);
-                        ToastUtils.showShortToast(msg);
+                        ToastUtils.showShortToast(msg, activity);
                         sendBroadcast();
                     }
 

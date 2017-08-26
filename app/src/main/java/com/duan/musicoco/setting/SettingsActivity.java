@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.bitmap.BitmapDecoder;
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
@@ -142,7 +141,7 @@ public class SettingsActivity extends RootActivity implements ThemeChangeable, V
                     public void onClick(View view) {
                         clearCache();
                         String msg = SettingsActivity.this.getString(R.string.success_clear_cache);
-                        ToastUtils.showShortToast(msg);
+                        ToastUtils.showShortToast(msg, SettingsActivity.this);
                     }
                 }, null, true);
         dialog.show();

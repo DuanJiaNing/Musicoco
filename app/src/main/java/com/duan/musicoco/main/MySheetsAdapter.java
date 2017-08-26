@@ -17,14 +17,13 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.interfaces.OnCompleteListener;
-import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.app.manager.MediaManager;
-import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
-import com.duan.musicoco.db.bean.DBSongInfo;
-import com.duan.musicoco.db.bean.Sheet;
+import com.duan.musicoco.db.modle.DBSongInfo;
+import com.duan.musicoco.db.modle.Sheet;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.shared.SheetOperation;
@@ -132,13 +131,13 @@ public class MySheetsAdapter extends BaseAdapter implements
                     public void onComplete(Boolean aBoolean) {
                         if (aBoolean) {
                             String msg = activity.getString(R.string.success_delete_sheet) + " [" + currentClickMoreOperationItem.name + "]";
-                            ToastUtils.showShortToast(msg);
+                            ToastUtils.showShortToast(msg, activity);
 
                             isCurrentPlayingSheetBeDelete(currentClickMoreOperationItem.id);
 
                         } else {
                             String msg = activity.getString(R.string.error_delete_sheet_fail);
-                            ToastUtils.showShortToast(msg);
+                            ToastUtils.showShortToast(msg, activity);
                         }
                     }
                 });
@@ -257,7 +256,7 @@ public class MySheetsAdapter extends BaseAdapter implements
                     @Override
                     public Bitmap call(Integer integer) {
                         //Java.util.ConcurrentModificationException
-                        //FIXME 多线程导致迭代时修改错误
+                        // UPDATE: 2017/8/26 修复 多线程导致迭代时修改错误
                         List<DBSongInfo> infos = dbMusicoco.getSongInfos(integer);
 //                        TreeSet<DBMusicocoController.DBSongInfo> treeSet = dbController.descSortByLastPlayTime(infos);
                         Bitmap bitmap = findBitmap(infos, image);
@@ -344,7 +343,7 @@ public class MySheetsAdapter extends BaseAdapter implements
             control.setPlayList(songs, 0, sheet.id);
             control.resume();
         } else {
-            ToastUtils.showShortToast(activity.getString(R.string.error_empty_sheet));
+            ToastUtils.showShortToast(activity.getString(R.string.error_empty_sheet), activity);
         }
     }
 

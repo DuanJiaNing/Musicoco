@@ -93,7 +93,6 @@ public abstract class InspectActivity extends RootActivity implements Permission
      * 启动服务，应确保获得文件读写权限后再启动，启动服务后再绑定，这样即使绑定这解除绑定，
      * 服务端也能继续运行 ？？？
      */
-    // FIXME
     protected void startService() {
         PlayServiceManager.startPlayService(this);
     }

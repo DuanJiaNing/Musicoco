@@ -11,7 +11,7 @@ import android.support.v4.media.session.PlaybackStateCompat;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
-import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.util.StringUtils;
 

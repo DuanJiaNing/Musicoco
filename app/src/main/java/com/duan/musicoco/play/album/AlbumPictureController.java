@@ -17,7 +17,7 @@ import android.widget.ImageSwitcher;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.Init;
-import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.cache.BitmapCache;
 import com.duan.musicoco.image.BitmapProducer;
 import com.duan.musicoco.util.ColorUtils;

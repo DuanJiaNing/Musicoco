@@ -21,14 +21,14 @@ import com.bumptech.glide.Glide;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.OnCompleteListener;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
-import com.duan.musicoco.db.bean.DBSongInfo;
+import com.duan.musicoco.db.modle.DBSongInfo;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.shared.OptionsAdapter;
@@ -179,7 +179,7 @@ public class SheetSongListController implements
                         songOperation.handleAddSongToSheet(info);
                         break;
                     case 1: //详细信息
-                        songOperation.checkSongDetail(song);
+                        ActivityManager.getInstance(activity).startSongDetailActivity(song, false);
                         break;
                     case 2: //彻底删除
                         songOperation.handleDeleteSongForever(song, new OnCompleteListener<Void>() {
@@ -313,7 +313,7 @@ public class SheetSongListController implements
 
             if (id == sheetID) { // 当前歌单
                 if (position == index) {
-                    // FIXME BUG 在另外的歌单删除当前歌单中正在播放的歌曲
+                    // UPDATE: 2017/8/26 更新 在另外的歌单删除当前歌单中正在播放的歌曲
                     Log.d(TAG, "onClick: the song is playing");
                     if (control.status() != PlayController.STATUS_PLAYING) {
                         control.resume();
@@ -514,7 +514,7 @@ public class SheetSongListController implements
                 activity.finish();
                 ActivityManager.getInstance(activity).startPlayActivity();
             } else {
-                ToastUtils.showShortToast(activity.getString(R.string.error_non_song_to_play));
+                ToastUtils.showShortToast(activity.getString(R.string.error_non_song_to_play), activity);
             }
 
         } catch (RemoteException e) {

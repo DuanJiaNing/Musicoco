@@ -3,7 +3,6 @@ package com.duan.musicoco.play;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;

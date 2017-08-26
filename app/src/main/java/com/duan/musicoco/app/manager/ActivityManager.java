@@ -1,10 +1,12 @@
 package com.duan.musicoco.app.manager;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v4.widget.ExploreByTouchHelper;
+import android.support.v4.content.FileProvider;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
@@ -27,6 +29,8 @@ import com.duan.musicoco.main.leftnav.themecolor.ThemeColorCustomActivity;
 import com.duan.musicoco.util.ToastUtils;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by DuanJiaNing on 2017/7/19.
@@ -36,6 +40,9 @@ public class ActivityManager {
 
     private Context context;
     public static final String SONG_DETAIL_PATH = "song_detail_path";
+    public static final String SONG_DETAIL_START_FROM_PLAY_ACTIVITY = "song_detail_start_from_play_activity";
+
+
     public static final String SHEET_MODIFY_ID = "sheet_modify_id";
     public static final String SHEET_SEARCH_ID = "sheet_search_id";
 
@@ -46,8 +53,18 @@ public class ActivityManager {
 
     private static ActivityManager mInstance;
 
+    private final Map<String, Activity> activitys = new HashMap<>();
+
     private ActivityManager(Context context) {
-        this.context = context;
+        this.context = context.getApplicationContext();
+    }
+
+    public Activity getActivity(String name) {
+        return activitys.get(name);
+    }
+
+    public void addActivity(Activity activity) {
+        activitys.put(activity.getClass().getName(), activity);
     }
 
     public static ActivityManager getInstance(Context context) {
@@ -57,22 +74,39 @@ public class ActivityManager {
         return mInstance;
     }
 
-    public void startSongDetailActivity(Song whichSong) {
+    /**
+     * @param whichSong           歌曲
+     * @param startByPlayActivity PlayActivity 在单独的 activity 栈中，而 SongDetailActivity 不与其在同一个栈，因而此时
+     *                            在 SongDetailActivity 中退出时会直接跳过 PlayActivity(即使时序上为在 PlayActivity 中
+     *                            启动 SongDetailActivity，SongDetailActivity 退出时理应回到 PlayActivity)
+     */
+    public void startSongDetailActivity(Song whichSong, boolean startByPlayActivity) {
         Intent intent = new Intent(context, SongDetailActivity.class);
         intent.putExtra(SONG_DETAIL_PATH, whichSong.path);
+        intent.putExtra(SONG_DETAIL_START_FROM_PLAY_ACTIVITY, startByPlayActivity);
         context.startActivity(intent);
     }
 
     public void startImageCheckActivity(String path) {
-        //FIXME android N 以下正常，N 报 FileUriExposedException
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(new File(path)), "image/*");
+        Uri uri;
+        File file = new File(path);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            // 适配 N (解决FileUriExposedException)
+            // 见：https://my.oschina.net/shenhuniurou/blog/870156
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            uri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file);
+        } else {
+            uri = Uri.fromFile(file);
+        }
+
+        intent.setDataAndType(uri, "image/*");
         context.startActivity(intent);
     }
 
 
-    public void startSystemBrower(@NonNull String url) {
+    public void startSystemBrowser(@NonNull String url) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
@@ -168,7 +202,7 @@ public class ActivityManager {
         } catch (Exception e) {
             e.printStackTrace();
             String msg = context.getString(R.string.error_check_qq_install);
-            ToastUtils.showShortToast(msg);
+            ToastUtils.showShortToast(msg, context);
         }
     }
 

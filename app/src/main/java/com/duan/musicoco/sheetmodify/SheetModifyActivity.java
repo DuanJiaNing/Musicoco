@@ -18,7 +18,7 @@ import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
-import com.duan.musicoco.db.bean.Sheet;
+import com.duan.musicoco.db.modle.Sheet;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.ToastUtils;
@@ -79,7 +79,7 @@ public class SheetModifyActivity extends RootActivity implements
             } else {
                 sheet = dbController.getSheet(si);
                 if (sheet == null) {
-                    ToastUtils.showShortToast(getString(R.string.error_load_sheet_fail));
+                    ToastUtils.showShortToast(getString(R.string.error_load_sheet_fail), this);
                     finish();
                 } else {
                     oldName = sheet.name;
@@ -251,7 +251,7 @@ public class SheetModifyActivity extends RootActivity implements
             nameModifyHolder.textInputLayout.setErrorEnabled(true);
         } else {
             String msg = getString(R.string.success_create_sheet) + " [" + name + "]";
-            ToastUtils.showShortToast(msg);
+            ToastUtils.showShortToast(msg, this);
 //            MainActivity 的 onResume 会更新【我的歌单】，因而不需要使用广播
 //            broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
             finish();
@@ -263,7 +263,7 @@ public class SheetModifyActivity extends RootActivity implements
         String newRemark = remarkModifyHolder.editText.getText().toString();
 
         if (newName.equals(oldName) && newRemark.equals(oldRemark)) {
-            ToastUtils.showShortToast(getString(R.string.info_not_modify));
+            ToastUtils.showShortToast(getString(R.string.info_not_modify), this);
             finish();
             return;
         }
@@ -293,7 +293,7 @@ public class SheetModifyActivity extends RootActivity implements
             nameModifyHolder.textInputLayout.setErrorEnabled(true);
         } else {
             String msg = getString(R.string.success_modify_sheet) + " [" + newName + "]";
-            ToastUtils.showShortToast(msg);
+            ToastUtils.showShortToast(msg, this);
             //            MainActivity 的 onResume 会更新【我的歌单】，因而不需要使用广播
 //            broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
             finish();

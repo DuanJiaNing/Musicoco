@@ -3,20 +3,18 @@ package com.duan.musicoco.main.leftnav.imagewall;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.WindowManager;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.RootActivity;
-import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.On2CompleteListener;
-import com.duan.musicoco.app.interfaces.OnCompleteListener;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.MainSheetHelper;
-import com.duan.musicoco.db.bean.DBSongInfo;
+import com.duan.musicoco.db.modle.DBSongInfo;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.shared.OptionsAdapter;
 import com.duan.musicoco.shared.OptionsDialog;
@@ -93,7 +91,7 @@ public class ImageWallActivity extends RootActivity implements
                                 } else {
                                     msg = getString(R.string.error_save_fail);
                                 }
-                                ToastUtils.showShortToast(msg);
+                                ToastUtils.showShortToast(msg, ImageWallActivity.this);
                             }
                         });
                         optionsDialog.hide();
@@ -124,7 +122,7 @@ public class ImageWallActivity extends RootActivity implements
                     public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
                         optionsDialog.hide();
                         Song song = new Song(current.getData());
-                        activityManager.startSongDetailActivity(song);
+                        activityManager.startSongDetailActivity(song, false);
                     }
                 }
         );

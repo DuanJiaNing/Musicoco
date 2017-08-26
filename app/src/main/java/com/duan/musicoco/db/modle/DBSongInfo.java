@@ -1,4 +1,4 @@
-package com.duan.musicoco.db.bean;
+package com.duan.musicoco.db.modle;
 
 import java.util.ArrayList;
 import java.util.Comparator;

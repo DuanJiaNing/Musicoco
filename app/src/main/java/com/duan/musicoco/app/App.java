@@ -18,14 +18,9 @@ public class App extends Application {
 
     public static final String TAG = "musicoco";
 
-    //FIXME 内存泄漏
-    private static Context sCONTEXT;
-
     @Override
     public void onCreate() {
         super.onCreate();
-        sCONTEXT = this;
-
         checkAutoThemeSwitch();
 
     }
@@ -40,7 +35,4 @@ public class App extends Application {
         }
     }
 
-    public static Context getContext() {
-        return sCONTEXT;
-    }
 }

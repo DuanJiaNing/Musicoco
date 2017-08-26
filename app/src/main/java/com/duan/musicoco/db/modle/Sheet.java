@@ -1,4 +1,4 @@
-package com.duan.musicoco.db.bean;
+package com.duan.musicoco.db.modle;
 
 /**
  * Created by DuanJiaNing on 2017/7/20.

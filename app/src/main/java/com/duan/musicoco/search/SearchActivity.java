@@ -19,7 +19,7 @@ import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.db.MainSheetHelper;
-import com.duan.musicoco.db.bean.DBSongInfo;
+import com.duan.musicoco.db.modle.DBSongInfo;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.ToastUtils;
@@ -207,7 +207,7 @@ public class SearchActivity extends RootActivity implements ThemeChangeable {
 
         if (infos == null || infos.size() == 0) {
             String msg = getString(R.string.error_empty_sheet);
-            ToastUtils.showShortToast(msg);
+            ToastUtils.showShortToast(msg, this);
             finish();
         }
     }

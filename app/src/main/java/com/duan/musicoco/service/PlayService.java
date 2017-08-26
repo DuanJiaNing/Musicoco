@@ -1,18 +1,13 @@
 package com.duan.musicoco.service;
 
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.AudioManager;
 import android.os.IBinder;
-import android.os.RemoteException;
-import android.support.v4.media.session.MediaButtonReceiver;
+import android.os.Process;
 import android.util.Log;
-import android.view.KeyEvent;
 
-import com.duan.musicoco.app.RootService;
 import com.duan.musicoco.app.manager.BroadcastManager;
 
 /**
@@ -81,9 +76,14 @@ public class PlayService extends RootService {
 
     @Override
     public void onDestroy() {
+        super.onDestroy();
+
         iBinder.releaseMediaPlayer();
         unregisterReceiver();
-        super.onDestroy();
+
+        // 释放 MediaPlayer 时有错误，服务端始终没有彻底关闭，【退出】应用后再次打开应用，启动服务时，
+        // 调用 MediaPlayer 的 reset 方法抛出异常，java.lang.illageStatExeception
+        Process.killProcess(Process.myPid());
     }
 
     private void unregisterReceiver() {

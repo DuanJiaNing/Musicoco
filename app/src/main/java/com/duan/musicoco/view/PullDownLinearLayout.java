@@ -16,7 +16,7 @@ import android.widget.LinearLayout;
  * 以该 ViewGroup 作为父容器的视图，视图中有 ListView 时，ListView 滑动到顶部时继续下拉会触发回调（如果设置了监听的话）
  * 没有 ListView 或不在 ListView 范围内下滑时，也会触发下拉回调
  */
-// TODO 没有实现功能
+// UPDATE: 2017/8/26 更新 没有实现功能
 public class PullDownLinearLayout extends LinearLayout {
 
     private AbsListView listView;

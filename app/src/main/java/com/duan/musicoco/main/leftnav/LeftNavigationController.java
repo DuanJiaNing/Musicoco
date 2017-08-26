@@ -78,7 +78,6 @@ public class LeftNavigationController implements
 
     private void initImageWall() {
 
-        // FIXME null
         navigationView.post(new Runnable() {
             @Override
             public void run() {
@@ -286,7 +285,7 @@ public class LeftNavigationController implements
                             @Override
                             public void run() {
                                 String msg = activity.getString(R.string.info_app_wile_quit_after_20s);
-                                ToastUtils.showShortToast(msg);
+                                ToastUtils.showShortToast(msg, activity);
                             }
                         });
                     }

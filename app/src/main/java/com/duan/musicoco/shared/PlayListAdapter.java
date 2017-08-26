@@ -2,11 +2,7 @@ package com.duan.musicoco.shared;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Build;
-import android.os.RemoteException;
-import android.support.v4.view.ViewConfigurationCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,16 +11,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.manager.BroadcastManager;
-import com.duan.musicoco.app.manager.MediaManager;
-import com.duan.musicoco.app.interfaces.ThemeChangeable;
-import com.duan.musicoco.app.SongInfo;
-import com.duan.musicoco.main.MainSheetsController;
-import com.duan.musicoco.preference.ThemeEnum;
-import com.duan.musicoco.service.PlayController;
+import com.duan.musicoco.modle.SongInfo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

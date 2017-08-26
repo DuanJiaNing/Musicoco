@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.shared.DialogProvider;
 
 /**
@@ -46,7 +46,7 @@ public class DialogUtils {
                 imageView.getWidth(),
                 imageView.getHeight());
         if (b == null) {
-            b = BitmapUtils.getDefaultPictureForAlbum(imageView.getWidth(), imageView.getHeight());
+            b = BitmapUtils.getDefaultPictureForAlbum(activity, imageView.getWidth(), imageView.getHeight());
         }
 
         if (b != null) {

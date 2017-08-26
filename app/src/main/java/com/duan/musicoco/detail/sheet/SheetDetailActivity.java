@@ -27,7 +27,7 @@ import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.MainSheetHelper;
-import com.duan.musicoco.db.bean.Sheet;
+import com.duan.musicoco.db.modle.Sheet;
 import com.duan.musicoco.main.MainActivity;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.shared.SheetOperation;
@@ -154,7 +154,7 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
             } else {
                 sheet = dbController.getSheet(si);
                 if (sheet == null) {
-                    ToastUtils.showShortToast(getString(R.string.error_load_sheet_fail));
+                    ToastUtils.showShortToast(getString(R.string.error_load_sheet_fail), this);
                     finish();
                 } else {
                     sheetID = si;
@@ -247,7 +247,7 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
             case R.id.sheet_detail_search:
                 if (songList.getChildCount() == 0) {
                     String msg = getString(R.string.error_empty_sheet);
-                    ToastUtils.showShortToast(msg);
+                    ToastUtils.showShortToast(msg, this);
                 } else {
                     ActivityManager.getInstance(this).startSearchActivity(sheetID);
                 }
@@ -255,7 +255,7 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
             case R.id.sheet_detail_action_collection:
                 if (songList.getChildCount() == 0) {
                     String msg = getString(R.string.error_empty_sheet);
-                    ToastUtils.showShortToast(msg);
+                    ToastUtils.showShortToast(msg, this);
                 } else {
                     songOperation.handleAddAllSongToFavorite(sheetID);
                 }
@@ -274,7 +274,7 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
                     songOperation.handleAddSongToSheet(songs, complete);
                 } else {
                     String msg = getString(R.string.error_non_song_select);
-                    ToastUtils.showShortToast(msg);
+                    ToastUtils.showShortToast(msg, this);
                 }
                 break;
             case R.id.sheet_detail_multi_delete_songs: // 彻底删除多首歌曲
@@ -283,7 +283,7 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
                     songOperation.handleDeleteSongForever(complete, sheetID, songs);
                 } else {
                     String msg = getString(R.string.error_non_song_select);
-                    ToastUtils.showShortToast(msg);
+                    ToastUtils.showShortToast(msg, this);
                 }
                 break;
             case R.id.sheet_detail_multi_add_favorite: // 添加多首歌曲到[我的收藏]
@@ -291,7 +291,7 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
                     handleAddSelectSongToFavorite(complete);
                 } else {
                     String msg = getString(R.string.error_non_song_select);
-                    ToastUtils.showShortToast(msg);
+                    ToastUtils.showShortToast(msg, this);
                 }
                 break;
             case R.id.sheet_detail_multi_remove: // 从当前歌单移除多首歌曲
@@ -306,7 +306,7 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
 
                 } else {
                     String msg = getString(R.string.error_non_song_select);
-                    ToastUtils.showShortToast(msg);
+                    ToastUtils.showShortToast(msg, this);
                 }
                 break;
             default:

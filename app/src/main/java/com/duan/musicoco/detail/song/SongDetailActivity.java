@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.BoolRes;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.text.TextUtils;
@@ -19,13 +18,12 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.RootActivity;
-import com.duan.musicoco.app.SongInfo;
 import com.duan.musicoco.app.interfaces.On2CompleteListener;
-import com.duan.musicoco.app.interfaces.OnCompleteListener;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
-import com.duan.musicoco.db.bean.DBSongInfo;
-import com.duan.musicoco.db.bean.Sheet;
+import com.duan.musicoco.db.modle.DBSongInfo;
+import com.duan.musicoco.db.modle.Sheet;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.FileUtils;
@@ -52,6 +50,7 @@ public class SongDetailActivity extends RootActivity implements View.OnClickList
     private MediaManager mediaManager;
 
     private boolean haveAlbumImage = false;
+    private boolean startFromPlayActivity;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,6 +63,7 @@ public class SongDetailActivity extends RootActivity implements View.OnClickList
 
         Intent intent = getIntent();
         String path = intent.getExtras().get(ActivityManager.SONG_DETAIL_PATH).toString();
+        startFromPlayActivity = intent.getExtras().getBoolean(ActivityManager.SONG_DETAIL_START_FROM_PLAY_ACTIVITY, false);
         Song song = new Song(path);
 
         mediaManager = MediaManager.getInstance(this);
@@ -151,7 +151,7 @@ public class SongDetailActivity extends RootActivity implements View.OnClickList
         }
 
         if (bitmap == null) {
-            bitmap = BitmapUtils.getDefaultPictureForAlbum(mImage.getWidth(), mImage.getHeight());
+            bitmap = BitmapUtils.getDefaultPictureForAlbum(this, mImage.getWidth(), mImage.getHeight());
             haveAlbumImage = false;
         }
 
@@ -207,10 +207,18 @@ public class SongDetailActivity extends RootActivity implements View.OnClickList
     }
 
     @Override
+    public void onBackPressed() {
+        if (startFromPlayActivity) {
+            ActivityManager.getInstance(this).startPlayActivity();
+        }
+        super.onBackPressed();
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.song_detail_close:
-                finish();
+                onBackPressed();
                 break;
 
             case R.id.song_detail_save_image: {
@@ -225,11 +233,11 @@ public class SongDetailActivity extends RootActivity implements View.OnClickList
                             } else {
                                 msg = getString(R.string.error_save_fail);
                             }
-                            ToastUtils.showShortToast(msg);
+                            ToastUtils.showShortToast(msg, SongDetailActivity.this);
                         }
                     });
                 } else {
-                    ToastUtils.showShortToast(getString(R.string.error_no_album_image));
+                    ToastUtils.showShortToast(getString(R.string.error_no_album_image), this);
                 }
                 break;
             }
@@ -238,7 +246,7 @@ public class SongDetailActivity extends RootActivity implements View.OnClickList
                     String path = info.getAlbum_path();
                     ActivityManager.getInstance(this).startImageCheckActivity(path);
                 } else {
-                    ToastUtils.showShortToast(getString(R.string.error_no_album_image));
+                    ToastUtils.showShortToast(getString(R.string.error_no_album_image), this);
                 }
                 break;
             }

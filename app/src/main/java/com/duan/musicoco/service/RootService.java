@@ -1,4 +1,4 @@
-package com.duan.musicoco.app;
+package com.duan.musicoco.service;
 
 import android.app.Service;
 

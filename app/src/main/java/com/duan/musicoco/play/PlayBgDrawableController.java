@@ -20,11 +20,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.duan.musicoco.R;
-import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.SongInfo;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.preference.PlayBackgroundModeEnum;
 import com.duan.musicoco.preference.PlayPreference;
-import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.AnimationUtils;
 
 import jp.wasabeef.glide.transformations.BlurTransformation;

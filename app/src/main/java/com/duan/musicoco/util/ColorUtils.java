@@ -435,8 +435,7 @@ public class ColorUtils {
      * 0 主字体颜色
      * 1 辅字体颜色
      */
-    public static int[] get2WhiteThemeTextColor() {
-        Context context = App.getContext();
+    public static int[] get2WhiteThemeTextColor(Context context) {
         int[] colors = new int[2];
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -457,9 +456,9 @@ public class ColorUtils {
      */
     public static int[] get2ThemeTextColor(Context context, ThemeEnum themeEnum) {
         if (themeEnum == ThemeEnum.DARK) {
-            return get2DarkThemeTextColor();
+            return get2DarkThemeTextColor(context);
         } else {
-            return get2WhiteThemeTextColor();
+            return get2WhiteThemeTextColor(context);
         }
     }
 
@@ -467,8 +466,7 @@ public class ColorUtils {
      * 0 主字体颜色
      * 1 辅字体颜色
      */
-    public static int[] get2DarkThemeTextColor() {
-        Context context = App.getContext();
+    public static int[] get2DarkThemeTextColor(Context context) {
         int[] colors = new int[2];
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -494,8 +492,7 @@ public class ColorUtils {
         return colors;
     }
 
-    public static int[] get2ColorWhiteThemeForPlayOptions() {
-        Context context = App.getContext();
+    public static int[] get2ColorWhiteThemeForPlayOptions(Context context) {
         int[] colors = new int[2];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             colors[0] = context.getColor(R.color.dark_l_l_l_l);
@@ -507,8 +504,7 @@ public class ColorUtils {
         return colors;
     }
 
-    public static int[] get2ColorDarkThemeForPlayOptions() {
-        Context context = App.getContext();
+    public static int[] get2ColorDarkThemeForPlayOptions(Context context) {
 
         int[] colors = new int[2];
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

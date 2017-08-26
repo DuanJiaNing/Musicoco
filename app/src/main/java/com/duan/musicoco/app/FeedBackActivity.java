@@ -165,13 +165,13 @@ public class FeedBackActivity extends RootActivity implements
         if (StringUtils.isReal(str)) {
             if (str.length() > 300) {
                 String msg = getString(R.string.error_too_many_words_for_300);
-                ToastUtils.showShortToast(msg);
+                ToastUtils.showShortToast(msg, this);
             } else {
                 handleFeedback(str);
             }
         } else {
             String msg = getString(R.string.info_feedback_input_empty);
-            ToastUtils.showShortToast(msg);
+            ToastUtils.showShortToast(msg, this);
         }
     }
 
@@ -205,7 +205,7 @@ public class FeedBackActivity extends RootActivity implements
             protected void onPostExecute(Void aVoid) {
                 progressDialog.hide();
                 String msg = getString(R.string.success_feedback);
-                ToastUtils.showLongToast(msg);
+                ToastUtils.showLongToast(FeedBackActivity.this, msg);
             }
         }.execute();
 

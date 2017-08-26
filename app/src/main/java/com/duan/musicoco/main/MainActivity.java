@@ -1,5 +1,6 @@
 package com.duan.musicoco.main;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -9,6 +10,7 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Process;
 import android.os.RemoteException;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -35,6 +37,7 @@ import com.duan.musicoco.app.manager.PlayServiceManager;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.main.bottomnav.BottomNavigationController;
 import com.duan.musicoco.main.leftnav.LeftNavigationController;
+import com.duan.musicoco.play.PlayActivity;
 import com.duan.musicoco.play.PlayServiceConnection;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.HeadphoneWireControlReceiver;
@@ -53,7 +56,7 @@ public class MainActivity extends RootActivity implements
     private ActionBarDrawerToggle toggle;
     private Menu menu;
 
-    // FIXME 内存泄漏
+    // UPDATE: 2017/8/26 修复 内存泄漏
     private static PlayServiceConnection sServiceConnection;
     private PlayServiceManager playServiceManager;
     protected MediaManager mediaManager;
@@ -258,14 +261,19 @@ public class MainActivity extends RootActivity implements
      * 关闭服务并退出应用
      */
     public void shutDownServiceAndApp() {
-        // 关闭服务
-        broadcastManager.sendBroadcast(BroadcastManager.FILTER_PLAY_SERVICE_QUIT, null);
-
         // 关闭通知栏通知
         bottomNavigationController.hidePlayNotify();
 
+        // 关闭 PlayActivity ，如果启动了的话，PlayActivity 也绑定了播放服务，需要解绑
+        Activity activity = ActivityManager.getInstance(this).getActivity(PlayActivity.class.getName());
+        if (activity != null) {
+            activity.finish();
+        }
+
+        // 关闭自己 解绑 停止服务
         finish();
-        System.exit(0);
+
+//        System.exit(0);
     }
 
     private void initSelfViews() {
@@ -343,6 +351,10 @@ public class MainActivity extends RootActivity implements
         super.onDestroy();
 
         unbindService();
+
+        // 停止服务
+        broadcastManager.sendBroadcast(BroadcastManager.FILTER_PLAY_SERVICE_QUIT, null);
+
         unregisterReceiver();
         bottomNavigationController.unregisterReceiver();
 
@@ -353,6 +365,8 @@ public class MainActivity extends RootActivity implements
             instance.cancelAlarm();
         }
 
+        // PlayService 释放 MediaPlayer 时有错误，服务端始终没有彻底关闭，见服务端注释
+        Process.killProcess(Process.myPid());
     }
 
     private void unregisterReceiver() {

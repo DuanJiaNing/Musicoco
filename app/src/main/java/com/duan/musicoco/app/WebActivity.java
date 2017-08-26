@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -79,7 +78,7 @@ public class WebActivity extends RootActivity implements ThemeChangeable {
                 finish();
                 break;
             case R.id.action_open_whit_browser:
-                ActivityManager.getInstance(this).startSystemBrower(webView.getUrl());
+                ActivityManager.getInstance(this).startSystemBrowser(webView.getUrl());
                 break;
             default:
                 break;
