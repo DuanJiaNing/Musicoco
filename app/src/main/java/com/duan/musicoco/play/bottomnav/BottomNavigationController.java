@@ -286,7 +286,7 @@ public class BottomNavigationController implements
     @Override
     public void update(Object obj, OnUpdateStatusChanged completed) {
 
-        if (mediaManager.emptyMediaLibrary(false)) {
+        if (mediaManager.emptyMediaLibrary(activity, false)) {
             noData();
             return;
         }
@@ -446,7 +446,7 @@ public class BottomNavigationController implements
     private void updatePlayListAdapter() {
         try {
             Song song = control.currentSong();
-            SongInfo info = mediaManager.getSongInfo(song);
+            SongInfo info = mediaManager.getSongInfo(activity, song);
             if (info == null) {
                 return;
             }
@@ -455,7 +455,7 @@ public class BottomNavigationController implements
             List<Song> ss = control.getPlayList();
             data.clear();
             for (Song s : ss) {
-                data.add(mediaManager.getSongInfo(s));
+                data.add(mediaManager.getSongInfo(activity, s));
             }
 
             // 更新当前播放

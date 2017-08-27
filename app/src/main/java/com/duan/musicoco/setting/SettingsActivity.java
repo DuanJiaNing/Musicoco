@@ -38,7 +38,7 @@ public class SettingsActivity extends RootActivity implements ThemeChangeable, V
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
 
-        activityManager = ActivityManager.getInstance(this);
+        activityManager = ActivityManager.getInstance();
         initViews();
         themeChange(null, null);
         initData();
@@ -114,16 +114,16 @@ public class SettingsActivity extends RootActivity implements ThemeChangeable, V
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.setting_feedback:
-                activityManager.startFeedBackActivity();
+                activityManager.startFeedBackActivity(this);
                 break;
             case R.id.setting_about:
-                activityManager.startAboutActivity();
+                activityManager.startAboutActivity(this);
                 break;
             case R.id.setting_clear_cache:
                 handleClearCache();
                 break;
             case R.id.setting_about_me:
-                activityManager.startMeActivity();
+                activityManager.startMeActivity(this);
                 break;
             default:
                 break;

@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.app.interfaces.PermissionRequestCallback;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.manager.PermissionManager;
@@ -31,8 +30,8 @@ public abstract class InspectActivity extends RootActivity implements Permission
     @CallSuper
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        permissionManager = PermissionManager.getInstance(this);
-        mediaManager = MediaManager.getInstance(getApplicationContext());
+        permissionManager = PermissionManager.getInstance();
+        mediaManager = MediaManager.getInstance();
     }
 
     @Override
@@ -48,7 +47,7 @@ public abstract class InspectActivity extends RootActivity implements Permission
                 Manifest.permission.RECORD_AUDIO
         };
 
-        if (!permissionManager.checkPermission(ps)) {
+        if (!permissionManager.checkPermission(this, ps)) {
             Log.d(TAG, "checkPermission: permission request");
             PermissionManager.PerMap perMap = new PermissionManager.PerMap(
                     getString(R.string.permission_media_read),
@@ -78,14 +77,14 @@ public abstract class InspectActivity extends RootActivity implements Permission
     }
 
     protected void prepareData() {
-        mediaManager.refreshData();
+        mediaManager.refreshData(this);
     }
 
     protected void initAppDataIfNeed() {
         if (appPreference.appOpenTimes() == 0) {
             Init.initAlbumVisualizerImageCache(this);
             Init.initMusicocoDB(this, mediaManager);
-            mediaManager.scanSdCard(null);
+//            mediaManager.scanSdCard(this,null);
         }
     }
 

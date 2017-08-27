@@ -101,7 +101,7 @@ public final class AlbumPictureController {
         rotateAnim.cancel();
         view.getNextView().setRotation(0.0f);
 
-        Bitmap bitmap = bitmapProducer.getBitmapForVisualizer(cache, song, size, defaultColor);
+        Bitmap bitmap = bitmapProducer.getBitmapForVisualizer(cache, song.getAlbum_path(), size, defaultColor);
         if (bitmap != null) {
             if (updateColors)
                 ColorUtils.get4DarkColorWithTextFormBitmap(bitmap, defaultColor, defaultTextColor, this.colors);
@@ -134,11 +134,11 @@ public final class AlbumPictureController {
         rotateAnim.cancel();
         view.getNextView().setRotation(0.0f);
 
-        Bitmap bitmap = bitmapProducer.getBitmapForVisualizer(cache, song, size, defaultColor);
+        Bitmap bitmap = bitmapProducer.getBitmapForVisualizer(cache, song.getAlbum_path(), size, defaultColor);
         if (bitmap != null) {
-            if (updateColors)
+            if (updateColors) {
                 ColorUtils.get4DarkColorWithTextFormBitmap(bitmap, defaultColor, defaultTextColor, this.colors);
-
+            }
             view.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
         } else {
             try {

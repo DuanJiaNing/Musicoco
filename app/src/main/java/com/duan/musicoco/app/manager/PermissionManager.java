@@ -3,20 +3,15 @@ package com.duan.musicoco.app.manager;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.PermissionChecker;
-import android.support.v7.app.AlertDialog;
 import android.view.View;
 
-import com.duan.musicoco.R;
 import com.duan.musicoco.shared.DialogProvider;
 
-import static android.R.attr.dial;
-import static android.R.attr.preferenceCategoryStyle;
 import static android.R.attr.targetSdkVersion;
 
 /**
@@ -25,17 +20,14 @@ import static android.R.attr.targetSdkVersion;
 
 public final class PermissionManager {
 
-    private Context context;
-
     private static PermissionManager mInstance;
 
-    private PermissionManager(Context context) {
-        this.context = context;
+    private PermissionManager() {
     }
 
-    public static PermissionManager getInstance(Context context) {
+    public static PermissionManager getInstance() {
         if (mInstance == null) {
-            mInstance = new PermissionManager(context);
+            mInstance = new PermissionManager();
         }
         return mInstance;
     }
@@ -73,7 +65,7 @@ public final class PermissionManager {
     }
 
     //检查权限是否获取
-    public boolean checkPermission_(String permission) {
+    public boolean checkPermission_(Context context, String permission) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int re = ContextCompat.checkSelfPermission(context, permission);
             return re == PackageManager.PERMISSION_GRANTED;
@@ -82,7 +74,7 @@ public final class PermissionManager {
     }
 
     //检查权限是否获取
-    public boolean checkPermission(String... permission) {
+    public boolean checkPermission(Context context, String... permission) {
 
         boolean nr = true;
 
@@ -110,8 +102,8 @@ public final class PermissionManager {
 
     //检查权限是否获取
 
-    public boolean checkPermission(PerMap perMap) {
-        return checkPermission(perMap.permissions);
+    public boolean checkPermission(Context context, PerMap perMap) {
+        return checkPermission(context, perMap.permissions);
     }
 
     public interface OnPermissionRequestRefuse {
@@ -125,7 +117,7 @@ public final class PermissionManager {
     //请求权限
     public void showPermissionRequestTip(final PerMap perMap, final Activity activity, final OnPermissionRequestRefuse refuse) {
 
-        if (!checkPermission(perMap)) {
+        if (!checkPermission(activity, perMap)) {
 
             DialogProvider provider = new DialogProvider(activity);
             final Dialog dialog = provider.createPromptDialog(

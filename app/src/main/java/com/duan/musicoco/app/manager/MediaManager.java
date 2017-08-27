@@ -27,24 +27,21 @@ public class MediaManager {
 
     private static volatile MediaManager MEDIAMANAGER;
 
-    private Context context;
-
-    private MediaManager(Context context) {
-        this.context = context;
+    private MediaManager() {
     }
 
     //传入 Application Context
-    public static MediaManager getInstance(Context context) {
+    public static MediaManager getInstance() {
         if (MEDIAMANAGER == null) {
             synchronized (MediaManager.class) {
                 if (MEDIAMANAGER == null)
-                    MEDIAMANAGER = new MediaManager(context);
+                    MEDIAMANAGER = new MediaManager();
             }
         }
         return MEDIAMANAGER;
     }
 
-    public HashSet<SongInfo> refreshData() {
+    public HashSet<SongInfo> refreshData(Context context) {
         if (songs == null)
             songs = new HashSet<>();
         else
@@ -52,10 +49,14 @@ public class MediaManager {
 
         Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null,
                 null, null);
+        if (cursor == null) {
+            return songs;
+        }
+
         while (cursor.moveToNext()) {
             SongInfo song = new SongInfo();
             song.setAlbum_id(cursor.getString(cursor.getColumnIndex(SongInfo.ALBUM_ID)));
-            song.setAlbum_path(getAlbumArtPicPath(song.getAlbum_id()));
+            song.setAlbum_path(getAlbumArtPicPath(context, song.getAlbum_id()));
             song.setTitle_key(cursor.getString(cursor.getColumnIndex(SongInfo.TITLE_KEY)));
             song.setArtist_key(cursor.getString(cursor.getColumnIndex(SongInfo.ARTIST_KEY)));
             song.setAlbum_key(cursor.getString(cursor.getColumnIndex(SongInfo.ALBUM_KEY)));
@@ -78,12 +79,16 @@ public class MediaManager {
     }
 
     //根据专辑 id 获得专辑图片保存路径
-    private String getAlbumArtPicPath(String albumId) {
+    private String getAlbumArtPicPath(Context context, String albumId) {
         String[] projection = {MediaStore.Audio.Albums.ALBUM_ART};
         String imagePath = null;
         Cursor cur = context.getContentResolver().query(Uri.parse("content://media" +
                         MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI.getPath() + "/" + albumId), projection, null, null,
                 null);
+        if (cur == null) {
+            return null;
+        }
+
         if (cur.getCount() > 0 && cur.getColumnCount() > 0) {
             cur.moveToNext();
             imagePath = cur.getString(0);
@@ -92,8 +97,8 @@ public class MediaManager {
         return imagePath;
     }
 
-    public SongInfo getSongInfo(@NonNull Song song) {
-        check();
+    public SongInfo getSongInfo(Context context, @NonNull Song song) {
+        check(context);
         SongInfo info = null;
         for (SongInfo song1 : songs) {
             info = song1;
@@ -104,12 +109,12 @@ public class MediaManager {
         return info;
     }
 
-    public SongInfo getSongInfo(@NonNull String path) {
-        return getSongInfo(new Song(path));
+    public SongInfo getSongInfo(Context context, @NonNull String path) {
+        return getSongInfo(context, new Song(path));
     }
 
-    public List<Song> getSongList() {
-        check();
+    public List<Song> getSongList(Context context) {
+        check(context);
         List<Song> songInfos = new ArrayList<>();
         for (SongInfo song : songs) {
             songInfos.add(new Song(song.getData()));
@@ -117,8 +122,8 @@ public class MediaManager {
         return songInfos;
     }
 
-    public List<SongInfo> getSongInfoList() {
-        check();
+    public List<SongInfo> getSongInfoList(Context context) {
+        check(context);
         List<SongInfo> songInfos = new ArrayList<>();
         for (SongInfo song : songs) {
             songInfos.add(song);
@@ -126,12 +131,12 @@ public class MediaManager {
         return songInfos;
     }
 
-    private void check() {
+    private void check(Context context) {
         if (songs == null)
-            refreshData();
+            refreshData(context);
     }
 
-    public void scanSdCard(@Nullable MediaScannerConnection.OnScanCompletedListener listener) {
+    public void scanSdCard(Context context, @Nullable MediaScannerConnection.OnScanCompletedListener listener) {
         MediaScannerConnection.scanFile(context, new String[]{Environment
                 .getExternalStorageDirectory().getAbsolutePath()}, null, listener);
 
@@ -143,11 +148,11 @@ public class MediaManager {
      * @param refresh 是否要重新获取数据之后再确定，这个过程可能比较耗时
      * @return 为空返回 true
      */
-    public boolean emptyMediaLibrary(boolean refresh) {
+    public boolean emptyMediaLibrary(Context context, boolean refresh) {
         if (refresh) {
-            refreshData();
+            refreshData(context);
         } else {
-            check();
+            check(context);
         }
 
         if (songs.size() == 0) {

@@ -10,7 +10,6 @@ import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -18,7 +17,6 @@ import android.widget.FrameLayout;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.App;
 import com.duan.musicoco.app.InspectActivity;
 import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
@@ -74,7 +72,7 @@ public class PlayActivity extends InspectActivity implements
     @Override
     public void permissionGranted(int requestCode) {
 
-        broadcastManager = BroadcastManager.getInstance(this);
+        broadcastManager = BroadcastManager.getInstance();
         playServiceManager = new PlayServiceManager(this);
         bgDrawableController = new PlayBgDrawableController(this, playPreference);
         viewsController = new PlayViewsController(this);
@@ -197,8 +195,8 @@ public class PlayActivity extends InspectActivity implements
             }
         };
 
-        broadcastManager.registerBroadReceiver(songFavoriteChangeReceiver, BroadcastManager.FILTER_MAIN_SHEET_CHANGED);
-        broadcastManager.registerBroadReceiver(themeChangeReceiver, BroadcastManager.FILTER_PLAY_UI_MODE_CHANGE);
+        broadcastManager.registerBroadReceiver(this, songFavoriteChangeReceiver, BroadcastManager.FILTER_MAIN_SHEET_UPDATE);
+        broadcastManager.registerBroadReceiver(this, themeChangeReceiver, BroadcastManager.FILTER_PLAY_UI_MODE_CHANGE);
     }
 
     //--------------------------------------------------------------------//--------------------------------------------------------------------
@@ -220,11 +218,11 @@ public class PlayActivity extends InspectActivity implements
 
     private void unregisterReceiver() {
         if (themeChangeReceiver != null) {
-            broadcastManager.unregisterReceiver(themeChangeReceiver);
+            broadcastManager.unregisterReceiver(this, themeChangeReceiver);
         }
 
         if (songFavoriteChangeReceiver != null) {
-            broadcastManager.unregisterReceiver(songFavoriteChangeReceiver);
+            broadcastManager.unregisterReceiver(this, songFavoriteChangeReceiver);
         }
     }
 
@@ -293,7 +291,7 @@ public class PlayActivity extends InspectActivity implements
             return;
         }
 
-        SongInfo info = mediaManager.getSongInfo(song);
+        SongInfo info = mediaManager.getSongInfo(this, song);
         if (info == null) {
             return;
         }
@@ -350,8 +348,7 @@ public class PlayActivity extends InspectActivity implements
         // UPDATE: 2017/8/26 更新 次数计算策略完善
         dbController.addSongPlayTimes(song);
         updateCurrentSongInfo(song, isNext);
-
-        updateViewsColorsIfNeed(null);
+        updateViewsColorsIfNeed(song);
 
     }
 
@@ -448,7 +445,7 @@ public class PlayActivity extends InspectActivity implements
 
         viewsController.updateColors(new int[]{mainBC, mainTC, vicBC, vicTC});
         bottomNavigationController.updateColors(vicBC, true);
-        bgDrawableController.updateBackground(mainBC, vicBC, mediaManager.getSongInfo(song));
+        bgDrawableController.updateBackground(mainBC, vicBC, mediaManager.getSongInfo(this, song));
 
     }
 
@@ -468,7 +465,7 @@ public class PlayActivity extends InspectActivity implements
             case R.id.play_name_container:
                 try {
                     Song song = control.currentSong();
-                    ActivityManager.getInstance(this).startSongDetailActivity(song, true);
+                    ActivityManager.getInstance().startSongDetailActivity(this, song, true);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }

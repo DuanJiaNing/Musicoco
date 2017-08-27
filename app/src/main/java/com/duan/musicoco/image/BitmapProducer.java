@@ -34,7 +34,7 @@ public class BitmapProducer {
     }
 
     @Nullable
-    public Bitmap getBitmapForVisualizer(BitmapCache cache, SongInfo info, int size, int defaultColor) {
+    public Bitmap getBitmapForVisualizer(BitmapCache cache, String path, int size, int defaultColor) {
 
         if (!cache.getName().equals(BitmapCache.CACHE_ALBUM_VISUALIZER_IMAGE)) {
             return null;
@@ -43,11 +43,11 @@ public class BitmapProducer {
         Bitmap result;
         BitmapBuilder builder = new BitmapBuilder(context);
 
-        if (info == null || info.getAlbum_path() == null)
+        if (!StringUtils.isReal(path))
             result = cache.get(StringUtils.stringToMd5(DEFAULT_PIC_KEY));
         else {
 
-            String key = StringUtils.stringToMd5(info.getAlbum_path());
+            String key = StringUtils.stringToMd5(path);
 
             result = cache.get(key);
 
@@ -55,7 +55,7 @@ public class BitmapProducer {
 
                 builder.reset();
 
-                builder.setPath(info.getAlbum_path())
+                builder.setPath(path)
                         .resize(size)
                         .toRoundBitmap()
                         .build();
@@ -64,11 +64,11 @@ public class BitmapProducer {
 
                 Bitmap b = builder.getBitmap();
                 if (b != null) { // 成功构建
-                    Log.d(TAG, "getBitmapForVisualizer: create album picture for 【" + info.getTitle() + "】 successfully.");
+                    Log.d(TAG, "getBitmapForVisualizer: create album picture for 【" + path + "】 successfully.");
                     cache.add(key, b);
                     result = b;
                 } else {//构建失败
-                    Log.d(TAG, "getBitmapForVisualizer: create album picture for 【" + info.getTitle() + "】 fail.");
+                    Log.d(TAG, "getBitmapForVisualizer: create album picture for 【" + path + "】 fail.");
                     result = cache.get(StringUtils.stringToMd5(DEFAULT_PIC_KEY));
                 }
             }
@@ -209,6 +209,5 @@ public class BitmapProducer {
         return bitmap;
 
     }
-
 
 }

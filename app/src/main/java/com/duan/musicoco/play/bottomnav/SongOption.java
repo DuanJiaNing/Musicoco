@@ -144,7 +144,7 @@ public class SongOption implements
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
-            SongInfo info = mediaManager.getSongInfo(s);
+            SongInfo info = mediaManager.getSongInfo(activity, s);
             String title = activity.getString(R.string.song) + ": " + info.getTitle();
             mDialog.setTitle(title);
             mDialog.show();
@@ -158,7 +158,6 @@ public class SongOption implements
                 boolean after = songOperation.reverseSongFavoriteStatus(song);
                 updateCurrentFavorite(after, true);
             }
-            BroadcastManager.getInstance(activity).sendBroadcast(BroadcastManager.FILTER_MAIN_SHEET_CHANGED, null);
 
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -423,14 +422,14 @@ public class SongOption implements
 
         try {
             Song song = control.currentSong();
-            SongInfo info = mediaManager.getSongInfo(song);
+            SongInfo info = mediaManager.getSongInfo(activity, song);
             if (info != null) {
                 switch (position) {
                     case 0: // 收藏到歌单
                         songOperation.handleAddSongToSheet(info);
                         break;
                     case 1: // 查看详情
-                        ActivityManager.getInstance(activity).startSongDetailActivity(song, true);
+                        ActivityManager.getInstance().startSongDetailActivity(activity, song, true);
                         break;
                     case 2: //彻底删除
                         songOperation.handleDeleteSongForever(song, null);

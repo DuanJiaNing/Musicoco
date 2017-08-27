@@ -78,11 +78,11 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
         boolean darkTheme = appPreference.getTheme() == ThemeEnum.DARK;
         infoController = new SheetInfoController(this, darkTheme);
         songListController = new SheetSongListController(this);
-        mediaManager = MediaManager.getInstance(this);
+        mediaManager = MediaManager.getInstance();
         control = MainActivity.getControl();
         sheetOperation = new SheetOperation(this, control, dbController);
         songOperation = new SongOperation(this, control, dbController);
-        broadcastManager = BroadcastManager.getInstance(this);
+        broadcastManager = BroadcastManager.getInstance();
 
         getSheet();
         initViews();
@@ -124,13 +124,13 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
                 songListController.update();
             }
         };
-        broadcastManager.registerBroadReceiver(songsChangeReceiver, BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE);
+        broadcastManager.registerBroadReceiver(this, songsChangeReceiver, BroadcastManager.FILTER_SHEET_DETAIL_SONGS_UPDATE);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        broadcastManager.unregisterReceiver(songsChangeReceiver);
+        broadcastManager.unregisterReceiver(this, songsChangeReceiver);
     }
 
     @Override
@@ -249,7 +249,7 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
                     String msg = getString(R.string.error_empty_sheet);
                     ToastUtils.showShortToast(msg, this);
                 } else {
-                    ActivityManager.getInstance(this).startSearchActivity(sheetID);
+                    ActivityManager.getInstance().startSearchActivity(this, sheetID);
                 }
                 break;
             case R.id.sheet_detail_action_collection:

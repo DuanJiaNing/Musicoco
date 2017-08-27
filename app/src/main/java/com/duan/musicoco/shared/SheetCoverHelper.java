@@ -68,24 +68,24 @@ public class SheetCoverHelper {
                 if (sheetID < 0) {
                     switch (sheetID) {
                         case MainSheetHelper.SHEET_ALL: {
-                            List<SongInfo> infos = MediaUtils.DBSongInfoToSongInfoList(helper.getAllSongInfo(), mediaManager);
+                            List<SongInfo> infos = MediaUtils.DBSongInfoToSongInfoList(context, helper.getAllSongInfo(), mediaManager);
                             songInfo = find(infos);
                             break;
                         }
                         case MainSheetHelper.SHEET_RECENT: {
-                            List<SongInfo> infos = MediaUtils.DBSongInfoToSongInfoList(helper.getRecentSongInfo(), mediaManager);
+                            List<SongInfo> infos = MediaUtils.DBSongInfoToSongInfoList(context, helper.getRecentSongInfo(), mediaManager);
                             songInfo = find(infos);
                             break;
                         }
                         case MainSheetHelper.SHEET_FAVORITE: {
-                            List<SongInfo> infos = MediaUtils.DBSongInfoToSongInfoList(helper.getFavoriteSongInfo(), mediaManager);
+                            List<SongInfo> infos = MediaUtils.DBSongInfoToSongInfoList(context, helper.getFavoriteSongInfo(), mediaManager);
                             songInfo = find(infos);
                             break;
                         }
                     }
                 } else {
                     List<DBSongInfo> ss = dbController.getSongInfos(sheetID);
-                    List<SongInfo> infos = MediaUtils.DBSongInfoToSongInfoList(ss, mediaManager);
+                    List<SongInfo> infos = MediaUtils.DBSongInfoToSongInfoList(context, ss, mediaManager);
                     songInfo = find(infos);
                 }
                 subscriber.onNext(songInfo);

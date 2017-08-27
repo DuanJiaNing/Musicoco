@@ -130,6 +130,6 @@ class ServiceInit {
     }
 
     private void initData() {
-        manager.refreshData();
+        manager.refreshData(context);
     }
 }

@@ -5,9 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
-import com.duan.musicoco.app.App;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.ThemeEnum;
@@ -113,7 +111,7 @@ public class AutoSwitchThemeController {
             //  切换白天
             appPreference.updateTheme(ThemeEnum.WHITE);
         }
-        BroadcastManager.getInstance(context).sendBroadcast(BroadcastManager.FILTER_APP_THEME_CHANGE_AUTOMATIC, null);
+        BroadcastManager.getInstance().sendBroadcast(context, BroadcastManager.FILTER_APP_THEME_CHANGE_AUTOMATIC, null);
     }
 
     public boolean isSet() {

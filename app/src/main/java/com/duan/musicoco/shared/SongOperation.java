@@ -18,14 +18,13 @@ import android.widget.ListView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.OnCompleteListener;
-import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.modle.DBSongInfo;
 import com.duan.musicoco.db.modle.Sheet;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.util.FileUtils;
 import com.duan.musicoco.util.MediaUtils;
 import com.duan.musicoco.util.ToastUtils;
@@ -61,7 +60,7 @@ public class SongOperation {
         this.activity = activity;
         this.control = control;
         this.dbMusicoco = dbMusicoco;
-        this.broadcastManager = BroadcastManager.getInstance(activity);
+        this.broadcastManager = BroadcastManager.getInstance();
     }
 
     private Map<Integer, String[]> getSheetsData() {
@@ -106,7 +105,7 @@ public class SongOperation {
                 boolean isFavorite = info.favorite;
                 boolean reverse = !isFavorite;
                 dbMusicoco.updateSongFavorite(song, reverse);
-
+                BroadcastManager.getInstance().sendBroadcast(activity, BroadcastManager.FILTER_MAIN_SHEET_UPDATE, null);
                 return reverse;
             }
         }
@@ -201,7 +200,7 @@ public class SongOperation {
                     }
 
                     private void sendBroadcast() {
-                        broadcastManager.sendBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+                        broadcastManager.sendBroadcast(activity, BroadcastManager.FILTER_SHEET_DETAIL_SONGS_UPDATE, null);
                     }
 
                     @Override
@@ -276,7 +275,7 @@ public class SongOperation {
                     }
 
                     private void sendBroadcast() {
-                        broadcastManager.sendBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+                        broadcastManager.sendBroadcast(activity, BroadcastManager.FILTER_SHEET_DETAIL_SONGS_UPDATE, null);
                     }
 
                     @Override
@@ -529,7 +528,7 @@ public class SongOperation {
                 String msg = activity.getString(R.string.success_remove_song_from_sheet);
                 ToastUtils.showShortToast(msg, activity);
 
-                broadcastManager.sendBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+                broadcastManager.sendBroadcast(activity, BroadcastManager.FILTER_SHEET_DETAIL_SONGS_UPDATE, null);
                 if (complete != null) {
                     complete.onComplete(null);
                 }
@@ -584,7 +583,7 @@ public class SongOperation {
                         }
 
                         private void sendBroadcast() {
-                            broadcastManager.sendBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+                            broadcastManager.sendBroadcast(activity, BroadcastManager.FILTER_SHEET_DETAIL_SONGS_UPDATE, null);
                             if (complete != null) {
                                 complete.onComplete(null);
                             }
@@ -634,7 +633,7 @@ public class SongOperation {
             String msg = activity.getString(R.string.success_remove_song_from_sheet);
             ToastUtils.showShortToast(msg, activity);
 
-            broadcastManager.sendBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+            broadcastManager.sendBroadcast(activity, BroadcastManager.FILTER_SHEET_DETAIL_SONGS_UPDATE, null);
             if (complete != null) {
                 complete.onComplete(null);
             }
@@ -678,7 +677,7 @@ public class SongOperation {
                         }
 
                         private void sendBroadcast() {
-                            broadcastManager.sendBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+                            broadcastManager.sendBroadcast(activity, BroadcastManager.FILTER_SHEET_DETAIL_SONGS_UPDATE, null);
                             if (complete != null) {
                                 complete.onComplete(null);
                             }
@@ -817,7 +816,7 @@ public class SongOperation {
                         if (complete != null) {
                             complete.onComplete(null);
                         }
-                        broadcastManager.sendBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+                        broadcastManager.sendBroadcast(activity, BroadcastManager.FILTER_SHEET_DETAIL_SONGS_UPDATE, null);
                     }
 
 

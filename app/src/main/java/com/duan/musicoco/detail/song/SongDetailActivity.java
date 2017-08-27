@@ -66,9 +66,9 @@ public class SongDetailActivity extends RootActivity implements View.OnClickList
         startFromPlayActivity = intent.getExtras().getBoolean(ActivityManager.SONG_DETAIL_START_FROM_PLAY_ACTIVITY, false);
         Song song = new Song(path);
 
-        mediaManager = MediaManager.getInstance(this);
+        mediaManager = MediaManager.getInstance();
 
-        info = mediaManager.getSongInfo(song);
+        info = mediaManager.getSongInfo(this, song);
 
         if (info != null) {
             initText();
@@ -209,7 +209,7 @@ public class SongDetailActivity extends RootActivity implements View.OnClickList
     @Override
     public void onBackPressed() {
         if (startFromPlayActivity) {
-            ActivityManager.getInstance(this).startPlayActivity();
+            ActivityManager.getInstance().startPlayActivity(this);
         }
         super.onBackPressed();
     }
@@ -244,7 +244,7 @@ public class SongDetailActivity extends RootActivity implements View.OnClickList
             case R.id.song_detail_image: {
                 if (haveAlbumImage) {
                     String path = info.getAlbum_path();
-                    ActivityManager.getInstance(this).startImageCheckActivity(path);
+                    ActivityManager.getInstance().startImageCheckActivity(this, path);
                 } else {
                     ToastUtils.showShortToast(getString(R.string.error_no_album_image), this);
                 }

@@ -36,18 +36,18 @@ public class SheetOperation {
         this.activity = activity;
         this.control = control;
         this.dbMusicoco = dbMusicoco;
-        this.broadcastManager = BroadcastManager.getInstance(activity);
+        this.broadcastManager = BroadcastManager.getInstance();
 
     }
 
     public void addSheet() {
-        ActivityManager manager = ActivityManager.getInstance(activity);
-        manager.startSheetModifyActivity(Integer.MAX_VALUE);
+        ActivityManager manager = ActivityManager.getInstance();
+        manager.startSheetModifyActivity(activity, Integer.MAX_VALUE);
     }
 
     public void modifySheet(Sheet sheet) {
-        ActivityManager manager = ActivityManager.getInstance(activity);
-        manager.startSheetModifyActivity(sheet.id);
+        ActivityManager manager = ActivityManager.getInstance();
+        manager.startSheetModifyActivity(activity, sheet.id);
     }
 
     public void handleDeleteSheet(final Sheet sheet, final OnCompleteListener<Boolean> onCompleteListener) {
@@ -122,7 +122,7 @@ public class SheetOperation {
                         }
 
                         // 发送广播让 MainActivity mySheetDataChangedReceiver 进行歌单信息更新
-                        broadcastManager.sendBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
+                        broadcastManager.sendBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_UPDATE, null);
                     }
                 });
     }

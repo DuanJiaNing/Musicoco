@@ -2,6 +2,7 @@ package com.duan.musicoco.play.album;
 
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
@@ -42,7 +43,7 @@ public class VisualizerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_play_visualizer, null);
 
-        mediaManager = MediaManager.getInstance(getActivity().getApplicationContext());
+        mediaManager = MediaManager.getInstance();
         initViews();
 
         return view;
@@ -83,14 +84,14 @@ public class VisualizerFragment extends Fragment {
         albumPictureController.stopSpin();
     }
 
-    public void songChanged(Song song, boolean isNext, boolean updateColors) {
+    public void songChanged(@NonNull Song song, boolean isNext, boolean updateColors) {
         if (currentSong != null && currentSong.equals(song)) {
             return;
         } else {
             currentSong = song;
         }
 
-        SongInfo info = song == null ? null : mediaManager.getSongInfo(song);
+        SongInfo info = mediaManager.getSongInfo(getActivity(), song);
         if (info == null) {
             return;
         }

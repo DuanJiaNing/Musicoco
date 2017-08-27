@@ -31,7 +31,7 @@ public abstract class RootService extends Service {
         this.appPreference = new AppPreference(this);
         this.settingPreference = new SettingPreference(this);
         this.dbController = new DBMusicocoController(this, false);
-        this.mediaManager = MediaManager.getInstance(getApplicationContext());
+        this.mediaManager = MediaManager.getInstance();
 
     }
 

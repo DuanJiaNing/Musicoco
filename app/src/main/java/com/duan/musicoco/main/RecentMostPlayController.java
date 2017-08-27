@@ -81,6 +81,8 @@ public class RecentMostPlayController implements
         mType = (TextView) activity.findViewById(R.id.rmp_type);
 
         mName = (TextView) activity.findViewById(R.id.rmp_info_name);
+        // 跑马灯
+        mName.setSelected(true);
         mArts = (TextView) activity.findViewById(R.id.rmp_info_arts);
         mRemark = (TextView) activity.findViewById(R.id.rmp_info_remark);
 
@@ -110,7 +112,7 @@ public class RecentMostPlayController implements
         switch (v.getId()) {
             case R.id.rmp_see_more:
             case R.id.rmp_container:
-                ActivityManager.getInstance(activity).startRecentMostPlayActivity();
+                ActivityManager.getInstance().startRecentMostPlayActivity(activity);
                 break;
         }
     }
@@ -127,7 +129,7 @@ public class RecentMostPlayController implements
     @Override
     public void update(Object obj, OnUpdateStatusChanged completed) {
 
-        if (mediaManager.emptyMediaLibrary(false)) {
+        if (mediaManager.emptyMediaLibrary(activity, false)) {
             noData();
             return;
         } else {
@@ -153,7 +155,7 @@ public class RecentMostPlayController implements
                     }
                 }
                 Song song = new Song(path);
-                SongInfo info = mediaManager.getSongInfo(song);
+                SongInfo info = mediaManager.getSongInfo(activity, song);
 
                 Data data = new Data();
                 data.info = info;

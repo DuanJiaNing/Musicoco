@@ -119,8 +119,8 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
             Bundle bundle = new Bundle();
             bundle.putInt(BroadcastManager.Countdown.APP_QUIT_TIME_COUNTDOWN_STATUS,
                     BroadcastManager.Countdown.STOP_COUNTDOWN);
-            BroadcastManager.getInstance(this)
-                    .sendBroadcast(BroadcastManager.FILTER_APP_QUIT_TIME_COUNTDOWN, bundle);
+            BroadcastManager.getInstance()
+                    .sendBroadcast(this, BroadcastManager.FILTER_APP_QUIT_TIME_COUNTDOWN, bundle);
 
             String msg = getString(R.string.info_time_sleep_is_canceled);
             ToastUtils.showShortToast(msg, this);
@@ -143,8 +143,8 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
 
         Bundle bundle = new Bundle();
         bundle.putInt(BroadcastManager.Countdown.APP_QUIT_TIME_COUNTDOWN_STATUS, BroadcastManager.Countdown.START_COUNTDOWN);
-        BroadcastManager.getInstance(this)
-                .sendBroadcast(BroadcastManager.FILTER_APP_QUIT_TIME_COUNTDOWN, bundle);
+        BroadcastManager.getInstance()
+                .sendBroadcast(this, BroadcastManager.FILTER_APP_QUIT_TIME_COUNTDOWN, bundle);
 
         finish();
     }

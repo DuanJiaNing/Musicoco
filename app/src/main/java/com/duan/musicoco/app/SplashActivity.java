@@ -134,6 +134,7 @@ public class SplashActivity extends InspectActivity {
                     @Override
                     public void run() {
                         if (initComplete) {
+                            // FIXME
                             startMainActivity();
                         } else {
                             animComplete = true;
@@ -212,7 +213,7 @@ public class SplashActivity extends InspectActivity {
     }
 
     private void startMainActivity() {
-        ActivityManager.getInstance(SplashActivity.this).startMainActivity();
+        ActivityManager.getInstance().startMainActivity(this);
         finish();
     }
 

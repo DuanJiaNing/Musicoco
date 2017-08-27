@@ -48,7 +48,7 @@ public class SheetModifyActivity extends RootActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sheet_modify);
 
-        broadcastManager = BroadcastManager.getInstance(this);
+        broadcastManager = BroadcastManager.getInstance();
 
         initViews();
         initSheet();
@@ -253,7 +253,7 @@ public class SheetModifyActivity extends RootActivity implements
             String msg = getString(R.string.success_create_sheet) + " [" + name + "]";
             ToastUtils.showShortToast(msg, this);
 //            MainActivity 的 onResume 会更新【我的歌单】，因而不需要使用广播
-//            broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
+//            broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_UPDATE, null);
             finish();
         }
     }
@@ -295,7 +295,7 @@ public class SheetModifyActivity extends RootActivity implements
             String msg = getString(R.string.success_modify_sheet) + " [" + newName + "]";
             ToastUtils.showShortToast(msg, this);
             //            MainActivity 的 onResume 会更新【我的歌单】，因而不需要使用广播
-//            broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
+//            broadcastManager.sendMyBroadcast(BroadcastManager.FILTER_MY_SHEET_UPDATE, null);
             finish();
         }
     }

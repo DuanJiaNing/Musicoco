@@ -34,7 +34,7 @@ public class AboutActivity extends RootActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        activityManager = ActivityManager.getInstance(this);
+        activityManager = ActivityManager.getInstance();
 
         initViews();
         themeChange(null, null);
@@ -116,13 +116,13 @@ public class AboutActivity extends RootActivity implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.about_guide:
-                activityManager.startWebActivity(getString(R.string.guide_url));
+                activityManager.startWebActivity(this, getString(R.string.guide_url));
                 break;
             case R.id.about_star:
 
                 break;
             case R.id.about_share:
-                activityManager.startSystemShare(getString(R.string.share_to_friends));
+                activityManager.startSystemShare(this, getString(R.string.share_to_friends));
                 break;
             default:
                 break;

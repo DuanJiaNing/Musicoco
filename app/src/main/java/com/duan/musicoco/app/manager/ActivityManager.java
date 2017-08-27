@@ -19,13 +19,13 @@ import com.duan.musicoco.detail.song.SongDetailActivity;
 import com.duan.musicoco.main.MainActivity;
 import com.duan.musicoco.main.leftnav.imagewall.ImageWallActivity;
 import com.duan.musicoco.main.leftnav.play.PlayThemeCustomActivity;
-import com.duan.musicoco.setting.SettingsActivity;
+import com.duan.musicoco.main.leftnav.themecolor.ThemeColorCustomActivity;
 import com.duan.musicoco.main.leftnav.timesleep.TimeSleepActivity;
-import com.duan.musicoco.sheetmodify.SheetModifyActivity;
 import com.duan.musicoco.play.PlayActivity;
 import com.duan.musicoco.rmp.RecentMostPlayActivity;
 import com.duan.musicoco.search.SearchActivity;
-import com.duan.musicoco.main.leftnav.themecolor.ThemeColorCustomActivity;
+import com.duan.musicoco.setting.SettingsActivity;
+import com.duan.musicoco.sheetmodify.SheetModifyActivity;
 import com.duan.musicoco.util.ToastUtils;
 
 import java.io.File;
@@ -38,7 +38,6 @@ import java.util.Map;
 
 public class ActivityManager {
 
-    private Context context;
     public static final String SONG_DETAIL_PATH = "song_detail_path";
     public static final String SONG_DETAIL_START_FROM_PLAY_ACTIVITY = "song_detail_start_from_play_activity";
 
@@ -55,8 +54,7 @@ public class ActivityManager {
 
     private final Map<String, Activity> activitys = new HashMap<>();
 
-    private ActivityManager(Context context) {
-        this.context = context.getApplicationContext();
+    private ActivityManager() {
     }
 
     public Activity getActivity(String name) {
@@ -67,9 +65,9 @@ public class ActivityManager {
         activitys.put(activity.getClass().getName(), activity);
     }
 
-    public static ActivityManager getInstance(Context context) {
+    public static ActivityManager getInstance() {
         if (mInstance == null) {
-            mInstance = new ActivityManager(context);
+            mInstance = new ActivityManager();
         }
         return mInstance;
     }
@@ -80,14 +78,14 @@ public class ActivityManager {
      *                            在 SongDetailActivity 中退出时会直接跳过 PlayActivity(即使时序上为在 PlayActivity 中
      *                            启动 SongDetailActivity，SongDetailActivity 退出时理应回到 PlayActivity)
      */
-    public void startSongDetailActivity(Song whichSong, boolean startByPlayActivity) {
+    public void startSongDetailActivity(Context context, Song whichSong, boolean startByPlayActivity) {
         Intent intent = new Intent(context, SongDetailActivity.class);
         intent.putExtra(SONG_DETAIL_PATH, whichSong.path);
         intent.putExtra(SONG_DETAIL_START_FROM_PLAY_ACTIVITY, startByPlayActivity);
         context.startActivity(intent);
     }
 
-    public void startImageCheckActivity(String path) {
+    public void startImageCheckActivity(Context context, String path) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         Uri uri;
@@ -106,14 +104,14 @@ public class ActivityManager {
     }
 
 
-    public void startSystemBrowser(@NonNull String url) {
+    public void startSystemBrowser(Context context, @NonNull String url) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
         context.startActivity(intent);
     }
 
-    public void startSystemShare(String text) {
+    public void startSystemShare(Context context, String text) {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, text);
@@ -123,7 +121,7 @@ public class ActivityManager {
     /**
      * locationAt: 显示列表时滚动到，不需要滚动传 -1 即可
      */
-    public void startSheetDetailActivity(int sheetID, Song locationAt) {
+    public void startSheetDetailActivity(Context context, int sheetID, Song locationAt) {
         Intent intent = new Intent(context, SheetDetailActivity.class);
         intent.putExtra(SHEET_DETAIL_ID, sheetID);
         if (locationAt != null) {
@@ -132,69 +130,69 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public void startSheetModifyActivity(int sheetID) {
+    public void startSheetModifyActivity(Context context, int sheetID) {
         Intent intent = new Intent(context, SheetModifyActivity.class);
         intent.putExtra(SHEET_MODIFY_ID, sheetID);
         context.startActivity(intent);
     }
 
-    public void startSearchActivity(int sheetID) {
+    public void startSearchActivity(Context context, int sheetID) {
         Intent intent = new Intent(context, SearchActivity.class);
         intent.putExtra(SHEET_SEARCH_ID, sheetID);
         context.startActivity(intent);
     }
 
-    public void startPlayActivity() {
+    public void startPlayActivity(Context context) {
         context.startActivity(new Intent(context, PlayActivity.class));
     }
 
-    public void startRecentMostPlayActivity() {
+    public void startRecentMostPlayActivity(Context context) {
         context.startActivity(new Intent(context, RecentMostPlayActivity.class));
     }
 
-    public void startMainActivity() {
+    public void startMainActivity(Context context) {
         context.startActivity(new Intent(context, MainActivity.class));
     }
 
-    public void startThemeColorCustomActivity() {
+    public void startThemeColorCustomActivity(Context context) {
         context.startActivity(new Intent(context, ThemeColorCustomActivity.class));
     }
 
-    public void startImageWallActivity() {
+    public void startImageWallActivity(Context context) {
         context.startActivity(new Intent(context, ImageWallActivity.class));
     }
 
-    public void startTimeSleepActivity() {
+    public void startTimeSleepActivity(Context context) {
         context.startActivity(new Intent(context, TimeSleepActivity.class));
     }
 
-    public void startPlayThemeCustomActivity() {
+    public void startPlayThemeCustomActivity(Context context) {
         context.startActivity(new Intent(context, PlayThemeCustomActivity.class));
     }
 
-    public void startSettingActivity() {
+    public void startSettingActivity(Context context) {
         context.startActivity(new Intent(context, SettingsActivity.class));
     }
 
-    public void startFeedBackActivity() {
+    public void startFeedBackActivity(Context context) {
         context.startActivity(new Intent(context, FeedBackActivity.class));
     }
 
-    public void startAboutActivity() {
+    public void startAboutActivity(Context context) {
         context.startActivity(new Intent(context, AboutActivity.class));
     }
 
-    public void startWebActivity(@NonNull String url) {
+    public void startWebActivity(Context context, @NonNull String url) {
         Intent intent = new Intent(context, WebActivity.class);
         intent.putExtra(WEB_URL, url);
         context.startActivity(intent);
     }
 
-    public void startMeActivity() {
+    public void startMeActivity(Context context) {
         context.startActivity(new Intent(context, MeActivity.class));
     }
 
-    public void startQQChartPanel(String qqId) {
+    public void startQQChartPanel(Context context, String qqId) {
         try {
             //可以跳转到添加好友，如果qq号是好友了，直接聊天
             String url = "mqqwpa://im/chat?chat_type=wpa&uin=" + qqId;//uin是发送过去的qq号码
@@ -206,13 +204,13 @@ public class ActivityManager {
         }
     }
 
-    public void startSystemPhoneCallPanel(String phoneNumber) {
+    public void startSystemPhoneCallPanel(Context context, String phoneNumber) {
         Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phoneNumber));
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
-    public void startSystemEmailPanel(String email) {
+    public void startSystemEmailPanel(Context context, String email) {
         Uri uri = Uri.parse("mailto:" + email);
         Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
         intent.putExtra(Intent.EXTRA_CC, email); // 抄送人

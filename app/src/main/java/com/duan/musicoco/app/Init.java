@@ -51,7 +51,7 @@ public class Init {
         db.truncate(DBMusicocoController.TABLE_SONG);
         db.truncate(DBMusicocoController.TABLE_SHEET);
 
-        db.addSongInfo(mediaManager.getSongList());
+        db.addSongInfo(mediaManager.getSongList(context));
 
         db.addSheet("我喜欢的", "收藏我所喜欢", 0);
 

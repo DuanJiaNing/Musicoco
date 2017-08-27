@@ -171,7 +171,7 @@ public class MySheetsController implements
     @Override
     public void update(Object obj, OnUpdateStatusChanged completed) {
 
-        if (mediaManager.emptyMediaLibrary(false)) {
+        if (mediaManager.emptyMediaLibrary(activity, false)) {
             noData();
             return;
         } else {
@@ -246,6 +246,6 @@ public class MySheetsController implements
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Sheet sheet = (Sheet) adapter.getItem(position);
-        ActivityManager.getInstance(activity).startSheetDetailActivity(sheet.id, null);
+        ActivityManager.getInstance().startSheetDetailActivity(activity, sheet.id, null);
     }
 }

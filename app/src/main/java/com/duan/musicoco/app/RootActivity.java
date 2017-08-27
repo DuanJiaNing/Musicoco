@@ -39,7 +39,7 @@ public class RootActivity extends AppCompatActivity {
         checkTheme();
         dbController = new DBMusicocoController(this, true);
 
-        ActivityManager.getInstance(this).addActivity(this);
+        ActivityManager.getInstance().addActivity(this);
     }
 
     protected void checkTheme() {

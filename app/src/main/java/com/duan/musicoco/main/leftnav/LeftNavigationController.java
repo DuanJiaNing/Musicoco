@@ -54,7 +54,7 @@ public class LeftNavigationController implements
         this.appPreference = appPreference;
         this.auxiliaryPreference = auxiliaryPreference;
         this.homeBackgroundController = new HomeBackgroundController(activity, appPreference);
-        this.activityManager = ActivityManager.getInstance(activity);
+        this.activityManager = ActivityManager.getInstance();
         this.drawerListener = new DrawerListener();
     }
 
@@ -147,10 +147,10 @@ public class LeftNavigationController implements
         ((MainActivity) activity).switchThemeMode(theme);
 
         // 播放界面更新主题（底部弹出的选项框）
-        BroadcastManager manager = BroadcastManager.getInstance(activity);
+        BroadcastManager manager = BroadcastManager.getInstance();
         Bundle bundle = new Bundle();
         bundle.putInt(BroadcastManager.Play.PLAY_THEME_CHANGE_TOKEN, BroadcastManager.Play.PLAY_APP_THEME_CHANGE);
-        manager.sendBroadcast(BroadcastManager.FILTER_PLAY_UI_MODE_CHANGE, bundle);
+        manager.sendBroadcast(activity, BroadcastManager.FILTER_PLAY_UI_MODE_CHANGE, bundle);
 
     }
 
@@ -367,26 +367,26 @@ public class LeftNavigationController implements
             if (actionAfterClose) {
                 switch (id) {
                     case R.id.setting_sleep: // 睡眠定时
-                        activityManager.startTimeSleepActivity();
+                        activityManager.startTimeSleepActivity(activity);
                         break;
                     case R.id.setting_image_wall: // 照片墙
-                        activityManager.startImageWallActivity();
+                        activityManager.startImageWallActivity(activity);
                         break;
                     case R.id.setting_play_ui: // 播放界面风格
-                        activityManager.startPlayThemeCustomActivity();
+                        activityManager.startPlayThemeCustomActivity(activity);
                         break;
                     case R.id.setting_theme_color_custom: // 主题色
-                        activityManager.startThemeColorCustomActivity();
+                        activityManager.startThemeColorCustomActivity(activity);
                         ((MainActivity) activity).updateColorByCustomThemeColor();
                         break;
                     case R.id.setting_set: // 设置
-                        activityManager.startSettingActivity();
+                        activityManager.startSettingActivity(activity);
                         break;
                     case R.id.setting_quit: // 退出
                         ((MainActivity) activity).shutDownServiceAndApp();
                         break;
                     case R.id.setting_user_guide: // 用户指南
-                        ActivityManager.getInstance(activity).startWebActivity(activity.getString(R.string.guide_url));
+                        ActivityManager.getInstance().startWebActivity(activity, activity.getString(R.string.guide_url));
                         break;
                     default:
                         break;

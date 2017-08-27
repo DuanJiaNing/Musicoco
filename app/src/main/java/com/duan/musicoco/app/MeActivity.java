@@ -20,6 +20,7 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.preference.ThemeEnum;
+import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 
 public class MeActivity extends RootActivity implements ThemeChangeable {
@@ -37,7 +38,7 @@ public class MeActivity extends RootActivity implements ThemeChangeable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_me);
 
-        activityManager = ActivityManager.getInstance(this);
+        activityManager = ActivityManager.getInstance();
         initViews();
         themeChange(null, null);
         initData();
@@ -62,16 +63,16 @@ public class MeActivity extends RootActivity implements ThemeChangeable {
             case 0:  // github
             case 1: // csdn
             case 2: // jianshu
-                activityManager.startWebActivity(url);
+                activityManager.startWebActivity(this, url);
                 break;
             case 3: // qq
-                activityManager.startQQChartPanel(url);
+                activityManager.startQQChartPanel(this, url);
                 break;
             case 4: // email
-                activityManager.startSystemEmailPanel(url);
+                activityManager.startSystemEmailPanel(this, url);
                 break;
             case 5: // me
-                activityManager.startSystemPhoneCallPanel(url);
+                activityManager.startSystemPhoneCallPanel(this, url);
                 break;
         }
     }
@@ -164,7 +165,10 @@ public class MeActivity extends RootActivity implements ThemeChangeable {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             String text = texts[position];
-            Bitmap b = BitmapFactory.decodeResource(context.getResources(), images[position]);
+            Bitmap b = BitmapUtils.bitmapResizeFromResource(
+                    context.getResources(),
+                    images[position],
+                    holder.image.getMeasuredWidth(), holder.image.getMeasuredHeight());
 
             int dTC = Color.WHITE;
             int dBC = ColorUtils.getAccentColor(context);

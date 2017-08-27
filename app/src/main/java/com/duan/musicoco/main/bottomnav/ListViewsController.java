@@ -30,7 +30,6 @@ import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.modle.Sheet;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
-import com.duan.musicoco.shared.ExceptionHandler;
 import com.duan.musicoco.shared.PlayListAdapter;
 import com.duan.musicoco.shared.SongOperation;
 import com.duan.musicoco.util.ToastUtils;
@@ -211,7 +210,7 @@ public class ListViewsController implements
 
                 // PlayListAdapter 在 MainActivity 和 PlayActivity 中都有，所以需要发送广播通知 MainActivity 更新
                 // 【我的歌单】 列表
-                BroadcastManager.getInstance(activity).sendBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
+                BroadcastManager.getInstance().sendBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_UPDATE, null);
 
             }
         });
@@ -220,7 +219,7 @@ public class ListViewsController implements
     @Override
     public void update(Object obj, OnUpdateStatusChanged statusChanged) {
 
-        if (mediaManager.emptyMediaLibrary(false)) {
+        if (mediaManager.emptyMediaLibrary(activity, false)) {
             noData();
             return;
         }
@@ -235,7 +234,7 @@ public class ListViewsController implements
             List<Song> ss = control.getPlayList();
             data.clear();
             for (Song s : ss) {
-                data.add(mediaManager.getSongInfo(s));
+                data.add(mediaManager.getSongInfo(activity, s));
             }
             adapter.notifyDataSetChanged();
 

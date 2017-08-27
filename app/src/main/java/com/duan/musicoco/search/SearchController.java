@@ -63,7 +63,7 @@ public class SearchController implements ThemeChangeable, ResultsAdapter.OnItemC
         this.adapter = new ResultsAdapter(activity, data);
         this.optionsDialog = new OptionsDialog(activity);
         this.control = MainActivity.getControl();
-        this.activityManager = ActivityManager.getInstance(mActivity);
+        this.activityManager = ActivityManager.getInstance();
     }
 
     private void updatePrompt() {
@@ -151,7 +151,7 @@ public class SearchController implements ThemeChangeable, ResultsAdapter.OnItemC
                     public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
                         Song song = new Song(currentClickItem.getData());
                         optionsDialog.hide();
-                        activityManager.startSongDetailActivity(song, false);
+                        activityManager.startSongDetailActivity(mActivity, song, false);
                     }
                 });
 
@@ -159,7 +159,7 @@ public class SearchController implements ThemeChangeable, ResultsAdapter.OnItemC
 
     private void locationSongInSheet() {
         Song song = new Song(currentClickItem.getData());
-        activityManager.startSheetDetailActivity(mSheetId, song);
+        activityManager.startSheetDetailActivity(mActivity, mSheetId, song);
     }
 
     private void playSong() {
@@ -174,7 +174,7 @@ public class SearchController implements ThemeChangeable, ResultsAdapter.OnItemC
                 control.play(song);
             }
             mActivity.finish();
-            activityManager.startPlayActivity();
+            activityManager.startPlayActivity(mActivity);
 
 
         } catch (RemoteException e) {
@@ -204,8 +204,8 @@ public class SearchController implements ThemeChangeable, ResultsAdapter.OnItemC
             return;
         }
 
-        MediaManager manager = MediaManager.getInstance(mActivity);
-        List<SongInfo> infos = MediaUtils.DBSongInfoToSongInfoList(mInfos, manager);
+        MediaManager manager = MediaManager.getInstance();
+        List<SongInfo> infos = MediaUtils.DBSongInfoToSongInfoList(mActivity, mInfos, manager);
 
         data.clear();
         for (SongInfo i : infos) {

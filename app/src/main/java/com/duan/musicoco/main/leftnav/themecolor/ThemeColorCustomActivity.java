@@ -42,6 +42,8 @@ public class ThemeColorCustomActivity extends RootActivity implements
 
     private boolean mode = false; // true 为图标颜色选择 false 为状态栏颜色选择
 
+    private int mainTC, vicTC;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +51,8 @@ public class ThemeColorCustomActivity extends RootActivity implements
 
         initViews();
         themeChange(null, null);
+        mode = false;
+        updateMode();
     }
 
     private void initViews() {
@@ -65,15 +69,26 @@ public class ThemeColorCustomActivity extends RootActivity implements
         modeStatus.setOnClickListener(this);
         modeIcon.setOnClickListener(this);
 
-        mode = false;
-        updateMode();
     }
 
     private void updateMode() {
+        int sizeC = getResources().getDimensionPixelSize(R.dimen.text_middle_l);
+        int sizeD = getResources().getDimensionPixelSize(R.dimen.text_middle_s);
         if (mode) {
+
+            modeStatus.setTextSize(TypedValue.COMPLEX_UNIT_PX, sizeD);
+            modeIcon.setTextSize(TypedValue.COMPLEX_UNIT_PX, sizeC);
+            modeStatus.setTextColor(vicTC);
+            modeIcon.setTextColor(mainTC);
+
             picIcon.setVisibility(View.VISIBLE);
             picIcon_.setVisibility(View.VISIBLE);
         } else {
+            modeStatus.setTextSize(TypedValue.COMPLEX_UNIT_PX, sizeC);
+            modeIcon.setTextSize(TypedValue.COMPLEX_UNIT_PX, sizeD);
+            modeStatus.setTextColor(mainTC);
+            modeIcon.setTextColor(vicTC);
+
             picIcon.setVisibility(View.INVISIBLE);
             picIcon_.setVisibility(View.INVISIBLE);
         }
@@ -170,22 +185,16 @@ public class ThemeColorCustomActivity extends RootActivity implements
 
     @Override
     public void onClick(View v) {
-        int sizeC = getResources().getDimensionPixelSize(R.dimen.text_middle_l);
-        int sizeD = getResources().getDimensionPixelSize(R.dimen.text_middle_s);
         if (v == modeStatus) {
             if (!mode) {
                 return;
             }
-            modeStatus.setTextSize(TypedValue.COMPLEX_UNIT_PX, sizeC);
-            modeIcon.setTextSize(TypedValue.COMPLEX_UNIT_PX, sizeD);
             mode = false;
             updateMode();
         } else {
             if (mode) {
                 return;
             }
-            modeStatus.setTextSize(TypedValue.COMPLEX_UNIT_PX, sizeD);
-            modeIcon.setTextSize(TypedValue.COMPLEX_UNIT_PX, sizeC);
             mode = true;
             updateMode();
         }
@@ -212,6 +221,10 @@ public class ThemeColorCustomActivity extends RootActivity implements
             int ac = ColorUtils.getAccentColor(this);
             picIcon_.getDrawable().setTint(ac);
         }
+
+        int[] cs = ColorUtils.get2ThemeTextColor(this, appPreference.getTheme());
+        mainTC = cs[0];
+        vicTC = cs[1];
 
     }
 }

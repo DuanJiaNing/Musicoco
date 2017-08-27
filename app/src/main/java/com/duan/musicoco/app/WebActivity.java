@@ -78,7 +78,7 @@ public class WebActivity extends RootActivity implements ThemeChangeable {
                 finish();
                 break;
             case R.id.action_open_whit_browser:
-                ActivityManager.getInstance(this).startSystemBrowser(webView.getUrl());
+                ActivityManager.getInstance().startSystemBrowser(this, webView.getUrl());
                 break;
             default:
                 break;

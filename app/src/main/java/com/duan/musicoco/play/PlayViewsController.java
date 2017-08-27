@@ -4,7 +4,11 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.RemoteException;
+import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
@@ -163,8 +167,16 @@ public class PlayViewsController implements View.OnClickListener {
             public View makeView() {
                 TextView text = (TextView) activity.getLayoutInflater().inflate(R.layout.song_name, null);
                 Typeface tf = Typeface.createFromAsset(activity.getAssets(), "fonts/name.TTF");
+                text.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                 text.setTypeface(tf);
                 text.setTextColor(finalMainTextColor);
+                text.setSingleLine();
+                text.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                text.setMarqueeRepeatLimit(-1);
+                text.setSelected(true);
+                text.setLines(1);
+                text.setGravity(Gravity.CENTER);
+
                 return text;
             }
         });
@@ -174,8 +186,12 @@ public class PlayViewsController implements View.OnClickListener {
             public View makeView() {
                 TextView text = (TextView) activity.getLayoutInflater().inflate(R.layout.song_arts, null);
                 Typeface tf = Typeface.createFromAsset(activity.getAssets(), "fonts/arts.TTF");
+                text.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                 text.setTypeface(tf);
                 text.setTextColor(finalVicTextColor);
+                text.setLines(1);
+                text.setGravity(Gravity.CENTER);
+
                 return text;
             }
         });

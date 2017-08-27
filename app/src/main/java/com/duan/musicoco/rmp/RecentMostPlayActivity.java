@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.Activity;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -44,7 +46,9 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class RecentMostPlayActivity extends RootActivity implements ThemeChangeable, RMPAdapter.OnItemClickListener {
+public class RecentMostPlayActivity extends RootActivity implements
+        ThemeChangeable,
+        RMPAdapter.OnItemClickListener {
 
     private FirstThreeViewHolder first;
     private FirstThreeViewHolder second;
@@ -77,8 +81,8 @@ public class RecentMostPlayActivity extends RootActivity implements ThemeChangea
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recent_most_play);
 
-        mediaManager = MediaManager.getInstance(this);
-        activityManager = ActivityManager.getInstance(this);
+        mediaManager = MediaManager.getInstance();
+        activityManager = ActivityManager.getInstance();
         control = MainActivity.getControl();
         songOperation = new SongOperation(this, control, dbController);
 
@@ -142,7 +146,7 @@ public class RecentMostPlayActivity extends RootActivity implements ThemeChangea
                         songOperation.playSongAtSheetAll(song);
                         optionsDialog.hide();
                         finish();
-                        activityManager.startPlayActivity();
+                        activityManager.startPlayActivity(RecentMostPlayActivity.this);
 
                     }
                 });
@@ -159,7 +163,7 @@ public class RecentMostPlayActivity extends RootActivity implements ThemeChangea
                         Song song = new Song(currentClickItem.getData());
                         optionsDialog.hide();
                         finish();
-                        activityManager.startSheetDetailActivity(MainSheetHelper.SHEET_ALL, song);
+                        activityManager.startSheetDetailActivity(RecentMostPlayActivity.this, MainSheetHelper.SHEET_ALL, song);
 
                     }
                 });
@@ -175,7 +179,7 @@ public class RecentMostPlayActivity extends RootActivity implements ThemeChangea
                     public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
                         Song song = new Song(currentClickItem.getData());
                         optionsDialog.hide();
-                        activityManager.startSongDetailActivity(song, false);
+                        activityManager.startSongDetailActivity(RecentMostPlayActivity.this, song, false);
                     }
                 });
 
@@ -261,7 +265,7 @@ public class RecentMostPlayActivity extends RootActivity implements ThemeChangea
             RMPAdapter.DataHolder da = new RMPAdapter.DataHolder();
             da.times = in.playTimes;
 
-            SongInfo songInfo = mediaManager.getSongInfo(in.path);
+            SongInfo songInfo = mediaManager.getSongInfo(this, in.path);
             String title = songInfo.getTitle();
             String arts = songInfo.getArtist();
             String albumP = songInfo.getAlbum_path();
@@ -410,9 +414,9 @@ public class RecentMostPlayActivity extends RootActivity implements ThemeChangea
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        first = new FirstThreeViewHolder(FirstThreeViewHolder.FIRST);
-        second = new FirstThreeViewHolder(FirstThreeViewHolder.SECOND);
-        third = new FirstThreeViewHolder(FirstThreeViewHolder.THIRD);
+        first = new FirstThreeViewHolder(this, FirstThreeViewHolder.FIRST);
+        second = new FirstThreeViewHolder(this, FirstThreeViewHolder.SECOND);
+        third = new FirstThreeViewHolder(this, FirstThreeViewHolder.THIRD);
         first.setVisible(View.INVISIBLE);
         second.setVisible(View.INVISIBLE);
         third.setVisible(View.INVISIBLE);
@@ -490,7 +494,7 @@ public class RecentMostPlayActivity extends RootActivity implements ThemeChangea
         RMPAdapter.DataHolder dataHolder = this.data.get(position);
         Song song = new Song(dataHolder.path);
 
-        currentClickItem = mediaManager.getSongInfo(song);
+        currentClickItem = mediaManager.getSongInfo(this, song);
 
         DBSongInfo info = dbController.getSongInfo(song);
         if (info != null) {
@@ -510,9 +514,9 @@ public class RecentMostPlayActivity extends RootActivity implements ThemeChangea
                 String title = getString(R.string.song) + ": " + currentClickItem.getTitle();
                 optionsDialog.setTitle(title);
 
-                String favorite = getString(R.string.cancel_collect);
+                String favorite = getString(R.string.collect);
                 if (currentClickItemFavorite) {
-                    favorite = getString(R.string.collect);
+                    favorite = getString(R.string.cancel_collect);
                 }
                 OptionsAdapter.Option option = optionsAdapter.getOption(SONG_OPTIONS_FAVORITE);
                 if (option != null) {
@@ -529,7 +533,7 @@ public class RecentMostPlayActivity extends RootActivity implements ThemeChangea
         String path = (String) view.getTag(R.id.rmp_first_three_song_path);
 
         Song song = new Song(path);
-        currentClickItem = mediaManager.getSongInfo(song);
+        currentClickItem = mediaManager.getSongInfo(this, song);
 
         DBSongInfo info = dbController.getSongInfo(song);
         if (info != null) {
@@ -539,7 +543,9 @@ public class RecentMostPlayActivity extends RootActivity implements ThemeChangea
         showDialogIfNeed();
     }
 
-    private class FirstThreeViewHolder {
+    private static class FirstThreeViewHolder {
+        Activity activity;
+
         TextView number;
         ImageView image;
         TextView name;
@@ -550,7 +556,8 @@ public class RecentMostPlayActivity extends RootActivity implements ThemeChangea
         final static String SECOND = "second";
         final static String THIRD = "third";
 
-        FirstThreeViewHolder(String which) {
+        FirstThreeViewHolder(Activity activity, String which) {
+            this.activity = activity;
             if (TextUtils.isEmpty(which) || (!which.equals(FIRST) && !which.equals(SECOND) && !which.equals(THIRD))) {
                 return;
             }
@@ -577,11 +584,11 @@ public class RecentMostPlayActivity extends RootActivity implements ThemeChangea
             Class<R.id> idClass = R.id.class;
             try {
 
-                number = (TextView) findViewById(idClass.getField(nu).getInt(R.id.class));
-                image = (ImageView) findViewById(idClass.getField(im).getInt(R.id.class));
-                name = (TextView) findViewById(idClass.getField(na).getInt(R.id.class));
-                arts = (TextView) findViewById(idClass.getField(ar).getInt(R.id.class));
-                time = (TextView) findViewById(idClass.getField(ti).getInt(R.id.class));
+                number = (TextView) activity.findViewById(idClass.getField(nu).getInt(R.id.class));
+                image = (ImageView) activity.findViewById(idClass.getField(im).getInt(R.id.class));
+                name = (TextView) activity.findViewById(idClass.getField(na).getInt(R.id.class));
+                arts = (TextView) activity.findViewById(idClass.getField(ar).getInt(R.id.class));
+                time = (TextView) activity.findViewById(idClass.getField(ti).getInt(R.id.class));
 
             } catch (NoSuchFieldException e) {
                 e.printStackTrace();

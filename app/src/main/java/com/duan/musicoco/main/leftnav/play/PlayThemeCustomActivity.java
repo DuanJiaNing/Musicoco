@@ -117,10 +117,10 @@ public class PlayThemeCustomActivity extends RootActivity implements
         ToastUtils.showShortToast(msg, this);
 
         // 播放界面更新主题（底部弹出的选项框）
-        BroadcastManager manager = BroadcastManager.getInstance(this);
+        BroadcastManager manager = BroadcastManager.getInstance();
         Bundle bundle = new Bundle();
         bundle.putInt(BroadcastManager.Play.PLAY_THEME_CHANGE_TOKEN, BroadcastManager.Play.PLAY_PLAY_THEME_CHANGE);
-        manager.sendBroadcast(BroadcastManager.FILTER_PLAY_UI_MODE_CHANGE, bundle);
+        manager.sendBroadcast(this, BroadcastManager.FILTER_PLAY_UI_MODE_CHANGE, bundle);
 
         finish();
     }

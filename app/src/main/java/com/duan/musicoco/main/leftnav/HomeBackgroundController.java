@@ -99,7 +99,7 @@ public class HomeBackgroundController {
 
         MainSheetHelper h = new MainSheetHelper(activity, dbController);
         List<DBSongInfo> info = h.getAllSongInfo();
-        List<SongInfo> list = MediaUtils.DBSongInfoToSongInfoList(info, MediaManager.getInstance(activity));
+        List<SongInfo> list = MediaUtils.DBSongInfoToSongInfoList(activity, info, MediaManager.getInstance());
         if (info.size() == 0) {
             return null;
         }

@@ -21,4 +21,7 @@
     <integer name="sheet_remark_text_limit">50</integer>
     <integer name="sheet_remark_input_max_lines">5</integer>
 
+    <!-- 歌曲播放次数判决时长（播放时长达到此限制时视为播放一次） 1 分钟-->
+    <integer name="song_play_times_sentence_duration">60000</integer>
+
 </resources>

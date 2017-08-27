@@ -30,7 +30,7 @@ public class PlayService extends RootService {
     public void onCreate() {
         super.onCreate();
 
-        broadcastManager = BroadcastManager.getInstance(this);
+        broadcastManager = BroadcastManager.getInstance();
         iBinder = new PlayServiceIBinder(this);
 
         new ServiceInit(this,
@@ -58,7 +58,7 @@ public class PlayService extends RootService {
             }
         };
 
-        broadcastManager.registerBroadReceiver(serviceQuitReceiver, BroadcastManager.FILTER_PLAY_SERVICE_QUIT);
+        broadcastManager.registerBroadReceiver(this, serviceQuitReceiver, BroadcastManager.FILTER_PLAY_SERVICE_QUIT);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class PlayService extends RootService {
 
     private void unregisterReceiver() {
         if (serviceQuitReceiver != null) {
-            broadcastManager.unregisterReceiver(serviceQuitReceiver);
+            broadcastManager.unregisterReceiver(this, serviceQuitReceiver);
         }
 
     }

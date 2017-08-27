@@ -96,16 +96,16 @@ public class MainSheetsController implements
 
     @Override
     public void onClick(View v) {
-        ActivityManager manager = ActivityManager.getInstance(activity);
+        ActivityManager manager = ActivityManager.getInstance();
         switch (v.getId()) {
             case R.id.sheet_all_container:
-                manager.startSheetDetailActivity(MainSheetHelper.SHEET_ALL, null);
+                manager.startSheetDetailActivity(activity, MainSheetHelper.SHEET_ALL, null);
                 break;
             case R.id.sheet_recent_container:
-                manager.startSheetDetailActivity(MainSheetHelper.SHEET_RECENT, null);
+                manager.startSheetDetailActivity(activity, MainSheetHelper.SHEET_RECENT, null);
                 break;
             case R.id.sheet_favorite_container:
-                manager.startSheetDetailActivity(MainSheetHelper.SHEET_FAVORITE, null);
+                manager.startSheetDetailActivity(activity, MainSheetHelper.SHEET_FAVORITE, null);
                 break;
         }
     }
@@ -124,7 +124,7 @@ public class MainSheetsController implements
     @Override
     public void update(Object obj, final OnUpdateStatusChanged statusChanged) {
 
-        if (mediaManager.emptyMediaLibrary(false)) {
+        if (mediaManager.emptyMediaLibrary(activity, false)) {
             noData();
             return;
         } else {
@@ -256,7 +256,7 @@ public class MainSheetsController implements
         limit = limit > list.size() ? list.size() : limit;
         for (int i = 0; i < limit; i++) {
             DBSongInfo d = list.get(i);
-            SongInfo info = mediaManager.getSongInfo(d.path);
+            SongInfo info = mediaManager.getSongInfo(activity, d.path);
             bitmap = BitmapUtils.bitmapResizeFromFile(info.getAlbum_path(), mImageRecent.getWidth(), mImageRecent.getHeight());
             if (bitmap != null) {
                 break;

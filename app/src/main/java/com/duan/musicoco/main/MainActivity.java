@@ -68,11 +68,11 @@ public class MainActivity extends RootActivity implements
     private MainSheetsController mainSheetsController;
     private MySheetsController mySheetsController;
 
-    private BroadcastReceiver mySheetDataChangedReceiver;
+    private BroadcastReceiver mySheetDataUpdateReceiver;
     private BroadcastReceiver appQuitTimeCountdownReceiver;
     private BroadcastReceiver appThemeChangeAutomaticReceiver;
     private BroadcastReceiver headsetPlugReceiver;
-    private BroadcastReceiver mainSheetChangeReceiver;
+    private BroadcastReceiver mainSheetUpdateReceiver;
     private BroadcastManager broadcastManager;
 
     private boolean updateColorByCustomThemeColor = false;
@@ -89,10 +89,10 @@ public class MainActivity extends RootActivity implements
         setContentView(R.layout.activity_main);
 
         playServiceManager = new PlayServiceManager(this);
-        mediaManager = MediaManager.getInstance(this);
+        mediaManager = MediaManager.getInstance();
 
         // 单例持有的 Context 为 MainActivity 的，最早调用在此。
-        broadcastManager = BroadcastManager.getInstance(this);
+        broadcastManager = BroadcastManager.getInstance();
         bottomNavigationController = new BottomNavigationController(this, mediaManager);
         leftNavigationController = new LeftNavigationController(this, appPreference, auxiliaryPreference);
         mostPlayController = new RecentMostPlayController(this, mediaManager);
@@ -179,7 +179,7 @@ public class MainActivity extends RootActivity implements
     }
 
     private void initBroadcastReceivers() {
-        mySheetDataChangedReceiver = new BroadcastReceiver() {
+        mySheetDataUpdateReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 mySheetsController.update(null, null);
@@ -234,7 +234,7 @@ public class MainActivity extends RootActivity implements
             }
         };
 
-        mainSheetChangeReceiver = new BroadcastReceiver() {
+        mainSheetUpdateReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 bottomNavigationController.updateNotifyFavorite();
@@ -242,11 +242,11 @@ public class MainActivity extends RootActivity implements
             }
         };
 
-        broadcastManager.registerBroadReceiver(mainSheetChangeReceiver, BroadcastManager.FILTER_MAIN_SHEET_CHANGED);
-        broadcastManager.registerBroadReceiver(headsetPlugReceiver, BroadcastManager.FILTER_HEADSET_PLUG);
-        broadcastManager.registerBroadReceiver(appQuitTimeCountdownReceiver, BroadcastManager.FILTER_APP_QUIT_TIME_COUNTDOWN);
-        broadcastManager.registerBroadReceiver(appThemeChangeAutomaticReceiver, BroadcastManager.FILTER_APP_THEME_CHANGE_AUTOMATIC);
-        broadcastManager.registerBroadReceiver(mySheetDataChangedReceiver, BroadcastManager.FILTER_MY_SHEET_CHANGED);
+        broadcastManager.registerBroadReceiver(this, mainSheetUpdateReceiver, BroadcastManager.FILTER_MAIN_SHEET_UPDATE);
+        broadcastManager.registerBroadReceiver(this, headsetPlugReceiver, BroadcastManager.FILTER_HEADSET_PLUG);
+        broadcastManager.registerBroadReceiver(this, appQuitTimeCountdownReceiver, BroadcastManager.FILTER_APP_QUIT_TIME_COUNTDOWN);
+        broadcastManager.registerBroadReceiver(this, appThemeChangeAutomaticReceiver, BroadcastManager.FILTER_APP_THEME_CHANGE_AUTOMATIC);
+        broadcastManager.registerBroadReceiver(this, mySheetDataUpdateReceiver, BroadcastManager.FILTER_MY_SHEET_UPDATE);
 
         if (settingPreference.preHeadphoneWire()) {
             headphoneWireControlReceiver = new ComponentName(getPackageName(), HeadphoneWireControlReceiver.class.getName());
@@ -265,7 +265,7 @@ public class MainActivity extends RootActivity implements
         bottomNavigationController.hidePlayNotify();
 
         // 关闭 PlayActivity ，如果启动了的话，PlayActivity 也绑定了播放服务，需要解绑
-        Activity activity = ActivityManager.getInstance(this).getActivity(PlayActivity.class.getName());
+        Activity activity = ActivityManager.getInstance().getActivity(PlayActivity.class.getName());
         if (activity != null) {
             activity.finish();
         }
@@ -353,7 +353,7 @@ public class MainActivity extends RootActivity implements
         unbindService();
 
         // 停止服务
-        broadcastManager.sendBroadcast(BroadcastManager.FILTER_PLAY_SERVICE_QUIT, null);
+        broadcastManager.sendBroadcast(this, BroadcastManager.FILTER_PLAY_SERVICE_QUIT, null);
 
         unregisterReceiver();
         bottomNavigationController.unregisterReceiver();
@@ -370,24 +370,24 @@ public class MainActivity extends RootActivity implements
     }
 
     private void unregisterReceiver() {
-        if (mySheetDataChangedReceiver != null) {
-            broadcastManager.unregisterReceiver(mySheetDataChangedReceiver);
+        if (mySheetDataUpdateReceiver != null) {
+            broadcastManager.unregisterReceiver(this, mySheetDataUpdateReceiver);
         }
 
         if (appQuitTimeCountdownReceiver != null) {
-            broadcastManager.unregisterReceiver(appQuitTimeCountdownReceiver);
+            broadcastManager.unregisterReceiver(this, appQuitTimeCountdownReceiver);
         }
 
         if (appThemeChangeAutomaticReceiver != null) {
-            broadcastManager.unregisterReceiver(appThemeChangeAutomaticReceiver);
+            broadcastManager.unregisterReceiver(this, appThemeChangeAutomaticReceiver);
         }
 
         if (headsetPlugReceiver != null) {
-            broadcastManager.unregisterReceiver(headsetPlugReceiver);
+            broadcastManager.unregisterReceiver(this, headsetPlugReceiver);
         }
 
-        if (mainSheetChangeReceiver != null) {
-            broadcastManager.unregisterReceiver(mainSheetChangeReceiver);
+        if (mainSheetUpdateReceiver != null) {
+            broadcastManager.unregisterReceiver(this, mainSheetUpdateReceiver);
         }
 
         if (headphoneWireControlReceiver != null) {
@@ -434,7 +434,7 @@ public class MainActivity extends RootActivity implements
         switch (id) {
             case R.id.action_main_search:
                 int sheetID = MainSheetHelper.SHEET_ALL;
-                ActivityManager.getInstance(this).startSearchActivity(sheetID);
+                ActivityManager.getInstance().startSearchActivity(this, sheetID);
                 break;
             case android.R.id.home:
                 if (leftNavigationController.visible()) {

@@ -7,10 +7,10 @@
     android:orientation="vertical">
 
     <ImageSwitcher
-        android:foreground="@color/play_bg_mask"
         android:id="@+id/play_bg"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:foreground="@color/play_bg_mask" />
 
     <LinearLayout
         android:id="@+id/play_root_main"
@@ -27,7 +27,9 @@
             android:layout_weight="0.15"
             android:background="?android:selectableItemBackground"
             android:clickable="true"
-            android:gravity="center">
+            android:gravity="center"
+            android:paddingLeft="@dimen/activity_default_margin"
+            android:paddingRight="@dimen/activity_default_margin">
 
             <TextSwitcher
                 android:id="@+id/play_ts_song_name"

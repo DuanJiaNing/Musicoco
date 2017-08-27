@@ -283,7 +283,7 @@ public class MySheetsAdapter extends BaseAdapter implements
     private Bitmap findBitmap(List<DBSongInfo> treeSet, ImageView image) {
         Bitmap bitmap = null;
         for (DBSongInfo s : treeSet) {
-            SongInfo info = mediaManager.getSongInfo(s.path);
+            SongInfo info = mediaManager.getSongInfo(activity, s.path);
             bitmap = BitmapUtils.bitmapResizeFromFile(info.getAlbum_path(), image.getWidth(), image.getHeight());
             if (bitmap != null) {
                 break;

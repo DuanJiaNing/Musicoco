@@ -52,7 +52,7 @@ public class ImageWallActivity extends RootActivity implements
         optionsAdapter = new OptionsAdapter(this);
         optionsDialog.setAdapter(optionsAdapter);
         helper = new MainSheetHelper(this, dbController);
-        activityManager = ActivityManager.getInstance(this);
+        activityManager = ActivityManager.getInstance();
 
         initViews();
         themeChange(null, null);
@@ -62,7 +62,7 @@ public class ImageWallActivity extends RootActivity implements
 
     private void initData() {
         List<DBSongInfo> allSongInfo = helper.getAllSongInfo();
-        List<SongInfo> list = MediaUtils.DBSongInfoToSongInfoList(allSongInfo, MediaManager.getInstance(this));
+        List<SongInfo> list = MediaUtils.DBSongInfoToSongInfoList(this, allSongInfo, MediaManager.getInstance());
         for (SongInfo info : list) {
             String path = info.getAlbum_path();
             if (StringUtils.isReal(path)) {
@@ -109,7 +109,7 @@ public class ImageWallActivity extends RootActivity implements
                         finish();
                         int sheetID = MainSheetHelper.SHEET_ALL;
                         Song at = new Song(current.getData());
-                        activityManager.startSheetDetailActivity(sheetID, at);
+                        activityManager.startSheetDetailActivity(ImageWallActivity.this, sheetID, at);
                     }
                 }
         );
@@ -122,7 +122,7 @@ public class ImageWallActivity extends RootActivity implements
                     public void onClick(OptionsAdapter.ViewHolder holder, int position, OptionsAdapter.Option option) {
                         optionsDialog.hide();
                         Song song = new Song(current.getData());
-                        activityManager.startSongDetailActivity(song, false);
+                        activityManager.startSongDetailActivity(ImageWallActivity.this, song, false);
                     }
                 }
         );
@@ -164,7 +164,7 @@ public class ImageWallActivity extends RootActivity implements
     @Override
     public void onItemClick(ImageAdapter.ViewHolder view, SongInfo d, int position) {
         current = d;
-        activityManager.startImageCheckActivity(d.getAlbum_path());
+        activityManager.startImageCheckActivity(this, d.getAlbum_path());
     }
 
     @Override

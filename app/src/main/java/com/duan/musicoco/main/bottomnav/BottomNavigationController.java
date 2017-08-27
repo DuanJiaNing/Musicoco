@@ -78,7 +78,7 @@ public class BottomNavigationController implements
         this.mediaManager = mediaManager;
         this.playPreference = new PlayPreference(activity);
         this.builder = new BitmapBuilder(activity);
-        this.broadcastManager = BroadcastManager.getInstance(activity);
+        this.broadcastManager = BroadcastManager.getInstance();
         this.listViewsController = new ListViewsController(activity, mediaManager);
 
         task = new PeriodicTask(new PeriodicTask.Task() {
@@ -105,6 +105,8 @@ public class BottomNavigationController implements
 
         mAlbum = (ImageView) activity.findViewById(R.id.list_album);
         mName = (TextView) activity.findViewById(R.id.list_name);
+        // 跑马灯
+        mName.setSelected(true);
         mArts = (TextView) activity.findViewById(R.id.list_arts);
         mPlay = (PlayView) activity.findViewById(R.id.list_play);
         mShowList = (ImageButton) activity.findViewById(R.id.list_list);
@@ -129,7 +131,7 @@ public class BottomNavigationController implements
 
         // songChanged 错过，手动赋值为 playNotifyManager # currentSong
         try {
-            playNotifyManager.updateSong(mediaManager.getSongInfo(control.currentSong()));
+            playNotifyManager.updateSong(mediaManager.getSongInfo(activity, control.currentSong()));
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -143,7 +145,7 @@ public class BottomNavigationController implements
             // 这是因为 MainActivity 中的 bindService 方法比较耗时导致，该方法会对 MediaManager 进行数
             // 据初始化，这些数据时急需的，不能异步获取，只能阻塞
             Song song = control.currentSong();
-            currentSong = this.mediaManager.getSongInfo(song);
+            currentSong = this.mediaManager.getSongInfo(activity, song);
 
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -163,12 +165,12 @@ public class BottomNavigationController implements
             return;
         }
 
-        currentSong = mediaManager.getSongInfo(song);
+        currentSong = mediaManager.getSongInfo(activity, song);
         playNotifyManager.updateSong(currentSong);
         update(null, null);
 
         // 如果此时正在浏览歌单详情 SheetDetailActivity ，需要通知更新
-        BroadcastManager.getInstance(activity).sendBroadcast(BroadcastManager.FILTER_SHEET_DETAIL_SONGS_CHANGE, null);
+        BroadcastManager.getInstance().sendBroadcast(activity, BroadcastManager.FILTER_SHEET_DETAIL_SONGS_UPDATE, null);
     }
 
     private void updateProgress() {
@@ -192,7 +194,7 @@ public class BottomNavigationController implements
     private void updateSongInfo() {
 
         Song song = new Song(currentSong.getData());
-        SongInfo info = mediaManager.getSongInfo(song);
+        SongInfo info = mediaManager.getSongInfo(activity, song);
 
         String name = info.getTitle();
         String arts = info.getArtist();
@@ -222,7 +224,7 @@ public class BottomNavigationController implements
     @Override
     public void update(@Nullable Object obj, OnUpdateStatusChanged completed) {
 
-        if (mediaManager.emptyMediaLibrary(false)) {
+        if (mediaManager.emptyMediaLibrary(activity, false)) {
             noData();
             return;
         } else {
@@ -261,24 +263,24 @@ public class BottomNavigationController implements
 
     @Override
     public void startPlay(Song song, int index, int status) {
-        currentSong = mediaManager.getSongInfo(song);
+        currentSong = mediaManager.getSongInfo(activity, song);
         playNotifyManager.updateSong(currentSong);
 
         startProgressUpdateTask();
         mPlay.setChecked(true);
 
         // 列表上的播放按钮状态
-        broadcastManager.sendBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
+        broadcastManager.sendBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_UPDATE, null);
     }
 
     @Override
     public void stopPlay(Song song, int index, int status) {
         stopProgressUpdateTask();
         mPlay.setChecked(false);
-        playNotifyManager.updateSong(mediaManager.getSongInfo(song));
+        playNotifyManager.updateSong(mediaManager.getSongInfo(activity, song));
 
         //??
-        broadcastManager.sendBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
+        broadcastManager.sendBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_UPDATE, null);
     }
 
     public void startProgressUpdateTask() {
@@ -291,19 +293,19 @@ public class BottomNavigationController implements
 
     @Override
     public void onPlayListChange(Song current, int index, int id) {
-        currentSong = mediaManager.getSongInfo(current);
+        currentSong = mediaManager.getSongInfo(activity, current);
         update(null, null);
         playPreference.updateSheet(id);
 
         //发送广播通知 MySheetController 更新列表（列表的选中播放状态）
-        broadcastManager.sendBroadcast(BroadcastManager.FILTER_MY_SHEET_CHANGED, null);
+        broadcastManager.sendBroadcast(activity, BroadcastManager.FILTER_MY_SHEET_UPDATE, null);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.list_bottom_nav_container:
-                ActivityManager.getInstance(activity).startPlayActivity();
+                ActivityManager.getInstance().startPlayActivity(activity);
                 break;
             case R.id.list_play: {
                 boolean play = mPlay.isChecked();

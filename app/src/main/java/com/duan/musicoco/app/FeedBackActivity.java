@@ -51,9 +51,9 @@ public class FeedBackActivity extends RootActivity implements
     }
 
     private void checkPermission() {
-        PermissionManager pm = PermissionManager.getInstance(this);
+        PermissionManager pm = PermissionManager.getInstance();
         final String re = "android.permission.SEND_SMS";
-        if (!pm.checkPermission(re)) {
+        if (!pm.checkPermission(this, re)) {
             pm.requestPermissions(this, new String[]{re}, SMS_REQUEST_CODE);
         }
 

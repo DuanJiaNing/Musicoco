@@ -179,7 +179,7 @@ public class SheetSongListController implements
                         songOperation.handleAddSongToSheet(info);
                         break;
                     case 1: //详细信息
-                        ActivityManager.getInstance(activity).startSongDetailActivity(song, false);
+                        ActivityManager.getInstance().startSongDetailActivity(activity, song, false);
                         break;
                     case 2: //彻底删除
                         songOperation.handleDeleteSongForever(song, new OnCompleteListener<Void>() {
@@ -421,7 +421,7 @@ public class SheetSongListController implements
                 } else {
                     ds = dbController.getSongInfos(sheetID);
                 }
-                List<SongInfo> da = MediaUtils.DBSongInfoToSongInfoList(ds, mediaManager);
+                List<SongInfo> da = MediaUtils.DBSongInfoToSongInfoList(activity, ds, mediaManager);
 
                 data.clear();
                 for (int i = 0; i < da.size(); i++) {
@@ -512,7 +512,7 @@ public class SheetSongListController implements
 
             if (song != null) {
                 activity.finish();
-                ActivityManager.getInstance(activity).startPlayActivity();
+                ActivityManager.getInstance().startPlayActivity(activity);
             } else {
                 ToastUtils.showShortToast(activity.getString(R.string.error_non_song_to_play), activity);
             }

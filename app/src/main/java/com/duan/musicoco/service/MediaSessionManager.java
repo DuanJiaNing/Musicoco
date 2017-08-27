@@ -41,7 +41,7 @@ public class MediaSessionManager {
     public MediaSessionManager(Context context, IPlayControl control) {
         this.context = context;
         this.control = control;
-        this.mediaManager = MediaManager.getInstance(context);
+        this.mediaManager = MediaManager.getInstance();
         setupMediaSession();
     }
 
@@ -97,7 +97,7 @@ public class MediaSessionManager {
             return;
         }
 
-        SongInfo info = mediaManager.getSongInfo(path);
+        SongInfo info = mediaManager.getSongInfo(context, path);
         MediaMetadataCompat.Builder metaData = new MediaMetadataCompat.Builder()
                 .putString(MediaMetadataCompat.METADATA_KEY_TITLE, info.getTitle())
                 .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, info.getArtist())

@@ -1,5 +1,7 @@
 package com.duan.musicoco.util;
 
+import android.content.Context;
+
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.manager.MediaManager;
@@ -23,11 +25,11 @@ public class MediaUtils {
         return songs;
     }
 
-    public static List<SongInfo> DBSongInfoToSongInfoList(List<DBSongInfo> list, MediaManager mediaManager) {
+    public static List<SongInfo> DBSongInfoToSongInfoList(Context context, List<DBSongInfo> list, MediaManager mediaManager) {
         List<SongInfo> res = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             DBSongInfo info = list.get(i);
-            SongInfo si = mediaManager.getSongInfo(info.path);
+            SongInfo si = mediaManager.getSongInfo(context, info.path);
             if (si != null) {
                 res.add(si);
             }

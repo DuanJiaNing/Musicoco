@@ -215,12 +215,12 @@ public class PlayNotifyManager implements
     }
 
     public void initBroadcastReceivers() {
-        BroadcastManager bd = BroadcastManager.getInstance(activity);
-        bd.registerBroadReceiver(playNotifyReceiver, PLAY_NOTIFY);
+        BroadcastManager bd = BroadcastManager.getInstance();
+        bd.registerBroadReceiver(activity, playNotifyReceiver, PLAY_NOTIFY);
     }
 
     public void unregisterReceiver() {
-        BroadcastManager.getInstance(activity).unregisterReceiver(playNotifyReceiver);
+        BroadcastManager.getInstance().unregisterReceiver(activity, playNotifyReceiver);
     }
 
     private class PlayNotifyReceiver extends BroadcastReceiver {
@@ -252,7 +252,7 @@ public class PlayNotifyManager implements
                     break;
                 case PLAY_FAVORITE_STATUS_SWITCH:
                     dbController.updateSongFavorite(new Song(currentSong.getData()), !favorite);
-                    BroadcastManager.getInstance(activity).sendBroadcast(BroadcastManager.FILTER_MAIN_SHEET_CHANGED, null);
+                    BroadcastManager.getInstance().sendBroadcast(activity, BroadcastManager.FILTER_MAIN_SHEET_UPDATE, null);
                     break;
                 case PLAY_NOTIFY_CLOSE:
                     try {

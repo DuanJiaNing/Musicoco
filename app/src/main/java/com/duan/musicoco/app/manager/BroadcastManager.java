@@ -12,20 +12,18 @@ import android.support.annotation.Nullable;
  */
 public class BroadcastManager {
 
-    public static final String FILTER_MAIN_DATA_UPDATE = "filter_main_data_update";
-    public static final String FILTER_PLAY_SHEET_RANDOM = "filter_play_sheet_random";
 
-    public static final String FILTER_MAIN_SHEET_CHANGED = "filter_main_sheet_changed";
+    // 主界面【主歌单】信息更新
+    public static final String FILTER_MAIN_SHEET_UPDATE = "filter_main_sheet_update";
 
-    public static final String FILTER_MY_SHEET_CHANGED = "filter_my_sheet_changed";
+    // 主界面【我的歌单】信息更新
+    public static final String FILTER_MY_SHEET_UPDATE = "filter_my_sheet_update";
 
-    public static final String FILTER_SHEET_DETAIL_SONGS_CHANGE = "filter_sheet_detail_songs_change";
+    // 歌单详情界面信息更新
+    public static final String FILTER_SHEET_DETAIL_SONGS_UPDATE = "filter_sheet_detail_songs_update";
 
     //服务器退出
     public static final String FILTER_PLAY_SERVICE_QUIT = "filter_play_service_quit";
-
-    // 标识当前的【关闭应用】操作是被【定时关闭】广播触发的
-    public static String EXTRA_IS_TIME_SLEEP;
 
 
     //播放界面界面主题改变
@@ -56,17 +54,14 @@ public class BroadcastManager {
     // 耳机插入和拔出事件
     public static final String FILTER_HEADSET_PLUG = "android.intent.action.HEADSET_PLUG";
 
-    private Context context;
-
     private static BroadcastManager mInstance;
 
-    private BroadcastManager(Context context) {
-        this.context = context;
+    private BroadcastManager() {
     }
 
-    public static BroadcastManager getInstance(Context context) {
+    public static BroadcastManager getInstance() {
         if (mInstance == null) {
-            mInstance = new BroadcastManager(context);
+            mInstance = new BroadcastManager();
         }
         return mInstance;
     }
@@ -74,7 +69,7 @@ public class BroadcastManager {
     /**
      * 注册广播接收器
      */
-    public void registerBroadReceiver(BroadcastReceiver receiver, String identity) {
+    public void registerBroadReceiver(Context context, BroadcastReceiver receiver, String identity) {
         IntentFilter filter = new IntentFilter(identity);
         context.registerReceiver(receiver, filter);
     }
@@ -82,7 +77,7 @@ public class BroadcastManager {
     /**
      * 发送广播
      */
-    public void sendBroadcast(String identity, @Nullable Bundle extras) {
+    public void sendBroadcast(Context context, String identity, @Nullable Bundle extras) {
         Intent intent = new Intent();
         if (extras != null) {
             intent.putExtras(extras);
@@ -94,7 +89,7 @@ public class BroadcastManager {
     /**
      * 注销广播接收者
      */
-    public void unregisterReceiver(BroadcastReceiver receiver) {
+    public void unregisterReceiver(Context context, BroadcastReceiver receiver) {
         context.unregisterReceiver(receiver);
     }
 
