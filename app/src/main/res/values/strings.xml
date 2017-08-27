@@ -4,11 +4,11 @@
 
     <string name="album_save_path">image</string>
     <string name="qq">2217611834</string>
-    <string name="phone">17628287313</string>
+    <string name="phone">18202856027</string>
     <string name="email">aimeimeits@gmail.com</string>
 
     <string name="guide_url">http://www.jianshu.com/p/051e214ebc2e</string>
-    <string name="share_to_friends">棒棒，顶呱呱，Musicoco。</string>
+    <string name="share_to_friends">Musicoco</string>
 
     <string name="label_theme_color_custom">主题色定制</string>
     <string name="label_image_wall">图片墙</string>
@@ -201,7 +201,7 @@
     <string name="replace_search_result_prompt">共检索到 * 首歌曲</string>
     <string name="replace_rmp_title">播放次数最多的 * 首歌</string>
     <string name="replace_time_sleep">* 分钟后停止播放</string>
-    <string name="replace_time_sleep_app_quit_at">设置成功，将于 * 后关闭</string>
+    <string name="replace_time_sleep_app_quit_at">设置成功，应用将于 * 后关闭</string>
 
     <!-- 对话框等标题 /////////////////////////////////////////////////////////////////////////////////////////// -->
 

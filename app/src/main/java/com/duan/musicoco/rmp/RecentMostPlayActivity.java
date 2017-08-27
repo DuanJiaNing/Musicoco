@@ -227,7 +227,7 @@ public class RecentMostPlayActivity extends RootActivity implements
 
             holders[a].name.setText(d.title);
             holders[a].arts.setText(d.arts);
-            holders[a].time.setText(String.format("%d" + getString(R.string.count), d.times));
+            holders[a].time.setText(String.format("%d " + getString(R.string.count), d.times));
 
             Glide.with(this)
                     .load(d.album)

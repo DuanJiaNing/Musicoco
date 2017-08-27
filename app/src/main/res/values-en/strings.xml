@@ -1,14 +1,14 @@
 <resources>
-    <string name="app_name">my music</string>
+    <string name="app_name">My music</string>
     <string name="app_name_us">Musicoco</string>
 
     <string name="album_save_path">image</string>
     <string name="qq">2217611834</string>
-    <string name="phone">17628287313</string>
+    <string name="phone">18202856027</string>
     <string name="email">Aimeimeits@gmail.com</string>
 
     <string name="guide_url">Http://www.jianshu.com/p/051e214ebc2e</string>
-    <string name="share_to_friends">Musicoco.</string>
+    <string name="share_to_friends">Musicoco</string>
 
     <string name="label_theme_color_custom">Theme color customization</string>
     <string name="label_image_wall">Picture wall</string>
@@ -16,9 +16,9 @@
     <string name="label_play_theme_custom">Play panel style</string>
     <string name="label_setting">Set up</string>
     <string name="label_feed_back">Feedback</string>
-    <string name="label_about">about app</string>
+    <string name="label_about">About app</string>
     <string name="label_web">Web page</string>
-    <string name="label_me">about me</string>
+    <string name="label_me">About me</string>
 
     <!-- 权限相关 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -39,13 +39,13 @@
 
     <!-- 主页 主歌单歌单名/////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <string name="main_sheet_favorite">my collection</string>
+    <string name="main_sheet_favorite">My favorite</string>
     <string name="main_sheet_recent">Recently played</string>
     <string name="main_sheet_all">All songs</string>
 
     <!-- 主页 我的歌单/////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <string name="my_sheet_title">Create a song list</string>
+    <string name="my_sheet_title">Song list</string>
     <string name="my_sheet_click_here_for_new_sheet">Click here to create a song list</string>
 
     <!-- 歌曲操作 /////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -53,18 +53,18 @@
     <string name="song_operation_collection_sheet">Collection to song list</string>
     <string name="song_operation_detail">Song details</string>
     <string name="song_operation_remove_from_sheet">Remove the song from the list</string>
-    <string name="song_operation_delete">delete</string>
+    <string name="song_operation_delete">Delete</string>
     <string name="song_operation_add_to_favorite">Collection</string>
     <string name="song_operation_remove_from_favorite">Cancel collection</string>
 
     <!-- 歌单编辑/新建 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <string name="new_sheet">New song list</string>
-    <string name="sheet_name">Song list name</string>
+    <string name="sheet_name">song list name</string>
     <string name="sheet_remark">description</string>
     <string name="sheet_input_tip">Enter the song name and description, the description can be empty</string>
 
-    <string name="sheet_operation_modify">Edit song information</string>
+    <string name="sheet_operation_modify">Edit song list information</string>
     <string name="sheet_operation_delete">Delete song list</string>
 
     <string name="modify_sheet">Edit song list</string>
@@ -111,7 +111,7 @@
     <!-- 公用短词 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <string name="warning">caveat</string>
-    <string name="unknown">Wrong :O</string>
+    <string name="unknown">wrong :O</string>
     <string name="ensure">confirm</string>
     <string name="save">save</string>
     <string name="collect">Collection</string>
@@ -123,7 +123,7 @@
     <string name="count">times</string>
     <string name="head">first</string>
     <string name="search">search</string>
-    <string name="continue_">carry on</string>
+    <string name="continue_">continue</string>
     <string name="deleting">Is being deleted</string>
     <string name="cancel">cancel</string>
     <string name="arts">artist</string>
@@ -149,8 +149,8 @@
     <string name="icon_color">Icon color</string>
     <string name="open_whit_browser">Open in the system browser</string>
 
-    <string name="enable">Open</string>
-    <string name="disable">Not open</string>
+    <string name="enable">open</string>
+    <string name="disable">not open</string>
 
     <!-- 提示 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -163,16 +163,16 @@
     <string name="info_not_modify">Unmodified</string>
     <string name="info_app_wile_quit_after_20s">The application will exit after 20 seconds</string>
     <string name="info_search">Search for music</string>
-    <string name="info_show_in_sheet">show in the song list</string>
-    <string name="info_time_sleep_is_canceled">Timed stop playback has been canceled</string>
+    <string name="info_show_in_sheet">Show in the song list</string>
+    <string name="info_time_sleep_is_canceled">Timed shutdown has been canceled</string>
     <string name="info_save_image">Save the picture</string>
     <string name="info_choice_email_app">Please select the mail class application</string>
     <string name="info_jump_to_source">Jump to source</string>
     <string name="info_cleat_cache">
-        Clear the cache will empty the song details interface and the picture interface of the playback buffer, which will make the application again in the next use of these pictures need to be regenerated to confirm the clear!
+        Clear the cache will empty the song details interface and play interface of image cache,this will make the application repeat generate when next time need these images, confirm clear!
     </string>
     <string name="info_will_speed_few_cent">
-        Click to send me a text message \nthis may require you to pay a little SMS fee!
+        Click to send me a text message,\nthis may require you to pay a little SMS fee!
     </string>
     <string name="info_contact_me_other_where">You can also contact me by the following means</string>
     <string name="info_contact_me_other_where_detail">
@@ -190,7 +190,7 @@
     <string name="in_progress_add_songs_to_favorite">Collecting songs</string>
     <string name="in_progress_remove_songs_from_favorite">Canceling collection</string>
     <string name="in_progress_remove_songs_from_sheet">removing</string>
-    <string name="in_progress_delete">being deleted</string>
+    <string name="in_progress_delete">Being deleted</string>
     <string name="in_progress">Loading</string>
     <string name="in_progress_send_feedback">Sending text message</string>
 
@@ -201,7 +201,7 @@
     <string name="replace_search_result_prompt">A total of * songs were retrieved</string>
     <string name="replace_rmp_title">The most frequently played * song</string>
     <string name="replace_time_sleep">Stop after * minutes</string>
-    <string name="replace_time_sleep_app_quit_at">The setting is successful and will be closed after *</string>
+    <string name="replace_time_sleep_app_quit_at">The setting is successful and app will be shutdown after *</string>
 
     <!-- 对话框等标题 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -213,62 +213,62 @@
 
     <!-- 主页 最近最多播放 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <string name="rmp_see_more">see more</string>
-    <string name="rmp_history">History up to play</string>
+    <string name="rmp_see_more">See more</string>
+    <string name="rmp_history">Most plays the most</string>
 
     <!-- 主页左侧导航及设置 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <string name="setting_tools">tool</string>
+    <string name="setting_tools">tools</string>
     <string name="setting_scan">Song scan</string>
-    <string name="setting_time_sleep">Timed to stop playing</string>
+    <string name="setting_time_sleep">Timed shutdown</string>
     <string name="setting_image_wall">Picture wall</string>
     <string name="setting_equalizer">Equalizer</string> <!-- 升级 -->
 
-    <string name="setting_theme_custom">Appearance customization</string>
+    <string name="setting_theme_custom">appearance customization</string>
     <string name="setting_play_ui_choice">Play panel style</string>
     <string name="setting_theme_color_custom">Theme color customization</string>
     <string name="setting_night_mode">Night mode</string>
     <string name="setting_daytime_mode">Day mode</string>
 
     <string name="setting_user_guide">User Guide</string>
-    <string name="setting_quit">drop out</string>
+    <string name="setting_quit">Drop out</string>
     <string name="setting_set">Set up</string>
 
     <!-- /////////////////////////////////////////////-->
-    <string name="setting_set_open_auto_play">Turn on app autoplay</string>
+    <string name="setting_set_open_auto_play">Turn on auto-play</string>
     <string name="setting_set_memory_play">Memory play</string>
     <string name="memory_play_enable">22:30 - 07:00 The night mode is automatically turned on</string>
     <string name="setting_set_switch_theme_mode_auto">Automatically switch to night mode</string>
 
-    <string name="setting_music_hardware">Music hardware</string>
+    <string name="setting_music_hardware">music hardware</string>
     <string name="setting_set_headphone_wire">Wire cut song</string>
-    <string name="setting_set_headphone_wire_enable">Click: play / pause; double click: next one; three hit: previous one</string>
+    <string name="setting_set_headphone_wire_enable">click: play / pause; double click: next one; three hit: previous one</string>
 
-    <string name="setting_about">about</string>
+    <string name="setting_about">About</string>
     <string name="setting_set_feedback">Feedback</string>
     <string name="setting_set_about">Application information</string>
 
     <string name="setting_cache">Cache</string>
-    <string name="setting_set_image_clear_cache">clear cache</string>
+    <string name="setting_set_image_clear_cache">Clear cache</string>
 
     <!--更新-->
-    <string name="setting_set_image_save_path">the image save path</string>
+    <string name="setting_set_image_save_path">The image save path</string>
 
     <!-- 播放界面主题自定义 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <string name="play_theme_custom_dark">night</string>
     <string name="play_theme_custom_white">day</string>
-    <string name="play_theme_custom_blur">Blur</string>
-    <string name="play_theme_custom_color">Solid color</string>
-    <string name="play_theme_custom_gradient">Gradient</string>
-    <string name="play_theme_custom_mask">Cover</string>
+    <string name="play_theme_custom_blur">blur</string>
+    <string name="play_theme_custom_color">solid color</string>
+    <string name="play_theme_custom_gradient">gradient</string>
+    <string name="play_theme_custom_mask">cover</string>
 
     <!-- 关于 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <string name="about_guide">User Guide</string>
-    <string name="about_welcome">welcome page</string>
+    <string name="about_welcome">Welcome page</string>
     <string name="about_star">Give the application a score</string>
-    <string name="about_share">recommend to friends</string>
+    <string name="about_share">Recommend to friends</string>
     <string name="about_me">About the developer</string>
 
     <!-- 关于我 /////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -283,11 +283,11 @@
     <string name="me_csdn_url">Http://blog.csdn.net/aimeimeits?viewmode=list</string>
     <string name="me_jianshu">Simple book</string>
     <string name="me_jianshu_url">Http://www.jianshu.com/u/897bb1600def</string>
-    <string name="me_qq">Qq</string>
-    <string name="me_qq_url">@String/qq</string>
+    <string name="me_qq">qq</string>
+    <string name="me_qq_url">@string/qq</string>
     <string name="me_email">mailbox</string>
-    <string name="me_email_url">@String/email</string>
+    <string name="me_email_url">@string/email</string>
     <string name="me_phone">phone</string>
-    <string name="me_phone_url">@String/phone</string>
+    <string name="me_phone_url">@string/phone</string>
 
 </resources>

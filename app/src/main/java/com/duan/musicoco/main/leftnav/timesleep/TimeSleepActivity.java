@@ -134,9 +134,9 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
         String ti = getString(R.string.replace_time_sleep_app_quit_at);
         String re;
         if (time > 60) {
-            re = time / 60 + getString(R.string.hour) + time % 60 + getString(R.string.minute);
+            re = time / 60 + " " + getString(R.string.hour) + " " + time % 60 + " " + getString(R.string.minute);
         } else {
-            re = time + getString(R.string.minute);
+            re = time + " " + getString(R.string.minute);
         }
         String str = ti.replace("*", re);
         ToastUtils.showLongToast(this, str);
@@ -250,7 +250,7 @@ public class TimeSleepActivity extends RootActivity implements ThemeChangeable {
             String s = getString(R.string.minute);
             int dur = getResources().getInteger(R.integer.anim_default_duration);
             for (View v : vs) {
-                ((TextView) v).setText(tagToInt(v) + s);
+                ((TextView) v).setText(tagToInt(v) + " " + s);
                 AnimationUtils.startScaleAnim(v, dur, null, 0.0f, 1.0f);
                 AnimationUtils.startAlphaAnim(v, dur, null, 0.0f, enable ? 1.0f : 0.4f);
             }
