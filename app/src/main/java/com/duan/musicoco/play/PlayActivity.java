@@ -345,8 +345,15 @@ public class PlayActivity extends InspectActivity implements
     @Override
     public void songChanged(Song song, int index, boolean isNext) {
 
-        // UPDATE: 2017/8/26 更新 次数计算策略完善
-        dbController.addSongPlayTimes(song);
+        try {
+            // UPDATE: 2017/8/26 更新 次数计算策略完善
+            if (control.status() == PlayController.STATUS_PLAYING) {
+                dbController.addSongPlayTimes(song);
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
         updateCurrentSongInfo(song, isNext);
         updateViewsColorsIfNeed(song);
 
