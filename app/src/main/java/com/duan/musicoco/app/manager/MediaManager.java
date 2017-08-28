@@ -97,11 +97,12 @@ public class MediaManager {
         return imagePath;
     }
 
+    @Nullable
     public SongInfo getSongInfo(Context context, @NonNull Song song) {
         check(context);
         SongInfo info = null;
-        for (SongInfo song1 : songs) {
-            info = song1;
+        for (SongInfo s : songs) {
+            info = s;
             if (info.getData().equals(song.path)) {
                 break;
             }

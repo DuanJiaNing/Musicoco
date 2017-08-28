@@ -72,22 +72,21 @@ public class LeftNavigationController implements
         this.dbController = dbController;
 
         homeBackgroundController.initData(dbController);
-        initImageWall();
+        initNavImage();
 
     }
 
-    private void initImageWall() {
+    private void initNavImage() {
 
         navigationView.post(new Runnable() {
             @Override
             public void run() {
                 ImageView iv = (ImageView) navigationView.findViewById(R.id.main_left_nav_image);
                 if (iv != null) {
-
                     iv.post(new Runnable() {
                         @Override
                         public void run() {
-                            updateHomeBackgroundImage();
+                            homeBackgroundController.updateImage();
                         }
                     });
                 }
@@ -96,9 +95,6 @@ public class LeftNavigationController implements
         });
     }
 
-    public void updateHomeBackgroundImage() {
-        homeBackgroundController.updateImage();
-    }
 
     public boolean onBackPressed() {
         if (visible()) {

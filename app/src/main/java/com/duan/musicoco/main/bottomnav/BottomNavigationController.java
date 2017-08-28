@@ -131,7 +131,10 @@ public class BottomNavigationController implements
 
         // songChanged 错过，手动赋值为 playNotifyManager # currentSong
         try {
-            playNotifyManager.updateSong(mediaManager.getSongInfo(activity, control.currentSong()));
+            Song song = control.currentSong();
+            if (song != null) {
+                playNotifyManager.updateSong(mediaManager.getSongInfo(activity, song));
+            }
         } catch (RemoteException e) {
             e.printStackTrace();
         }

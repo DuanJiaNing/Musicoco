@@ -22,6 +22,7 @@ import com.duan.musicoco.db.modle.DBSongInfo;
 import com.duan.musicoco.image.BitmapProducer;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.util.MediaUtils;
+import com.duan.musicoco.util.StringUtils;
 
 import java.util.List;
 
@@ -104,12 +105,20 @@ public class HomeBackgroundController {
             return null;
         }
 
+
         size = size > list.size() ? list.size() : size;
         String[] strs = new String[size];
+        int j = 0;
         for (int i = 0; i < size; i++) {
-            strs[i] = list.get(i).getAlbum_path();
+            String path = list.get(i).getAlbum_path();
+            if (StringUtils.isReal(path)) {
+                strs[j++] = path;
+            }
         }
-        return strs;
+
+        String[] des = new String[j];
+        System.arraycopy(strs, 0, des, 0, j);
+        return des;
     }
 
     private Bitmap getImageBitmap() {
@@ -123,6 +132,8 @@ public class HomeBackgroundController {
         int w = iv.getWidth();
         int h = iv.getHeight();
 
+        // 虚化程度
+        // UPDATE: 2017/8/28 更新 主页左侧导航图片属性定制
         int blur = appPreference.getImageWallBlur();
         int defaultSam = activity.getResources().getInteger(R.integer.image_wall_default_sampling);
         int sam = blur == 1 ? 1 : defaultSam;
