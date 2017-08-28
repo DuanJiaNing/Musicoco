@@ -55,7 +55,7 @@
         <activity
             android:name=".main.MainActivity"
             android:alwaysRetainTaskState="true"
-            android:label="@string/app_name"
+            android:label="@string/label_main"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
         <activity
@@ -68,7 +68,7 @@
             android:theme="@style/AppTheme.Sheet.Detail" />
         <activity
             android:name=".sheetmodify.SheetModifyActivity"
-            android:label="@string/title_activity_sheet_modify"
+            android:label="@string/label_modify_sheet"
             android:launchMode="singleTask"
             android:theme="@style/AppTheme" />
         <activity

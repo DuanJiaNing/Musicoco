@@ -18,14 +18,14 @@
             android:id="@+id/list_progress_bg"
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:background="#000" />
+            android:background="#ffffff" />
 
         <View
             android:id="@+id/list_progress"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center|start"
-            android:background="@color/colorAccent" />
+            android:background="#28000000" />
     </FrameLayout>
 
     <RelativeLayout

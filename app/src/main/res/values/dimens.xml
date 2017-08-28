@@ -1,5 +1,4 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
@@ -80,5 +79,8 @@
     <dimen name="sheet_modify_linear_layout_divide_height">20dp</dimen>
 
     <dimen name="me_social_item_height">100dp</dimen>
+
+    <!--设置界面 PreferenceFragment 的高度-->
+    <dimen name="setting_fragment_height">400dp</dimen>
 
 </resources>

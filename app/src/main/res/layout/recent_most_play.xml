@@ -8,6 +8,7 @@
     android:paddingTop="@dimen/activity_default_margin_s">
 
     <TextView
+        android:text="@string/rmp_history"
         android:id="@+id/rmp_type"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -163,6 +164,7 @@
     </RelativeLayout>
 
     <View
+        android:alpha="0.7"
         android:id="@+id/rmp_line"
         android:layout_width="match_parent"
         android:layout_height="1px"

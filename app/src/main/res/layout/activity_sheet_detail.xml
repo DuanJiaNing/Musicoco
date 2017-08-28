@@ -34,7 +34,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginBottom="@dimen/activity_default_margin"
-                android:layout_marginRight="@dimen/activity_default_margin"
                 android:layout_marginTop="@dimen/activity_default_margin">
 
                 <ImageView
@@ -55,17 +54,24 @@
                     android:id="@+id/sheet_detail_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="0dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="16dp"
                     android:ellipsize="end"
                     android:lines="1"
                     android:textSize="@dimen/text_large_l_l"
                     app:layout_constraintBottom_toTopOf="@+id/sheet_detail_remark"
-                    app:layout_constraintLeft_toLeftOf="@+id/guideline4" />
+                    app:layout_constraintLeft_toLeftOf="@+id/guideline4"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0" />
 
                 <TextView
                     android:id="@+id/sheet_detail_remark"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="0dp"
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:paddingBottom="@dimen/activity_default_padding"
@@ -73,18 +79,22 @@
                     android:textSize="@dimen/text_middle_s"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="@+id/guideline4"
+                    app:layout_constraintRight_toRightOf="@+id/sheet_detail_name"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.504" />
+                    app:layout_constraintVertical_bias="0.506" />
 
                 <TextView
                     android:id="@+id/sheet_detail_create_time"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_marginRight="0dp"
+                    android:layout_marginTop="0dp"
                     android:ellipsize="end"
                     android:lines="1"
                     android:textSize="@dimen/text_middle_s"
                     app:layout_constraintLeft_toLeftOf="@+id/guideline4"
+                    app:layout_constraintRight_toRightOf="@+id/sheet_detail_remark"
                     app:layout_constraintTop_toBottomOf="@+id/sheet_detail_remark" />
 
                 <android.support.constraint.Guideline
@@ -92,7 +102,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    app:layout_constraintGuide_percent="0.58" />
+                    app:layout_constraintGuide_percent="0.5" />
 
             </android.support.constraint.ConstraintLayout>
 

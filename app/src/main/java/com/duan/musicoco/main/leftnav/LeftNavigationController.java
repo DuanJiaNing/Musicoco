@@ -235,12 +235,15 @@ public class LeftNavigationController implements
         quitCountDown.start();
     }
 
-    public void stopQuitCountdown() {
+    public void stopQuitCountdown(boolean resetText) {
         if (quitCountDown != null && quitCountDown.isSchedule()) {
             quitCountDown.stop();
         }
         auxiliaryPreference.setTimeSleepDisable();
-        resetText();
+
+        if (resetText) {
+            resetText();
+        }
     }
 
     private void resetText() {
@@ -279,7 +282,7 @@ public class LeftNavigationController implements
             if (dur >= 0 && item != null) {
                 if (dur == 0) {
                     if (sec == 0) {
-                        countDownFinish();
+                        countDownFinish(false);
                     } else if (sec == 23) { // 倒数 23 秒提醒用户 20s 将退出
                         navigationView.post(new Runnable() {
                             @Override
@@ -299,12 +302,12 @@ public class LeftNavigationController implements
                 }
                 countDown();
             } else {
-                countDownFinish();
+                countDownFinish(false);
             }
         }
 
-        private void countDownFinish() {
-            stopQuitCountdown();
+        private void countDownFinish(boolean resetText) {
+            stopQuitCountdown(resetText);
 
             //定时自然停止时应用也应关闭
             ((MainActivity) activity).shutDownServiceAndApp();

@@ -173,9 +173,9 @@ public class MainActivity extends RootActivity implements
         mySheetsController.update(obj, statusChanged);
     }
 
+    // 没有数据的处理行为在各个 Controller 中完成
     @Override
     public void noData() {
-        // 没有数据的处理行为在各个 Controller 中完成
     }
 
     private void initBroadcastReceivers() {
@@ -193,7 +193,7 @@ public class MainActivity extends RootActivity implements
                         BroadcastManager.Countdown.APP_QUIT_TIME_COUNTDOWN_STATUS,
                         BroadcastManager.Countdown.STOP_COUNTDOWN);
                 if (status == BroadcastManager.Countdown.STOP_COUNTDOWN) {
-                    leftNavigationController.stopQuitCountdown();
+                    leftNavigationController.stopQuitCountdown(true);
                 } else {
                     leftNavigationController.startQuitCountdown();
                 }
@@ -273,7 +273,6 @@ public class MainActivity extends RootActivity implements
         // 关闭自己 解绑 停止服务
         finish();
 
-//        System.exit(0);
     }
 
     private void initSelfViews() {

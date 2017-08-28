@@ -4,10 +4,12 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.AlertDialog;
 import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -17,6 +19,11 @@ import android.widget.TextView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.manager.ActivityManager;
+import com.duan.musicoco.shared.DialogProvider;
+import com.duan.musicoco.util.ColorUtils;
+import com.duan.musicoco.util.Utils;
+
+import java.util.Random;
 
 /**
  * Created by DuanJiaNing on 2017/8/21.
@@ -26,7 +33,7 @@ public class SplashActivity extends InspectActivity {
 
     private TextView[] ts;
 
-    private int index;
+    private View container;
     private boolean animComplete;
     private boolean initComplete;
 
@@ -47,14 +54,20 @@ public class SplashActivity extends InspectActivity {
         initDataAndStartService();
     }
 
+    @Override
+    public void permissionDenied(int requestCode) {
+        finish();
+    }
+
     private void initViews() {
-        View v = findViewById(R.id.splash_container);
+        container = findViewById(R.id.splash_container);
         GradientDrawable gd = new GradientDrawable(GradientDrawable.Orientation.TL_BR,
                 new int[]{
                         getResources().getColor(R.color.colorPrimary),
                         getResources().getColor(R.color.colorPrimaryDark)
                 });
-        v.setBackground(gd);
+        container.setBackground(gd);
+        container.setClickable(false);
 
         ts = new TextView[]{
                 (TextView) findViewById(R.id.splash_m),
@@ -69,45 +82,53 @@ public class SplashActivity extends InspectActivity {
         ts[0].post(new Runnable() {
             @Override
             public void run() {
-                startTextInAnim(ts[index]);
+                for (TextView t : ts) {
+                    t.setVisibility(View.VISIBLE);
+                    startTextInAnim(t);
+                }
             }
         });
     }
 
-    private void startTextInAnim(final TextView t) {
-        ValueAnimator anim = ObjectAnimator.ofFloat(t, "translationY", t.getHeight(), 0);
-        anim.setInterpolator(new AccelerateDecelerateInterpolator());
+    private void startTextInAnim(TextView t) {
+        Random r = new Random();
+        DisplayMetrics metrics = Utils.getMetrics(this);
+        int x = r.nextInt(metrics.widthPixels * 4 / 3);
+        int y = r.nextInt(metrics.heightPixels * 4 / 3);
+        float s = r.nextFloat() + 4.0f;
+        ValueAnimator tranY = ObjectAnimator.ofFloat(t, "translationY", y - t.getY(), 0);
+        ValueAnimator tranX = ObjectAnimator.ofFloat(t, "translationX", x - t.getX(), 0);
+        ValueAnimator scaleX = ObjectAnimator.ofFloat(t, "scaleX", s, 1.0f);
+        ValueAnimator scaleY = ObjectAnimator.ofFloat(t, "scaleY", s, 1.0f);
         ValueAnimator alpha = ObjectAnimator.ofFloat(t, "alpha", 0.0f, 1.0f);
 
         AnimatorSet set = new AnimatorSet();
-        set.setDuration(350);
-        set.play(anim).with(alpha);
+        set.setDuration(1800);
+        set.setInterpolator(new AccelerateDecelerateInterpolator());
+        set.play(tranX).with(tranY).with(scaleX).with(scaleY).with(alpha);
+        if (t == findViewById(R.id.splash_o1)) {
+            set.addListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
 
-        set.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                t.setVisibility(View.VISIBLE);
-            }
+                }
 
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                if (index != ts.length - 1) {
-                    startTextInAnim(ts[++index]);
-                } else {
+                @Override
+                public void onAnimationEnd(Animator animation) {
                     startFinalAnim();
                 }
-            }
 
-            @Override
-            public void onAnimationCancel(Animator animation) {
+                @Override
+                public void onAnimationCancel(Animator animation) {
 
-            }
+                }
 
-            @Override
-            public void onAnimationRepeat(Animator animation) {
+                @Override
+                public void onAnimationRepeat(Animator animation) {
 
-            }
-        });
+                }
+            });
+        }
         set.start();
     }
 
@@ -134,7 +155,6 @@ public class SplashActivity extends InspectActivity {
                     @Override
                     public void run() {
                         if (initComplete) {
-                            // FIXME
                             startMainActivity();
                         } else {
                             animComplete = true;
@@ -185,40 +205,80 @@ public class SplashActivity extends InspectActivity {
 
     private void initDataAndStartService() {
 
-        new AsyncTask<Void, Void, Void>() {
+        new AsyncTask<Void, Void, Boolean>() {
             @Override
-            protected Void doInBackground(Void... params) {
-
-                //   耗时
-                prepareData();
-                //   耗时
-                initAppDataIfNeed();
-
-                //   耗时，启动服务之前先准备好数据
-                startService();
-
-                return null;
+            protected Boolean doInBackground(Void... params) {
+                return init();
             }
 
             @Override
-            protected void onPostExecute(Void aVoid) {
-                if (animComplete) {
-                    startMainActivity();
-                } else {
-                    initComplete = true;
-                }
+            protected void onPostExecute(Boolean b) {
+                startOrFinish(b);
             }
         }.execute();
 
     }
 
-    private void startMainActivity() {
-        ActivityManager.getInstance().startMainActivity(this);
-        finish();
+    // 媒体库为空退出，否则启动主 Activity
+    private void startOrFinish(Boolean b) {
+        if (b) {
+            if (animComplete) {
+                startMainActivity();
+            } else {
+                initComplete = true;
+            }
+        } else {
+            handleEmptyLibrary();
+        }
     }
 
-    @Override
-    public void permissionDenied(int requestCode) {
+    // 准备数据
+    private boolean init() {
+
+        // 耗时
+        prepareData();
+
+        // 检查设备上是否有媒体文件
+        if (mediaManager.emptyMediaLibrary(this, false)) {
+            return false;
+        }
+
+        //   耗时
+        initAppDataIfNeed();
+
+        //   耗时，启动服务之前先准备好数据
+        startService();
+
+        return true;
+    }
+
+    private void handleEmptyLibrary() {
+        container.setClickable(true);
+        container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (TextView t : ts) {
+                    startTextInAnim(t);
+                }
+
+                int color = ColorUtils.getRandomBrunetColor();
+                GradientDrawable gd = new GradientDrawable(GradientDrawable.Orientation.TL_BR,
+                        new int[]{
+                                android.support.v4.graphics.ColorUtils.setAlphaComponent(color, 100),
+                                color,
+                        });
+                v.setBackground(gd);
+            }
+        });
+
+        DialogProvider p = new DialogProvider(this);
+        AlertDialog dialog = p.createInfosDialog(getString(R.string.tip), getString(R.string.info_empty_library_when_start));
+        dialog.setCancelable(true);
+        dialog.show();
+    }
+
+    private void startMainActivity() {
+        ActivityManager.getInstance().startMainActivity(this);
         finish();
     }
 

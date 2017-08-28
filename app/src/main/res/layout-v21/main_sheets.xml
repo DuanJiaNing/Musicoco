@@ -30,14 +30,17 @@
                 android:id="@+id/sheet_all_image"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/main_sheets_height"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"
+                android:src="@drawable/default_album" />
 
             <TextView
                 android:id="@+id/sheet_all_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:ellipsize="end"
 
+                android:gravity="center"
+                android:lines="1"
                 android:padding="4dp"
                 android:text="@string/main_sheet_all"
                 android:textSize="@dimen/text_middle_s"
@@ -83,13 +86,16 @@
                 android:id="@+id/sheet_recent_image"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/main_sheets_height"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"
+                android:src="@drawable/default_album" />
 
             <TextView
                 android:id="@+id/sheet_recent_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:gravity="center"
+                android:lines="1"
 
                 android:padding="4dp"
                 android:text="@string/main_sheet_recent"
@@ -139,14 +145,17 @@
                 android:id="@+id/sheet_favorite_image"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/main_sheets_height"
-                android:scaleType="centerCrop" />
+                android:scaleType="centerCrop"
+                android:src="@drawable/default_album" />
 
             <TextView
                 android:id="@+id/sheet_favorite_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
+                android:ellipsize="end"
                 android:gravity="center"
+
+                android:lines="1"
                 android:padding="4dp"
                 android:text="@string/main_sheet_favorite"
                 android:textSize="@dimen/text_middle_s"

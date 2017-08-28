@@ -171,17 +171,6 @@ public class MySheetsController implements
     @Override
     public void update(Object obj, OnUpdateStatusChanged completed) {
 
-        if (mediaManager.emptyMediaLibrary(activity, false)) {
-            noData();
-            return;
-        } else {
-            mAddSheet.setEnabled(true);
-            mListView.setEnabled(true);
-            if (isEmptyViewVisible()) {
-                mEmptyListNoticeContainer.setEnabled(true);
-            }
-        }
-
         //注意不能修改 sheets 的引用，否则 notifyDataSetChanged 失效
         List<Sheet> newData = dbMusicoco.getSheets();
         sheets.clear();
@@ -223,11 +212,6 @@ public class MySheetsController implements
 
     @Override
     public void noData() {
-        mAddSheet.setEnabled(false);
-        mListView.setEnabled(false);
-        if (isEmptyViewVisible()) {
-            mEmptyListNoticeContainer.setEnabled(false);
-        }
     }
 
     private boolean isEmptyViewVisible() {

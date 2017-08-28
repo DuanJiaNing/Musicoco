@@ -286,11 +286,6 @@ public class BottomNavigationController implements
     @Override
     public void update(Object obj, OnUpdateStatusChanged completed) {
 
-        if (mediaManager.emptyMediaLibrary(activity, false)) {
-            noData();
-            return;
-        }
-
         updatePlayListAdapter();
         listOption.update(obj, completed);
         songOption.update(obj, completed);
@@ -298,7 +293,6 @@ public class BottomNavigationController implements
 
     @Override
     public void noData() {
-        // UPDATE: 2017/8/26 更新
     }
 
     public void noSongInService() {

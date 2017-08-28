@@ -224,15 +224,6 @@ public class BottomNavigationController implements
     @Override
     public void update(@Nullable Object obj, OnUpdateStatusChanged completed) {
 
-        if (mediaManager.emptyMediaLibrary(activity, false)) {
-            noData();
-            return;
-        } else {
-            mContainer.setEnabled(true);
-            mPlay.setEnabled(true);
-            mShowList.setEnabled(true);
-        }
-
         try {
 
             if (mControl.status() == PlayController.STATUS_PLAYING) {
@@ -256,9 +247,6 @@ public class BottomNavigationController implements
 
     @Override
     public void noData() {
-        mContainer.setEnabled(false);
-        mPlay.setEnabled(false);
-        mShowList.setEnabled(false);
     }
 
     @Override

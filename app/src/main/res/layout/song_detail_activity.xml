@@ -58,6 +58,7 @@
             </LinearLayout>
 
             <View
+                android:alpha="0.6"
                 android:id="@+id/song_detail_ni_line"
                 android:layout_width="wrap_content"
                 android:layout_height="1px"

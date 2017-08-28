@@ -12,13 +12,15 @@
 
     <string name="label_theme_color_custom">Theme color customization</string>
     <string name="label_image_wall">Picture wall</string>
+    <string name="label_modify_sheet">Modify song list</string>
     <string name="label_time_sleep">Timed to stop playing</string>
     <string name="label_play_theme_custom">Play panel style</string>
     <string name="label_setting">Set up</string>
     <string name="label_feed_back">Feedback</string>
-    <string name="label_about">About app</string>
+    <string name="label_about">About Musicoco</string>
     <string name="label_web">Web page</string>
     <string name="label_me">About me</string>
+    <string name="label_main">Musicoco</string>
 
     <!-- 权限相关 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -39,7 +41,7 @@
 
     <!-- 主页 主歌单歌单名/////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <string name="main_sheet_favorite">My favorite</string>
+    <string name="main_sheet_favorite">My favorites</string>
     <string name="main_sheet_recent">Recently played</string>
     <string name="main_sheet_all">All songs</string>
 
@@ -54,8 +56,8 @@
     <string name="song_operation_detail">Song details</string>
     <string name="song_operation_remove_from_sheet">Remove the song from the list</string>
     <string name="song_operation_delete">Delete</string>
-    <string name="song_operation_add_to_favorite">Collection</string>
-    <string name="song_operation_remove_from_favorite">Cancel collection</string>
+    <string name="song_operation_add_to_favorite">Favorite</string>
+    <string name="song_operation_remove_from_favorite">Cancel favorite</string>
 
     <!-- 歌单编辑/新建 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -71,23 +73,22 @@
 
     <!-- 操作失败/错误 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <string name="error_exception_remote">disconnect with playback service :) You can try to exit the application and reopen it.</string>
-    <string name="error_song_is_already_in_sheet">Song already in list</string>
-    <string name="error_text_count_out_of_limit">The number of words exceeds the limit:</string>
+    <string name="error_song_is_already_in_sheet">Song already in list :(</string>
+    <string name="error_text_count_out_of_limit">The number of words exceeds the limit :(</string>
     <string name="error_name_required">Name is required :(</string>
-    <string name="error_sheet_already_exits">Song list already exist:</string>
+    <string name="error_sheet_already_exits">Song list already exist :(</string>
     <string name="error_delete_file_fail">File deletion failed :(</string>
     <string name="error_no_album_image">No album pictures :(</string>
-    <string name="error_empty_sheet">Song list is empty:</string>
-    <string name="error_non_sheet_existent">Song list does not exist:</string>
-    <string name="error_non_song_to_play">No songs can play:</string>
+    <string name="error_empty_sheet">Song list is empty :(</string>
+    <string name="error_non_sheet_existent">Song list does not exist :(</string>
+    <string name="error_non_song_to_play">No songs can play :(</string>
     <string name="error_non_song_select">Have not selected any songs :(</string>
-    <string name="error_delete_sheet_fail">Delete song list failure: (</string>
-    <string name="error_load_sheet_fail">Load song list failed:</string>
-    <string name="error_action_did_not_support">Does not support the operation:</string>
+    <string name="error_delete_sheet_fail">Delete song list failure :(</string>
+    <string name="error_load_sheet_fail">Load song list failed :(</string>
+    <string name="error_action_did_not_support">Does not support the operation :(</string>
     <string name="error_time_sleep_time_must_more_then_zero">Time must be greater than 0 :(</string>
     <string name="error_save_fail">Save failed :(</string>
-    <string name="error_too_many_words_for_300">The number of words can not exceed 300:</string>
+    <string name="error_too_many_words_for_300">The number of words can not exceed 300 :(</string>
     <string name="error_check_qq_install">Please check whether to install QQ :(</string>
 
     <!-- 操作成功 /////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -98,9 +99,9 @@
     <string name="success_delete_file">Successfully deleted file :)</string>
     <string name="success_delete_sheet">Successfully deleted song list :)</string>
     <string name="success_remove_song_from_sheet">Successfully removed song :)</string>
-    <string name="success_add_all_song_to_favorite">Has successfully collected all :)</string>
-    <string name="success_add_select_song_to_favorite">Successful collection of selected songs :)</string>
-    <string name="success_remove_select_song_from_favorite">Selected song has been canceled collection :)</string>
+    <string name="success_add_all_song_to_favorite">Has successfully favorite all :)</string>
+    <string name="success_add_select_song_to_favorite">Successful favorite of selected songs :)</string>
+    <string name="success_remove_select_song_from_favorite">Selected song has been canceled favorite :)</string>
     <string name="success_set">Set up successfully :)</string>
     <string name="success_modify_saved">Setup saved successfully :)</string>
     <string name="success_saved">Saved successfully :)</string>
@@ -112,16 +113,13 @@
 
     <string name="warning">caveat</string>
     <string name="unknown">wrong :O</string>
-    <string name="ensure">confirm</string>
     <string name="save">save</string>
-    <string name="collect">Collection</string>
-    <string name="add">add</string>
+    <string name="favorite">favorite</string>
     <string name="tip">prompt</string>
     <string name="all">all</string>
-    <string name="to">to</string>
     <string name="play">play</string>
     <string name="count">times</string>
-    <string name="head">first</string>
+    <string name="head">songs</string>
     <string name="search">search</string>
     <string name="continue_">continue</string>
     <string name="deleting">Is being deleted</string>
@@ -140,9 +138,9 @@
     <string name="send">send</string>
     <string name="share">share</string>
 
-    <string name="cancel_collect">Cancel collection</string>
+    <string name="cancel_favorite">Cancel favorite</string>
     <string name="select_operation">Choose an action</string>
-    <string name="select_song">Choose a song</string>
+    <string name="select_song">Choose songs</string>
     <string name="create_time">Create time</string>
 
     <string name="action_status_bar_color">Title bar color</string>
@@ -161,7 +159,7 @@
     <string name="info_delete_confirm">Confirm delete, delete will not be able to recover!</string>
     <string name="info_delete_select_confirm">Confirm the deletion of selected songs, delete can not be restored!</string>
     <string name="info_not_modify">Unmodified</string>
-    <string name="info_app_wile_quit_after_20s">The application will exit after 20 seconds</string>
+    <string name="info_app_wile_quit_after_20s">Musicoco will exit after 20 seconds</string>
     <string name="info_search">Search for music</string>
     <string name="info_show_in_sheet">Show in the song list</string>
     <string name="info_time_sleep_is_canceled">Timed shutdown has been canceled</string>
@@ -176,23 +174,22 @@
     </string>
     <string name="info_contact_me_other_where">You can also contact me by the following means</string>
     <string name="info_contact_me_other_where_detail">
-        phone：17628287313 \nemail：aimeimeits@gmail.com \nQQ：2217611834 \n
+        phone：18202856027 \nemail：aimeimeits@gmail.com \nQQ：2217611834 \n
     </string>
     <string name="info_feedback_input_hint">Enter comments or suggestions</string>
     <string name="info_feedback_input_empty">You have not entered the contents</string>
-
-    <string name="title_add_all_songs_to_favorite">Collect all songs</string>
-    <string name="title_add_to_sheet">Add to playlist</string>
-    <string name="title_add_to_favorite">Add to Favorites</string>
+    <string name="info_empty_library_when_start">
+        Application currently only supports local music playback, your device does not have music files, the application will not be able to provide you with services, express regret over the matter!
+    </string>
 
     <!-- 正在处理 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <string name="in_progress_add_songs_to_favorite">Collecting songs</string>
-    <string name="in_progress_remove_songs_from_favorite">Canceling collection</string>
+    <string name="in_progress_add_songs_to_favorite">adding</string>
+    <string name="in_progress_remove_songs_from_favorite">Canceling favorite</string>
     <string name="in_progress_remove_songs_from_sheet">removing</string>
     <string name="in_progress_delete">Being deleted</string>
     <string name="in_progress">Loading</string>
-    <string name="in_progress_send_feedback">Sending text message</string>
+    <string name="in_progress_send_feedback">Sending feedback</string>
 
     <!-- 替换 * 号/////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -201,15 +198,15 @@
     <string name="replace_search_result_prompt">A total of * songs were retrieved</string>
     <string name="replace_rmp_title">The most frequently played * song</string>
     <string name="replace_time_sleep">Stop after * minutes</string>
-    <string name="replace_time_sleep_app_quit_at">The setting is successful and app will be shutdown after *</string>
+    <string name="replace_time_sleep_app_quit_at">Musicoco will be shutdown after *</string>
+    <string name="replace_add_songs_to">add * songs to</string>
 
     <!-- 对话框等标题 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <string name="title_play_list">playlist</string>
-    <string name="title_lyric">lyrics</string>
     <string name="title_about_image">About the picture</string>
-    <string name="title_activity_sheet_modify">SheetModifyActivity</string>
-    <string name="title_activity_recent_most_play">RecentMostPlayActivity</string>
+    <string name="title_add_all_songs_to_favorite">Favorite all songs</string>
+    <string name="title_add_to_sheet">Add to playlist</string>
+    <string name="title_add_to_favorite">Add to Favorites</string>
 
     <!-- 主页 最近最多播放 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -244,11 +241,9 @@
     <string name="setting_set_headphone_wire">Wire cut song</string>
     <string name="setting_set_headphone_wire_enable">click: play / pause; double click: next one; three hit: previous one</string>
 
-    <string name="setting_about">About</string>
     <string name="setting_set_feedback">Feedback</string>
     <string name="setting_set_about">Application information</string>
 
-    <string name="setting_cache">Cache</string>
     <string name="setting_set_image_clear_cache">Clear cache</string>
 
     <!--更新-->
@@ -266,6 +261,7 @@
     <!-- 关于 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <string name="about_guide">User Guide</string>
+    <!--更新-->
     <string name="about_welcome">Welcome page</string>
     <string name="about_star">Give the application a score</string>
     <string name="about_share">Recommend to friends</string>
@@ -289,5 +285,20 @@
     <string name="me_email_url">@string/email</string>
     <string name="me_phone">phone</string>
     <string name="me_phone_url">@string/phone</string>
+
+    <!-- 歌曲详情 /////////////////////////////////////////////////////////////////////////////////////////// -->
+
+    <string name="song_detail_duration">Duration</string>
+    <string name="song_detail_album">Belongs album</string>
+    <string name="song_detail_year">Era</string>
+    <string name="song_detail_path">File path</string>
+    <string name="song_detail_size">Size</string>
+    <string name="song_detail_add_time">Add time</string>
+    <string name="song_detail_mimeType">Format</string>
+    <string name="song_detail_play_times">Views</string>
+    <string name="song_detail_last_play">Last playing time</string>
+    <string name="song_detail_favorite">Favorite</string>
+    <string name="song_detail_not_favorite">Not favorite</string>
+    <string name="song_detail_song_list">Has been added to the song list</string>
 
 </resources>

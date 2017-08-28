@@ -260,7 +260,7 @@ public class DialogProvider {
      * @param messageInfo 要显示的提示信息
      * @param titleInfo   标题
      */
-    public AlertDialog createInfosDialog(String titleInfo, String[] messageInfo) {
+    public AlertDialog createInfosDialog(String titleInfo, String... messageInfo) {
         if (messageInfo.length == 1) {
             mMessage.setText(messageInfo[0]);
         } else {

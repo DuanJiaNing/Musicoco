@@ -71,9 +71,6 @@ public class ListOption implements
                     mPlayList.smoothScrollToPosition(index);
                 } catch (RemoteException e) {
                     e.printStackTrace();
-                    new ExceptionHandler().handleRemoteException(activity,
-                            activity.getString(R.string.error_exception_remote), null
-                    );
                 }
                 break;
             default:
@@ -132,7 +129,6 @@ public class ListOption implements
 
     @Override
     public void noData() {
-        // 由 BottomNavigationController 处理
     }
 
     void setDrawableColor(int currentDrawableColor) {

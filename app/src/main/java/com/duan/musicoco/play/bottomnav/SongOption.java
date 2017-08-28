@@ -188,9 +188,6 @@ public class SongOption implements
             ToastUtils.showShortToast(builder.toString(), activity);
         } catch (RemoteException e) {
             e.printStackTrace();
-            new ExceptionHandler().handleRemoteException(activity,
-                    activity.getString(R.string.error_exception_remote), null
-            );
         }
     }
 
@@ -457,7 +454,6 @@ public class SongOption implements
 
     @Override
     public void noData() {
-        // 由 BottomNavigationController 处理
     }
 
     public void setDrawableColor(int currentDrawableColor) {

@@ -15,7 +15,7 @@
         <LinearLayout
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="400dp">
+            android:layout_height="@dimen/setting_fragment_height">
 
             <fragment
                 android:id="@+id/setting_fragment"

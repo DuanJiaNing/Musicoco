@@ -219,11 +219,6 @@ public class ListViewsController implements
     @Override
     public void update(Object obj, OnUpdateStatusChanged statusChanged) {
 
-        if (mediaManager.emptyMediaLibrary(activity, false)) {
-            noData();
-            return;
-        }
-
         SongInfo info = (SongInfo) obj;
         if (info == null) {
             return;
@@ -256,8 +251,6 @@ public class ListViewsController implements
 
     @Override
     public void noData() {
-        data.clear();
-        adapter.notifyDataSetChanged();
     }
 
     private void updateCurrentSheet() throws RemoteException {

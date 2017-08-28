@@ -105,10 +105,10 @@ public class SongDetailActivity extends RootActivity implements View.OnClickList
         String mimeType = info.getMime_type();
 
         DBSongInfo songInfo = dbController.getSongInfo(new Song(path));
-        String playTimes = songInfo.playTimes + "次";
+        String playTimes = songInfo.playTimes + " " + getString(R.string.count);
         String remark = songInfo.remark;
         String lastPlayTime = StringUtils.getGenDateYMDHMS(songInfo.lastPlayTime);
-        String favorite = songInfo.favorite ? "已收藏" : "未收藏";
+        String favorite = songInfo.favorite ? getString(R.string.song_detail_favorite) : getString(R.string.song_detail_not_favorite);
 
         int[] ss = songInfo.sheets;
         StringBuilder sheets = new StringBuilder();
@@ -126,17 +126,17 @@ public class SongDetailActivity extends RootActivity implements View.OnClickList
         String nl2 = "\n\n";
         String nl1 = "\n";
         builder.append(remark).append(nl1)
-                .append("时长：").append(duration).append(nl1)
-                .append("所属专辑：").append(album).append(nl1)
-                .append("年份：").append(year).append(nl1)
-                .append("文件路径：").append(path).append(nl1)
-                .append("大小：").append(size).append(nl1)
-                .append("添加时间：").append(dateAdded).append(nl1)
-                .append("格式：").append(mimeType).append(nl2)
-                .append("播放次数：").append(playTimes).append(nl1)
-                .append("最后播放时间：").append(lastPlayTime).append(nl1)
-                .append("收藏？ ").append(favorite).append(nl2)
-                .append("已加入歌单：").append(nl1).append(sheets.toString()).append(nl2);
+                .append(getString(R.string.song_detail_duration)).append(": ").append(duration).append(nl1)
+                .append(getString(R.string.song_detail_album)).append(": ").append(album).append(nl1)
+                .append(getString(R.string.song_detail_year)).append(": ").append(year).append(nl1)
+                .append(getString(R.string.song_detail_path)).append(": ").append(path).append(nl1)
+                .append(getString(R.string.song_detail_size)).append(": ").append(size).append(nl1)
+                .append(getString(R.string.song_detail_add_time)).append(": ").append(dateAdded).append(nl1)
+                .append(getString(R.string.song_detail_mimeType)).append(": ").append(mimeType).append(nl2)
+                .append(getString(R.string.song_detail_play_times)).append(": ").append(playTimes).append(nl1)
+                .append(getString(R.string.song_detail_last_play)).append(": ").append(lastPlayTime).append(nl1)
+                .append(getString(R.string.song_detail_favorite)).append(" ? ").append(favorite).append(nl2)
+                .append(getString(R.string.song_detail_song_list)).append(": ").append(nl1).append(sheets.toString()).append(nl2);
 
         return builder.toString();
     }

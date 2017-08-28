@@ -49,8 +49,8 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_marginBottom="3dp"
-                    android:layout_marginLeft="7dp"
-                    android:layout_marginStart="7dp"
+                    android:layout_toLeftOf="@+id/sheet_detail_check_count"
+                    android:gravity="center"
                     android:text="@string/all"
                     android:textSize="@dimen/text_small_s_s" />
 

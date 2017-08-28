@@ -124,15 +124,6 @@ public class MainSheetsController implements
     @Override
     public void update(Object obj, final OnUpdateStatusChanged statusChanged) {
 
-        if (mediaManager.emptyMediaLibrary(activity, false)) {
-            noData();
-            return;
-        } else {
-            mContainerAll.setEnabled(true);
-            mContainerRecent.setEnabled(true);
-            mContainerFavorite.setEnabled(true);
-        }
-
         Observable.just(Data.ALL, Data.RECENT, Data.FAVORITE)
                 .map(new Func1<Integer, Data>() {
                     List<DBSongInfo> all = mainSheetHelper.getAllSongInfo();
@@ -202,9 +193,6 @@ public class MainSheetsController implements
 
     @Override
     public void noData() {
-        mContainerAll.setEnabled(false);
-        mContainerRecent.setEnabled(false);
-        mContainerFavorite.setEnabled(false);
     }
 
     private Data getDataForFavorite() {

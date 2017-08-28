@@ -28,8 +28,6 @@ public class SheetModifyActivity extends RootActivity implements
         ThemeChangeable,
         View.OnClickListener {
 
-    private BroadcastManager broadcastManager;
-
     private FloatingActionButton done;
     private Toolbar toolbar;
     private TextView tip;
@@ -47,8 +45,6 @@ public class SheetModifyActivity extends RootActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sheet_modify);
-
-        broadcastManager = BroadcastManager.getInstance();
 
         initViews();
         initSheet();

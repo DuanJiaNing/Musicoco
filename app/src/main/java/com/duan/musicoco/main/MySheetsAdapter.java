@@ -243,7 +243,9 @@ public class MySheetsAdapter extends BaseAdapter implements
         holder.count.setText(count + activity.getString(R.string.head));
 
         holder.playTimes.setTextColor(vicTC);
-        holder.playTimes.setText(playTimes + activity.getString(R.string.count));
+        if (playTimes > 0) {
+            holder.playTimes.setText(playTimes + activity.getString(R.string.count));
+        }
 
         convertView.setBackgroundColor(itemBGC);
 

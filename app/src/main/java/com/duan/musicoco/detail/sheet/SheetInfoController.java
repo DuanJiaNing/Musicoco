@@ -162,10 +162,7 @@ public class SheetInfoController implements ThemeChangeable {
         name.setShadowLayer(20.0f, 0, 0, mainTC);
 
         remark.setTextColor(vicTC);
-        remark.setShadowLayer(8.0f, 0, 0, vicTC);
-
         createTime.setTextColor(vicTC);
-        createTime.setShadowLayer(8.0f, 0, 0, vicTC);
 
     }
 

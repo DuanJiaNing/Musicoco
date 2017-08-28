@@ -5,7 +5,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -185,7 +184,7 @@ public class RecentMostPlayActivity extends RootActivity implements
 
         //收藏
         optionsAdapter.addOption(
-                getString(R.string.collect),
+                getString(R.string.favorite),
                 null,
                 SONG_OPTIONS_FAVORITE,
                 R.drawable.ic_favorite_border,
@@ -514,9 +513,9 @@ public class RecentMostPlayActivity extends RootActivity implements
                 String title = getString(R.string.song) + ": " + currentClickItem.getTitle();
                 optionsDialog.setTitle(title);
 
-                String favorite = getString(R.string.collect);
+                String favorite = getString(R.string.favorite);
                 if (currentClickItemFavorite) {
-                    favorite = getString(R.string.cancel_collect);
+                    favorite = getString(R.string.cancel_favorite);
                 }
                 OptionsAdapter.Option option = optionsAdapter.getOption(SONG_OPTIONS_FAVORITE);
                 if (option != null) {

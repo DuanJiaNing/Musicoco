@@ -5,7 +5,8 @@
     android:orientation="vertical">
 
     <ImageView
-        android:scaleType="fitStart"
+        android:src="@drawable/default_album"
+        android:scaleType="centerCrop"
         android:id="@+id/main_left_nav_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

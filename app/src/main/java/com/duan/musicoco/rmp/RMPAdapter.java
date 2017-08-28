@@ -72,7 +72,7 @@ public class RMPAdapter extends RecyclerView.Adapter<RMPAdapter.ViewHolder> impl
 
         holder.name.setText(dataHolder.title);
         holder.arts.setText(dataHolder.arts);
-        String time = dataHolder.times + context.getString(R.string.count);
+        String time = dataHolder.times + " " + context.getString(R.string.count);
         holder.time.setText(time);
         holder.time.setBackgroundColor(accentBC);
         holder.time.setTextColor(accentTC);

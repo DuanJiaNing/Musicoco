@@ -129,14 +129,6 @@ public class RecentMostPlayController implements
     @Override
     public void update(Object obj, OnUpdateStatusChanged completed) {
 
-        if (mediaManager.emptyMediaLibrary(activity, false)) {
-            noData();
-            return;
-        } else {
-            mContainer.setEnabled(true);
-            mShowMore.setEnabled(true);
-        }
-
         final Object ob = obj;
         Observable.OnSubscribe<Data> onSubscribe = new Observable.OnSubscribe<Data>() {
             @Override
@@ -222,14 +214,6 @@ public class RecentMostPlayController implements
 
     @Override
     public void noData() {
-
-        mContainer.setEnabled(false);
-        mShowMore.setEnabled(false);
-
-        mName.setText("");
-        mArts.setText("");
-        mRemark.setText("");
-        mPlayTime.setText(String.valueOf(0));
     }
 
     private void updateImage(@NonNull Bitmap bitmap) {

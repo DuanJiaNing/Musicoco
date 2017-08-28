@@ -74,7 +74,7 @@ public class SongOperation {
         for (int i = 0; i < sheets.size(); i++) {
             Sheet s = sheets.get(i);
             names[i] = s.name;
-            counts[i] = s.count + activity.getString(R.string.head);
+            counts[i] = s.count + " " + activity.getString(R.string.head);
         }
 
         res.put(ADD_TO_SHEET_NAMES, names);
@@ -130,7 +130,7 @@ public class SongOperation {
 
     public void handleSelectSongAddToFavorite(final List<Song> songs, final OnCompleteListener<Void> onCompleteListener) {
         final Dialog promptDialog = new DialogProvider(activity).createPromptDialog(
-                activity.getString(R.string.collect),
+                activity.getString(R.string.favorite),
                 activity.getString(R.string.info_add_select_songs_to_favorite),
                 new DialogProvider.OnClickListener() {
                     @Override
@@ -378,16 +378,10 @@ public class SongOperation {
             }
         };
 
-        StringBuilder builder = new StringBuilder();
-        builder.append(activity.getString(R.string.add))
-                .append(" ")
-                .append(songs.size())
-                .append(" ")
-                .append(activity.getString(R.string.head))
-                .append(activity.getString(R.string.song))
-                .append(activity.getString(R.string.to));
+        String str = activity.getString(R.string.replace_add_songs_to);
+        String replace = str.replace("*", songs.size() + "");
 
-        AlertDialog dialog = createAddSongToSheetDialog(res, builder.toString(), listener, true);
+        AlertDialog dialog = createAddSongToSheetDialog(res, replace, listener, true);
 
         dialog.show();
     }
@@ -454,7 +448,7 @@ public class SongOperation {
 
     public void handleSelectSongCancelFavorite(final List<Song> songs, final OnCompleteListener<Void> complete) {
         final Dialog promptDialog = new DialogProvider(activity).createPromptDialog(
-                activity.getString(R.string.cancel_collect),
+                activity.getString(R.string.cancel_favorite),
                 activity.getString(R.string.info_remove_select_songs_from_favorite),
                 new DialogProvider.OnClickListener() {
                     @Override
