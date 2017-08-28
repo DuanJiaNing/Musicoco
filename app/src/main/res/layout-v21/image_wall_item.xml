@@ -11,11 +11,11 @@
         android:src="@drawable/default_album" />
 
     <ImageButton
-        android:background="#00ffffff"
         android:id="@+id/image_wall_item_more"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
+        android:background="?android:selectableItemBackgroundBorderless"
         android:padding="5dp"
         android:src="@drawable/ic_more_vert_black_24dp"
         android:tint="@color/white_d" />

@@ -28,50 +28,50 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:layout_marginLeft="@dimen/activity_default_margin"
                 android:layout_marginRight="@dimen/activity_default_margin"
-                android:layout_marginTop="10dp"
-                android:orientation="vertical">
+                android:layout_marginTop="10dp">
 
                 <TextView
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:ellipsize="marquee"
+                    android:lines="1"
+                    android:textSize="@dimen/text_middle_l"
                     android:id="@+id/song_detail_name"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:ellipsize="marquee"
-                    android:gravity="center"
-                    android:lines="1"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:textSize="@dimen/text_middle_l" />
+                    android:gravity="center" />
 
                 <TextView
+                    android:layout_marginTop="10dp"
+                    android:textSize="@dimen/text_middle_s"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:ellipsize="marquee"
+                    android:lines="1"
                     android:id="@+id/song_detail_arts"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="10dp"
-                    android:ellipsize="marquee"
-                    android:gravity="center"
-                    android:lines="1"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:paddingLeft="@dimen/play_album_padding"
                     android:paddingRight="@dimen/activity_default_padding"
-                    android:textSize="@dimen/text_middle_s" />
+                    android:paddingLeft="@dimen/play_album_padding"
+                    android:gravity="center" />
             </LinearLayout>
 
             <View
+                android:alpha="0.6"
                 android:id="@+id/song_detail_ni_line"
                 android:layout_width="wrap_content"
                 android:layout_height="1px"
-                android:layout_margin="@dimen/activity_default_margin"
-                android:alpha="0.6" />
+                android:layout_margin="@dimen/activity_default_margin" />
 
             <TextView
+                android:paddingBottom="@dimen/activity_default_margin"
+                android:paddingRight="@dimen/activity_default_margin"
+                android:paddingLeft="@dimen/activity_default_margin"
                 android:id="@+id/song_detail_infos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:lineSpacingExtra="10sp"
-                android:paddingBottom="@dimen/activity_default_margin"
-                android:paddingLeft="@dimen/activity_default_margin"
-                android:paddingRight="@dimen/activity_default_margin"
                 android:textSize="@dimen/text_middle" />
         </LinearLayout>
     </ScrollView>
@@ -89,7 +89,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_margin="@dimen/activity_default_margin"
-            android:background="#00ffffff"
+            android:background="?android:selectableItemBackgroundBorderless"
             android:padding="10dp"
             android:src="@drawable/ic_clear_black_24dp" />
 
@@ -99,10 +99,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_margin="@dimen/activity_default_margin_l"
             android:layout_marginBottom="24dp"
-            android:src="@drawable/ic_file_download_black_24dp" />
+            android:src="@drawable/ic_file_download_black_24dp"
+            android:layout_alignParentRight="true" />
 
     </RelativeLayout>
 

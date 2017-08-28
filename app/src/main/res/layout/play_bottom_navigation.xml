@@ -94,7 +94,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:background="?android:selectableItemBackgroundBorderless"
+        android:background="#00ffffff"
         android:scaleX="0.7"
         android:scaleY="0.8"
         android:src="@drawable/ic_play_list"
