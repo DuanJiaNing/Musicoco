@@ -4,20 +4,10 @@
     android:id="@+id/play_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="@dimen/activity_default_margin_half"
-    android:layout_marginRight="@dimen/activity_default_margin_half"
     android:layout_marginTop="@dimen/activity_default_margin"
-    app:cardBackgroundColor="#51ffffff"
-    app:cardCornerRadius="12dp"
+    app:cardCornerRadius="0dp"
     app:cardElevation="30dp"
     app:contentPaddingBottom="@dimen/activity_default_margin">
-
-    <com.duan.musicoco.view.RealTimeBlurView
-        android:id="@+id/play_blur"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:realtimeBlurRadius="50dp"
-        app:realtimeOverlayColor="#b9ffffff" />
 
     <LinearLayout
         android:id="@+id/play_nav_container"

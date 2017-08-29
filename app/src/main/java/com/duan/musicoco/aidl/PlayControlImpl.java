@@ -3,7 +3,6 @@ package com.duan.musicoco.aidl;
 import android.content.Context;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
-import android.util.Log;
 
 import com.duan.musicoco.service.AudioFocusManager;
 import com.duan.musicoco.service.MediaSessionManager;
@@ -16,7 +15,7 @@ import java.util.List;
  * 仅有从 {@link com.duan.musicoco.aidl.IPlayControl}.aidl 继承的方法在跨进程调用时有效<br>
  * 1. 该类中的方法运行在服务端 Binder 线程池中，所有需要处理线程同步<br>
  * 2. 这些方法被客户端调用时客户端线程会被挂起，如果客户端的线程为 UI 线程，注意处理耗时操作以避免出现的 ANR<br>
- *     该实现类不再抛出 RemoteException 异常
+ * 该实现类不再抛出 RemoteException 异常
  */
 
 public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
@@ -247,7 +246,6 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
     }
 
     public void notifyDataIsReady() {
-        Log.d("service", "notifyDataIsReady: ");
         final int N = mDataIsReadyListeners.beginBroadcast();
         for (int i = 0; i < N; i++) {
             IOnDataIsReadyListener listener = mDataIsReadyListeners.getBroadcastItem(i);
@@ -266,7 +264,6 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
 
         @Override
         public void notify(Song song, int index, boolean isNext) {
-            Log.d("service", "NotifySongChanged: ");
             final int N = mSongChangeListeners.beginBroadcast();
             for (int i = 0; i < N; i++) {
                 IOnSongChangedListener listener = mSongChangeListeners.getBroadcastItem(i);
@@ -286,7 +283,6 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
 
         @Override
         public void notify(Song song, int index, int status) {
-            Log.d("service", "NotifyStatusChanged: ");
             final int N = mStatusChangeListeners.beginBroadcast();
             for (int i = 0; i < N; i++) {
                 IOnPlayStatusChangedListener listener = mStatusChangeListeners.getBroadcastItem(i);

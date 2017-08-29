@@ -18,13 +18,12 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.InspectActivity;
-import com.duan.musicoco.db.MainSheetHelper;
-import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.app.manager.PlayServiceManager;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.play.album.VisualizerFragment;
 import com.duan.musicoco.play.bottomnav.BottomNavigationController;
 import com.duan.musicoco.play.lyric.LyricFragment;
@@ -164,7 +163,6 @@ public class PlayActivity extends InspectActivity implements
         } catch (RemoteException e) {
             e.printStackTrace();
         }
-
     }
 
     // 服务器的歌单是空的，这里不采用实现 ContentUpdatable 接口的原因是考虑到，将来播放界面可以单独以其他方式启动

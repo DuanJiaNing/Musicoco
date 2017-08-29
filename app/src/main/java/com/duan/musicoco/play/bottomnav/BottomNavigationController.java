@@ -6,14 +6,12 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.ColorUtils;
 import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -25,7 +23,6 @@ import android.widget.ListView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
@@ -33,6 +30,7 @@ import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.modle.DBSongInfo;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.ThemeEnum;
@@ -41,7 +39,6 @@ import com.duan.musicoco.shared.PlayListAdapter;
 import com.duan.musicoco.shared.SongOperation;
 import com.duan.musicoco.util.AnimationUtils;
 import com.duan.musicoco.util.Utils;
-import com.duan.musicoco.view.RealTimeBlurView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +64,6 @@ public class BottomNavigationController implements
 
     private CardView mViewRoot;
     private ListView mPlayList;
-    private RealTimeBlurView mRealTimeView;
     private View mListTitleContainer;
     private View vDarkBg;
     private LinearLayout llRootMain;
@@ -112,7 +108,6 @@ public class BottomNavigationController implements
         mViewRoot = (CardView) activity.findViewById(R.id.play_list);
         mPlayList = (ListView) activity.findViewById(R.id.play_play_list);
 
-        mRealTimeView = (RealTimeBlurView) activity.findViewById(R.id.play_blur);
         mListTitleContainer = activity.findViewById(R.id.play_list_bar_container);
         vDarkBg = activity.findViewById(R.id.play_dark_bg);
         llRootMain = (LinearLayout) activity.findViewById(R.id.play_root_main);
@@ -167,12 +162,12 @@ public class BottomNavigationController implements
     private void initAdapterClickListener() {
         playListAdapter.setOnItemClickListener(new PlayListAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(int position, SongInfo info) {
+            public void onItemClick(final int position, SongInfo info) {
                 try {
 
                     int index = control.currentSongIndex();
                     if (position == index) {
-                        Log.d(TAG, "onClick: the song is playing");
+//                        Log.d(TAG, "onClick: the song is playing");
                         if (control.status() != PlayController.STATUS_PLAYING) {
                             control.resume();
                         }
@@ -185,6 +180,7 @@ public class BottomNavigationController implements
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
+
             }
         });
 
@@ -199,23 +195,22 @@ public class BottomNavigationController implements
 
     // updateColors 在 VARYING 主题时才会不断调用
     public void updateColors(int color, boolean isVarying) {
-        int alpha = activity.getResources().getInteger(R.integer.play_list_bg_alpha);
-        int colorA = ColorUtils.setAlphaComponent(color, alpha);
 
-        mRealTimeView.setOverlayColor(colorA);
         ColorDrawable bd = new ColorDrawable(color);
-        bd.setAlpha(10);
+        bd.setAlpha(100);
         mListTitleContainer.setBackground(bd);
 
+        int colorA = ColorUtils.setAlphaComponent(color, 235);
+        mViewRoot.setCardBackgroundColor(colorA);
+
         ThemeEnum t;
-        double d = ColorUtils.calculateLuminance(colorA);
-        if (d - 0.400 > 0.000001) {
+        if (com.duan.musicoco.util.ColorUtils.isBrightSeriesColor(colorA)) {
             t = WHITE;
         } else {
             t = DARK;
         }
 
-        int cs[] = new int[2];
+        int cs[];
         switch (t) {
             case WHITE: {
                 if (isVarying) {
@@ -259,28 +254,6 @@ public class BottomNavigationController implements
         playListAdapter.setSelectItemColor(accentC);
 
         songOption.themeChange(themeEnum, cs);
-    }
-
-    public void playThemeChange() {
-
-        ThemeEnum theme = appPreference.getTheme();
-        int[] cs = com.duan.musicoco.util.ColorUtils.get10ThemeColors(activity, theme);
-
-        int statusC = cs[0];
-        int toolbarC = cs[1];
-        int accentC = cs[2];
-        int mainBC = cs[3];
-        int vicBC = cs[4];
-        int mainTC = cs[5];
-        int vicTC = cs[6];
-        int navC = cs[7];
-        int toolbarMainTC = cs[8];
-        int toolbarVicTC = cs[9];
-
-        playListAdapter.setMainTextColor(mainTC);
-        playListAdapter.setVicTextColor(vicTC);
-        playListAdapter.setSelectItemColor(accentC);
-
     }
 
     @Override
@@ -345,12 +318,7 @@ public class BottomNavigationController implements
         vDarkBg.setClickable(true);
         vDarkBg.setVisibility(View.VISIBLE);
 
-        if (playPreference.getTheme() == WHITE) {
-            AnimationUtils.startAlphaAnim(vDarkBg, duration, null, 0.0f, 0.6f);
-        } else {
-            vDarkBg.setBackgroundColor(Color.TRANSPARENT);
-        }
-
+        AnimationUtils.startAlphaAnim(vDarkBg, duration, null, 0.0f, 0.6f);
     }
 
     @Override
@@ -394,31 +362,27 @@ public class BottomNavigationController implements
 
         vDarkBg.setClickable(false);
 
-        if (playPreference.getTheme() == WHITE) {
-            AnimationUtils.startAlphaAnim(vDarkBg, duration, new Animator.AnimatorListener() {
-                @Override
-                public void onAnimationStart(Animator animation) {
+        AnimationUtils.startAlphaAnim(vDarkBg, duration, new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
 
-                }
+            }
 
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    vDarkBg.setVisibility(View.GONE);
-                }
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                vDarkBg.setVisibility(View.GONE);
+            }
 
-                @Override
-                public void onAnimationCancel(Animator animation) {
+            @Override
+            public void onAnimationCancel(Animator animation) {
 
-                }
+            }
 
-                @Override
-                public void onAnimationRepeat(Animator animation) {
+            @Override
+            public void onAnimationRepeat(Animator animation) {
 
-                }
-            }, 0.6f, 0.0f);
-        } else {
-            vDarkBg.setVisibility(View.GONE);
-        }
+            }
+        }, 0.6f, 0.0f);
     }
 
     @Override

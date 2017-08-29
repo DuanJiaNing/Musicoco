@@ -134,7 +134,6 @@ public final class AlbumPictureController {
         rotateAnim.cancel();
         view.getNextView().setRotation(0.0f);
 
-        // FIXME 异步
         Bitmap bitmap = bitmapProducer.getBitmapForVisualizer(cache, song.getAlbum_path(), size, defaultColor);
         if (bitmap != null) {
             if (updateColors) {
