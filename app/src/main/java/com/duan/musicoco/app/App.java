@@ -26,5 +26,4 @@ public class App extends Application {
             instance.cancelAlarm();
         }
     }
-
 }
