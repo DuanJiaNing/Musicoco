@@ -10,7 +10,7 @@
 部分功能尚未完善，还存在一些已知或未知的 bug，如果你想要改进客户端，或者发现了问题，可以提交[Issues](https://github.com/DuanJiaNing/Musicoco/issues)，或者直接使用应用的**反馈**功能向我提交你的意见或建议；当然，你也可以基于该代码修改并开发出属于自己的客户端。
 
 ## 应用截图
-<img src="https://raw.githubusercontent.com/DuanJiaNing/Pictures/master/Musicoco/Image_019.png"/>
+<img src="https://raw.githubusercontent.com/DuanJiaNing/Pictures/master/Musicoco/Image_020.png"/>
 ## 相关日志
 
 ## 版本变化
