@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
+//apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 26
@@ -11,9 +11,9 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.double_number_picker.runner.AndroidJUnitRunner"
-        renderscriptTargetApi 19
-        renderscriptSupportModeEnabled true    // Enable RS support
-        vectorDrawables.useSupportLibrary = true
+//        renderscriptTargetApi 19
+//        renderscriptSupportModeEnabled true    // Enable RS support
+//        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
