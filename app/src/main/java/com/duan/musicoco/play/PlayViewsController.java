@@ -206,7 +206,9 @@ public class PlayViewsController implements View.OnClickListener {
         int vicTC = colors[3];
 
         ((TextView) (tsSongName.getCurrentView())).setTextColor(mainTC);
+        ((TextView) (tsSongName.getNextView())).setTextColor(mainTC);
         ((TextView) (tsSongArts.getCurrentView())).setTextColor(vicTC);
+        ((TextView) (tsSongArts.getNextView())).setTextColor(vicTC);
 
         tvPlayProgress.setTextColor(vicTC);
         tvDuration.setTextColor(vicTC);

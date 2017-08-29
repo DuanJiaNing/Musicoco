@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
+import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
@@ -35,6 +36,8 @@ import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.media.PlayView;
+
+import java.util.ResourceBundle;
 
 /**
  * Created by DuanJiaNing on 2017/6/27.
@@ -163,7 +166,7 @@ public class BottomNavigationController implements
 
     @Override
     public void songChanged(Song song, int index, boolean isNext) {
-        if (song == null) {
+        if (song == null || index == -1) {
             //播放列表是空的
             return;
         }
@@ -284,6 +287,10 @@ public class BottomNavigationController implements
 
     @Override
     public void onPlayListChange(Song current, int index, int id) {
+        if (current == null || index < 0) {
+            return;
+        }
+
         currentSong = mediaManager.getSongInfo(activity, current);
         update(null, null);
         playPreference.updateSheet(id);

@@ -212,7 +212,6 @@ public class SongOption implements
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             hidePlayListBar.getDrawable().setTint(currentDrawableColor);
             playMode.getDrawable().setTint(currentDrawableColor);
-            playFavorite.getDrawable().setTint(currentDrawableColor);
             playShowList.getDrawable().setTint(currentDrawableColor);
             playShowMore.getDrawable().setTint(currentDrawableColor);
         }
@@ -275,9 +274,6 @@ public class SongOption implements
         return mode;
     }
 
-    public int getCurrentDrawableColor() {
-        return currentDrawableColor;
-    }
 
     void updateCurrentFavorite(boolean favorite, boolean useAnim) {
         Log.d("updateCurrentPlay", "play/BottomNavigationController SongOption#updateCurrentFavorite");
@@ -292,6 +288,7 @@ public class SongOption implements
             select = activity.getResources().getDrawable(R.drawable.ic_favorite);
             notSelect = activity.getResources().getDrawable(R.drawable.ic_favorite_border);
         }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (notSelect != null) {
                 notSelect.setTint(currentDrawableColor);

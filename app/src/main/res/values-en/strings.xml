@@ -52,9 +52,9 @@
 
     <!-- 歌曲操作 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <string name="song_operation_collection_sheet">Collection to song list</string>
+    <string name="song_operation_collection_sheet">Add to playlist</string>
     <string name="song_operation_detail">Song details</string>
-    <string name="song_operation_remove_from_sheet">Remove the song from the list</string>
+    <string name="song_operation_remove_from_sheet">Remove from list</string>
     <string name="song_operation_delete">Delete</string>
     <string name="song_operation_add_to_favorite">Favorite</string>
     <string name="song_operation_remove_from_favorite">Cancel favorite</string>

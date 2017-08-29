@@ -437,7 +437,15 @@ public class PlayController {
                     mCurrentSong--;
                 }
             }
-            mNotifyPlayListChanged.notify(mPlayList.get(mCurrentSong), mCurrentSong, mPlayListId);
+
+            if (mPlayList.size() == 0 || mCurrentSong < 0) {
+                // 服务器的播放列表是空的，这可能是因为仅有一首歌曲的播放列表被清空
+                // 此时重新设置为【全部歌曲】，该过程在服务端完成，若在客户端的 onPlayListChange
+                // 回调中重置播放列表会得到异常：beginBroadcast() called while already in a broadcast
+                setPlaySheet(MainSheetHelper.SHEET_ALL, 0);
+            } else {
+                mNotifyPlayListChanged.notify(mPlayList.get(mCurrentSong), mCurrentSong, mPlayListId);
+            }
         }
     }
 

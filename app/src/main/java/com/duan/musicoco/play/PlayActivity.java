@@ -18,6 +18,7 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.InspectActivity;
+import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
@@ -157,8 +158,7 @@ public class PlayActivity extends InspectActivity implements
 
                 // 服务端在 onCreate 时会回调 songChanged ，PlayActivity 第一次绑定可能接收不到此次回调
                 // 手动同步歌曲信息
-                updateCurrentSongInfo(song, true);
-                updateViewsColorsIfNeed(song);
+                songChanged(song, control.currentSongIndex(), true);
 
             }
         } catch (RemoteException e) {
@@ -317,8 +317,11 @@ public class PlayActivity extends InspectActivity implements
         boolean updateBg = playPreference.getTheme().equals(ThemeEnum.VARYING);
         visualizerFragment.songChanged(song, isNext, updateBg);
 
-        //在 initViewsColors 后调用
+        //在 initViewsColors 后调用，区别于 updateViewsColorsIfNeed 方法内的调用，
+        // updateViewsColorsIfNeed 方法只有在 VARYING 模式下才执行。即 VARYING 模
+        // 式下这里的调用会被覆盖。
         bottomNavigationController.updateFavorite();
+
         bottomNavigationController.update(null, null);
 
     }
@@ -344,6 +347,9 @@ public class PlayActivity extends InspectActivity implements
 
     @Override
     public void songChanged(Song song, int index, boolean isNext) {
+        if (song == null || index == -1) {
+            return;
+        }
 
         try {
             // UPDATE: 2017/8/26 更新 次数计算策略完善
@@ -375,6 +381,10 @@ public class PlayActivity extends InspectActivity implements
 
     @Override
     public void onPlayListChange(Song current, int index, int id) {
+        if (current == null || index < 0) {
+            return;
+        }
+
         bottomNavigationController.update(null, null);
     }
 
@@ -393,7 +403,8 @@ public class PlayActivity extends InspectActivity implements
     private void initViewsColors() {
 
         ThemeEnum theme = playPreference.getTheme();
-        if (theme != ThemeEnum.VARYING) { // VARYING 模式下由 updateCurrentSongInfo 和 updateViewsColorsIfNeed 方法控制界面
+        if (theme != ThemeEnum.VARYING) {
+            // VARYING 模式下由 updateCurrentSongInfo 和 updateViewsColorsIfNeed 方法控制界面颜色
             int colors[] = ColorUtils.get10ThemeColors(this, theme);
 
             int statusC = colors[0];
@@ -454,6 +465,9 @@ public class PlayActivity extends InspectActivity implements
         bottomNavigationController.updateColors(vicBC, true);
         bgDrawableController.updateBackground(mainBC, vicBC, mediaManager.getSongInfo(this, song));
 
+        // 区别于 updateCurrentSongInfo 方法中的调用，这里只
+        // 在 VARYING 模式下才不断更新
+        bottomNavigationController.updateFavorite();
     }
 
     @Override

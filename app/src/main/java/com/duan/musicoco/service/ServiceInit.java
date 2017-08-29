@@ -1,7 +1,6 @@
 package com.duan.musicoco.service;
 
 import android.content.Context;
-import android.os.RemoteException;
 import android.util.Log;
 
 import com.duan.musicoco.aidl.PlayControlImpl;
@@ -53,42 +52,38 @@ class ServiceInit {
     }
 
     private void initCurrentSong() {
-        try {
-            if (settingPreference.memoryPlay()) {
-                //恢复上次播放状态
-                Song song = null;
-                PlayPreference.CurrentSong cur = preference.getLastPlaySong();
-                if (cur != null && cur.path != null) {
-                    song = new Song(cur.path);
-                }
-
-                List<Song> songs = control.getPlayList();
-
-                if (songs != null && songs.size() > 0) {
-                    if (song == null) {  //配置文件没有保存【最后播放曲目】信息（通常为第一次打开应用）
-                        song = songs.get(0);
-                    } else { //配置文件有保存
-                        if (!songs.contains(song)) { //确认服务端有此歌曲
-                            song = songs.get(0);
-                        }
-                    }
-
-                    // songChanged 将被回调
-                    control.setCurrentSong(song);
-                    Log.d("musicoco service init", "onCreate: current song: " + song.path);
-
-                    int pro = cur.progress;
-                    if (pro >= 0) {
-                        control.seekTo(pro);
-                    }
-                }
-            } else {
-                control.setPlaySheet(MainSheetHelper.SHEET_ALL, 0);
+        if (settingPreference.memoryPlay()) {
+            //恢复上次播放状态
+            Song song = null;
+            PlayPreference.CurrentSong cur = preference.getLastPlaySong();
+            if (cur != null && cur.path != null) {
+                song = new Song(cur.path);
             }
 
-        } catch (RemoteException e) {
-            e.printStackTrace();
+            List<Song> songs = control.getPlayList();
+
+            if (songs != null && songs.size() > 0) {
+                if (song == null) {  //配置文件没有保存【最后播放曲目】信息（通常为第一次打开应用）
+                    song = songs.get(0);
+                } else { //配置文件有保存
+                    if (!songs.contains(song)) { //确认服务端有此歌曲
+                        song = songs.get(0);
+                    }
+                }
+
+                // songChanged 将被回调
+                control.setCurrentSong(song);
+                Log.d("musicoco service init", "onCreate: current song: " + song.path);
+
+                int pro = cur.progress;
+                if (pro >= 0) {
+                    control.seekTo(pro);
+                }
+            }
+        } else {
+            control.setPlaySheet(MainSheetHelper.SHEET_ALL, 0);
         }
+
     }
 
     private void initPlayMode() {
@@ -98,26 +93,21 @@ class ServiceInit {
 
     // 配置文件无法跨进程共享，同步工作由客户端负责，服务端只在首次启动时读取
     private void initPlayList() {
-        try {
-
-            int sheetID = preference.getSheetID();
-            List<DBSongInfo> list;
-            if (sheetID < 0) {
-                MainSheetHelper msh = new MainSheetHelper(context, dbController);
-                list = msh.getMainSheetSongInfo(sheetID);
-            } else {
-                list = dbController.getSongInfos(sheetID);
-            }
-            Song s = control.setPlayList(getSongs(list), 0, sheetID);
-            if (s == null) {
-                //歌单设置失败，重置为【全部歌曲】歌单
-                preference.updateSheet(MainSheetHelper.SHEET_ALL);
-                initPlayList();
-            }
-
-        } catch (RemoteException e) {
-            e.printStackTrace();
+        int sheetID = preference.getSheetID();
+        List<DBSongInfo> list;
+        if (sheetID < 0) {
+            MainSheetHelper msh = new MainSheetHelper(context, dbController);
+            list = msh.getMainSheetSongInfo(sheetID);
+        } else {
+            list = dbController.getSongInfos(sheetID);
         }
+        Song s = control.setPlayList(getSongs(list), 0, sheetID);
+        if (s == null) {
+            //歌单设置失败，重置为【全部歌曲】歌单
+            preference.updateSheet(MainSheetHelper.SHEET_ALL);
+            initPlayList();
+        }
+
     }
 
     private List<Song> getSongs(List<DBSongInfo> dbSongInfos) {

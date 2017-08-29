@@ -52,9 +52,9 @@
 
     <!-- 歌曲操作 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <string name="song_operation_collection_sheet">收藏到歌单</string>
+    <string name="song_operation_collection_sheet">添加至播放列表</string>
     <string name="song_operation_detail">歌曲详情</string>
-    <string name="song_operation_remove_from_sheet">从歌单中移除歌曲</string>
+    <string name="song_operation_remove_from_sheet">从歌单中移除</string>
     <string name="song_operation_delete">删除</string>
     <string name="song_operation_add_to_favorite">收藏</string>
     <string name="song_operation_remove_from_favorite">取消收藏</string>

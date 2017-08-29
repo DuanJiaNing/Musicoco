@@ -13,7 +13,7 @@ import android.support.annotation.Nullable;
 public class BroadcastManager {
 
 
-    // 主界面【主歌单】信息更新
+    // 主界面【主歌单】信息更新(主要针对歌曲收藏状态)
     public static final String FILTER_MAIN_SHEET_UPDATE = "filter_main_sheet_update";
 
     // 主界面【我的歌单】信息更新

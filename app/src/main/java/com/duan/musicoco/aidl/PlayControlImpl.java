@@ -16,6 +16,7 @@ import java.util.List;
  * 仅有从 {@link com.duan.musicoco.aidl.IPlayControl}.aidl 继承的方法在跨进程调用时有效<br>
  * 1. 该类中的方法运行在服务端 Binder 线程池中，所有需要处理线程同步<br>
  * 2. 这些方法被客户端调用时客户端线程会被挂起，如果客户端的线程为 UI 线程，注意处理耗时操作以避免出现的 ANR<br>
+ *     该实现类不再抛出 RemoteException 异常
  */
 
 public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
@@ -78,12 +79,12 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
     }
 
     @Override
-    public int getAudioSessionId() throws RemoteException {
+    public int getAudioSessionId() {
         return manager.getAudioSessionId();
     }
 
     @Override
-    public int setCurrentSong(Song song) throws RemoteException {
+    public int setCurrentSong(Song song) {
         if (song == null)
             return -1;
         return manager.prepare(song);
@@ -139,7 +140,7 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
     }
 
     @Override
-    public Song setPlayList(List<Song> songs, int current, int id) throws RemoteException {
+    public Song setPlayList(List<Song> songs, int current, int id) {
 
         if (songs.size() <= 0) {
             return null;
@@ -155,7 +156,7 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
     }
 
     @Override
-    public Song setPlaySheet(int sheetID, int current) throws RemoteException {
+    public Song setPlaySheet(int sheetID, int current) {
         return manager.setPlaySheet(sheetID, current);
     }
 
@@ -165,7 +166,7 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
     }
 
     @Override
-    public int getPlayListId() throws RemoteException {
+    public int getPlayListId() {
         return manager.getPlayListId();
     }
 
@@ -186,12 +187,12 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
     }
 
     @Override
-    public void remove(Song song) throws RemoteException {
+    public void remove(Song song) {
         manager.remove(song);
     }
 
     @Override
-    public int getPlayMode() throws RemoteException {
+    public int getPlayMode() {
         return manager.getPlayMode();
     }
 
@@ -206,12 +207,12 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
     }
 
     @Override
-    public void registerOnPlayListChangedListener(IOnPlayListChangedListener li) throws RemoteException {
+    public void registerOnPlayListChangedListener(IOnPlayListChangedListener li) {
         mPlayListChangeListeners.register(li);
     }
 
     @Override
-    public void registerOnDataIsReadyListener(IOnDataIsReadyListener li) throws RemoteException {
+    public void registerOnDataIsReadyListener(IOnDataIsReadyListener li) {
         mDataIsReadyListeners.register(li);
     }
 
@@ -226,12 +227,12 @@ public class PlayControlImpl extends com.duan.musicoco.aidl.IPlayControl.Stub {
     }
 
     @Override
-    public void unregisterOnPlayListChangedListener(IOnPlayListChangedListener li) throws RemoteException {
+    public void unregisterOnPlayListChangedListener(IOnPlayListChangedListener li) {
         mPlayListChangeListeners.unregister(li);
     }
 
     @Override
-    public void unregisterOnDataIsReadyListener(IOnDataIsReadyListener li) throws RemoteException {
+    public void unregisterOnDataIsReadyListener(IOnDataIsReadyListener li) {
         mDataIsReadyListeners.unregister(li);
     }
 
