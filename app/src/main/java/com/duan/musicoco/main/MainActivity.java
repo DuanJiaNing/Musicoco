@@ -17,14 +17,12 @@ import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
-import com.duan.musicoco.app.App;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnServiceConnect;
@@ -515,7 +513,6 @@ public class MainActivity extends RootActivity implements
         leftNavigationController.themeChange(theme, null);
         themeChange(null, null);
 
-        Log.d(App.TAG, "switchThemeMode: ");
     }
 
     /**

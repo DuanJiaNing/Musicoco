@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.IBinder;
 import android.os.Process;
-import android.util.Log;
 
 import com.duan.musicoco.app.manager.BroadcastManager;
 
@@ -66,7 +65,6 @@ public class PlayService extends RootService {
 
         int check = checkCallingOrSelfPermission("com.duan.musicoco.permission.ACCESS_PLAY_SERVICE");
         if (check == PackageManager.PERMISSION_DENIED) {
-            Log.e(TAG, "you need declare permission 'com.duan.musicoco.permission.ACCESS_PLAY_SERVICE' to access this service.");
             //客户端的 onServiceConnected 方法不会被调用
             return null;
         }

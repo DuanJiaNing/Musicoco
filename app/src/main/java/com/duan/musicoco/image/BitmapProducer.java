@@ -8,10 +8,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.duan.musicoco.app.Init;
-import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.cache.BitmapCache;
 import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
@@ -64,11 +62,9 @@ public class BitmapProducer {
 
                 Bitmap b = builder.getBitmap();
                 if (b != null) { // 成功构建
-                    Log.d(TAG, "getBitmapForVisualizer: create album picture for 【" + path + "】 successfully.");
                     cache.add(key, b);
                     result = b;
                 } else {//构建失败
-                    Log.d(TAG, "getBitmapForVisualizer: create album picture for 【" + path + "】 fail.");
                     result = cache.get(StringUtils.stringToMd5(DEFAULT_PIC_KEY));
                 }
             }

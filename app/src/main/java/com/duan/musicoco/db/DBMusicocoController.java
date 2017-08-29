@@ -7,13 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.db.modle.DBSongInfo;
 import com.duan.musicoco.db.modle.Sheet;
-import com.duan.musicoco.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,7 +115,6 @@ public class DBMusicocoController {
         database.update(TABLE_SONG, values, whereClause, whereArgs);
 
         addSheetCount(sheetID);
-        Log.i(TAG, "addSongToSheet: " + song.path + " sheet:" + sheetID);
         return true;
     }
 
@@ -311,7 +308,6 @@ public class DBMusicocoController {
         values.put(SONG_FAVORITE, favorite ? 1 : 0);
 
         database.insert(TABLE_SONG, null, values);
-        Log.i(TAG, "addSongInfo: " + song.path);
 
     }
 
@@ -359,7 +355,6 @@ public class DBMusicocoController {
         String whereClause = SONG_PATH + " like ?";
         String[] whereArgs = {song.path};
         database.update(TABLE_SONG, values, whereClause, whereArgs);
-        Log.i(TAG, "updateSongLastPlayTime: " + song.path + " time:" + StringUtils.getGenDateYMDHMS(time));
     }
 
     public void updateSongLastPlayTime(int songID, long time) {
@@ -368,7 +363,6 @@ public class DBMusicocoController {
         String whereClause = SONG_ID + " = ?";
         String[] whereArgs = {songID + ""};
         database.update(TABLE_SONG, values, whereClause, whereArgs);
-        Log.i(TAG, "updateSongLastPlayTime: id:" + songID + " time:" + StringUtils.getGenDateYMDHMS(time));
     }
 
     public void updateSongLastPlayTime(int songID) {
@@ -385,7 +379,6 @@ public class DBMusicocoController {
         String whereClause = SONG_PATH + " like ?";
         String[] whereArgs = {song.path + ""};
         database.update(TABLE_SONG, values, whereClause, whereArgs);
-        Log.i(TAG, "updateSongPlayTimes: " + song.path + " times:" + times);
 
     }
 
@@ -395,7 +388,6 @@ public class DBMusicocoController {
         String whereClause = SONG_ID + " = ?";
         String[] whereArgs = {songID + ""};
         database.update(TABLE_SONG, values, whereClause, whereArgs);
-        Log.i(TAG, "updateSongPlayTimes: id " + songID + " times:" + times);
     }
 
     public void updateSongPlayTimes(int songID) {
@@ -423,7 +415,6 @@ public class DBMusicocoController {
         String whereClause = SONG_PATH + " like ?";
         String[] whereArgs = {song.path};
         database.update(TABLE_SONG, values, whereClause, whereArgs);
-        Log.i(TAG, "updateSongRemark: " + song.path + " remark:" + remark);
     }
 
     public void updateSongFavorite(@NonNull Song song, boolean favorite) {
@@ -432,7 +423,6 @@ public class DBMusicocoController {
         String whereClause = SONG_PATH + " like ?";
         String[] whereArgs = {song.path};
         database.update(TABLE_SONG, values, whereClause, whereArgs);
-        Log.i(TAG, "updateSongFavorite: " + song.path + " favorite:" + favorite);
     }
 
     public void updateSongSheet(Song song, int[] sheets) {
@@ -442,7 +432,6 @@ public class DBMusicocoController {
         String whereClause = SONG_PATH + " like ?";
         String[] whereArgs = {song.path};
         database.update(TABLE_SONG, values, whereClause, whereArgs);
-        Log.i(TAG, "updateSongSheet: " + song.path + " sheets:" + ss);
     }
 
     /**
@@ -469,7 +458,6 @@ public class DBMusicocoController {
         String sql = String.format(Locale.CHINESE, "insert into %s values(null,'%s','%s','%s',%d,%d)",
                 TABLE_SHEET, name, remark, create, 0, count);
         database.execSQL(sql);
-        Log.d(TAG, "addSheet: " + name);
 
         return null;
     }
@@ -559,7 +547,6 @@ public class DBMusicocoController {
         String whereClause = SHEET_NAME + " like ?";
         String[] whereArgs = {sheetName};
         database.update(TABLE_SHEET, values, whereClause, whereArgs);
-        Log.i(TAG, "updateSheetPlayTimes: " + sheetName + " times:" + times);
     }
 
     public int updateSheetCount(@NonNull String sheetName, int count) {
@@ -571,7 +558,6 @@ public class DBMusicocoController {
         String whereClause = SHEET_NAME + " like ?";
         String[] whereArgs = {sheetName};
         database.update(TABLE_SHEET, values, whereClause, whereArgs);
-        Log.i(TAG, "updateSheetCount: " + sheetName + " count:" + count);
         return count;
     }
 
@@ -584,7 +570,6 @@ public class DBMusicocoController {
         String whereClause = SHEET_ID + " = ?";
         String[] whereArgs = {String.valueOf(sheetID)};
         database.update(TABLE_SHEET, values, whereClause, whereArgs);
-        Log.i(TAG, "updateSheetCount: id:" + sheetID + " count:" + count);
 
         return count;
     }
@@ -598,7 +583,6 @@ public class DBMusicocoController {
         } else if (table.equals(TABLE_SONG)) {
             createSongTable(database);
         }
-        Log.i(TAG, "truncate: table:" + table);
 
     }
 
@@ -619,7 +603,6 @@ public class DBMusicocoController {
             database.setTransactionSuccessful();
             database.endTransaction();
         }
-        Log.i(TAG, "removeSongInfo: " + song.path);
         return r;
     }
 
@@ -629,7 +612,6 @@ public class DBMusicocoController {
         String where = SONG_PATH + " like ? ";
         String[] whereArg = new String[]{song.path};
         database.delete(TABLE_SONG, where, whereArg);
-        Log.i(TAG, "removeSongInfoFromSongTable: " + song.path);
         return true;
     }
 
@@ -658,7 +640,6 @@ public class DBMusicocoController {
         }
 
         if (-1 == index) {
-            Log.e(TAG, "removeSongInfoFromSheet: the sheet not contain the song " + song.path + " sheet:" + sheetID);
             return true;
         } else {
             int i = 0;
@@ -672,7 +653,6 @@ public class DBMusicocoController {
 
             updateSongSheet(song, newSheets);
             minusSheetCount(sheetID);
-            Log.i(TAG, "removeSongInfoFromSheet:  " + song.path + " sheet:" + sheet.name);
             return true;
         }
     }
@@ -718,7 +698,6 @@ public class DBMusicocoController {
         String whereClause = SHEET_ID + " = ?";
         String[] whereArgs = {sheetID + ""};
         database.update(TABLE_SHEET, values, whereClause, whereArgs);
-        Log.i(TAG, "updateSheet: " + sheet.name + " " + newName + " " + newRemark);
         return null;
     }
 
@@ -760,7 +739,6 @@ public class DBMusicocoController {
         String[] whereArg = new String[]{String.valueOf(sheetID)};
         database.delete(TABLE_SHEET, where, whereArg);
 
-        Log.i(TAG, "removeSheetFromSheetTableOnly: " + sheet.name);
     }
 
     public DBSongInfo getSongInfo(String data) {

@@ -4,17 +4,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
-import android.util.Log;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.app.App;
 import com.duan.musicoco.preference.SettingPreference;
-import com.duan.musicoco.util.Utils;
-
-import java.lang.reflect.Field;
 
 /**
  * Created by DuanJiaNing on 2017/8/18.

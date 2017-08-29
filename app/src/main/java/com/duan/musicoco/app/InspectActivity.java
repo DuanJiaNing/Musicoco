@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.interfaces.PermissionRequestCallback;
@@ -48,7 +47,6 @@ public abstract class InspectActivity extends RootActivity implements Permission
         };
 
         if (!permissionManager.checkPermission(this, ps)) {
-            Log.d(TAG, "checkPermission: permission request");
             PermissionManager.PerMap perMap = new PermissionManager.PerMap(
                     getString(R.string.permission_media_read),
                     getResources().getString(R.string.permission_required),

@@ -4,8 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.io.File;
-
 /**
  * Created by DuanJiaNing on 2017/6/30.
  * 数据库将创建于 data/com.duan.musicoco/databases/ 下

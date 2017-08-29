@@ -6,7 +6,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -16,8 +15,6 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.db.MainSheetHelper;
-import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
@@ -27,6 +24,7 @@ import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.manager.PlayNotifyManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.image.BitmapBuilder;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
@@ -36,8 +34,6 @@ import com.duan.musicoco.util.BitmapUtils;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.Utils;
 import com.duan.musicoco.view.media.PlayView;
-
-import java.util.ResourceBundle;
 
 /**
  * Created by DuanJiaNing on 2017/6/27.
@@ -125,7 +121,6 @@ public class BottomNavigationController implements
 
     @Override
     public void dataIsReady(IPlayControl control) {
-        Log.d(TAG, "dataIsReady: ");
     }
 
     public void initData(IPlayControl control, DBMusicocoController dbController) {

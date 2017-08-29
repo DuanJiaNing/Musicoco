@@ -1,9 +1,7 @@
 package com.duan.musicoco.preference;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.service.PlayController;
@@ -28,14 +26,12 @@ public class PlayPreference extends BasePreference {
         editor = preferences.edit();
         editor.putString(KEY_THEME, themeEnum.name());
         editor.apply();
-        Log.d("musicoco", "updateTheme: themeEnum " + themeEnum.name());
     }
 
     public void updatePlayBgMode(PlayBackgroundModeEnum mode) {
         editor = preferences.edit();
         editor.putString(KEY_PLAY_BG_MODE, mode.name());
         editor.apply();
-        Log.d("musicoco", "updatePlayBgMode: mode " + mode.name());
     }
 
     public ThemeEnum getTheme() {

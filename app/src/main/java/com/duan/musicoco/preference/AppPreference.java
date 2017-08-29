@@ -1,8 +1,6 @@
 package com.duan.musicoco.preference;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 
@@ -35,7 +33,7 @@ public class AppPreference extends BasePreference {
     }
 
     public int getImageWallSize() {
-        int defaultSize = 30;
+        int defaultSize = 80;
         return preferences.getInt(KEY_IMAGE_WALL_SIZE, defaultSize);
     }
 

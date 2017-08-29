@@ -8,7 +8,6 @@ import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.RemoteException;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -17,17 +16,15 @@ import android.widget.ImageButton;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.app.manager.ActivityManager;
-import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.interfaces.ViewVisibilityChangeable;
-import com.duan.musicoco.app.manager.BroadcastManager;
+import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
-import com.duan.musicoco.shared.ExceptionHandler;
 import com.duan.musicoco.shared.OptionsAdapter;
 import com.duan.musicoco.shared.OptionsDialog;
 import com.duan.musicoco.shared.SongOperation;
@@ -276,7 +273,6 @@ public class SongOption implements
 
 
     void updateCurrentFavorite(boolean favorite, boolean useAnim) {
-        Log.d("updateCurrentPlay", "play/BottomNavigationController SongOption#updateCurrentFavorite");
 
         Drawable select;
         Drawable notSelect;

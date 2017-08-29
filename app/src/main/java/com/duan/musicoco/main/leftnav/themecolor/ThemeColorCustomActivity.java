@@ -28,7 +28,6 @@ public class ThemeColorCustomActivity extends RootActivity implements
 
     private Button modeStatus;
     private Button modeIcon;
-    private ImageView picStatus;
     private ImageView picStatus_;
     private ImageView picIcon;
     private ImageView picIcon_;
@@ -98,7 +97,6 @@ public class ThemeColorCustomActivity extends RootActivity implements
     private void findViews() {
         modeStatus = (Button) findViewById(R.id.theme_custom_mode_status);
         modeIcon = (Button) findViewById(R.id.theme_custom_mode_icon);
-        picStatus = (ImageView) findViewById(R.id.theme_custom_pic_status);
         picStatus_ = (ImageView) findViewById(R.id.theme_custom_pic_status_);
         picIcon = (ImageView) findViewById(R.id.theme_custom_pic_icon);
         picIcon_ = (ImageView) findViewById(R.id.theme_custom_pic_icon_);

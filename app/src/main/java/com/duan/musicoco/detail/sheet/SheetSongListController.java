@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -21,7 +20,6 @@ import com.bumptech.glide.Glide;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.OnCompleteListener;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
@@ -29,6 +27,7 @@ import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.modle.DBSongInfo;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.shared.OptionsAdapter;
@@ -148,7 +147,6 @@ public class SheetSongListController implements
             ViewGroup.LayoutParams params = songList.getLayoutParams();
             params.height = height;
             songList.setLayoutParams(params);
-            Log.d("musicoco", "calculateRecycleViewHeight: height=" + height);
         }
     }
 
@@ -255,7 +253,6 @@ public class SheetSongListController implements
         songAdapter.setOnItemClickListener(new SongAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(SongAdapter.ViewHolder view, SongAdapter.DataHolder data, int position) {
-                Log.i(TAG, "onItemClick: pos=" + position + " data=" + data.info);
                 playSong(position);
             }
         });
@@ -314,7 +311,6 @@ public class SheetSongListController implements
             if (id == sheetID) { // 当前歌单
                 if (position == index) {
                     // UPDATE: 2017/8/26 更新 在另外的歌单删除当前歌单中正在播放的歌曲
-                    Log.d(TAG, "onClick: the song is playing");
                     if (control.status() != PlayController.STATUS_PLAYING) {
                         control.resume();
                     }

@@ -167,7 +167,6 @@ public class BottomNavigationController implements
 
                     int index = control.currentSongIndex();
                     if (position == index) {
-//                        Log.d(TAG, "onClick: the song is playing");
                         if (control.status() != PlayController.STATUS_PLAYING) {
                             control.resume();
                         }

@@ -9,7 +9,6 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -17,12 +16,10 @@ import android.widget.ImageSwitcher;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.Init;
-import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.cache.BitmapCache;
 import com.duan.musicoco.image.BitmapProducer;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.util.ColorUtils;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by DuanJiaNing on 2017/6/13.
@@ -111,7 +108,6 @@ public final class AlbumPictureController {
             try {
                 view.setImageDrawable(new BitmapDrawable(context.getResources(), cache.getDefaultBitmap()));
             } catch (Exception e) {
-                Log.d(TAG, "pre: create default bitmap for BitmapCache");
                 Bitmap b = Init.initAlbumVisualizerImageCache((Activity) context);
                 view.setImageDrawable(new BitmapDrawable(context.getResources(), b));
             }
@@ -144,7 +140,6 @@ public final class AlbumPictureController {
             try {
                 view.setImageDrawable(new BitmapDrawable(context.getResources(), cache.getDefaultBitmap()));
             } catch (Exception e) {
-                Log.d(TAG, "pre: create default bitmap for BitmapCache");
                 Bitmap b = Init.initAlbumVisualizerImageCache((Activity) context);
                 view.setImageDrawable(new BitmapDrawable(context.getResources(), b));
             }

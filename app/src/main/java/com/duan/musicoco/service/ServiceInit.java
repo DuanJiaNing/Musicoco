@@ -1,7 +1,6 @@
 package com.duan.musicoco.service;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.duan.musicoco.aidl.PlayControlImpl;
 import com.duan.musicoco.aidl.Song;
@@ -73,7 +72,6 @@ class ServiceInit {
 
                 // songChanged 将被回调
                 control.setCurrentSong(song);
-                Log.d("musicoco service init", "onCreate: current song: " + song.path);
 
                 int pro = cur.progress;
                 if (pro >= 0) {

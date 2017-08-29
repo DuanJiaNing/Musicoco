@@ -3,8 +3,6 @@ package com.duan.musicoco.util;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.duan.musicoco.app.App;
-
 /**
  * Created by DuanJiaNing on 2017/6/1.
  */

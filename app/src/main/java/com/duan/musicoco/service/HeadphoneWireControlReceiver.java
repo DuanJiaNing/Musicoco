@@ -4,11 +4,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.RemoteException;
-import android.util.Log;
 import android.view.KeyEvent;
 
 import com.duan.musicoco.aidl.IPlayControl;
-import com.duan.musicoco.app.App;
 import com.duan.musicoco.main.MainActivity;
 
 /**
@@ -20,7 +18,6 @@ public class HeadphoneWireControlReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(App.TAG, "HeadphoneWireControlReceiver: ");
 
         KeyEvent event = intent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
         if (event == null || event.getAction() != KeyEvent.ACTION_UP) {

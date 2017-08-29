@@ -4,12 +4,9 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.app.App;
 import com.duan.musicoco.app.interfaces.On2CompleteListener;
-import com.duan.musicoco.app.interfaces.OnCompleteListener;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -39,12 +36,6 @@ public class FileUtils {
         boolean d = false;
         if (file.exists() && file.isFile()) {
             d = file.delete();
-        }
-
-        if (d) {
-            Log.d("musicoco", "success deleteFile: " + path);
-        } else {
-            Log.d("musicoco", "fial deleteFile: " + path);
         }
 
         return d;

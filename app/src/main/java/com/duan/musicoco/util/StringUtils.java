@@ -1,7 +1,5 @@
 package com.duan.musicoco.util;
 
-import android.text.TextUtils;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Date;

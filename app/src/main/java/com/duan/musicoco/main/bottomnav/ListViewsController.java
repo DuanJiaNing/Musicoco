@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.RemoteException;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.ContentUpdatable;
 import com.duan.musicoco.app.interfaces.OnPlayListVisibilityChange;
 import com.duan.musicoco.app.interfaces.OnUpdateStatusChanged;
@@ -28,6 +26,7 @@ import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.modle.Sheet;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.shared.PlayListAdapter;
@@ -186,7 +185,6 @@ public class ListViewsController implements
 
                     int index = control.currentSongIndex();
                     if (position == index) {
-                        Log.d(TAG, "onClick: the song is playing");
                         if (control.status() != PlayController.STATUS_PLAYING)
                             control.resume();
                         return;

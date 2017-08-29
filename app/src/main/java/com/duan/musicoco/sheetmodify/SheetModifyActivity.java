@@ -17,7 +17,6 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.app.RootActivity;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
-import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.db.modle.Sheet;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.util.ColorUtils;

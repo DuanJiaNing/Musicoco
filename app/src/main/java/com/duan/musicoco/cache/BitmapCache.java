@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.duan.musicoco.util.FileUtils;
 import com.duan.musicoco.util.StringUtils;
@@ -171,7 +170,6 @@ public class BitmapCache {
     //初始化默认的专辑图片，第一次启动应用时完成
     public void initDefaultBitmap(Bitmap bitmap) {
         add(StringUtils.stringToMd5(DEFAULT_PIC_KEY), bitmap);
-        Log.d(TAG, "initDefaultBitmap: add default album picture to cache");
     }
 
     public Bitmap getDefaultBitmap() throws Exception {

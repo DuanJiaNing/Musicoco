@@ -11,7 +11,6 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.app.App;
 
 import java.io.File;
 import java.io.FileNotFoundException;

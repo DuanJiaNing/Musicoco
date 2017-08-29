@@ -5,7 +5,6 @@ import android.content.ComponentName;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.util.Log;
 
 import com.duan.musicoco.aidl.IPlayControl;
 import com.duan.musicoco.aidl.OnDataIsReadyListener;
@@ -121,7 +120,6 @@ public class PlayServiceConnection implements ServiceConnection {
             mControl.registerOnPlayListChangedListener(mPlayListChangedListener);
             mControl.registerOnDataIsReadyListener(mDataIsReadyListener);
 
-            Log.d("musicoco", "onServiceConnected: service connected");
         } catch (RemoteException e) {
             e.printStackTrace();
         }

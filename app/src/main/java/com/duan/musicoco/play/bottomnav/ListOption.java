@@ -17,7 +17,6 @@ import com.duan.musicoco.app.interfaces.ViewVisibilityChangeable;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.modle.Sheet;
-import com.duan.musicoco.shared.ExceptionHandler;
 import com.duan.musicoco.util.AnimationUtils;
 
 /**

@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.interfaces.ViewVisibilityChangeable;
 import com.duan.musicoco.util.Utils;
-import com.duan.musicoco.view.PullDownLinearLayout;
 
 /**
  * Created by DuanJiaNing on 2017/7/16.
