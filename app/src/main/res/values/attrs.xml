@@ -157,12 +157,6 @@
         <attr name="dsb_indicatorSeparation" format="integer|dimension" />
     </declare-styleable>
 
-    <declare-styleable name="RealTimeBlurView">
-        <attr name="realtimeBlurRadius" format="dimension" />
-        <attr name="realtimeDownsampleFactor" format="float" />
-        <attr name="realtimeOverlayColor" format="color" />
-    </declare-styleable>
-
     <declare-styleable name="ImageTextView">
         <attr name="text" format="string" />
         <attr name="bitmap" format="reference" />

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.DisplayMetrics;
-import android.util.Log;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.manager.MediaManager;
@@ -20,8 +19,6 @@ import com.duan.musicoco.util.Utils;
  */
 
 public class Init {
-
-    private static final String TAG = "Init";
 
     public static Bitmap initAlbumVisualizerImageCache(Activity activity) {
 
@@ -53,11 +50,9 @@ public class Init {
 
         db.addSongInfo(mediaManager.getSongList(context));
 
-        db.addSheet("我喜欢的", "收藏我所喜欢", 0);
+        db.addSheet(context.getString(R.string.default_sheet), context.getString(R.string.default_sheet_des), 0);
 
         db.close();
-        Log.d(TAG, "initMusicocoDB: initialization database success ");
-
     }
 
 }

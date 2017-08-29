@@ -8,11 +8,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.graphics.Palette;
 
 import com.duan.musicoco.R;
-import com.duan.musicoco.app.App;
-import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.preference.AppPreference;
 import com.duan.musicoco.preference.ThemeEnum;
-import com.duan.musicoco.view.RealTimeBlurView;
 
 /**
  * Created by DuanJiaNing on 2017/4/2.

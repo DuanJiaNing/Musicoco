@@ -7,6 +7,9 @@
     <string name="phone">18202856027</string>
     <string name="email">Aimeimeits@gmail.com</string>
 
+    <string name="default_sheet">MY SONG LIST</string>
+    <string name="default_sheet_des">My favorite songs</string>
+
     <string name="guide_url">Http://www.jianshu.com/p/051e214ebc2e</string>
     <string name="share_to_friends">Musicoco</string>
 

@@ -22,6 +22,8 @@
         android:roundIcon="@mipmap/logo_round"
         android:supportsRtl="true">
 
+        <activity android:name=".app.RootActivity" />
+
         <!-- 需要为 PlayActivity 开启硬件加速，Android 4.1 以上默认开启 -->
         <activity
             android:name=".play.PlayActivity"
