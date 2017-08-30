@@ -58,6 +58,7 @@ public class WebActivity extends RootActivity implements ThemeChangeable {
             //防止内存泄漏
             webView.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
             webView.clearHistory();
+            webView.clearCache(true);
             ((ViewGroup) webView.getParent()).removeView(webView);
             webView.destroy();
             webView.destroy();
