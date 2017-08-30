@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.app.manager.ActivityManager;
+import com.duan.musicoco.main.MainActivity;
 import com.duan.musicoco.shared.DialogProvider;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.Utils;
@@ -40,6 +41,13 @@ public class SplashActivity extends InspectActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (ActivityManager.getInstance().getActivity(MainActivity.class.getName()) != null) {
+            // 应用已经启动并未被杀死，直接启动 MainActivity
+            startMainActivity();
+            return;
+        }
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.splash_activity);
 
