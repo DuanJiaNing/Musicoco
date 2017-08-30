@@ -12,6 +12,7 @@
 应用还未上传应用市场，如果你想安装在自己手机上体验可下载 apk\app-release.apk 文件，或下载并构建整个项目。
 
 ## 应用截图
+
 <img src="https://raw.githubusercontent.com/DuanJiaNing/Pictures/master/Musicoco/Image_020.png"/>
 
 ## 相关日志
