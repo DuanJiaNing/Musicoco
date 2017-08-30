@@ -35,7 +35,7 @@
         android:id="@+id/sheet_detail_multi_remove"
         android:icon="@drawable/menu_action_clear"
         android:orderInCategory="500"
-        android:title="@string/remove"
+        android:title="@string/song_operation_remove_from_sheet"
         app:showAsAction="ifRoom" />
 
     <item

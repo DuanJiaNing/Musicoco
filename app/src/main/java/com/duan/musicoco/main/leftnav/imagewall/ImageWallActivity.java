@@ -8,13 +8,13 @@ import android.view.WindowManager;
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.RootActivity;
-import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.interfaces.On2CompleteListener;
 import com.duan.musicoco.app.interfaces.ThemeChangeable;
 import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.modle.DBSongInfo;
+import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.shared.OptionsAdapter;
 import com.duan.musicoco.shared.OptionsDialog;
@@ -100,7 +100,7 @@ public class ImageWallActivity extends RootActivity implements
         );
 
         OptionsAdapter.Option jumpToSource = new OptionsAdapter.Option(
-                getString(R.string.info_jump_to_source),
+                getString(R.string.info_show_in_sheet),
                 1, null, R.drawable.ic_location_searching_black_24dp,
                 new OptionsAdapter.OptionClickListener() {
                     @Override

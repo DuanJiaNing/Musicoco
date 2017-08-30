@@ -168,7 +168,6 @@
     <string name="info_time_sleep_is_canceled">Timed shutdown has been canceled</string>
     <string name="info_save_image">Save the picture</string>
     <string name="info_choice_email_app">Please select the mail class application</string>
-    <string name="info_jump_to_source">Jump to source</string>
     <string name="info_cleat_cache">
         Clear the cache will empty the song details interface and play interface of image cache,this will make the application repeat generate when next time need these images, confirm clear!
     </string>

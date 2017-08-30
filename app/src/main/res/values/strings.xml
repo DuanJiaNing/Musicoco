@@ -168,7 +168,6 @@
     <string name="info_time_sleep_is_canceled">定时停止播放已取消</string>
     <string name="info_save_image">保存图片</string>
     <string name="info_choice_email_app">请选择邮件类应用</string>
-    <string name="info_jump_to_source">跳到来源</string>
     <string name="info_cleat_cache">
         清除缓存将清空歌单详情界面和播放界面的图片缓存，这会使应用在将来再次用到这些图片时需要重新生成，确认清除！
     </string>

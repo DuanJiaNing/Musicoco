@@ -49,11 +49,6 @@ public class VisualizerFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
     private void initViews() {
 
         albumView = (ImageSwitcher) view.findViewById(R.id.play_album_is);
