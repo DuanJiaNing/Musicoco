@@ -15,6 +15,10 @@
 
 <img src="https://raw.githubusercontent.com/DuanJiaNing/Pictures/master/Musicoco/Image_020.png"/>
 
+## 功能结构图
+
+<img src="https://raw.githubusercontent.com/DuanJiaNing/Pictures/master/Musicoco/Musicoco功能结构图.png"/>
+
 ## 相关日志
 
 - [Musicoco 用户指南](http://www.jianshu.com/p/051e214ebc2e)
