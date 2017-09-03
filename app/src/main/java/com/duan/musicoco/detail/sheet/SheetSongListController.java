@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.RemoteException;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -136,7 +137,7 @@ public class SheetSongListController implements
 
     //计算 RecycleView 高度，否则无法复用 item
     private void calculateRecycleViewHeight() {
-        android.support.v7.app.ActionBar bar = ((AppCompatActivity) activity).getSupportActionBar();
+        ActionBar bar = ((AppCompatActivity) activity).getSupportActionBar();
         if (bar != null) {
             int actionH = bar.getHeight();
             int randomCH = randomContainer.getHeight();
@@ -214,6 +215,7 @@ public class SheetSongListController implements
         LinearLayoutManager lm = new LinearLayoutManager(activity);
         songList.setLayoutManager(lm);
         songList.setAdapter(songAdapter);
+
         songList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {

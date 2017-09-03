@@ -139,7 +139,7 @@ public class WebActivity extends RootActivity implements ThemeChangeable {
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 toolbar.setTitle(getString(R.string.in_progress));
                 stub.setVisibility(View.VISIBLE);
-                webView.setVisibility(View.INVISIBLE);
+                view.setVisibility(View.INVISIBLE);
             }
 
             @Override
@@ -154,7 +154,7 @@ public class WebActivity extends RootActivity implements ThemeChangeable {
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 stub.setVisibility(View.INVISIBLE);
-                webView.setVisibility(View.VISIBLE);
+                view.setVisibility(View.VISIBLE);
             }
         });
         webView.setWebChromeClient(new WebChromeClient() {

@@ -22,7 +22,7 @@
 ## 相关日志
 
 - [Musicoco 用户指南](http://www.jianshu.com/p/051e214ebc2e)
-
+- [开发总结](http://www.jianshu.com/p/6b5c6636ba55)
 
 ## 版本变化
 

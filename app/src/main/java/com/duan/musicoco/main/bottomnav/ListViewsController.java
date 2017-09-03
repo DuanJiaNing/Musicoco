@@ -47,7 +47,6 @@ public class ListViewsController implements
         OnPlayListVisibilityChange,
         ThemeChangeable {
 
-    private static final String TAG = "BottomNavigationController$ListViewsController";
     private final Activity activity;
 
     private final MediaManager mediaManager;

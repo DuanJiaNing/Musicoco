@@ -23,8 +23,6 @@ import static com.duan.musicoco.cache.BitmapCache.DEFAULT_PIC_KEY;
 
 public class BitmapProducer {
 
-    private static final String TAG = "BitmapProducer";
-
     private final Context context;
 
     public BitmapProducer(Context context) {

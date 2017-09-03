@@ -45,8 +45,6 @@ public class BottomNavigationController implements
         ContentUpdatable,
         ThemeChangeable {
 
-    private final static String TAG = "BottomNavigationController";
-
     private final Activity activity;
     private final BroadcastManager broadcastManager;
     private IPlayControl mControl;
