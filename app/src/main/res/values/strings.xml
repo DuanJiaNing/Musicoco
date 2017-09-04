@@ -303,4 +303,8 @@
     <string name="song_detail_not_favorite">未收藏</string>
     <string name="song_detail_song_list">已加入歌单</string>
 
+
+    <string name="xiaomi_app_id">2882303761517612812</string>
+    <string name="xiaomi_app_key">5641761220812</string>
+
 </resources>
