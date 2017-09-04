@@ -56,11 +56,12 @@ public class AutoSwitchThemeController {
                 current.get(Calendar.MONTH),
                 current.get(Calendar.DAY_OF_MONTH),
                 22, 30); // 22:30 切换到夜间模式
-        nightThemeEnd = new GregorianCalendar(
-                current.get(Calendar.YEAR),
-                current.get(Calendar.MONTH),
-                current.get(Calendar.DAY_OF_MONTH),
-                7, 00); // 07:00 切换到白天模式
+
+        nightThemeEnd = (Calendar) nightThemeStart.clone();
+        nightThemeEnd.add(Calendar.DAY_OF_MONTH, 1); // 后一天
+        nightThemeEnd.set(Calendar.HOUR_OF_DAY, 7); // 07:00 切换到白天模式
+        nightThemeEnd.set(Calendar.MINUTE, 0);
+
         checkTheme();
         isSet = true;
 
@@ -95,22 +96,12 @@ public class AutoSwitchThemeController {
 
     private void checkTheme() {
 
-        int curH = current.get(Calendar.HOUR_OF_DAY);
-        int curM = current.get(Calendar.MINUTE);
-        int startH = nightThemeStart.get(Calendar.HOUR_OF_DAY);
-        int startM = nightThemeStart.get(Calendar.MINUTE);
-        int endH = nightThemeEnd.get(Calendar.HOUR_OF_DAY);
-        int endM = nightThemeEnd.get(Calendar.MINUTE);
-
-        if (curH > startH || (curH == startH && curM >= startM)
-                && curH < endH + 24 || (curH == endH && curM < endM)) {
-            //  切换夜间
+        if (current.compareTo(nightThemeStart) > 0 && current.compareTo(nightThemeEnd) < 0) {
             appPreference.updateTheme(ThemeEnum.DARK);
-
         } else {
-            //  切换白天
             appPreference.updateTheme(ThemeEnum.WHITE);
         }
+
         BroadcastManager.getInstance().sendBroadcast(context, BroadcastManager.FILTER_APP_THEME_CHANGE_AUTOMATIC, null);
     }
 
