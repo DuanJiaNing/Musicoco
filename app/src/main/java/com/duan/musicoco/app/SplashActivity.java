@@ -54,6 +54,9 @@ public class SplashActivity extends InspectActivity {
         //权限检查完成后回调 permissionGranted 或 permissionDenied
         checkPermission();
 
+        // 初始化小米应用统计服务
+        xiaomiServiceInit();
+
     }
 
     @Override
@@ -258,6 +261,10 @@ public class SplashActivity extends InspectActivity {
         startService();
 
         return true;
+    }
+
+    private void xiaomiServiceInit() {
+        Init.initXiaomiStatisticalervices(this);
     }
 
     private void handleEmptyLibrary() {

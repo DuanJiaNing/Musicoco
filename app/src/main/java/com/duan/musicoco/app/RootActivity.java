@@ -12,6 +12,7 @@ import com.duan.musicoco.preference.AuxiliaryPreference;
 import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.SettingPreference;
 import com.duan.musicoco.preference.ThemeEnum;
+import com.xiaomi.mistatistic.sdk.MiStatInterface;
 
 /**
  * Created by DuanJiaNing on 2017/8/6.
@@ -58,6 +59,17 @@ public class RootActivity extends AppCompatActivity {
         if (dbController != null) {
             dbController.close();
         }
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MiStatInterface.recordPageStart(this, this.getClass().getName());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MiStatInterface.recordPageEnd();
     }
 }
