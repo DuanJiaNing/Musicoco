@@ -315,8 +315,10 @@ public class DialogProvider {
     private AlertDialog getDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setView(rootView);
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setWindowAnimations(R.style.DialogAnimation);
 
-        return builder.create();
+        return dialog;
     }
 
     public AlertDialog createCustomInsiderDialog(String title, @Nullable String message, View v) {

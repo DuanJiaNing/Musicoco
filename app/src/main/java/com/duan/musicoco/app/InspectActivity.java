@@ -15,7 +15,6 @@ import com.duan.musicoco.app.manager.PlayServiceManager;
 
 /**
  * Created by DuanJiaNing on 2017/3/21.
- * 定义检查权限，初始化 app 数据（缓存，数据库...）
  */
 
 public abstract class InspectActivity extends RootActivity implements PermissionRequestCallback {
@@ -42,8 +41,7 @@ public abstract class InspectActivity extends RootActivity implements Permission
 
         String[] ps = new String[]{
                 Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.RECORD_AUDIO
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
         };
 
         if (!permissionManager.checkPermission(this, ps)) {
@@ -52,12 +50,14 @@ public abstract class InspectActivity extends RootActivity implements Permission
                     getResources().getString(R.string.permission_required),
                     PermissionManager.PerMap.CATEGORY_MEDIA_READ,
                     ps);
+
             permissionManager.showPermissionRequestTip(perMap, this, new PermissionManager.OnPermissionRequestRefuse() {
                 @Override
                 public void onRefuse() {
                     permissionDenied(PermissionManager.PerMap.CATEGORY_MEDIA_READ);
                 }
             });
+
         } else {
             permissionGranted(PermissionManager.PerMap.CATEGORY_MEDIA_READ);
         }

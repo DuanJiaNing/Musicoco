@@ -64,6 +64,7 @@ public class RootActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
         MiStatInterface.recordPageStart(this, this.getClass().getName());
     }
 

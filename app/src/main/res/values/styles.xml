@@ -123,4 +123,9 @@
         <item name="textSize">30sp</item>
     </style>
 
+    <style name="DialogAnimation" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/narrow_fade_in</item>
+        <item name="android:windowExitAnimation">@anim/narrow_fade_out</item>
+    </style>
+
 </resources>

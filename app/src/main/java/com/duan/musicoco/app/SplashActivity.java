@@ -51,11 +51,11 @@ public class SplashActivity extends InspectActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.splash_activity);
 
-        //权限检查完成后回调 permissionGranted 或 permissionDenied
-        checkPermission();
-
         // 初始化小米应用统计服务
         xiaomiServiceInit();
+
+        //权限检查完成后回调 permissionGranted 或 permissionDenied
+        checkPermission();
 
     }
 

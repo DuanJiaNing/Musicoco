@@ -3,6 +3,7 @@
     <integer name="play_list_anim_duration">400</integer>
     <integer name="anim_default_duration">600</integer>
     <integer name="anim_default_duration_half">300</integer>
+    <integer name="anim_default_duration_half_s">200</integer>
 
     <integer name="sheet_recent_count">50</integer>
     <integer name="rmp_count">10</integer>

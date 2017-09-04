@@ -12,8 +12,6 @@ import android.view.View;
 
 import com.duan.musicoco.shared.DialogProvider;
 
-import static android.R.attr.targetSdkVersion;
-
 /**
  * Created by DuanJiaNing on 2017/5/25.
  */
@@ -80,21 +78,18 @@ public final class PermissionManager {
 
         for (int i = 0; i < permission.length; i++) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                // targetSdkVersion >= Android M, we can
+                // use Context#checkSelfPermission
+                nr = context.checkSelfPermission(permission[i])
+                        == PackageManager.PERMISSION_GRANTED;
+            } else {
+                // targetSdkVersion < Android M, we have to use PermissionChecker
+                nr = PermissionChecker.checkSelfPermission(context, permission[i])
+                        == PermissionChecker.PERMISSION_GRANTED;
+            }
 
-                if (targetSdkVersion >= Build.VERSION_CODES.M) {
-                    // targetSdkVersion >= Android M, we can
-                    // use Context#checkSelfPermission
-                    nr = context.checkSelfPermission(permission[i])
-                            == PackageManager.PERMISSION_GRANTED;
-                } else {
-                    // targetSdkVersion < Android M, we have to use PermissionChecker
-                    nr = PermissionChecker.checkSelfPermission(context, permission[i])
-                            == PermissionChecker.PERMISSION_GRANTED;
-                }
-
-                if (!nr) {
-                    break;
-                }
+            if (!nr) {
+                break;
             }
         }
         return nr;
@@ -138,6 +133,7 @@ public final class PermissionManager {
                     true
             );
 
+            dialog.setCancelable(false);
             dialog.show();
         }
     }
