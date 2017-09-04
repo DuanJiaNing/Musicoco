@@ -13,6 +13,7 @@ import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.image.BitmapBuilder;
 import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.util.Utils;
+import com.xiaomi.mistatistic.sdk.MiStatInterface;
 
 /**
  * Created by DuanJiaNing on 2017/6/21.
@@ -55,4 +56,20 @@ public class Init {
         db.close();
     }
 
+    /**
+     * 小米应用数据统计服务
+     *
+     * @see <a href="https://dev.mi.com/doc/p=3995/index.html"/> 说明文档
+     */
+    public static void initXiaomiStatisticalervices(Context context) {
+
+        // 小米统计服务初始化
+        final String CHANNEL = "default channel";
+        final String APPID = context.getString(R.string.xiaomi_app_id);
+        final String APPKEY = context.getString(R.string.xiaomi_app_key);
+        MiStatInterface.initialize(context, APPID, APPKEY, CHANNEL);
+        MiStatInterface.enableLog();
+        MiStatInterface.enableExceptionCatcher(true);
+
+    }
 }

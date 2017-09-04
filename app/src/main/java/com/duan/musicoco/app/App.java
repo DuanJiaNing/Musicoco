@@ -17,6 +17,7 @@ public class App extends Application {
         super.onCreate();
         checkAutoThemeSwitch();
     }
+
     private void checkAutoThemeSwitch() {
         SettingPreference settingPreference = new SettingPreference(this);
         AutoSwitchThemeController instance = AutoSwitchThemeController.getInstance(this);

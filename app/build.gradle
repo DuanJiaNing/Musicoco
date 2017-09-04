@@ -11,9 +11,6 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.double_number_picker.runner.AndroidJUnitRunner"
-//        renderscriptTargetApi 19
-//        renderscriptSupportModeEnabled true    // Enable RS support
-//        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -28,7 +25,6 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
     compile 'com.android.support:palette-v7:23.4.0'
     compile 'com.android.support:appcompat-v7:26.0.0-alpha1'
@@ -42,6 +38,7 @@ dependencies {
     compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
     compile 'com.android.support:support-vector-drawable:25.3.1'
     testCompile 'junit:junit:4.12'
+    compile files('src/main/libs/MiStats_SDK_Client_1_9_6.jar')
 }
 repositories {
     mavenCentral()
