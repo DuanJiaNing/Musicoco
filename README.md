@@ -9,7 +9,7 @@
 
 部分功能尚未完善，还存在一些已知或未知的 bug，如果你想要改进客户端，或者发现了问题，可以提交[Issues](https://github.com/DuanJiaNing/Musicoco/issues)，或者直接使用应用的**反馈**功能向我提交你的意见或建议；当然，你也可以基于该代码修改并开发出属于自己的客户端。
 
-应用还未上传应用市场，如果你想安装在自己手机上体验可下载 apk\app-release.apk 文件，或下载并构建整个项目。
+应用还未上传应用市场，如果你想安装在自己手机上体验可下载 [apk\app-release-v1.1.0.apk](https://github.com/DuanJiaNing/Musicoco/raw/master/apk/app-release-v1.1.0.apk) 文件，或下载并构建整个项目。
 
 ## 应用截图
 
@@ -26,7 +26,7 @@
 
 ## 版本变化
 
-- [v1.1.0](https://github.com/DuanJiaNing/Musicoco/tree/v1.1.0) 
+- [v1.1.0](https://github.com/DuanJiaNing/Musicoco/tree/v1.1.0) <br>
 版本说明：初始版本
 
 
