@@ -5,6 +5,7 @@ import android.graphics.PointF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageSwitcher;
@@ -106,7 +107,7 @@ public class PlayBgDrawableController {
         flRootView.setBackgroundColor(color);
     }
 
-    public void updateBackground(int mainBC, int vicBC, SongInfo info) {
+    public void updateBackground(int mainBC, int vicBC, @Nullable SongInfo info) {
 
         PlayBackgroundModeEnum bgMode = playPreference.getPlayBgMode();
         switch (bgMode) {
@@ -141,12 +142,10 @@ public class PlayBgDrawableController {
                 break;
             }
             default: {
-                if (info == null) {
-                    return;
+                if (info != null) {
+                    isBg.setVisibility(View.VISIBLE);
+                    updateBackgroundDrawable(bgMode, info);
                 }
-
-                isBg.setVisibility(View.VISIBLE);
-                updateBackgroundDrawable(bgMode, info);
                 break;
             }
         }

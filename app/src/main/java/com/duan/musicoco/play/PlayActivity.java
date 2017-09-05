@@ -236,6 +236,10 @@ public class PlayActivity extends InspectActivity implements
 
         try {
             Song song = control.currentSong();
+            if (song == null) {
+                return;
+            }
+
             String path = song.path;
 
             int index = control.currentSongIndex();
@@ -433,7 +437,7 @@ public class PlayActivity extends InspectActivity implements
      * 2 暗的柔和颜色 辅背景色<br>
      * 3 暗的柔和颜色 对应适合的字体颜色 辅字体色<br>
      */
-    private void updateViewsColorsIfNeed(Song song) {
+    private void updateViewsColorsIfNeed(@Nullable Song song) {
 
         if (!playPreference.getTheme().equals(ThemeEnum.VARYING)) {
             return;
@@ -445,14 +449,6 @@ public class PlayActivity extends InspectActivity implements
 
         int[] colors = visualizerFragment.getCurrColors();
 
-        if (song == null) {
-            try {
-                song = control.currentSong();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-                return;
-            }
-        }
 
         int mainBC = colors[0];
         int mainTC = colors[1];
@@ -461,7 +457,17 @@ public class PlayActivity extends InspectActivity implements
 
         viewsController.updateColors(new int[]{mainBC, mainTC, vicBC, vicTC});
         bottomNavigationController.updateColors(vicBC, true);
-        bgDrawableController.updateBackground(mainBC, vicBC, mediaManager.getSongInfo(this, song));
+
+        if (song == null) {
+            try {
+                song = control.currentSong();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+        if (song != null) {
+            bgDrawableController.updateBackground(mainBC, vicBC, mediaManager.getSongInfo(this, song));
+        }
 
         // 区别于 updateCurrentSongInfo 方法中的调用，这里只
         // 在 VARYING 模式下才不断更新
@@ -484,7 +490,9 @@ public class PlayActivity extends InspectActivity implements
             case R.id.play_name_container:
                 try {
                     Song song = control.currentSong();
-                    ActivityManager.getInstance().startSongDetailActivity(this, song, true);
+                    if (song != null) {
+                        ActivityManager.getInstance().startSongDetailActivity(this, song, true);
+                    }
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }

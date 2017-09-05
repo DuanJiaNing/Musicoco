@@ -155,7 +155,6 @@ public class BitmapUtils {
         }
         options.inSampleSize = inSampleSize;
         options.inJustDecodeBounds = false;
-
         return BitmapFactory.decodeFile(filePath, options);
     }
 
