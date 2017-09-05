@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.modle.SongInfo;
+import com.duan.musicoco.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -80,11 +81,17 @@ public class MediaManager {
 
     //根据专辑 id 获得专辑图片保存路径
     private String getAlbumArtPicPath(Context context, String albumId) {
+
+        // 小米应用商店检测crash ，错误信息：[31188,0,com.duan.musicoco,13155908,java.lang.IllegalStateException,Unknown URL: content://media/external/audio/albums/null,Parcel.java,1548]
+        if (!StringUtils.isReal(albumId)) {
+            return null;
+        }
+
         String[] projection = {MediaStore.Audio.Albums.ALBUM_ART};
         String imagePath = null;
-        Cursor cur = context.getContentResolver().query(Uri.parse("content://media" +
-                        MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI.getPath() + "/" + albumId), projection, null, null,
-                null);
+        Uri uri = Uri.parse("content://media" + MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI.getPath() + "/" + albumId);
+
+        Cursor cur = context.getContentResolver().query(uri, projection, null, null, null);
         if (cur == null) {
             return null;
         }
@@ -94,6 +101,8 @@ public class MediaManager {
             imagePath = cur.getString(0);
         }
         cur.close();
+
+
         return imagePath;
     }
 

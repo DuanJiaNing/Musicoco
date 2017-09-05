@@ -65,12 +65,16 @@ public class RootActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        MiStatInterface.recordPageStart(this, this.getClass().getName());
+        if (Init.xiaomiStatisticalervicesInitSuccess) {
+            MiStatInterface.recordPageStart(this, this.getClass().getName());
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        MiStatInterface.recordPageEnd();
+        if (Init.xiaomiStatisticalervicesInitSuccess) {
+            MiStatInterface.recordPageEnd();
+        }
     }
 }
