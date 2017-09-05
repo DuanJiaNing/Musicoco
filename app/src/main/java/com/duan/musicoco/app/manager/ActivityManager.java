@@ -78,7 +78,7 @@ public class ActivityManager {
      *                            在 SongDetailActivity 中退出时会直接跳过 PlayActivity(即使时序上为在 PlayActivity 中
      *                            启动 SongDetailActivity，SongDetailActivity 退出时理应回到 PlayActivity)
      */
-    public void startSongDetailActivity(Context context, Song whichSong, boolean startByPlayActivity) {
+    public void startSongDetailActivity(Context context, @NonNull Song whichSong, boolean startByPlayActivity) {
         Intent intent = new Intent(context, SongDetailActivity.class);
         intent.putExtra(SONG_DETAIL_PATH, whichSong.path);
         intent.putExtra(SONG_DETAIL_START_FROM_PLAY_ACTIVITY, startByPlayActivity);
