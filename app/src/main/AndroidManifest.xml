@@ -28,6 +28,14 @@
         android:roundIcon="@mipmap/logo_round"
         android:supportsRtl="true">
 
+        <!--小米统计服务 value为数值 metaData.getString() 返回 null ，加个 * 使为字符串，解析时丢弃 *-->
+        <meta-data
+            android:name="XIAOMI_APPID"
+            android:value="2882303761517612812*" />
+        <meta-data
+            android:name="XIAOMI_APPKEY"
+            android:value="5641761220812*" />
+
         <activity android:name=".app.RootActivity" />
 
         <!-- 需要为 PlayActivity 开启硬件加速，Android 4.1 以上默认开启 -->

@@ -302,7 +302,5 @@
     <string name="song_detail_favorite">Favorite</string>
     <string name="song_detail_not_favorite">Not favorite</string>
     <string name="song_detail_song_list">Has been added to the song list</string>
-    <string name="xiaomi_app_id">2882303761517612812</string>
-    <string name="xiaomi_app_key">5641761220812</string>
 
 </resources>

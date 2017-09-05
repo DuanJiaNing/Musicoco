@@ -1,6 +1,9 @@
 package com.duan.musicoco.util;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Build;
@@ -86,5 +89,16 @@ public class Utils {
             }
         }
         return totalHeight;
+    }
+
+    public static String getApplicationMetaData(Context context, String name) throws PackageManager.NameNotFoundException {
+        ApplicationInfo appInfo = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+        String str = appInfo.metaData.getString(name);
+        String res = null;
+        if (StringUtils.isReal(str) && str.indexOf("*") == str.length() - 1) {
+            res = str.substring(0, str.length() - 1);
+        }
+        return res;
+
     }
 }

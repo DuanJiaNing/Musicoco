@@ -2,6 +2,7 @@ package com.duan.musicoco.app;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.util.DisplayMetrics;
@@ -20,6 +21,8 @@ import com.xiaomi.mistatistic.sdk.MiStatInterface;
  */
 
 public class Init {
+
+    public static boolean xiaomiStatisticalervicesInitSuccess = false;
 
     public static Bitmap initAlbumVisualizerImageCache(Activity activity) {
 
@@ -64,12 +67,25 @@ public class Init {
     public static void initXiaomiStatisticalervices(Context context) {
 
         // 小米统计服务初始化
-        final String CHANNEL = "default channel";
-        final String APPID = context.getString(R.string.xiaomi_app_id);
-        final String APPKEY = context.getString(R.string.xiaomi_app_key);
-        MiStatInterface.initialize(context, APPID, APPKEY, CHANNEL);
-        MiStatInterface.enableLog();
-        MiStatInterface.enableExceptionCatcher(true);
+        try {
+            String CHANNEL = "xiaomi";
+            String APPID = Utils.getApplicationMetaData(context, "XIAOMI_APPID");
+            String APPKEY = Utils.getApplicationMetaData(context, "XIAOMI_APPKEY");
+
+            if (APPID != null && APPKEY != null) {
+                MiStatInterface.initialize(context, APPID, APPKEY, CHANNEL);
+                MiStatInterface.enableLog();
+                MiStatInterface.enableExceptionCatcher(true);
+
+                xiaomiStatisticalervicesInitSuccess = true;
+            } else {
+                xiaomiStatisticalervicesInitSuccess = false;
+            }
+
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            xiaomiStatisticalervicesInitSuccess = false;
+        }
 
     }
 }
