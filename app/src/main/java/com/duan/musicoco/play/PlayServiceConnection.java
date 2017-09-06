@@ -41,6 +41,10 @@ public class PlayServiceConnection implements ServiceConnection {
         this.mSongChangedListener = new OnSongChangedListener() {
             @Override
             public void onSongChange(Song which, int index, boolean isNext) {
+                if (mActivity == null) {
+                    return;
+                }
+
                 final Song s = which;
                 final int in = index;
                 final boolean isn = isNext;
@@ -50,12 +54,17 @@ public class PlayServiceConnection implements ServiceConnection {
                         serviceCallback.songChanged(s, in, isn);
                     }
                 });
+
             }
         };
 
         this.mDataIsReadyListener = new OnDataIsReadyListener() {
             @Override
             public void dataIsReady() {
+                if (mActivity == null) {
+                    return;
+                }
+
                 mActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -68,6 +77,10 @@ public class PlayServiceConnection implements ServiceConnection {
         this.mPlayListChangedListener = new OnPlayListChangedListener() {
             @Override
             public void onPlayListChange(Song current, int index, int id) {
+                if (mActivity == null) {
+                    return;
+                }
+
                 final Song s = current;
                 final int in = index;
                 final int i = id;
@@ -83,6 +96,10 @@ public class PlayServiceConnection implements ServiceConnection {
         this.mPlayStatusChangedListener = new OnPlayStatusChangedListener() {
             @Override
             public void playStart(Song song, int index, final int status) {
+                if (mActivity == null) {
+                    return;
+                }
+
                 final Song s = song;
                 final int in = index;
                 mActivity.runOnUiThread(new Runnable() {
@@ -95,6 +112,10 @@ public class PlayServiceConnection implements ServiceConnection {
 
             @Override
             public void playStop(Song song, int index, final int status) {
+                if (mActivity == null) {
+                    return;
+                }
+
                 final Song s = song;
                 final int in = index;
                 mActivity.runOnUiThread(new Runnable() {
@@ -135,6 +156,9 @@ public class PlayServiceConnection implements ServiceConnection {
     }
 
     public void unregisterListener() {
+
+        // NOTICE: 2017/9/6 注意 修复内存泄漏
+        mActivity = null;
 
         try {
             mControl.unregisterOnPlayStatusChangedListener(mPlayStatusChangedListener);
