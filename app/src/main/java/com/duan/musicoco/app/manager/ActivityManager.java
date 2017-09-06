@@ -65,6 +65,11 @@ public class ActivityManager {
         activitys.put(activity.getClass().getName(), activity);
     }
 
+    public void removeActivity(Activity activity) {
+        Activity item = activitys.remove(activity.getClass().getName());
+        item = null;
+    }
+
     public static ActivityManager getInstance() {
         if (mInstance == null) {
             mInstance = new ActivityManager();

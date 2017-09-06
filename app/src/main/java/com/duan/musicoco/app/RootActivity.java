@@ -59,6 +59,10 @@ public class RootActivity extends AppCompatActivity {
         if (dbController != null) {
             dbController.close();
         }
+
+        // NOTICE: 2017/9/6 注意 修复内存泄漏
+        ActivityManager.getInstance().removeActivity(this);
+
     }
 
     @Override

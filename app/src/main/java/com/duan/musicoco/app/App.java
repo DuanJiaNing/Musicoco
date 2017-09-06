@@ -11,10 +11,10 @@ import com.duan.musicoco.setting.AutoSwitchThemeController;
 
 public class App extends Application {
 
-
     @Override
     public void onCreate() {
         super.onCreate();
+
         checkAutoThemeSwitch();
     }
 

@@ -39,6 +39,7 @@ dependencies {
     compile 'com.android.support:support-vector-drawable:25.3.1'
     testCompile 'junit:junit:4.12'
     compile files('src/main/libs/MiStats_SDK_Client_1_9_6.jar')
+
 }
 repositories {
     mavenCentral()
