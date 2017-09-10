@@ -142,14 +142,18 @@ public class SkipView extends MediaView {
 
         //赋值不合理，进行重置（这不是此控件预期的展现形式，应根据整体比例合理赋值）
         //只对上限进行处理
-        if (innerLineHeight >= radius * 2)
+        if (innerLineHeight >= radius * 2) {
             innerLineHeight = radius * 2;
-        if (innerLineWidth >= radius)
+        }
+        if (innerLineWidth >= radius) {
             innerLineWidth = radius;
-        if (triangleWidth >= radius)
+        }
+        if (triangleWidth >= radius) {
             triangleWidth = radius;
-        if (triangleHeight > radius * 2)
+        }
+        if (triangleHeight > radius * 2) {
             triangleHeight = radius * 2;
+        }
 
         //以顶点作为参考
         //圆角导致的纵坐标迁移量
@@ -158,29 +162,29 @@ public class SkipView extends MediaView {
         float rx = (float) Math.sqrt(triangleRadius * triangleRadius - ry * ry);
 
         //计算三角形上 9 个点的坐标
-        //拟使【三角形顶点与底边中点相连的线段的中点】在【圆心】上进行计算
+        //拟使【三角形顶点与底边中点相连的线段的中点】与【圆心】重合进行计算
         //计算时根据三角形在坐标轴上的位置关系简化计算
         int halfW = triangleWidth / 2;
-        coordinate[0][0] = centerX - halfW;
-        coordinate[0][1] = centerY;
-        coordinate[1][0] = (centerX - halfW) + rx;
-        coordinate[1][1] = centerY - ry;
+        coordinate[0][0] = mCenterX - halfW;
+        coordinate[0][1] = mCenterY;
+        coordinate[1][0] = (mCenterX - halfW) + rx;
+        coordinate[1][1] = mCenterY - ry;
         coordinate[8][0] = coordinate[1][0];
-        coordinate[8][1] = centerY + ry;
+        coordinate[8][1] = mCenterY + ry;
 
-        coordinate[3][0] = centerX + halfW;
-        coordinate[3][1] = centerY - triangleHeight / 2;
-        coordinate[2][0] = (centerX + halfW) - rx;
-        coordinate[2][1] = centerY - (triangleHeight / 2 - ry);
+        coordinate[3][0] = mCenterX + halfW;
+        coordinate[3][1] = mCenterY - triangleHeight / 2;
+        coordinate[2][0] = (mCenterX + halfW) - rx;
+        coordinate[2][1] = mCenterY - (triangleHeight / 2 - ry);
         coordinate[7][0] = coordinate[2][0];
-        coordinate[7][1] = centerY + (triangleHeight / 2 - ry);
+        coordinate[7][1] = mCenterY + (triangleHeight / 2 - ry);
 
         coordinate[6][0] = coordinate[3][0];
-        coordinate[6][1] = centerY + triangleHeight / 2;
-        coordinate[4][0] = centerX + halfW;
-        coordinate[4][1] = centerY - (triangleHeight / 2 - triangleRadius);
+        coordinate[6][1] = mCenterY + triangleHeight / 2;
+        coordinate[4][0] = mCenterX + halfW;
+        coordinate[4][1] = mCenterY - (triangleHeight / 2 - triangleRadius);
         coordinate[5][0] = coordinate[4][0];
-        coordinate[5][1] = centerY + (triangleHeight / 2 - triangleRadius);
+        coordinate[5][1] = mCenterY + (triangleHeight / 2 - triangleRadius);
 
         //平移三角形使其居中
         //平移之前【三角形顶点与底边中点相连的线段中点】与【圆心】重合，此时内部的【整体图形】没有在圆圈内【居中】
@@ -211,8 +215,9 @@ public class SkipView extends MediaView {
      */
     protected void drawLine(Canvas canvas) {
 
-        if (innerLineHeight <= 0 || innerLineWidth <= 0)
+        if (innerLineHeight <= 0 || innerLineWidth <= 0) {
             return;
+        }
 
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(triangleColor);

@@ -137,28 +137,15 @@ public class PlayView extends SkipView implements Checkable {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (!isEnabled()) {
-            return false;
-        }
-
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                startPreAnim();
-                //调用 View 的事件监听以使用 View 的 OnClickListener 和 longClick 监听
-                super.onTouchEvent(event);
-                return true;
-            case MotionEvent.ACTION_UP:
-                startReleaseAnim();
-                //状态反转
+        if (event.getActionMasked() == MotionEvent.ACTION_UP) {
+            int ex = (int) event.getX();
+            int ey = (int) event.getY();
+            if (ex >= 0 && ey >= 0 && ex <= getWidth() && ey <= getHeight()) {
                 toggle();
-                //调用 View 的事件监听以使用 View 的 OnClickListener 和 longClick 监听
-                super.onTouchEvent(event);
-                break;
-            default:
-                break;
+            }
         }
 
-        return false;
+        return super.onTouchEvent(event);
     }
 
     @Override
@@ -173,8 +160,8 @@ public class PlayView extends SkipView implements Checkable {
         paint.setColor(pauseLineColor);
 
         //绘制双竖线
-        float left = centerX - pauseLineDistance / 2 - pauseLineWidth;
-        float top = centerY - pauseLineHeight / 2;
+        float left = mCenterX - pauseLineDistance / 2 - pauseLineWidth;
+        float top = mCenterY - pauseLineHeight / 2;
         float right = left + pauseLineWidth;
         float bottom = top + pauseLineHeight;
         RectF rectF = new RectF(left, top, right, bottom);

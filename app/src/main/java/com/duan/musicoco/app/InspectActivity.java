@@ -8,10 +8,15 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.duan.musicoco.R;
+import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.app.interfaces.PermissionRequestCallback;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.app.manager.PermissionManager;
 import com.duan.musicoco.app.manager.PlayServiceManager;
+import com.duan.musicoco.util.MediaUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by DuanJiaNing on 2017/3/21.
@@ -84,6 +89,30 @@ public abstract class InspectActivity extends RootActivity implements Permission
             Init.initMusicocoDB(this, mediaManager);
 //            mediaManager.scanSdCard(this,null);
         }
+
+        // 更新数据库
+        List<Song> diskSongs = mediaManager.getSongList(this);
+        List<Song> dbSongs = MediaUtils.DBSongInfoListToSongList(dbController.getSongInfos());
+
+        // 移除
+        for (Song song : dbSongs) {
+            if (!diskSongs.contains(song)) {
+                dbController.removeSongInfo(song);
+            }
+        }
+
+        // 新增
+        dbSongs = MediaUtils.DBSongInfoListToSongList(dbController.getSongInfos());
+        List<Song> add = new ArrayList<>();
+        for (Song song : diskSongs) {
+            if (!dbSongs.contains(song)) {
+                add.add(song);
+            }
+        }
+        if (add.size() > 0) {
+            dbController.addSongInfo(add);
+        }
+
     }
 
     /**

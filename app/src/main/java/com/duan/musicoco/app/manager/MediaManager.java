@@ -45,8 +45,9 @@ public class MediaManager {
     public HashSet<SongInfo> refreshData(Context context) {
         if (songs == null)
             songs = new HashSet<>();
-        else
+        else {
             songs.clear();
+        }
 
         Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null,
                 null, null);

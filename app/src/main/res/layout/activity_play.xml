@@ -152,6 +152,7 @@
                     app:pauseLineHeight="35dp"
                     app:pauseLineWidth="7dp"
 
+                    app:shadowRadius="10dp"
                     app:strokeWidth="1px"
                     app:triangleHeight="40dp"
                     app:triangleRadius="5dp"
