@@ -34,6 +34,9 @@
 
 ## 未来开发计划
 
+- 播放界面新增风格[条形与波浪](https://github.com/DuanJiaNing/BarWavesVew)
+- 优化[历史最多播放]计数策略
+
 License
 ============
 
