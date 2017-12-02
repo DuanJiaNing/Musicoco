@@ -55,7 +55,7 @@ public class StringUtils {
     }
 
     public static boolean isReal(String string) {
-        return string != null && string.length() > 0 && !string.equals("null");
+        return string != null && string.length() > 0 && !"null".equals(string);
     }
 
 }

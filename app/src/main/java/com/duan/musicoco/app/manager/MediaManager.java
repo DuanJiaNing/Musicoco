@@ -81,7 +81,7 @@ public class MediaManager {
     }
 
     //根据专辑 id 获得专辑图片保存路径
-    private String getAlbumArtPicPath(Context context, String albumId) {
+    private synchronized String getAlbumArtPicPath(Context context, String albumId) {
 
         // 小米应用商店检测crash ，错误信息：[31188,0,com.duan.musicoco,13155908,java.lang.IllegalStateException,Unknown URL: content://media/external/audio/albums/null,Parcel.java,1548]
         if (!StringUtils.isReal(albumId)) {
