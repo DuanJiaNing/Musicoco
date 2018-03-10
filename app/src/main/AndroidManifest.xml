@@ -15,6 +15,9 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
+    <!-- 小米流量变现服务-->
+    <uses-permission android:name="android.permission.GET_TASKS" />
+
     <permission
         android:name="com.duan.musicoco.permission.ACCESS_PLAY_SERVICE"
         android:protectionLevel="normal" />
@@ -35,6 +38,14 @@
         <meta-data
             android:name="XIAOMI_APPKEY"
             android:value="5641761220812*" />
+
+        <!-- 小米流量变现服务Activity-->
+        <activity
+            android:name="com.xiaomi.ad.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:screenOrientation="behind"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
 
         <activity android:name=".app.RootActivity" />
 

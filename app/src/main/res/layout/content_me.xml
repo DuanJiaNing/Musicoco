@@ -47,4 +47,9 @@
         android:text="@string/me_open_source_url"
         android:textSize="@dimen/text_small" />
 
+    <view
+        android:id="@+id/me_ad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
 </LinearLayout>
