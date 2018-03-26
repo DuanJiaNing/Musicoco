@@ -4,14 +4,15 @@
 
     <string name="album_save_path">image</string>
     <string name="qq">2217611834</string>
-    <string name="phone">18202856027</string>
+    <string name="phone">18328083078</string>
     <string name="email">aimeimeits@gmail.com</string>
 
     <string name="default_sheet">我的歌单</string>
     <string name="default_sheet_des">收藏喜欢的歌曲</string>
 
     <string name="guide_url">http://www.jianshu.com/p/051e214ebc2e</string>
-    <string name="share_to_friends">Musicoco</string>
+    <string name="guide_star">http://app.mi.com/details?id=com.duan.musicoco</string>
+    <string name="share_to_friends">点击链接从小米商店下载 Musicoco：http://app.mi.com/details?id=com.duan.musicoco</string>
 
     <string name="label_theme_color_custom">主题色定制</string>
     <string name="label_modify_sheet">编辑歌单</string>
@@ -176,7 +177,7 @@
     </string>
     <string name="info_contact_me_other_where">也可以通过以下方式联系我</string>
     <string name="info_contact_me_other_where_detail">
-        电话：18202856027 \n邮箱：aimeimeits@gmail.com \nQQ：2217611834 \n
+        电话：18328083078 \n邮箱：aimeimeits@gmail.com \nQQ：2217611834 \n
     </string>
     <string name="info_feedback_input_hint">输入意见或建议</string>
     <string name="info_feedback_input_empty">你还没有输入内容哦</string>

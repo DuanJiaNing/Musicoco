@@ -119,7 +119,7 @@ public class AboutActivity extends RootActivity implements
                 activityManager.startWebActivity(this, getString(R.string.guide_url));
                 break;
             case R.id.about_star:
-
+                activityManager.startWebActivity(this, getString(R.string.guide_star));
                 break;
             case R.id.about_share:
                 activityManager.startSystemShare(this, getString(R.string.share_to_friends));

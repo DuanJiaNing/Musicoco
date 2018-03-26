@@ -68,7 +68,8 @@ public class Init {
 
         // 小米统计服务初始化
         try {
-            String CHANNEL = "xiaomi";
+//            String CHANNEL = "xiaomi"; // 小米商店
+            String CHANNEL = "alibaba"; // 阿里豌豆荚
             String APPID = Utils.getApplicationMetaData(context, "XIAOMI_APPID");
             String APPKEY = Utils.getApplicationMetaData(context, "XIAOMI_APPKEY");
 

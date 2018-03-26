@@ -28,3 +28,13 @@
     通过切换列表项中图片上方的播放按钮状态实现)
 (2) PlayListAdapter # removeClickListener
     PlayListAdapter 在 MainActivity 和 PlayActivity 中都有，所以需要发送广播通知 MainActivity 更新【我的歌单】 列表
+
+
+Musicoco 开发难点：
+
+java 40000 <-> 25000 行
+
+1. aidl 进程间通信,服务启动过程中有一个耗时操作
+2. 完全停止服务,需要先让两个 Activity 解绑服务，之后让服务调用 stopSelf （通过发送广播实现）。
+3. 沉浸式状态栏
+4. 视图嵌套，滑动事件监听冲突

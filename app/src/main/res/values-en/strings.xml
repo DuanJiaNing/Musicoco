@@ -11,7 +11,8 @@
     <string name="default_sheet_des">My favorite songs</string>
 
     <string name="guide_url">Http://www.jianshu.com/p/051e214ebc2e</string>
-    <string name="share_to_friends">Musicoco</string>
+    <string name="guide_star">http://app.mi.com/details?id=com.duan.musicoco</string>
+    <string name="share_to_friends">Click the link to download app from the xiaomi store: http://app.mi.com/details?id=com.duan.musicoco</string>
 
     <string name="label_theme_color_custom">Theme color customization</string>
     <string name="label_image_wall">Picture wall</string>
