@@ -3,6 +3,7 @@
 	<br/><h1 align="center">Musicoco</h1><br/><br/>
 </p>
 版本：<a href="https://github.com/DuanJiaNing/Musicoco/tree/v1.1.0">v1.1.0</a> | 大小：10.1 M | 2017-09-04
+版本：<a href="https://github.com/DuanJiaNing/Musicoco/tree/v1.1.0">v2.1.0</a> | 大小：11.3 M | 2018-12-16
 
 ## 简介
 [Musicoco](https://github.com/DuanJiaNing/Musicoco),Android 手机本地音乐文件播放器，应用在单独的服务进程中控制音乐播放，目前以实现功能如下：通过耳机和通知栏快捷控制音乐播放、创建歌单、本地歌曲搜索、记忆播放、自动切换到夜间模式、定时停止播放、应用主题自定义以及播放界面风格选择等功能。
@@ -30,7 +31,11 @@
 
 - [v1.1.0](https://github.com/DuanJiaNing/Musicoco/tree/v1.1.0) <br>
 版本说明：初始版本
-
+- [v2.1.0](https://github.com/DuanJiaNing/Musicoco/tree/v1.1.0) <br>
+1. 适配虚拟按键
+2. 适配刘海屏
+3. 修复“关于开发者”页面 bug
+4. 调整化 UI
 
 ## 未来开发计划
 
