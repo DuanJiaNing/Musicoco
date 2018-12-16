@@ -2,7 +2,7 @@
 	<img width="130px" src="https://raw.githubusercontent.com/DuanJiaNing/Pictures/master/Musicoco/logo.png"/>
 	<br/><h1 align="center">Musicoco</h1><br/><br/>
 </p>
-版本：<a href="https://github.com/DuanJiaNing/Musicoco/tree/v1.1.0">v1.1.0</a> | 大小：10.1 M | 2017-09-04
+版本：<a href="https://github.com/DuanJiaNing/Musicoco/tree/v1.1.0">v1.1.0</a> | 大小：10.1 M | 2017-09-04<br>
 版本：<a href="https://github.com/DuanJiaNing/Musicoco/tree/v1.1.0">v2.1.0</a> | 大小：11.3 M | 2018-12-16
 
 ## 简介
@@ -35,7 +35,7 @@
 1. 适配虚拟按键
 2. 适配刘海屏
 3. 修复“关于开发者”页面 bug
-4. 调整化 UI
+4. 调整 UI
 
 ## 未来开发计划
 
