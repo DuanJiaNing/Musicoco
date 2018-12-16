@@ -10,7 +10,7 @@
 
 部分功能尚未完善，还存在一些已知或未知的 bug，如果你想要改进客户端，或者发现了问题，可以提交[Issues](https://github.com/DuanJiaNing/Musicoco/issues)，或者直接使用应用的**反馈**功能向我提交你的意见或建议；当然，你也可以基于该代码修改并开发出属于自己的客户端。
 
-如果你想体验最新特性可下载 [apk\app-release-v1.1.0.apk](https://github.com/DuanJiaNing/Musicoco/raw/master/apk/app-release-v1.1.0.apk) 文件，或下载并构建整个项目。
+如果你想体验最新特性可下载 [apk\Musicoco-v2.1.0.apk](https://github.com/DuanJiaNing/Musicoco/blob/master/apk/Musicoco-v2.1.0.apk) 文件，或下载并构建整个项目。
 
 应用上线[小米商店]：[点击跳转到下载页](http://app.mi.com/details?id=com.duan.musicoco&ref=search)
 
