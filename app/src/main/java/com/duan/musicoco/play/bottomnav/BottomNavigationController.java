@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
@@ -130,7 +131,10 @@ public class BottomNavigationController implements
             @Override
             public void run() {
                 int titleHeight = mListTitleContainer.getMeasuredHeight();
-                mViewRoot.setY(metrics.heightPixels - titleHeight);
+//                mViewRoot.setY(metrics.heightPixels - titleHeight);
+                Context context = activity.getApplicationContext();
+                mViewRoot.setY(metrics.heightPixels + (Utils.hasNavBar(context) ?
+                        Utils.getNavigationBarHeight(context) : 0) - titleHeight);
 
             }
         });

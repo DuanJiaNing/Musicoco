@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.graphics.drawable.GradientDrawable;
 import android.os.AsyncTask;
@@ -12,7 +11,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
@@ -49,10 +47,11 @@ public class SplashActivity extends InspectActivity {
             return;
         }
 
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.splash_activity);
+        Utils.transitionStatusBar(this);
+        Utils.hideNavAndStatus(getWindow().getDecorView());
 
-        // 初始化小米应用统计服务
+//         初始化小米应用统计服务
         xiaomiServiceInit();
 
         //权限检查完成后回调 permissionGranted 或 permissionDenied

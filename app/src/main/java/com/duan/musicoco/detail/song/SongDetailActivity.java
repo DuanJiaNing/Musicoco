@@ -56,8 +56,8 @@ public class SongDetailActivity extends RootActivity implements View.OnClickList
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.song_detail_activity);
-
         Utils.transitionStatusBar(this);
+        Utils.hideNavAndStatus(getWindow().getDecorView());
 
         initViews();
 

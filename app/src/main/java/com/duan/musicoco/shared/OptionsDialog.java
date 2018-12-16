@@ -54,6 +54,8 @@ public class OptionsDialog implements
                 setDialogHeight();
             }
         });
+
+        Utils.hideNavAndStatus(mDialog.getWindow().getDecorView());
     }
 
     public void setOnItemClickListener(AdapterView.OnItemClickListener listener) {

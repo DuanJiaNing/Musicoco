@@ -3,7 +3,6 @@ package com.duan.musicoco.main.leftnav.imagewall;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.WindowManager;
 
 import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
@@ -23,6 +22,7 @@ import com.duan.musicoco.util.FileUtils;
 import com.duan.musicoco.util.MediaUtils;
 import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.util.ToastUtils;
+import com.duan.musicoco.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +44,9 @@ public class ImageWallActivity extends RootActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_image_wall);
+        Utils.transitionStatusBar(this);
+        Utils.hideNavAndStatus(getWindow().getDecorView());
 
         adapter = new ImageAdapter(data, this);
         optionsDialog = new OptionsDialog(this);

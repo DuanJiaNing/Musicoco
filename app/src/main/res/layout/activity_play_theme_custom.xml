@@ -17,9 +17,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/activity_default_margin"
+        android:layout_marginBottom="@dimen/activity_default_margin_3x"
+        android:layout_marginRight="@dimen/activity_default_margin_2x"
         android:src="@drawable/ic_done_black_24dp"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        android:layout_marginEnd="@dimen/activity_default_margin_2x" />
 
     <FrameLayout
         android:id="@+id/play_theme_custom_container"

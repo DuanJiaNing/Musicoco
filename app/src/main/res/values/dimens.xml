@@ -10,6 +10,7 @@
     <dimen name="activity_default_margin_half">8dp</dimen>
     <dimen name="activity_default_margin_half_s">6dp</dimen>
     <dimen name="activity_default_margin_2x">32dp</dimen>
+    <dimen name="activity_default_margin_3x">64dp</dimen>
 
     <dimen name="activity_default_padding">6dp</dimen>
     <dimen name="activity_default_padding_l">8dp</dimen>

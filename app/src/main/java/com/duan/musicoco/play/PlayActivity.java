@@ -11,8 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.duan.musicoco.R;
@@ -33,6 +31,7 @@ import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.service.PlayServiceCallback;
 import com.duan.musicoco.util.ColorUtils;
+import com.duan.musicoco.util.Utils;
 
 /**
  * Created by DuanJiaNing on 2017/5/23.
@@ -62,10 +61,9 @@ public class PlayActivity extends InspectActivity implements
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
         setContentView(R.layout.activity_play);
+        Utils.transitionStatusBar(this);
+        Utils.hideNavAndStatus(getWindow().getDecorView());
 
         //权限检查完成后回调 permissionGranted 或 permissionDenied
         checkPermission();

@@ -83,8 +83,8 @@ public class MainActivity extends RootActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utils.transitionStatusBar(this);
         setContentView(R.layout.activity_main);
+        Utils.transitionStatusBar(this);
 
         playServiceManager = new PlayServiceManager(this);
         mediaManager = MediaManager.getInstance();

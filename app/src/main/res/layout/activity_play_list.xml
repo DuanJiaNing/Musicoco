@@ -4,10 +4,8 @@
     android:id="@+id/play_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/activity_default_margin"
     app:cardCornerRadius="0dp"
-    app:cardElevation="30dp"
-    app:contentPaddingBottom="@dimen/activity_default_margin">
+    app:cardElevation="30dp">
 
     <LinearLayout
         android:id="@+id/play_nav_container"
