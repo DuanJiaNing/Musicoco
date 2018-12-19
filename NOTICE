@@ -7,3 +7,13 @@
 5 DuanJiaNing - PlayView
 6 DuanJiaNing - SkipView
 7 DuanJiaNing - ColorPickerView
+
+欢迎界面：
+使用属性动画（ValueAnimator），“Musicoco” 的每一个字母都对应一个单独的 TextView 控件，startTextInAnim 方法启动单个字母的动画，该动画首先会随机生成坐标点，控制当前字符从屏幕内随机点开始，平移到最终位置，即动画结束时的位置。8 个字符的动画结束后会开始最终动画，即应用图标的显示动画，startFinalAnim 方法控制这一过程。
+
+搜索功能：（核心代码：SearchController.update 方法）
+用户输入作为关键字，分别匹配歌曲的歌曲名、艺术家和专辑名，任一匹配就将歌曲添加到结果集中，作为搜索结果项进行显示。匹配基数是全部歌曲或歌单中的所有歌曲，这取决于用户进行搜索动作的位置，主界面中搜索会在所有歌曲中搜索，歌单歌曲列表界面会从当前歌单中检索。
+
+历史最多播放：（核心代码：RecentMostPlayActivity.loadData 方法）
+历史最多播放数据来源于用户对歌曲的播放次数，歌曲每播放一次，数据库中歌曲播放次数就会加一，最多播放的 10 首只需要选出播放次数排名前 10 的歌曲即可。
+
