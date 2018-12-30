@@ -7,3 +7,27 @@
 5 DuanJiaNing - PlayView
 6 DuanJiaNing - SkipView
 7 DuanJiaNing - ColorPickerView
+
+欢迎界面：
+使用属性动画（ValueAnimator），“Musicoco” 的每一个字母都对应一个单独的 TextView 控件，startTextInAnim 方法启动单个字母的动画，该动画首先会随机生成坐标点，控制当前字符从屏幕内随机点开始，平移到最终位置，即动画结束时的位置。8 个字符的动画结束后会开始最终动画，即应用图标的显示动画，startFinalAnim 方法控制这一过程。
+
+搜索功能：（核心代码：SearchController.update 方法）
+用户输入作为关键字，分别匹配歌曲的歌曲名、艺术家和专辑名，任一匹配就将歌曲添加到结果集中，作为搜索结果项进行显示。匹配基数是全部歌曲或歌单中的所有歌曲，这取决于用户进行搜索动作的位置，主界面中搜索会在所有歌曲中搜索，歌单歌曲列表界面会从当前歌单中检索。
+
+历史最多播放：（核心代码：RecentMostPlayActivity.loadData 方法）
+历史最多播放数据来源于用户对歌曲的播放次数，歌曲每播放一次，数据库中歌曲播放次数就会加一，最多播放的 10 首只需要选出播放次数排名前 10 的歌曲即可。
+
+定时停止播放:
+将 Android 提供的计时器进行封装，封装为 PeriodicTask，代表一个可周期执行的任务，周期执行的任务为 CountDownTask，执行周期为 1000 ms，即 1 秒，每过一秒，CountDownTask 代表的任务就会执行一次，这个任务会更新应用左侧抽屉中的定时停止播放时间，每隔 1 秒更新一次，同时会检查倒计时是否结束，结束则关闭应用。
+LeftNavigationController的startQuitCountdown、stopQuitCountdown、resetText等几个方法。
+
+同时使用 SharedPreferences 组件保存定时停止播放时间、开启状态，以便于在用户再次打开定时停止播放界面时回显数据。（AuxiliaryPreference 类）
+
+
+界面风格
+用户设置的界面风格使用 SharedPreferences 保存（PlayPreference 类），用户打开播放界面时会从 SharedPreferences 中读取配置，并将界面风格进行初始化，每次歌曲切换时需要更新界面背景，此时也会对界面风格进行检查，有更新则立即生效。
+
+在歌曲切换时会调用 PlayActivity 的 updateViewsColorsIfNeed 方法触发当前歌曲背景更新，这里会从 PlayPreference 中获取用户设置的播放界面风格，并进行初始化；
+
+PlayBgDrawableController 的 updateBackgroundDrawable 方法用于更换播放界面风格。
+每次调用 PlayBgDrawableController 的 updateBackground 方法更新当前播放歌曲背景时会调用 updateBackgroundDrawable 方法更新背景风格。
