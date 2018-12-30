@@ -303,7 +303,7 @@ public class PlayViewsController implements View.OnClickListener {
         barWavesView.setWaveHeight(fft);
     }
 
-    public void updateColors(int mainBC, int vicBC) {
+    public void updateWaveColors(int mainBC, int vicBC) {
         barWavesView.setBarColor(mainBC);
         barWavesView.setWaveColor(vicBC);
     }

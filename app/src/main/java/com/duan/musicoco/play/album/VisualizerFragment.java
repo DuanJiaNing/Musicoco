@@ -1,6 +1,7 @@
 package com.duan.musicoco.play.album;
 
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -100,5 +101,9 @@ public class VisualizerFragment extends Fragment {
 
     public int[] getCurrColors() {
         return currColors;
+    }
+
+    public Bitmap getAlbum() {
+        return albumPictureController.getAlbum();
     }
 }

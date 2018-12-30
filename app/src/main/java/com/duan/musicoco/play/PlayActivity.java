@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
@@ -277,6 +278,9 @@ public class PlayActivity extends InspectActivity implements
         super.onDestroy();
         unbindService();
         unregisterReceiver();
+        if (playPreference.getDotWaveEnable()) {
+            playVisualizer.stopListen();
+        }
     }
 
     private void unbindService() {
@@ -303,6 +307,9 @@ public class PlayActivity extends InspectActivity implements
         savePreference();
         visualizerFragment.stopSpin();
         viewsController.stopProgressUpdateTask();
+        if (playVisualizer != null && playPreference.getDotWaveEnable()) {
+            playVisualizer.setVisualizerEnable(false);
+        }
     }
 
     private void savePreference() {
@@ -342,6 +349,10 @@ public class PlayActivity extends InspectActivity implements
         if (control != null) {
             updateCurrentSongInfo(null, true);
             updateViewsColorsIfNeed(null);
+        }
+
+        if (playVisualizer != null && playPreference.getDotWaveEnable()) {
+            playVisualizer.setVisualizerEnable(true);
         }
     }
 
@@ -525,7 +536,6 @@ public class PlayActivity extends InspectActivity implements
 
         int[] colors = visualizerFragment.getCurrColors();
 
-
         int mainBC = colors[0];
         int mainTC = colors[1];
         int vicBC = colors[2];
@@ -533,7 +543,12 @@ public class PlayActivity extends InspectActivity implements
 
         viewsController.updateColors(new int[]{mainBC, mainTC, vicBC, vicTC});
         bottomNavigationController.updateColors(vicBC, true);
-        viewsController.updateColors(vicTC, mainTC);
+
+        Bitmap album = visualizerFragment.getAlbum();
+        int defaultColor = getResources().getColor(R.color.default_play_text_color, null);
+        int waveColor[] = new int[2];
+        ColorUtils.get2ColorFormBitmap(album, defaultColor, waveColor);
+        viewsController.updateWaveColors(waveColor[1], waveColor[0]);
 
         if (song == null) {
             try {

@@ -39,6 +39,7 @@ public final class AlbumPictureController {
     private boolean isSpin = false;
 
     private final BitmapCache cache;
+    private Bitmap album;
 
     private final BitmapProducer bitmapProducer;
 
@@ -108,10 +109,11 @@ public final class AlbumPictureController {
             try {
                 view.setImageDrawable(new BitmapDrawable(context.getResources(), cache.getDefaultBitmap()));
             } catch (Exception e) {
-                Bitmap b = Init.initAlbumVisualizerImageCache((Activity) context);
-                view.setImageDrawable(new BitmapDrawable(context.getResources(), b));
+                bitmap = Init.initAlbumVisualizerImageCache((Activity) context);
+                view.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
             }
         }
+        album = bitmap;
 
         if (isSpin()) {
             startSpin();
@@ -140,10 +142,11 @@ public final class AlbumPictureController {
             try {
                 view.setImageDrawable(new BitmapDrawable(context.getResources(), cache.getDefaultBitmap()));
             } catch (Exception e) {
-                Bitmap b = Init.initAlbumVisualizerImageCache((Activity) context);
-                view.setImageDrawable(new BitmapDrawable(context.getResources(), b));
+                bitmap = Init.initAlbumVisualizerImageCache((Activity) context);
+                view.setImageDrawable(new BitmapDrawable(context.getResources(), bitmap));
             }
         }
+        album = bitmap;
 
         if (isSpin()) {
             startSpin();
@@ -181,6 +184,10 @@ public final class AlbumPictureController {
 
     public boolean isSpin() {
         return isSpin;
+    }
+
+    public Bitmap getAlbum() {
+        return album;
     }
 
 }
