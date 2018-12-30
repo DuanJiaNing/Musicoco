@@ -10,6 +10,7 @@ import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -23,6 +24,7 @@ import com.duan.musicoco.app.manager.ActivityManager;
 import com.duan.musicoco.app.manager.BroadcastManager;
 import com.duan.musicoco.app.manager.PlayServiceManager;
 import com.duan.musicoco.modle.SongInfo;
+import com.duan.musicoco.play.album.PlayVisualizer;
 import com.duan.musicoco.play.album.VisualizerFragment;
 import com.duan.musicoco.play.bottomnav.BottomNavigationController;
 import com.duan.musicoco.play.lyric.LyricFragment;
@@ -57,6 +59,8 @@ public class PlayActivity extends InspectActivity implements
     private BroadcastReceiver themeChangeReceiver;
     private BroadcastReceiver songFavoriteChangeReceiver;
     private BroadcastManager broadcastManager;
+
+    private PlayVisualizer playVisualizer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -161,9 +165,77 @@ public class PlayActivity extends InspectActivity implements
                 songChanged(song, control.currentSongIndex(), true);
 
             }
+
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    private void updateVisualizer(boolean playing) {
+        if (playVisualizer == null) {
+
+            try {
+                int audioSessionId = control.getAudioSessionId();
+                Log.e(TAG, "onFftCapture: audioSessionId=" + audioSessionId);
+                playVisualizer = new PlayVisualizer();
+                playVisualizer.setupVisualizer(60, audioSessionId, 50, new PlayVisualizer.OnFftDataCaptureListener() {
+                    @Override
+                    public void onFftCapture(float[] fft) {
+                        viewsController.updateBarWaveHeight(handleFFT(fft));
+//                        Log.e(TAG, "onFftCapture: " + Arrays.toString(fft));
+                    }
+                });
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+
+        playVisualizer.setVisualizerEnable(playPreference.getDotWaveEnable() && playing);
+
+    }
+
+    private float[] handleFFT(float[] fft) {
+
+        int splitLength = fft.length / 3; // 20
+
+        float[] t1 = new float[20];
+        float[] t2 = new float[40];
+        float[] t2_ = new float[20];
+        float[] t3 = new float[20];
+
+        System.arraycopy(fft, 19, t1, 0, 20);
+        t1 = reverse(t1);
+        System.arraycopy(fft, 39, t3, 0, 20);
+
+        System.arraycopy(fft, 0, t2_, 0, 20);
+        int j = 0;
+        for (int i = 0; i < t2_.length - 1; i++) {
+            t2[j++] = t2_[i];
+            t2[j++] = t2_[i] + (t2_[i + 1] - t2_[i]) / 2;
+        }
+
+        float[] fft_ = new float[80]; // 与 play_bar_waves 一致
+        System.arraycopy(t1, 0, fft_, 0, 20);
+        System.arraycopy(t2, 0, fft_, 20, 40);
+        System.arraycopy(t3, 0, fft_, 60, 20);
+
+        float[] fft__ = new float[160];
+        j = 0;
+        for (int i = 0; i < fft_.length - 1; i++) {
+            fft__[j++] = fft_[i];
+            fft__[j++] = fft_[i] + (fft_[i + 1] - fft_[i]) / 2;
+        }
+
+        return fft__;
+    }
+
+    private static float[] reverse(float[] Array) {
+        float[] new_array = new float[Array.length];
+        for (int i = 0; i < Array.length; i++) {
+            // 反转后数组的第一个元素等于源数组的最后一个元素：
+            new_array[i] = Array[Array.length - i - 1];
+        }
+        return new_array;
     }
 
     // 服务器的歌单是空的，这里不采用实现 ContentUpdatable 接口的原因是考虑到，将来播放界面可以单独以其他方式启动
@@ -373,6 +445,7 @@ public class PlayActivity extends InspectActivity implements
         viewsController.startProgressUpdateTask();
         viewsController.updatePlayButtonStatus(true);
         visualizerFragment.startSpin();
+        updateVisualizer(true);
     }
 
     @Override
@@ -380,6 +453,8 @@ public class PlayActivity extends InspectActivity implements
         viewsController.stopProgressUpdateTask();
         viewsController.updatePlayButtonStatus(false);
         visualizerFragment.stopSpin();
+        updateVisualizer(false);
+
     }
 
     @Override
@@ -458,6 +533,7 @@ public class PlayActivity extends InspectActivity implements
 
         viewsController.updateColors(new int[]{mainBC, mainTC, vicBC, vicTC});
         bottomNavigationController.updateColors(vicBC, true);
+        viewsController.updateColors(vicTC, mainTC);
 
         if (song == null) {
             try {

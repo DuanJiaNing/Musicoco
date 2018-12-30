@@ -172,4 +172,23 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="BarWavesView">
+        <attr name="barColor" format="color" /> <!--横条颜色-->
+
+        <!--确定控件绘制高度 未指定明确高度时-->
+        <attr name="barHeight" format="dimension" /> <!--横条高度-->
+        <attr name="waveRange" format="dimension" /> <!--波浪条极差（最高与最低的差值）-->
+
+        <attr name="waveMinHeight" format="dimension" /> <!--波浪条最小高度-->
+
+        <!--确定控件绘制宽度 未指定明确宽度时-->
+        <attr name="waveColor" format="color" /> <!--波浪条颜色-->
+        <attr name="waveWidth" format="dimension" /> <!--波浪条宽度-->
+        <attr name="waveNumber" format="integer" /> <!--波浪条数量-->
+        <attr name="waveInterval" format="dimension" /> <!--波浪间隔-->
+
+        <attr name="fallAutomatically" format="boolean" /> <!--波浪条高度大于最小高度时自动坠落-->
+        <attr name="fallDuration" format="integer" /> <!--波浪条坠落事件（毫秒，默认 1300）-->
+    </declare-styleable>
+
 </resources>

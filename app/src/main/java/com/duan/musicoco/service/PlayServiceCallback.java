@@ -10,7 +10,7 @@ import com.duan.musicoco.aidl.Song;
 public interface PlayServiceCallback {
 
     /**
-     * 当当前歌曲改变时回调
+     * 当前歌曲改变时回调
      * @see com.duan.musicoco.aidl.OnSongChangedListener#onSongChange(Song, int, boolean)
      */
     void songChanged(Song song, int index, boolean isNext);

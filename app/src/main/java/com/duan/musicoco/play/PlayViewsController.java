@@ -20,6 +20,7 @@ import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.shared.PeriodicTask;
 import com.duan.musicoco.util.StringUtils;
+import com.duan.musicoco.view.BarWavesView;
 import com.duan.musicoco.view.discreteseekbar.DiscreteSeekBar;
 import com.duan.musicoco.view.media.PlayView;
 import com.duan.musicoco.view.media.SkipView;
@@ -42,6 +43,7 @@ public class PlayViewsController implements View.OnClickListener {
     private PlayView btPlay;
     private SkipView btPre;
     private SkipView btNext;
+    private BarWavesView barWavesView;
 
     private PlayPreference playPreference;
     private PeriodicTask periodicTask;
@@ -53,6 +55,7 @@ public class PlayViewsController implements View.OnClickListener {
 
     public void initViews() {
 
+        barWavesView = ((BarWavesView) activity.findViewById(R.id.play_bar_waves));
         tvPlayProgress = (TextView) activity.findViewById(R.id.play_progress);
         tvDuration = (TextView) activity.findViewById(R.id.play_duration);
         sbSongProgress = (DiscreteSeekBar) activity.findViewById(R.id.play_seekBar);
@@ -296,4 +299,12 @@ public class PlayViewsController implements View.OnClickListener {
         }
     }
 
+    public void updateBarWaveHeight(float[] fft) {
+        barWavesView.setWaveHeight(fft);
+    }
+
+    public void updateColors(int mainBC, int vicBC) {
+        barWavesView.setBarColor(mainBC);
+        barWavesView.setWaveColor(vicBC);
+    }
 }

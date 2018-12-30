@@ -192,4 +192,21 @@
         layout="@layout/activity_play_list"
         android:visibility="visible" />
 
+    <com.duan.musicoco.view.BarWavesView
+        android:layout_gravity="center"
+        android:id="@+id/play_bar_waves"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:waveNumber="160"
+        app:waveWidth="1dp"
+        app:waveRange="40dp"
+        app:waveMinHeight="10dp"
+        app:waveInterval="1dp"
+
+        app:barColor="#41000000"
+        app:waveColor="#4e00ffaa"
+        app:barHeight="10dp"
+
+        />
+
 </FrameLayout>

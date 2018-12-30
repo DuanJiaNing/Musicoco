@@ -97,7 +97,11 @@ public class PlayController {
 
     private int mPlayMode = MODE_DEFAULT;
 
-    private PlayController(Context context, AudioFocusManager focusManager, MediaSessionManager sessionManager, NotifyStatusChanged sl, NotifySongChanged sc, NotifyPlayListChanged pl) {
+    private PlayController(Context context, AudioFocusManager focusManager,
+                           MediaSessionManager sessionManager,
+                           NotifyStatusChanged sl,
+                           NotifySongChanged sc,
+                           NotifyPlayListChanged pl) {
         this.context = context;
         this.focusManager = focusManager;
         this.sessionManager = sessionManager;
