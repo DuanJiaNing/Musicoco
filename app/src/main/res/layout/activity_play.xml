@@ -200,6 +200,7 @@
         app:waveNumber="160"
         app:waveWidth="1dp"
         app:waveRange="40dp"
+        app:fallDuration="3000"
         app:waveMinHeight="10dp"
         app:waveInterval="1dp"
 

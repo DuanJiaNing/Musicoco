@@ -33,6 +33,7 @@ import com.duan.musicoco.preference.PlayPreference;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
 import com.duan.musicoco.service.PlayServiceCallback;
+import com.duan.musicoco.util.ArrayUtils;
 import com.duan.musicoco.util.ColorUtils;
 import com.duan.musicoco.util.Utils;
 
@@ -172,32 +173,55 @@ public class PlayActivity extends InspectActivity implements
         }
     }
 
-    private void updateVisualizer(boolean playing) {
-        if (playVisualizer == null) {
+    private void updateVisualizer() {
+        try {
 
-            try {
+            if (playVisualizer == null) {
+
                 int audioSessionId = control.getAudioSessionId();
                 Log.e(TAG, "onFftCapture: audioSessionId=" + audioSessionId);
                 playVisualizer = new PlayVisualizer();
                 playVisualizer.setupVisualizer(60, audioSessionId, 50, new PlayVisualizer.OnFftDataCaptureListener() {
                     @Override
                     public void onFftCapture(float[] fft) {
-                        viewsController.updateBarWaveHeight(handleFFT(fft));
-//                        Log.e(TAG, "onFftCapture: " + Arrays.toString(fft));
+                        float[] ffs = handleFFT(fft);
+                        viewsController.updateBarWaveHeight(ffs);
+                        viewsController.updateBarWaveColors(
+                                handleColors(ffs, viewsController.getBarWaveColor()));
                     }
                 });
-            } catch (RemoteException e) {
-                e.printStackTrace();
             }
+
+            playVisualizer.setVisualizerEnable(playPreference.getDotWaveEnable() &&
+                    control.status() == PlayController.STATUS_PLAYING);
+
+        } catch (RemoteException e) {
+            e.printStackTrace();
         }
 
-        playVisualizer.setVisualizerEnable(playPreference.getDotWaveEnable() && playing);
+    }
 
+    private int[][] handleColors(float[] fft, PlayViewsController.BarWaveColor barWaveColor) {
+
+        int[][] cs = new int[fft.length][2];
+        float average = ArrayUtils.average(fft);
+        for (int i = 0; i < fft.length; i++) {
+            cs[i][0] = barWaveColor.barColor;
+            cs[i][1] = barWaveColor.waveColor;
+
+        }
+
+        return cs;
     }
 
     private float[] handleFFT(float[] fft) {
 
         int splitLength = fft.length / 3; // 20
+
+        float average = ArrayUtils.average(fft);
+        for (int i = 0; i < fft.length; i++) {
+            if (fft[i] > average * 3) fft[i] = fft[i] - average;
+        }
 
         float[] t1 = new float[20];
         float[] t2 = new float[40];
@@ -205,7 +229,7 @@ public class PlayActivity extends InspectActivity implements
         float[] t3 = new float[20];
 
         System.arraycopy(fft, 19, t1, 0, 20);
-        t1 = reverse(t1);
+        t1 = ArrayUtils.reverse(t1);
         System.arraycopy(fft, 39, t3, 0, 20);
 
         System.arraycopy(fft, 0, t2_, 0, 20);
@@ -215,29 +239,35 @@ public class PlayActivity extends InspectActivity implements
             t2[j++] = t2_[i] + (t2_[i + 1] - t2_[i]) / 2;
         }
 
-        float[] fft_ = new float[80]; // 与 play_bar_waves 一致
-        System.arraycopy(t1, 0, fft_, 0, 20);
-        System.arraycopy(t2, 0, fft_, 20, 40);
-        System.arraycopy(t3, 0, fft_, 60, 20);
+//        float[] fft_ = new float[80]; // 与 play_bar_waves 一致
+//        System.arraycopy(t1, 0, fft_, 0, 20);
+//        System.arraycopy(t2, 0, fft_, 20, 40);
+//        System.arraycopy(t3, 0, fft_, 60, 20);
+//
+//        float[] fft__ = new float[160];
+//        j = 0;
+//        for (int i = 0; i < fft_.length - 1; i++) {
+//            fft__[j++] = fft_[i];
+//            fft__[j++] = fft_[i] + (fft_[i + 1] - fft_[i]) / 2;
+//        }
 
-        float[] fft__ = new float[160];
+        float[] fft__ = new float[80];
         j = 0;
-        for (int i = 0; i < fft_.length - 1; i++) {
-            fft__[j++] = fft_[i];
-            fft__[j++] = fft_[i] + (fft_[i + 1] - fft_[i]) / 2;
+        for (int i = 0; i < t2.length - 1; i++) {
+            fft__[j++] = t2[i];
+            fft__[j++] = t2[i] + (t2[i + 1] - t2[i]) / 2;
         }
 
-        return fft__;
+        float[] fft___ = new float[160];
+        j = 0;
+        for (int i = 0; i < fft__.length - 1; i++) {
+            fft___[j++] = fft__[i];
+            fft___[j++] = fft__[i] + (fft__[i + 1] - fft__[i]) / 2;
+        }
+
+        return fft___;
     }
 
-    private static float[] reverse(float[] Array) {
-        float[] new_array = new float[Array.length];
-        for (int i = 0; i < Array.length; i++) {
-            // 反转后数组的第一个元素等于源数组的最后一个元素：
-            new_array[i] = Array[Array.length - i - 1];
-        }
-        return new_array;
-    }
 
     // 服务器的歌单是空的，这里不采用实现 ContentUpdatable 接口的原因是考虑到，将来播放界面可以单独以其他方式启动
     // 如：在文件夹中选择了一首歌并播放，选择我们的播放器播放时，可以不启动 MainActivity ，只启动 PlayService 和
@@ -307,9 +337,8 @@ public class PlayActivity extends InspectActivity implements
         savePreference();
         visualizerFragment.stopSpin();
         viewsController.stopProgressUpdateTask();
-        if (playVisualizer != null && playPreference.getDotWaveEnable()) {
-            playVisualizer.setVisualizerEnable(false);
-        }
+        updateVisualizer();
+
     }
 
     private void savePreference() {
@@ -349,10 +378,7 @@ public class PlayActivity extends InspectActivity implements
         if (control != null) {
             updateCurrentSongInfo(null, true);
             updateViewsColorsIfNeed(null);
-        }
-
-        if (playVisualizer != null && playPreference.getDotWaveEnable()) {
-            playVisualizer.setVisualizerEnable(true);
+            updateVisualizer();
         }
     }
 
@@ -456,7 +482,7 @@ public class PlayActivity extends InspectActivity implements
         viewsController.startProgressUpdateTask();
         viewsController.updatePlayButtonStatus(true);
         visualizerFragment.startSpin();
-        updateVisualizer(true);
+        updateVisualizer();
     }
 
     @Override
@@ -464,7 +490,7 @@ public class PlayActivity extends InspectActivity implements
         viewsController.stopProgressUpdateTask();
         viewsController.updatePlayButtonStatus(false);
         visualizerFragment.stopSpin();
-        updateVisualizer(false);
+        updateVisualizer();
 
     }
 

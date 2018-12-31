@@ -303,8 +303,25 @@ public class PlayViewsController implements View.OnClickListener {
         barWavesView.setWaveHeight(fft);
     }
 
+    public class BarWaveColor {
+        int barColor;
+        int waveColor;
+    }
+
+    private BarWaveColor barWaveColor = new BarWaveColor();
+
+    public BarWaveColor getBarWaveColor() {
+        return barWaveColor;
+    }
+
     public void updateWaveColors(int mainBC, int vicBC) {
         barWavesView.setBarColor(mainBC);
         barWavesView.setWaveColor(vicBC);
+        barWaveColor.barColor = mainBC;
+        barWaveColor.waveColor = vicBC;
+    }
+
+    public void updateBarWaveColors(int[][] cs) {
+        barWavesView.setWaveColor(cs);
     }
 }
