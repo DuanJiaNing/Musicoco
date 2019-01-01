@@ -46,7 +46,8 @@ public abstract class InspectActivity extends RootActivity implements Permission
 
         String[] ps = new String[]{
                 Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.RECORD_AUDIO
         };
 
         if (!permissionManager.checkPermission(this, ps)) {

@@ -279,7 +279,7 @@ public class BarWavesView extends View {
             );
             mPaint.setAlpha(255);
             mPaint.setShader(lg);
-            canvas.drawRect(left, top, right, bottom, mPaint);
+            canvas.drawRoundRect(left, top, right, bottom + 2, 20, 20, mPaint);
         }
 
     }
@@ -351,6 +351,14 @@ public class BarWavesView extends View {
      * @param hs 数值介于 0.0 - 1.0 的浮点数组，当值为 1.0 时波浪条将完全绘制（最高），0.0 时波浪条只绘制最低高度（最低）。
      */
     public void setWaveHeight(float[] hs) {
+        if (hs == null || hs.length != mWaveNumber) {
+            return;
+        }
+
+        for (int i = 0; i < hs.length; i++) {
+            if (Float.isNaN(hs[i])) hs[i] = 0F;
+        }
+
         if (mFallAnimEnable && mAnim != null && (mAnim.isStarted() || mAnim.isRunning())) {
             mAnim.cancel();
         }

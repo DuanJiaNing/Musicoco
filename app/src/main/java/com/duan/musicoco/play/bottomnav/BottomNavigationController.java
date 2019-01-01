@@ -8,6 +8,7 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.ColorUtils;
@@ -131,10 +132,16 @@ public class BottomNavigationController implements
             @Override
             public void run() {
                 int titleHeight = mListTitleContainer.getMeasuredHeight();
-//                mViewRoot.setY(metrics.heightPixels - titleHeight);
+
                 Context context = activity.getApplicationContext();
-                mViewRoot.setY(metrics.heightPixels + (Utils.hasNavBar(context) ?
-                        Utils.getNavigationBarHeight(context) : 0) - titleHeight);
+
+                mViewRoot.setY(metrics.heightPixels
+                        + (Utils.hasNavBar(context) ? Utils.getNavigationBarHeight(context) : 0)
+                        + (Build.VERSION.SDK_INT >= 28 ? Utils.getStatusBarHeight(activity) : 0)
+                        - titleHeight);
+
+//                mViewRoot.setY(metrics.heightPixels + (Utils.hasNavBar(context) ?
+//                        Utils.getNavigationBarHeight(context) : 0) - titleHeight);
 
             }
         });

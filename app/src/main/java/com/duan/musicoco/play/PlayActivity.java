@@ -181,13 +181,13 @@ public class PlayActivity extends InspectActivity implements
                 int audioSessionId = control.getAudioSessionId();
                 Log.e(TAG, "onFftCapture: audioSessionId=" + audioSessionId);
                 playVisualizer = new PlayVisualizer();
-                playVisualizer.setupVisualizer(60, audioSessionId, 50, new PlayVisualizer.OnFftDataCaptureListener() {
+                playVisualizer.setupVisualizer(160, audioSessionId, new PlayVisualizer.OnFftDataCaptureListener() {
                     @Override
                     public void onFftCapture(float[] fft) {
-                        float[] ffs = handleFFT(fft);
-                        viewsController.updateBarWaveHeight(ffs);
+//                        float[] ffs = handleFFT(fft);
+                        viewsController.updateBarWaveHeight(fft);
                         viewsController.updateBarWaveColors(
-                                handleColors(ffs, viewsController.getBarWaveColor()));
+                                handleColors(fft, viewsController.getBarWaveColor()));
                     }
                 });
             }

@@ -23,4 +23,22 @@ public class ArrayUtils {
 
         return sum / fft.length;
     }
+
+    public static float min(float[] data) {
+        float min = data[0];
+        for (float d : data) {
+            if (d < min) min = d;
+        }
+
+        return min;
+    }
+
+    public static float max(float[] data) {
+        float max = data[0];
+        for (float d : data) {
+            if (d > max) max = d;
+        }
+
+        return max;
+    }
 }
