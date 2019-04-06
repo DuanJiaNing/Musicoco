@@ -37,4 +37,15 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory android:title="@string/setting_visual_control">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="visual_control_dot_wave"
+            android:summaryOff="@string/disable"
+            android:summaryOn="@string/enable"
+            android:title="@string/setting_dot_wave" />
+
+    </PreferenceCategory>
+
 </PreferenceScreen>

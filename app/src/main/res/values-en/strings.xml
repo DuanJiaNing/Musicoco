@@ -244,6 +244,10 @@
     <string name="setting_set_headphone_wire">Wire cut song</string>
     <string name="setting_set_headphone_wire_enable">click: play / pause; double click: next one; three hit: previous one</string>
 
+    <string name="setting_visual_control">visual control</string>
+    <string name="setting_dot_wave">play panel visual effect</string>
+
+
     <string name="setting_set_feedback">Feedback</string>
     <string name="setting_set_about">Application information</string>
 
