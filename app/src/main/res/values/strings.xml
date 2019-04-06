@@ -142,6 +142,9 @@
     <string name="send">发送</string>
     <string name="share">分享</string>
 
+    <string name="multi_select">多选</string>
+    <string name="sort">排序</string>
+
     <string name="cancel_favorite">取消收藏</string>
     <string name="select_operation">选择操作</string>
     <string name="select_song">选择歌曲</string>
@@ -306,5 +309,6 @@
     <string name="song_detail_favorite">收藏</string>
     <string name="song_detail_not_favorite">未收藏</string>
     <string name="song_detail_song_list">已加入歌单</string>
+    <string name="song_detail_sort_tip">拖拽歌曲进行排序</string>
 
 </resources>

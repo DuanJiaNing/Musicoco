@@ -142,6 +142,9 @@
     <string name="send">send</string>
     <string name="share">share</string>
 
+    <string name="multi_select">Multiple selection</string>
+    <string name="sort">sort</string>
+
     <string name="cancel_favorite">Cancel favorite</string>
     <string name="select_operation">Choose an action</string>
     <string name="select_song">Choose songs</string>
@@ -307,5 +310,6 @@
     <string name="song_detail_favorite">Favorite</string>
     <string name="song_detail_not_favorite">Not favorite</string>
     <string name="song_detail_song_list">Has been added to the song list</string>
+    <string name="song_detail_sort_tip">Drag and drop songs to sort</string>
 
 </resources>

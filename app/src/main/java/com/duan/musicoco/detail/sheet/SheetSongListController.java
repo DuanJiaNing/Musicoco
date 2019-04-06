@@ -68,6 +68,8 @@ public class SheetSongListController implements
     private TextView checkCount;
     private CheckBox checkAll;
 
+    private TextView sortTip;
+
     private final Activity activity;
     private SongAdapter songAdapter;
     private IPlayControl control;
@@ -107,6 +109,8 @@ public class SheetSongListController implements
         line = activity.findViewById(R.id.sheet_detail_songs_line);
         songList = (RecyclerView) activity.findViewById(R.id.sheet_detail_songs_list);
         randomContainer = activity.findViewById(R.id.sheet_detail_random_container);
+
+        sortTip = (TextView) activity.findViewById(R.id.sheet_detail_songs_sort_tip);
 
         checkContainer = activity.findViewById(R.id.sheet_detail_check_container);
         checkAll = (CheckBox) activity.findViewById(R.id.sheet_detail_check_all);
@@ -234,9 +238,9 @@ public class SheetSongListController implements
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy <= 0) {
-                    songAdapter.setUseAnim(false);
+                    songAdapter.setMultiSelectModeSwitchAnimEnable(false);
                 } else {
-                    songAdapter.setUseAnim(true);
+                    songAdapter.setMultiSelectModeSwitchAnimEnable(true);
                 }
             }
         });
@@ -255,7 +259,9 @@ public class SheetSongListController implements
         songAdapter.setOnItemClickListener(new SongAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(SongAdapter.ViewHolder view, SongAdapter.DataHolder data, int position) {
-                playSong(position);
+                if (getListMode() == ListMode.NORMAL) {
+                    playSong(position);
+                }
             }
         });
 
@@ -277,9 +283,12 @@ public class SheetSongListController implements
         songAdapter.setOnItemLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                songAdapter.setMultiselectionModeEnable(true);
-                switchMultiselectionMode(true);
-                return true;
+                if (getListMode() == ListMode.NORMAL) {
+                    updateListMode(ListMode.MULTISELECTION);
+                    return true;
+                }
+
+                return false;
             }
         });
 
@@ -474,9 +483,8 @@ public class SheetSongListController implements
                 playAll(true);
                 break;
             case R.id.sheet_detail_play_all:
-                if (songAdapter.getMultiselectionModeEnable()) {
-                    songAdapter.setMultiselectionModeEnable(false);
-                    switchMultiselectionMode(false);
+                if (getListMode() != ListMode.NORMAL) {
+                    updateListMode(ListMode.NORMAL);
                 } else {
                     playAll(false);
                 }
@@ -551,23 +559,51 @@ public class SheetSongListController implements
         optionsAdapter.setIconColor(accentC);
     }
 
-    public boolean onBackPressed() {
-        if (songAdapter.getMultiselectionModeEnable()) {
-            songAdapter.setMultiselectionModeEnable(false);
-            switchMultiselectionMode(false);
-            return false;
+    public void updateListMode(ListMode mode) {
+        ListMode currentMode = getListMode();
+        songAdapter.updateListMode(mode);
+        ((SheetDetailActivity) activity).updateModeMenuVisible(mode);
+
+        switch (mode) {
+            case MULTISELECTION: {
+                showCheckAllView();
+                break;
+            }
+            case NORMAL: {
+                if (currentMode == ListMode.SORT) {
+                    // sort to normal
+                    hideSortTip();
+                }
+
+                if (currentMode == ListMode.MULTISELECTION) {
+                    hideCheckAllView();
+                }
+                break;
+            }
+            case SORT: {
+                // normal to sort
+                showSortTip();
+                break;
+            }
         }
-        return true;
+
     }
 
-    private void switchMultiselectionMode(boolean mulit) {
-        if (mulit) {
-            showCheckAllView();
-            ((SheetDetailActivity) activity).setMultiModeMenuVisible(true);
-        } else {
-            hideCheckAllView();
-            ((SheetDetailActivity) activity).setMultiModeMenuVisible(false);
-        }
+    private void showSortTip() {
+        sortTip.setVisibility(View.VISIBLE);
+
+        randomContainer.setClickable(false);
+        random.setVisibility(View.GONE);
+        playAllRandom.setVisibility(View.GONE);
+    }
+
+    private void hideSortTip() {
+        sortTip.setVisibility(View.GONE);
+
+        randomContainer.setClickable(true);
+        randomContainer.setOnClickListener(this);
+        random.setVisibility(View.VISIBLE);
+        playAllRandom.setVisibility(View.VISIBLE);
     }
 
     private void hideCheckAllView() {
@@ -654,6 +690,10 @@ public class SheetSongListController implements
     }
 
     public void setUseAnim(boolean anim) {
-        songAdapter.setUseAnim(anim);
+        songAdapter.setMultiSelectModeSwitchAnimEnable(anim);
+    }
+
+    public ListMode getListMode() {
+        return songAdapter.getListMode();
     }
 }

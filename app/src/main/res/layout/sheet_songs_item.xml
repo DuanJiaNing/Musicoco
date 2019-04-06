@@ -25,8 +25,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
         android:layout_marginTop="0dp"
+        android:layout_marginRight="8dp"
         android:drawableTint="@android:color/black"
         android:gravity="center_vertical|start"
         android:lines="1"
@@ -41,20 +41,20 @@
         android:id="@+id/sheet_song_item_image"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         android:src="@drawable/default_album"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/guideline8"
-        android:layout_marginRight="8dp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/sheet_song_item_favorite"
         android:layout_width="15dp"
         android:layout_height="15dp"
-        android:layout_marginBottom="0dp"
         android:layout_marginLeft="0dp"
+        android:layout_marginBottom="0dp"
         android:alpha="0.5"
         android:src="@drawable/ic_action_heart"
         app:layout_constraintBottom_toBottomOf="@+id/sheet_song_item_image"
@@ -65,8 +65,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
         android:layout_marginTop="0dp"
+        android:layout_marginRight="0dp"
         android:gravity="center_vertical|start"
         android:lines="1"
         android:maxEms="3"
@@ -80,6 +80,7 @@
         android:id="@+id/sheet_song_item_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:ellipsize="end"
         android:gravity="center"
@@ -88,20 +89,19 @@
         android:textSize="@dimen/text_middle"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/sheet_song_item_image"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.508"
-        android:layout_marginLeft="16dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintVertical_bias="0.508" />
 
     <TextView
         android:id="@+id/sheet_song_item_arts"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
         android:layout_marginLeft="0dp"
-        android:layout_marginRight="0dp"
         android:layout_marginTop="4dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="4dp"
         android:gravity="center_vertical|start"
         android:lines="1"
         android:textSize="@dimen/text_small_s"
@@ -116,13 +116,15 @@
         android:id="@+id/sheet_song_item_more"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginBottom="0dp"
-        android:layout_marginRight="0dp"
         android:layout_marginTop="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="0dp"
         android:background="?android:selectableItemBackground"
         android:clickable="true"
 
         android:padding="12dp"
+        android:scaleX="0.8"
+        android:scaleY="0.8"
         android:src="@drawable/ic_more_vert_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -130,9 +132,9 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <android.support.constraint.Guideline
+        android:id="@+id/guideline8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/guideline8"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.3" />
 

@@ -2,7 +2,7 @@ package com.duan.musicoco.detail.sheet;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.content.Context;
+import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
@@ -37,7 +37,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
     private final int sheetID;
     private boolean isCurrentSheetPlaying = false;
     private int currentIndex;
-    private Context context;
+    private Activity activity;
 
     private final List<DataHolder> data;
 
@@ -50,19 +50,19 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
     private View.OnLongClickListener longClickListener;
     private OnItemCheckStatusChangedListener checkStatusChangedListener;
 
-    private boolean multiselectionMode = false;
-    private boolean useAnim = false;
+    private ListMode listMode = ListMode.NORMAL;
+    private boolean multiSelectModeSwitchAnimEnable = false;
     private List<Integer> checksIndex = null;
 
-    public SongAdapter(Context context, List<DataHolder> data, int id) {
-        this.context = context;
+    public SongAdapter(Activity activity, List<DataHolder> data, int id) {
+        this.activity = activity;
         this.data = data;
         this.sheetID = id;
 
     }
 
-    public boolean getMultiselectionModeEnable() {
-        return multiselectionMode;
+    public ListMode getListMode() {
+        return listMode;
     }
 
     public void checkAll() {
@@ -72,7 +72,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
                     checksIndex.add(i);
                 }
             }
-            setUseAnim(false);
+            setMultiSelectModeSwitchAnimEnable(false);
             notifyDataSetChanged();
 
             if (checkStatusChangedListener != null) {
@@ -84,7 +84,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
     public void clearAllCheck() {
         if (checksIndex != null) {
             checksIndex.clear();
-            setUseAnim(false);
+            setMultiSelectModeSwitchAnimEnable(false);
             notifyDataSetChanged();
 
             if (checkStatusChangedListener != null) {
@@ -127,27 +127,37 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.sheet_songs_item, parent, false);
+        View view = LayoutInflater.from(activity).inflate(R.layout.sheet_songs_item, parent, false);
         return new ViewHolder(view);
     }
 
-    public void setMultiselectionModeEnable(boolean enable) {
-        multiselectionMode = enable;
-        setUseAnim(true);
-        if (enable) {
-            if (checksIndex == null) {
-                checksIndex = new ArrayList<>();
-            } else {
-                checksIndex.clear();
+    public void updateListMode(ListMode listMode) {
+        switch (listMode) {
+            case SORT:
+                // do nothing
+                break;
+            case NORMAL: {
+                setMultiSelectModeSwitchAnimEnable(this.listMode == ListMode.MULTISELECTION);
+                checksIndex = null;
+                break;
             }
-        } else {
-            checksIndex = null;
+            case MULTISELECTION: {
+                setMultiSelectModeSwitchAnimEnable(true);
+                if (checksIndex == null) {
+                    checksIndex = new ArrayList<>();
+                } else {
+                    checksIndex.clear();
+                }
+                break;
+            }
         }
+
+        this.listMode = listMode;
         notifyDataSetChanged();
     }
 
-    public void setUseAnim(boolean useAnim) {
-        this.useAnim = useAnim;
+    public void setMultiSelectModeSwitchAnimEnable(boolean enable) {
+        this.multiSelectModeSwitchAnimEnable = enable;
     }
 
     private int moreBtWidth;
@@ -156,7 +166,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
     public void onBindViewHolder(ViewHolder holder, int position) {
         final DataHolder dataHolder = getItem(position);
         SongInfo info = dataHolder.info;
-        loadData(dataHolder, holder, position);
+        loadDataAndView(dataHolder, holder, position);
 
         int tr = holder.more.getWidth();
         // 注意可能获取到值 0
@@ -164,24 +174,33 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
             moreBtWidth = tr;
         }
 
-        if (multiselectionMode) {
-            startTranslAnimIfNeed(0, moreBtWidth, holder);
-            holder.check.setVisibility(View.VISIBLE);
+        switch (listMode) {
+            case MULTISELECTION: {
+                startMultiSelectModeSwitchAnimIfNeed(0, moreBtWidth, holder);
+                holder.check.setVisibility(View.VISIBLE);
+                handleSelectModeListener(holder, position);
+                break;
+            }
+            case NORMAL: {
+                startMultiSelectModeSwitchAnimIfNeed(moreBtWidth, 0, holder);
+                startSortModeSwitchAnim(0.9f, 1, holder);
 
-            handleSelectModeListener(holder, position);
-
-        } else {
-            startTranslAnimIfNeed(moreBtWidth, 0, holder);
-            holder.check.setVisibility(View.GONE);
-
-            handleNormalListeners(info, holder, dataHolder, position);
+                holder.check.setVisibility(View.GONE);
+                handleNormalListeners(info, holder, dataHolder, position);
+                break;
+            }
+            case SORT: {
+                startSortModeSwitchAnim(1, 0.9f, holder);
+                break;
+            }
         }
+
     }
 
-    private void startTranslAnimIfNeed(int from, final int to, final ViewHolder holder) {
-        if (useAnim) {
+    private void startMultiSelectModeSwitchAnimIfNeed(int from, final int to, final ViewHolder holder) {
+        if (multiSelectModeSwitchAnimEnable) {
             ValueAnimator anim = ObjectAnimator.ofInt(from, to);
-            int dur = context.getResources().getInteger(R.integer.anim_default_duration);
+            int dur = activity.getResources().getInteger(R.integer.anim_default_duration);
             anim.setDuration(dur);
             anim.setInterpolator(new DecelerateInterpolator());
             anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -203,6 +222,22 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
                 }
             }
         }
+    }
+
+    private void startSortModeSwitchAnim(float from, final float to, final ViewHolder holder) {
+        ValueAnimator anim = ObjectAnimator.ofFloat(from, to);
+        int dur = activity.getResources().getInteger(R.integer.anim_default_duration);
+        anim.setDuration(dur);
+        anim.setInterpolator(new DecelerateInterpolator());
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float va = (float) animation.getAnimatedValue();
+                holder.itemView.setScaleX(va);
+                holder.itemView.setScaleY(va);
+            }
+        });
+        anim.start();
     }
 
     public List<Integer> getCheckItemsIndex() {
@@ -248,7 +283,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    setUseAnim(false);
+                    setMultiSelectModeSwitchAnimEnable(false);
                     itemClickListener.onItemClick(holder, dataHolder, position);
                 }
             });
@@ -270,40 +305,46 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
         }
     }
 
-    private void loadData(DataHolder dataHolder, ViewHolder holder, int position) {
+    private void loadDataAndView(DataHolder dataHolder, ViewHolder holder, int position) {
         SongInfo info = dataHolder.info;
 
-        final RoundedCornersTransformation rtf = new RoundedCornersTransformation(context, 15, 0);
-        final ImageView img = holder.image;
-        Glide.with(context)
+        // any mode same
+        final RoundedCornersTransformation rtf = new RoundedCornersTransformation(activity, 15, 0);
+        ImageView image = holder.image;
+        Glide.with(activity)
                 .load(info.getAlbum_path())
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .placeholder(R.drawable.default_song)
                 .bitmapTransform(rtf)
                 .crossFade()
-                .into(img);
+                .into(image);
+        holder.name.setText(info.getTitle());
+        holder.arts.setText(info.getArtist());
+        holder.duration.setText(StringUtils.getGenTimeMS((int) info.getDuration()));
 
-        String number = String.valueOf(position + 1);
-        holder.number.setText(number);
-        String name = info.getTitle();
-        holder.name.setText(name);
-        String arts = info.getArtist();
-        holder.arts.setText(arts);
-        String duration = StringUtils.getGenTimeMS((int) info.getDuration());
-        holder.duration.setText(duration);
+        // multiselection mode
+        holder.check.setChecked(listMode == ListMode.MULTISELECTION && checksIndex.contains(position));
 
-        if (multiselectionMode && checksIndex.contains(position)) {
-            holder.check.setChecked(true);
+        // sort mode
+        if (listMode == ListMode.SORT) {
+            holder.itemView.setAlpha(0.5f);
+            holder.itemView.setScaleX(0.9f);
+            holder.itemView.setScaleY(0.9f);
         } else {
-            holder.check.setChecked(false);
+            holder.itemView.setAlpha(1f);
+            holder.itemView.setScaleX(1f);
+            holder.itemView.setScaleY(1f);
         }
+        holder.number.setText(listMode == ListMode.SORT ? "" : String.valueOf(position + 1));
+        holder.more.setImageDrawable(activity.getDrawable(listMode == ListMode.SORT ?
+                R.drawable.ic_play_list : R.drawable.ic_more_vert_black_24dp));
 
         bindStatAndColors(holder, position, dataHolder.isFavorite);
     }
 
     private void bindStatAndColors(ViewHolder holder, int position, boolean isFavorite) {
 
-        if (isCurrentSheetPlaying && position == currentIndex && !multiselectionMode) {
+        if (isCurrentSheetPlaying && position == currentIndex && listMode == ListMode.NORMAL) {
             setNumberAsImage(true, holder.number, accentC);
         } else {
             setNumberAsImage(false, holder.number, vicTC);
@@ -333,12 +374,12 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
 
             Drawable drawable;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                drawable = context.getDrawable(R.drawable.ic_volume_up_black_24dp);
+                drawable = activity.getDrawable(R.drawable.ic_volume_up_black_24dp);
                 if (drawable != null) {
                     drawable.setTint(vtc);
                 }
             } else {
-                drawable = context.getResources().getDrawable(R.drawable.ic_volume_up_black_24dp);
+                drawable = activity.getResources().getDrawable(R.drawable.ic_volume_up_black_24dp);
             }
 
             if (drawable != null) {
@@ -372,7 +413,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
     public void update(Boolean currentSheet, int index) {
         isCurrentSheetPlaying = currentSheet;
         currentIndex = index;
-        setUseAnim(false);
+        setMultiSelectModeSwitchAnimEnable(false);
         notifyDataSetChanged();
     }
 
