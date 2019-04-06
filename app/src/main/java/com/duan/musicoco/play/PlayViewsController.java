@@ -303,6 +303,10 @@ public class PlayViewsController implements View.OnClickListener {
         barWavesView.setWaveHeight(fft);
     }
 
+    public void updateBarWaveVisible(boolean dotWaveEnable) {
+        barWavesView.setVisibility(dotWaveEnable ? View.VISIBLE : View.GONE);
+    }
+
     public class BarWaveColor {
         int barColor;
         int waveColor;

@@ -82,6 +82,6 @@
     <dimen name="me_social_item_height">100dp</dimen>
 
     <!--设置界面 PreferenceFragment 的高度-->
-    <dimen name="setting_fragment_height">400dp</dimen>
+    <dimen name="setting_fragment_height">500dp</dimen>
 
 </resources>

@@ -37,4 +37,8 @@ public class SettingPreference {
         return preferences.getBoolean("pre_headphone_wire", true);
     }
 
+    public boolean getDotWaveEnable() {
+        return preferences.getBoolean("visual_control_dot_wave", true);
+    }
+
 }

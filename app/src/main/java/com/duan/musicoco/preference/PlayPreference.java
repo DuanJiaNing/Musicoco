@@ -14,7 +14,6 @@ import com.duan.musicoco.service.PlayController;
 public class PlayPreference extends BasePreference {
 
     public static final String KEY_PLAY_MODE = "key_play_mode";
-    public static final String KEY_DOT_WAVE = "key_dot_wave";
     public static final String KEY_THEME = "key_theme";
     public static final String KEY_SHEET = "key_sheet";
     public static final String KEY_PLAY_BG_MODE = "key_play_bg_mode";
@@ -27,16 +26,6 @@ public class PlayPreference extends BasePreference {
         editor = preferences.edit();
         editor.putString(KEY_THEME, themeEnum.name());
         editor.apply();
-    }
-
-    public void toggleDotWave() {
-        editor = preferences.edit();
-        editor.putBoolean(KEY_DOT_WAVE, !getDotWaveEnable());
-        editor.apply();
-    }
-
-    public boolean getDotWaveEnable() {
-        return preferences.getBoolean(KEY_DOT_WAVE, true);
     }
 
     public void updatePlayBgMode(PlayBackgroundModeEnum mode) {

@@ -192,8 +192,10 @@ public class PlayActivity extends InspectActivity implements
                 });
             }
 
-            playVisualizer.setVisualizerEnable(playPreference.getDotWaveEnable() &&
+            playVisualizer.setVisualizerEnable(settingPreference.getDotWaveEnable() &&
                     control.status() == PlayController.STATUS_PLAYING);
+
+            viewsController.updateBarWaveVisible(settingPreference.getDotWaveEnable());
 
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -308,7 +310,7 @@ public class PlayActivity extends InspectActivity implements
         super.onDestroy();
         unbindService();
         unregisterReceiver();
-        if (playPreference.getDotWaveEnable()) {
+        if (settingPreference.getDotWaveEnable()) {
             playVisualizer.stopListen();
         }
     }
