@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,6 +77,7 @@ public class SheetSongListController implements
 
     private int sheetID;
     private DBMusicocoController dbController;
+    private SheetSortController sheetSortController;
     private MediaManager mediaManager;
 
     private int currentIndex = 0;
@@ -101,6 +103,7 @@ public class SheetSongListController implements
     public SheetSongListController(Activity activity) {
         this.activity = activity;
         this.data = new ArrayList<>();
+        this.sheetSortController = new SheetSortController();
     }
 
     public void initViews() {
@@ -220,6 +223,20 @@ public class SheetSongListController implements
         songList.setLayoutManager(lm);
         songList.setAdapter(songAdapter);
 
+        final ItemTouchHelper itemTouchHelper = new ItemTouchHelper(sheetSortController);
+        itemTouchHelper.attachToRecyclerView(songList);
+        songAdapter.setSheetSortListener(new SongAdapter.SheetSortListener() {
+            @Override
+            public void startDrag(RecyclerView.ViewHolder viewHolder) {
+                itemTouchHelper.startDrag(viewHolder);
+            }
+
+            @Override
+            public void setOnDragDoneListener(SheetSortController.OnDragDoneListener onDragDoneListener) {
+                sheetSortController.setOnDragDoneListener(onDragDoneListener);
+            }
+        });
+
         songList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -244,6 +261,7 @@ public class SheetSongListController implements
                 }
             }
         });
+
         setSongAdapterListeners();
         //在 calculateRecycleViewHeight 之后再更新
         songList.post(new Runnable() {
@@ -256,6 +274,7 @@ public class SheetSongListController implements
     }
 
     private void setSongAdapterListeners() {
+
         songAdapter.setOnItemClickListener(new SongAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(SongAdapter.ViewHolder view, SongAdapter.DataHolder data, int position) {
@@ -542,9 +561,10 @@ public class SheetSongListController implements
         int toolbarMainTC = colors[8];
         int toolbarVicTC = colors[9];
 
-        songAdapter.themeChange(themeEnum, new int[]{mainTC, vicTC, accentC});
+        songAdapter.themeChange(themeEnum, new int[]{mainTC, vicTC, accentC, mainBC});
 
         playAllRandom.setTextColor(mainTC);
+        sortTip.setTextColor(mainTC);
         line.setBackgroundColor(vicTC);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             random.getDrawable().setTint(vicTC);
@@ -573,6 +593,7 @@ public class SheetSongListController implements
                 if (currentMode == ListMode.SORT) {
                     // sort to normal
                     hideSortTip();
+                    sheetSortController.setEnable(false);
                 }
 
                 if (currentMode == ListMode.MULTISELECTION) {
@@ -583,6 +604,7 @@ public class SheetSongListController implements
             case SORT: {
                 // normal to sort
                 showSortTip();
+                sheetSortController.setEnable(true);
                 break;
             }
         }

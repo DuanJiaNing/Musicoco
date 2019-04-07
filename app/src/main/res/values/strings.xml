@@ -309,6 +309,6 @@
     <string name="song_detail_favorite">收藏</string>
     <string name="song_detail_not_favorite">未收藏</string>
     <string name="song_detail_song_list">已加入歌单</string>
-    <string name="song_detail_sort_tip">拖拽歌曲进行排序</string>
+    <string name="song_detail_sort_tip">长按歌曲进行拖拽</string>
 
 </resources>

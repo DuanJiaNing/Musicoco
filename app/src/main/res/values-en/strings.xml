@@ -310,6 +310,6 @@
     <string name="song_detail_favorite">Favorite</string>
     <string name="song_detail_not_favorite">Not favorite</string>
     <string name="song_detail_song_list">Has been added to the song list</string>
-    <string name="song_detail_sort_tip">Drag and drop songs to sort</string>
+    <string name="song_detail_sort_tip">Long press song item to drag</string>
 
 </resources>
