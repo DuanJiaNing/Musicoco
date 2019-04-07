@@ -13,6 +13,8 @@ final public class SongInfo implements MediaStore.Audio.AudioColumns {
     private String artist_key;
     private String album_key;
 
+    private int id;
+
     //时间 ms
     private long duration;
 
@@ -67,28 +69,6 @@ final public class SongInfo implements MediaStore.Audio.AudioColumns {
     @Override
     public int hashCode() {
         return data.hashCode();
-    }
-
-    @Override
-    public String toString() {
-        return "DBSongInfo{" +
-                "title_key='" + title_key + '\'' +
-                ", artist_key='" + artist_key + '\'' +
-                ", album_key='" + album_key + '\'' +
-                ", duration=" + duration +
-                ", artist='" + artist + '\'' +
-                ", album='" + album + '\'' +
-                ", album_id='" + album_id + '\'' +
-                ", album_path='" + album_path + '\'' +
-                ", year=" + year +
-                ", data='" + data + '\'' +
-                ", size=" + size +
-                ", display_name='" + display_name + '\'' +
-                ", title='" + title + '\'' +
-                ", date_added=" + date_added +
-                ", date_modified=" + date_modified +
-                ", mime_type='" + mime_type + '\'' +
-                '}' + "\n";
     }
 
     public void setAlbum_id(String album_id) {
@@ -225,4 +205,11 @@ final public class SongInfo implements MediaStore.Audio.AudioColumns {
         return album_path;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

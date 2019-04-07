@@ -109,6 +109,7 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
         if (songListController != null) {
             if (songListController.getListMode() != ListMode.NORMAL) {
                 songListController.updateListMode(ListMode.NORMAL);
+                inCauseSortCanceled();
             } else {
                 super.onBackPressed();
             }
@@ -220,46 +221,47 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
         MenuItem sort_save = menu.findItem(R.id.sheet_detail_sort_save);
         MenuItem sort_cancel = menu.findItem(R.id.sheet_detail_sort_cancel);
 
-        updateMenuVisible(action_collection, false);
-        updateMenuVisible(action_modify, false);
-        updateMenuVisible(search, false);
-        updateMenuVisible(multi_add_favorite, false);
-        updateMenuVisible(multi_add_to_sheet, false);
-        updateMenuVisible(multi_remove, false);
-        updateMenuVisible(multi_delete_songs, false);
-        updateMenuVisible(sort, false);
-        updateMenuVisible(multi_select, false);
-        updateMenuVisible(sort_save, false);
-        updateMenuVisible(sort_cancel, false);
+        updateMenuVisible(action_collection, false, MenuItem.SHOW_AS_ACTION_NEVER);
+        updateMenuVisible(action_modify, false, MenuItem.SHOW_AS_ACTION_NEVER);
+        updateMenuVisible(search, false, MenuItem.SHOW_AS_ACTION_NEVER);
+        updateMenuVisible(multi_add_favorite, false, MenuItem.SHOW_AS_ACTION_NEVER);
+        updateMenuVisible(multi_add_to_sheet, false, MenuItem.SHOW_AS_ACTION_NEVER);
+        updateMenuVisible(multi_remove, false, MenuItem.SHOW_AS_ACTION_NEVER);
+        updateMenuVisible(multi_delete_songs, false, MenuItem.SHOW_AS_ACTION_NEVER);
+        updateMenuVisible(sort, false, MenuItem.SHOW_AS_ACTION_NEVER);
+        updateMenuVisible(multi_select, false, MenuItem.SHOW_AS_ACTION_NEVER);
+        updateMenuVisible(sort_save, false, MenuItem.SHOW_AS_ACTION_NEVER);
+        updateMenuVisible(sort_cancel, false, MenuItem.SHOW_AS_ACTION_NEVER);
 
         switch (mode) {
             case SORT: {
-                updateMenuVisible(sort_save, true);
-                updateMenuVisible(sort_cancel, true);
+                updateMenuVisible(sort_save, true, MenuItem.SHOW_AS_ACTION_ALWAYS);
+                updateMenuVisible(sort_cancel, true, MenuItem.SHOW_AS_ACTION_ALWAYS);
                 break;
             }
             case NORMAL: {
-                updateMenuVisible(sort, true);
-                updateMenuVisible(multi_select, true);
-                updateMenuVisible(action_collection, true);
-                updateMenuVisible(action_modify, true);
-                updateMenuVisible(search, true);
+                updateMenuVisible(sort, true, MenuItem.SHOW_AS_ACTION_NEVER);
+                updateMenuVisible(multi_select, true, MenuItem.SHOW_AS_ACTION_NEVER);
+                updateMenuVisible(action_collection, true, MenuItem.SHOW_AS_ACTION_NEVER);
+                updateMenuVisible(action_modify, true, MenuItem.SHOW_AS_ACTION_NEVER);
+                updateMenuVisible(search, true, MenuItem.SHOW_AS_ACTION_NEVER);
                 break;
             }
             case MULTISELECTION: {
-                updateMenuVisible(multi_add_favorite, true);
-                updateMenuVisible(multi_add_to_sheet, true);
-                updateMenuVisible(multi_remove, true);
-                updateMenuVisible(multi_delete_songs, true);
+                updateMenuVisible(multi_add_favorite, true, MenuItem.SHOW_AS_ACTION_NEVER);
+                updateMenuVisible(multi_add_to_sheet, true, MenuItem.SHOW_AS_ACTION_NEVER);
+                updateMenuVisible(multi_remove, true, MenuItem.SHOW_AS_ACTION_NEVER);
+                updateMenuVisible(multi_delete_songs, true, MenuItem.SHOW_AS_ACTION_NEVER);
                 break;
             }
         }
 
     }
 
-    private void updateMenuVisible(MenuItem menu, boolean visible) {
+    private void updateMenuVisible(MenuItem menu, boolean visible, int showAsAction) {
         if (menu != null) {
             menu.setVisible(visible);
+            menu.setShowAsAction(showAsAction);
         }
     }
 
@@ -302,6 +304,7 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
                     finish();
                 } else {
                     songListController.updateListMode(ListMode.NORMAL);
+                    inCauseSortCanceled();
                 }
                 break;
             }
@@ -362,12 +365,14 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
             }
 
             case R.id.sheet_detail_sort_save: {
-                // TODO
+                songListController.updateListMode(ListMode.NORMAL);
+                songListController.updateSongSortThenReloadData();
                 break;
             }
 
             case R.id.sheet_detail_sort_cancel: {
-                // TODO
+                songListController.updateListMode(ListMode.NORMAL);
+                songListController.update();
                 break;
             }
 
@@ -376,6 +381,10 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void inCauseSortCanceled() {
+        songListController.update(); // 排序需点击保存才会生效
     }
 
     private void handleAddSelectSongToFavorite(OnCompleteListener<Void> complete) {

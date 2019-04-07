@@ -17,7 +17,7 @@ public class DBSongInfo {
     public int playTimes;
     public String remark;
     public long create;
-    public int[] sheets;
+    public int sort;
     public boolean favorite;
 
     public DBSongInfo() {
@@ -29,7 +29,6 @@ public class DBSongInfo {
         this.playTimes = playTimes;
         this.remark = remark;
         this.create = create;
-        this.sheets = sheets;
         this.favorite = favorite;
     }
 

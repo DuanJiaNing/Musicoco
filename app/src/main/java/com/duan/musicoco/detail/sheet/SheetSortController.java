@@ -13,9 +13,18 @@ public class SheetSortController extends ItemTouchHelper.Callback {
 
     private boolean enable;
     private OnDragDoneListener onDragDoneListener;
+    private OnItemSwapListener onItemSwapListener;
+
+    public void setOnItemSwapListener(OnItemSwapListener onItemSwapListener) {
+        this.onItemSwapListener = onItemSwapListener;
+    }
 
     public interface OnDragDoneListener {
         void dragDone(RecyclerView.ViewHolder holder);
+    }
+
+    public interface OnItemSwapListener {
+        void swap(int posFrom, int posTo);
     }
 
     public void setOnDragDoneListener(OnDragDoneListener onDragDoneListener) {
@@ -44,6 +53,11 @@ public class SheetSortController extends ItemTouchHelper.Callback {
         // 拖拽item移动时产生回调
 
         // 更新顺序临时数据，交换动画
+        RecyclerView.Adapter adapter = recyclerView.getAdapter();
+        adapter.notifyItemMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+        if (onItemSwapListener != null) {
+            onItemSwapListener.swap(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+        }
         return true;
     }
 

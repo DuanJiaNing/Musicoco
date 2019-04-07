@@ -385,6 +385,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
                 }
             });
         }
+        holder.more.setOnTouchListener(null); // set sort mode touch event null
 
         if (longClickListener != null) {
             holder.itemView.setLongClickable(true);
@@ -398,7 +399,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.ViewHolder> im
         // any mode same
         final RoundedCornersTransformation rtf = new RoundedCornersTransformation(activity, 15, 0);
         ImageView image = holder.image;
-        Glide.with(activity)
+        Glide.with(activity.getApplicationContext()) // 要使用 Context，Activity touch DOWN 或正在滚动时不会加载图片
                 .load(info.getAlbum_path())
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .placeholder(R.drawable.default_song)

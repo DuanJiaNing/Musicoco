@@ -29,6 +29,7 @@ import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.modle.DBSongInfo;
+import com.duan.musicoco.db.modle.SongSheetRela;
 import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
@@ -41,6 +42,7 @@ import com.duan.musicoco.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -225,6 +227,13 @@ public class SheetSongListController implements
 
         final ItemTouchHelper itemTouchHelper = new ItemTouchHelper(sheetSortController);
         itemTouchHelper.attachToRecyclerView(songList);
+        sheetSortController.setOnItemSwapListener(new SheetSortController.OnItemSwapListener() {
+            @Override
+            public void swap(int posFrom, int posTo) {
+                Collections.swap(data, posFrom, posTo);
+            }
+        });
+
         songAdapter.setSheetSortListener(new SongAdapter.SheetSortListener() {
             @Override
             public void startDrag(RecyclerView.ViewHolder viewHolder) {
@@ -611,6 +620,21 @@ public class SheetSongListController implements
 
     }
 
+    public void updateSongSortThenReloadData() {
+        if (data.size() > 0) {
+            List<SongSheetRela> relas = new ArrayList<>(data.size());
+            for (int i = 0; i < data.size(); i++) {
+                SongSheetRela rela = new SongSheetRela();
+                rela.sheetId = sheetID;
+                rela.songId = data.get(i).info.getId();
+                rela.sort = i + 1;
+                relas.add(rela);
+            }
+            dbController.updateSheetSort(relas);
+        }
+        update();
+    }
+
     private void showSortTip() {
         sortTip.setVisibility(View.VISIBLE);
 
@@ -718,4 +742,5 @@ public class SheetSongListController implements
     public ListMode getListMode() {
         return songAdapter.getListMode();
     }
+
 }
