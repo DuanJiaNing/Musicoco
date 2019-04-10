@@ -248,7 +248,7 @@
     <string name="setting_set_headphone_wire_enable">Click: play / pause; double click: next one; three hit: previous one</string>
 
     <string name="setting_visual_control">Visual control</string>
-    <string name="setting_dot_wave">Play panel visual effect</string>
+    <string name="setting_dot_wave">Play panel visual effect (beta)</string>
 
 
     <string name="setting_set_feedback">Feedback</string>

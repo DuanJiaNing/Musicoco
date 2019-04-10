@@ -248,7 +248,7 @@
     <string name="setting_set_headphone_wire_enable">单击：播放/暂停；双击：下一首；三击：上一首</string>
 
     <string name="setting_visual_control">视效控制</string>
-    <string name="setting_dot_wave">播放面板视觉效果</string>
+    <string name="setting_dot_wave">播放面板视觉效果(beta)</string>
 
     <string name="setting_set_feedback">反馈</string>
     <string name="setting_set_about">应用信息</string>

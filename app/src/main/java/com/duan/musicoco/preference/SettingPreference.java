@@ -38,7 +38,8 @@ public class SettingPreference {
     }
 
     public boolean getDotWaveEnable() {
-        return preferences.getBoolean("visual_control_dot_wave", true);
+        // beta
+        return preferences.getBoolean("visual_control_dot_wave", false);
     }
 
 }
