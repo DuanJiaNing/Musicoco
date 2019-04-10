@@ -3,9 +3,9 @@ package com.duan.musicoco.util;
 import android.content.Context;
 
 import com.duan.musicoco.aidl.Song;
-import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.modle.DBSongInfo;
+import com.duan.musicoco.modle.SongInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +31,7 @@ public class MediaUtils {
             DBSongInfo info = list.get(i);
             SongInfo si = mediaManager.getSongInfo(context, info.path);
             if (si != null) {
+                si.setId(info.id);
                 res.add(si);
             }
         }

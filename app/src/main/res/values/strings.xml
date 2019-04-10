@@ -142,6 +142,9 @@
     <string name="send">发送</string>
     <string name="share">分享</string>
 
+    <string name="multi_select">多选</string>
+    <string name="sort">排序</string>
+
     <string name="cancel_favorite">取消收藏</string>
     <string name="select_operation">选择操作</string>
     <string name="select_song">选择歌曲</string>
@@ -245,7 +248,7 @@
     <string name="setting_set_headphone_wire_enable">单击：播放/暂停；双击：下一首；三击：上一首</string>
 
     <string name="setting_visual_control">视效控制</string>
-    <string name="setting_dot_wave">播放面板视觉效果</string>
+    <string name="setting_dot_wave">播放面板视觉效果(beta)</string>
 
     <string name="setting_set_feedback">反馈</string>
     <string name="setting_set_about">应用信息</string>
@@ -306,5 +309,6 @@
     <string name="song_detail_favorite">收藏</string>
     <string name="song_detail_not_favorite">未收藏</string>
     <string name="song_detail_song_list">已加入歌单</string>
+    <string name="song_detail_sort_tip">长按歌曲进行拖拽</string>
 
 </resources>

@@ -29,6 +29,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private void initTableForDBMusicoco(SQLiteDatabase db) {
         DBMusicocoController.createSheetTable(db);
         DBMusicocoController.createSongTable(db);
+        DBMusicocoController.createSongSheetRelaTable(db);
     }
 
 }

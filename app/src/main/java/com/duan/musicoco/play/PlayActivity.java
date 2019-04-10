@@ -11,7 +11,6 @@ import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -179,7 +178,6 @@ public class PlayActivity extends InspectActivity implements
             if (playVisualizer == null) {
 
                 int audioSessionId = control.getAudioSessionId();
-                Log.e(TAG, "onFftCapture: audioSessionId=" + audioSessionId);
                 playVisualizer = new PlayVisualizer();
                 playVisualizer.setupVisualizer(160, audioSessionId, new PlayVisualizer.OnFftDataCaptureListener() {
                     @Override

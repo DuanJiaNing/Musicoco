@@ -31,18 +31,14 @@
 
 - [v1.1.0](https://github.com/DuanJiaNing/Musicoco/tree/v1.1.0) <br>
 版本说明：初始版本
-- [v2.1.0](https://github.com/DuanJiaNing/Musicoco/tree/v1.1.0) <br>
+- [v2.1.0](https://github.com/DuanJiaNing/Musicoco/tree/v2.1.0) <br>
 1. 适配虚拟按键
 2. 适配刘海屏
 3. 修复“关于开发者”页面 bug
 4. 调整 UI
-- [v2.2.0]
-- [ ] 歌单歌曲自定义排序（上下移，按时间艺人专辑排）
-
-## 未来开发计划
-
-- 播放界面新增风格[条形与波浪](https://github.com/DuanJiaNing/BarWavesVew)
-- 优化[历史最多播放]计数策略
+- [v2.2.0](https://github.com/DuanJiaNing/Musicoco/tree/v2.2.0) <br>
+- 非主歌单（全部、最近和收藏）歌曲可以自定义排序啦
+- 播放界面添加动态视效（beta 版，数据收集不是很精确）
 
 License
 ============

@@ -9,6 +9,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import com.duan.musicoco.app.manager.MediaManager;
 import com.duan.musicoco.db.DBMusicocoController;
 import com.duan.musicoco.db.MainSheetHelper;
 import com.duan.musicoco.db.modle.DBSongInfo;
+import com.duan.musicoco.db.modle.SongSheetRela;
 import com.duan.musicoco.modle.SongInfo;
 import com.duan.musicoco.preference.ThemeEnum;
 import com.duan.musicoco.service.PlayController;
@@ -40,6 +42,7 @@ import com.duan.musicoco.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -68,12 +71,15 @@ public class SheetSongListController implements
     private TextView checkCount;
     private CheckBox checkAll;
 
+    private TextView sortTip;
+
     private final Activity activity;
     private SongAdapter songAdapter;
     private IPlayControl control;
 
     private int sheetID;
     private DBMusicocoController dbController;
+    private SheetSortController sheetSortController;
     private MediaManager mediaManager;
 
     private int currentIndex = 0;
@@ -99,6 +105,7 @@ public class SheetSongListController implements
     public SheetSongListController(Activity activity) {
         this.activity = activity;
         this.data = new ArrayList<>();
+        this.sheetSortController = new SheetSortController();
     }
 
     public void initViews() {
@@ -107,6 +114,8 @@ public class SheetSongListController implements
         line = activity.findViewById(R.id.sheet_detail_songs_line);
         songList = (RecyclerView) activity.findViewById(R.id.sheet_detail_songs_list);
         randomContainer = activity.findViewById(R.id.sheet_detail_random_container);
+
+        sortTip = (TextView) activity.findViewById(R.id.sheet_detail_songs_sort_tip);
 
         checkContainer = activity.findViewById(R.id.sheet_detail_check_container);
         checkAll = (CheckBox) activity.findViewById(R.id.sheet_detail_check_all);
@@ -216,6 +225,27 @@ public class SheetSongListController implements
         songList.setLayoutManager(lm);
         songList.setAdapter(songAdapter);
 
+        final ItemTouchHelper itemTouchHelper = new ItemTouchHelper(sheetSortController);
+        itemTouchHelper.attachToRecyclerView(songList);
+        sheetSortController.setOnItemSwapListener(new SheetSortController.OnItemSwapListener() {
+            @Override
+            public void swap(int posFrom, int posTo) {
+                Collections.swap(data, posFrom, posTo);
+            }
+        });
+
+        songAdapter.setSheetSortListener(new SongAdapter.SheetSortListener() {
+            @Override
+            public void startDrag(RecyclerView.ViewHolder viewHolder) {
+                itemTouchHelper.startDrag(viewHolder);
+            }
+
+            @Override
+            public void setOnDragDoneListener(SheetSortController.OnDragDoneListener onDragDoneListener) {
+                sheetSortController.setOnDragDoneListener(onDragDoneListener);
+            }
+        });
+
         songList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -234,12 +264,13 @@ public class SheetSongListController implements
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (dy <= 0) {
-                    songAdapter.setUseAnim(false);
+                    songAdapter.setMultiSelectModeSwitchAnimEnable(false);
                 } else {
-                    songAdapter.setUseAnim(true);
+                    songAdapter.setMultiSelectModeSwitchAnimEnable(true);
                 }
             }
         });
+
         setSongAdapterListeners();
         //在 calculateRecycleViewHeight 之后再更新
         songList.post(new Runnable() {
@@ -252,10 +283,13 @@ public class SheetSongListController implements
     }
 
     private void setSongAdapterListeners() {
+
         songAdapter.setOnItemClickListener(new SongAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(SongAdapter.ViewHolder view, SongAdapter.DataHolder data, int position) {
-                playSong(position);
+                if (getListMode() == ListMode.NORMAL) {
+                    playSong(position);
+                }
             }
         });
 
@@ -277,9 +311,12 @@ public class SheetSongListController implements
         songAdapter.setOnItemLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                songAdapter.setMultiselectionModeEnable(true);
-                switchMultiselectionMode(true);
-                return true;
+                if (getListMode() == ListMode.NORMAL) {
+                    updateListMode(ListMode.MULTISELECTION);
+                    return true;
+                }
+
+                return false;
             }
         });
 
@@ -474,9 +511,8 @@ public class SheetSongListController implements
                 playAll(true);
                 break;
             case R.id.sheet_detail_play_all:
-                if (songAdapter.getMultiselectionModeEnable()) {
-                    songAdapter.setMultiselectionModeEnable(false);
-                    switchMultiselectionMode(false);
+                if (getListMode() != ListMode.NORMAL) {
+                    updateListMode(ListMode.NORMAL);
                 } else {
                     playAll(false);
                 }
@@ -534,9 +570,10 @@ public class SheetSongListController implements
         int toolbarMainTC = colors[8];
         int toolbarVicTC = colors[9];
 
-        songAdapter.themeChange(themeEnum, new int[]{mainTC, vicTC, accentC});
+        songAdapter.themeChange(themeEnum, new int[]{mainTC, vicTC, accentC, mainBC});
 
         playAllRandom.setTextColor(mainTC);
+        sortTip.setTextColor(mainTC);
         line.setBackgroundColor(vicTC);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             random.getDrawable().setTint(vicTC);
@@ -551,23 +588,68 @@ public class SheetSongListController implements
         optionsAdapter.setIconColor(accentC);
     }
 
-    public boolean onBackPressed() {
-        if (songAdapter.getMultiselectionModeEnable()) {
-            songAdapter.setMultiselectionModeEnable(false);
-            switchMultiselectionMode(false);
-            return false;
+    public void updateListMode(ListMode mode) {
+        ListMode currentMode = getListMode();
+        songAdapter.updateListMode(mode);
+        ((SheetDetailActivity) activity).updateModeMenuVisible(mode);
+
+        switch (mode) {
+            case MULTISELECTION: {
+                showCheckAllView();
+                break;
+            }
+            case NORMAL: {
+                if (currentMode == ListMode.SORT) {
+                    // sort to normal
+                    hideSortTip();
+                    sheetSortController.setEnable(false);
+                }
+
+                if (currentMode == ListMode.MULTISELECTION) {
+                    hideCheckAllView();
+                }
+                break;
+            }
+            case SORT: {
+                // normal to sort
+                showSortTip();
+                sheetSortController.setEnable(true);
+                break;
+            }
         }
-        return true;
+
     }
 
-    private void switchMultiselectionMode(boolean mulit) {
-        if (mulit) {
-            showCheckAllView();
-            ((SheetDetailActivity) activity).setMultiModeMenuVisible(true);
-        } else {
-            hideCheckAllView();
-            ((SheetDetailActivity) activity).setMultiModeMenuVisible(false);
+    public void updateSongSortThenReloadData() {
+        if (data.size() > 0) {
+            List<SongSheetRela> relas = new ArrayList<>(data.size());
+            for (int i = 0; i < data.size(); i++) {
+                SongSheetRela rela = new SongSheetRela();
+                rela.sheetId = sheetID;
+                rela.songId = data.get(i).info.getId();
+                rela.sort = i + 1;
+                relas.add(rela);
+            }
+            dbController.updateSheetSort(relas);
         }
+        update();
+    }
+
+    private void showSortTip() {
+        sortTip.setVisibility(View.VISIBLE);
+
+        randomContainer.setClickable(false);
+        random.setVisibility(View.GONE);
+        playAllRandom.setVisibility(View.GONE);
+    }
+
+    private void hideSortTip() {
+        sortTip.setVisibility(View.GONE);
+
+        randomContainer.setClickable(true);
+        randomContainer.setOnClickListener(this);
+        random.setVisibility(View.VISIBLE);
+        playAllRandom.setVisibility(View.VISIBLE);
     }
 
     private void hideCheckAllView() {
@@ -654,6 +736,11 @@ public class SheetSongListController implements
     }
 
     public void setUseAnim(boolean anim) {
-        songAdapter.setUseAnim(anim);
+        songAdapter.setMultiSelectModeSwitchAnimEnable(anim);
     }
+
+    public ListMode getListMode() {
+        return songAdapter.getListMode();
+    }
+
 }

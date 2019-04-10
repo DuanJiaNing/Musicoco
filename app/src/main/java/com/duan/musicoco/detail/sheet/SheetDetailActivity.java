@@ -107,7 +107,10 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
     @Override
     public void onBackPressed() {
         if (songListController != null) {
-            if (songListController.onBackPressed()) {
+            if (songListController.getListMode() != ListMode.NORMAL) {
+                songListController.updateListMode(ListMode.NORMAL);
+                inCauseSortCanceled();
+            } else {
                 super.onBackPressed();
             }
         } else {
@@ -183,7 +186,7 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
     }
 
     private void filterMenu() {
-        if (sheetID < 0) {
+        if (sheetID < 0) { // 主歌单(所有歌曲)
 
             // 主歌单歌单信息不允许修改
             menu.removeItem(R.id.sheet_detail_action_modify);
@@ -191,58 +194,89 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
             // 主歌单没有【移除多首歌曲】选项，我的收藏的由【多项取消收藏】选项
             menu.removeItem(R.id.sheet_detail_multi_remove);
 
+            menu.removeItem(R.id.sheet_detail_sort);
+            menu.removeItem(R.id.sheet_detail_sort_cancel);
+            menu.removeItem(R.id.sheet_detail_sort_save);
+
             // 我的收藏 歌单不需要【收藏所有】
             if (sheetID == MainSheetHelper.SHEET_FAVORITE) {
                 menu.removeItem(R.id.sheet_detail_action_collection);
             }
         }
-        setMultiModeMenuVisible(false);
+        updateModeMenuVisible(ListMode.NORMAL);
     }
 
-    public void setMultiModeMenuVisible(boolean visible) {
-        MenuItem c = menu.findItem(R.id.sheet_detail_action_collection);
-        MenuItem m = menu.findItem(R.id.sheet_detail_action_modify);
-        MenuItem s = menu.findItem(R.id.sheet_detail_search);
-        MenuItem maf = menu.findItem(R.id.sheet_detail_multi_add_favorite);
-        MenuItem mas = menu.findItem(R.id.sheet_detail_multi_add_to_sheet);
-        MenuItem mr = menu.findItem(R.id.sheet_detail_multi_remove);
-        MenuItem md = menu.findItem(R.id.sheet_detail_multi_delete_songs);
+    public void updateModeMenuVisible(ListMode mode) {
+        MenuItem action_collection = menu.findItem(R.id.sheet_detail_action_collection);
+        MenuItem action_modify = menu.findItem(R.id.sheet_detail_action_modify);
+        MenuItem search = menu.findItem(R.id.sheet_detail_search);
+        MenuItem multi_add_favorite = menu.findItem(R.id.sheet_detail_multi_add_favorite);
+        MenuItem multi_add_to_sheet = menu.findItem(R.id.sheet_detail_multi_add_to_sheet);
+        MenuItem multi_remove = menu.findItem(R.id.sheet_detail_multi_remove);
+        MenuItem multi_delete_songs = menu.findItem(R.id.sheet_detail_multi_delete_songs);
 
-        if (c != null) {
-            c.setVisible(!visible);
+        MenuItem sort = menu.findItem(R.id.sheet_detail_sort);
+        MenuItem multi_select = menu.findItem(R.id.sheet_detail_multi_select);
+
+        MenuItem sort_save = menu.findItem(R.id.sheet_detail_sort_save);
+        MenuItem sort_cancel = menu.findItem(R.id.sheet_detail_sort_cancel);
+
+        updateMenuVisible(action_collection, false, MenuItem.SHOW_AS_ACTION_NEVER);
+        updateMenuVisible(action_modify, false, MenuItem.SHOW_AS_ACTION_NEVER);
+        updateMenuVisible(search, false, MenuItem.SHOW_AS_ACTION_NEVER);
+        updateMenuVisible(multi_add_favorite, false, MenuItem.SHOW_AS_ACTION_NEVER);
+        updateMenuVisible(multi_add_to_sheet, false, MenuItem.SHOW_AS_ACTION_NEVER);
+        updateMenuVisible(multi_remove, false, MenuItem.SHOW_AS_ACTION_NEVER);
+        updateMenuVisible(multi_delete_songs, false, MenuItem.SHOW_AS_ACTION_NEVER);
+        updateMenuVisible(sort, false, MenuItem.SHOW_AS_ACTION_NEVER);
+        updateMenuVisible(multi_select, false, MenuItem.SHOW_AS_ACTION_NEVER);
+        updateMenuVisible(sort_save, false, MenuItem.SHOW_AS_ACTION_NEVER);
+        updateMenuVisible(sort_cancel, false, MenuItem.SHOW_AS_ACTION_NEVER);
+
+        switch (mode) {
+            case SORT: {
+                updateMenuVisible(sort_save, true, MenuItem.SHOW_AS_ACTION_ALWAYS);
+                updateMenuVisible(sort_cancel, true, MenuItem.SHOW_AS_ACTION_ALWAYS);
+                break;
+            }
+            case NORMAL: {
+                updateMenuVisible(sort, true, MenuItem.SHOW_AS_ACTION_NEVER);
+                updateMenuVisible(multi_select, true, MenuItem.SHOW_AS_ACTION_NEVER);
+                updateMenuVisible(action_collection, true, MenuItem.SHOW_AS_ACTION_NEVER);
+                updateMenuVisible(action_modify, true, MenuItem.SHOW_AS_ACTION_NEVER);
+                updateMenuVisible(search, true, MenuItem.SHOW_AS_ACTION_NEVER);
+                break;
+            }
+            case MULTISELECTION: {
+                updateMenuVisible(multi_add_favorite, true, MenuItem.SHOW_AS_ACTION_NEVER);
+                updateMenuVisible(multi_add_to_sheet, true, MenuItem.SHOW_AS_ACTION_NEVER);
+                updateMenuVisible(multi_remove, true, MenuItem.SHOW_AS_ACTION_NEVER);
+                updateMenuVisible(multi_delete_songs, true, MenuItem.SHOW_AS_ACTION_NEVER);
+                break;
+            }
         }
-        if (m != null) {
-            m.setVisible(!visible);
-        }
-        if (s != null) {
-            s.setVisible(!visible);
-        }
-        if (maf != null) {
-            maf.setVisible(visible);
-        }
-        if (mas != null) {
-            mas.setVisible(visible);
-        }
-        if (mr != null) {
-            mr.setVisible(visible);
-        }
-        if (md != null) {
-            md.setVisible(visible);
+
+    }
+
+    private void updateMenuVisible(MenuItem menu, boolean visible, int showAsAction) {
+        if (menu != null) {
+            menu.setVisible(visible);
+            menu.setShowAsAction(showAsAction);
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        OnCompleteListener<Void> complete = new OnCompleteListener<Void>() {
+        OnCompleteListener<Void> multiOpCompleted = new OnCompleteListener<Void>() {
             @Override
             public void onComplete(Void aVoid) {
-                songListController.onBackPressed();
+                songListController.updateListMode(ListMode.NORMAL);
             }
         };
 
         switch (id) {
-            case R.id.sheet_detail_search:
+            case R.id.sheet_detail_search: {
                 if (songList.getChildCount() == 0) {
                     String msg = getString(R.string.error_empty_sheet);
                     ToastUtils.showShortToast(msg, this);
@@ -250,7 +284,8 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
                     ActivityManager.getInstance().startSearchActivity(this, sheetID);
                 }
                 break;
-            case R.id.sheet_detail_action_collection:
+            }
+            case R.id.sheet_detail_action_collection: {
                 if (songList.getChildCount() == 0) {
                     String msg = getString(R.string.error_empty_sheet);
                     ToastUtils.showShortToast(msg, this);
@@ -258,48 +293,58 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
                     songOperation.handleAddAllSongToFavorite(sheetID);
                 }
                 break;
-            case R.id.sheet_detail_action_modify:
+            }
+            case R.id.sheet_detail_action_modify: {
                 sheetOperation.modifySheet(sheet);
                 break;
-            case android.R.id.home:
-                if (songListController.onBackPressed()) {
+            }
+            case android.R.id.home: {
+                ListMode mode = songListController.getListMode();
+                if (mode == ListMode.NORMAL) {
                     finish();
+                } else {
+                    songListController.updateListMode(ListMode.NORMAL);
+                    inCauseSortCanceled();
                 }
                 break;
-            case R.id.sheet_detail_multi_add_to_sheet: // 添加多首歌曲到歌单
+            }
+            case R.id.sheet_detail_multi_add_to_sheet: { // 添加多首歌曲到歌单
                 if (!songListController.checkSelectedEmpty()) {
                     List<Song> songs = songListController.getCheckItemsIndex();
-                    songOperation.handleAddSongToSheet(songs, complete);
+                    songOperation.handleAddSongToSheet(songs, multiOpCompleted);
                 } else {
                     String msg = getString(R.string.error_non_song_select);
                     ToastUtils.showShortToast(msg, this);
                 }
                 break;
-            case R.id.sheet_detail_multi_delete_songs: // 彻底删除多首歌曲
+            }
+            case R.id.sheet_detail_multi_delete_songs: { // 彻底删除多首歌曲
                 if (!songListController.checkSelectedEmpty()) {
                     List<Song> songs = songListController.getCheckItemsIndex();
-                    songOperation.handleDeleteSongForever(complete, sheetID, songs);
+                    songOperation.handleDeleteSongForever(multiOpCompleted, sheetID, songs);
                 } else {
                     String msg = getString(R.string.error_non_song_select);
                     ToastUtils.showShortToast(msg, this);
                 }
                 break;
-            case R.id.sheet_detail_multi_add_favorite: // 添加多首歌曲到[我的收藏]
+            }
+            case R.id.sheet_detail_multi_add_favorite: { // 添加多首歌曲到[我的收藏]
                 if (!songListController.checkSelectedEmpty()) {
-                    handleAddSelectSongToFavorite(complete);
+                    handleAddSelectSongToFavorite(multiOpCompleted);
                 } else {
                     String msg = getString(R.string.error_non_song_select);
                     ToastUtils.showShortToast(msg, this);
                 }
                 break;
-            case R.id.sheet_detail_multi_remove: // 从当前歌单移除多首歌曲
+            }
+            case R.id.sheet_detail_multi_remove: { // 从当前歌单移除多首歌曲
                 if (!songListController.checkSelectedEmpty()) {
 
                     List<Song> songs = songListController.getCheckItemsIndex();
                     if (songListController.isCurrentSheetPlaying()) {
-                        songOperation.handleRemoveSongFromCurrentPlayingSheet(complete, songs);
+                        songOperation.handleRemoveSongFromCurrentPlayingSheet(multiOpCompleted, songs);
                     } else {
-                        songOperation.handleRemoveSongFromSheetNotPlaying(complete, sheetID, songs);
+                        songOperation.handleRemoveSongFromSheetNotPlaying(multiOpCompleted, sheetID, songs);
                     }
 
                 } else {
@@ -307,11 +352,39 @@ public class SheetDetailActivity extends RootActivity implements ThemeChangeable
                     ToastUtils.showShortToast(msg, this);
                 }
                 break;
+            }
+
+            case R.id.sheet_detail_sort: {
+                songListController.updateListMode(ListMode.SORT);
+                break;
+            }
+
+            case R.id.sheet_detail_multi_select: {
+                songListController.updateListMode(ListMode.MULTISELECTION);
+                break;
+            }
+
+            case R.id.sheet_detail_sort_save: {
+                songListController.updateListMode(ListMode.NORMAL);
+                songListController.updateSongSortThenReloadData();
+                break;
+            }
+
+            case R.id.sheet_detail_sort_cancel: {
+                songListController.updateListMode(ListMode.NORMAL);
+                songListController.update();
+                break;
+            }
+
             default:
                 break;
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void inCauseSortCanceled() {
+        songListController.update(); // 排序需点击保存才会生效
     }
 
     private void handleAddSelectSongToFavorite(OnCompleteListener<Void> complete) {

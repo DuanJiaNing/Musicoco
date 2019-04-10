@@ -8,47 +8,74 @@
         android:icon="@drawable/menu_action_favorite"
         android:orderInCategory="100"
         android:title="@string/title_add_all_songs_to_favorite"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/sheet_detail_action_modify"
         android:icon="@drawable/ic_mode_edit_black_24dp"
         android:orderInCategory="200"
         android:title="@string/modify_sheet"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/sheet_detail_search"
         android:icon="@drawable/ic_search_black_24dp"
         android:orderInCategory="300"
         android:title="@string/search"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/sheet_detail_multi_add_favorite"
         android:icon="@drawable/menu_action_favorite"
         android:orderInCategory="400"
         android:title="@string/title_add_to_favorite"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/sheet_detail_multi_remove"
         android:icon="@drawable/menu_action_clear"
         android:orderInCategory="500"
         android:title="@string/song_operation_remove_from_sheet"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/sheet_detail_multi_add_to_sheet"
         android:icon="@drawable/menu_action_create_new_folder"
         android:orderInCategory="600"
         android:title="@string/title_add_to_sheet"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
 
     <item
         android:id="@+id/sheet_detail_multi_delete_songs"
         android:icon="@drawable/menu_action_delete_forever"
         android:orderInCategory="700"
         android:title="@string/delete"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/sheet_detail_sort"
+        android:orderInCategory="700"
+        android:title="@string/sort"
+        app:showAsAction="never" />
+
+
+    <item
+        android:id="@+id/sheet_detail_multi_select"
+        android:orderInCategory="800"
+        android:title="@string/multi_select"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/sheet_detail_sort_save"
+        android:icon="@drawable/ic_done_black_24dp"
+        android:orderInCategory="900"
+        android:title="@string/save"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/sheet_detail_sort_cancel"
+        android:icon="@drawable/ic_clear_black_24dp"
+        android:orderInCategory="1000"
+        android:title="@string/cancel"
+        app:showAsAction="never" />
 </menu>

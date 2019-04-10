@@ -31,6 +31,8 @@ import com.duan.musicoco.util.StringUtils;
 import com.duan.musicoco.util.ToastUtils;
 import com.duan.musicoco.util.Utils;
 
+import java.util.List;
+
 /**
  * Created by DuanJiaNing on 2017/7/19.
  */
@@ -110,14 +112,14 @@ public class SongDetailActivity extends RootActivity implements View.OnClickList
         String lastPlayTime = StringUtils.getGenDateYMDHMS(songInfo.lastPlayTime);
         String favorite = songInfo.favorite ? getString(R.string.song_detail_favorite) : getString(R.string.song_detail_not_favorite);
 
-        int[] ss = songInfo.sheets;
+        List<Sheet> ss = dbController.getSongSheets(songInfo.id);
         StringBuilder sheets = new StringBuilder();
-        for (int i = 0; i < ss.length; i++) {
-            Sheet s = dbController.getSheet(ss[i]);
+        for (int i = 0; i < ss.size(); i++) {
+            Sheet s = ss.get(i);
             if (s != null) {
                 sheets.append(s.name);
-                if (i != ss.length - 1) {
-                    sheets.append("、");
+                if (i != ss.size() - 1) {
+                    sheets.append(" ");
                 }
             }
         }

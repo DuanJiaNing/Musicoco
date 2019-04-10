@@ -12,10 +12,13 @@ import com.duan.musicoco.R;
 import com.duan.musicoco.aidl.Song;
 import com.duan.musicoco.db.modle.DBSongInfo;
 import com.duan.musicoco.db.modle.Sheet;
+import com.duan.musicoco.db.modle.SongSheetRela;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Created by DuanJiaNing on 2017/7/1.
@@ -37,7 +40,6 @@ public class DBMusicocoController {
     public static final String SONG_LASTPLAYTIME = "last_play"; //最后播放时间
     public static final String SONG_PLAYTIMES = "play_times"; //播放次数
     public static final String SONG_REMARK = "remarks"; //备注
-    public static final String SONG_SHEETS = "sheets"; //所属歌单 歌单编号，空格隔开
     public static final String SONG_CREATE = "create_time"; //创建时间
     public static final String SONG_FAVORITE = "song_favorite"; //是否收藏 0 否， 1 是
 
@@ -49,6 +51,12 @@ public class DBMusicocoController {
     public static final String SHEET_PLAYTIMES = "sheet_playtimes"; //播放次数
     public static final String SHEET_COUNT = "sheet_count"; //歌曲数目
 
+    public static final String TABLE_SONG_SHEET_RELA = "song_sheet_rela";
+    public static final String RELA_ID = "_id";
+    public static final String RELA_SONG_ID = "song_id";
+    public static final String RELA_SHEET_ID = "sheet_id";
+    public static final String RELA_SORT = "sort";
+
     static void createSongTable(SQLiteDatabase db) {
         String sql = "create table if not exists " + DBMusicocoController.TABLE_SONG + "(" +
                 DBMusicocoController.SONG_ID + " integer primary key autoincrement," +
@@ -56,9 +64,17 @@ public class DBMusicocoController {
                 DBMusicocoController.SONG_LASTPLAYTIME + " char(20)," +
                 DBMusicocoController.SONG_PLAYTIMES + " integer," +
                 DBMusicocoController.SONG_REMARK + " text," +
-                DBMusicocoController.SONG_SHEETS + " text," +
                 DBMusicocoController.SONG_CREATE + " text," +
                 DBMusicocoController.SONG_FAVORITE + " integer)";
+        db.execSQL(sql);
+    }
+
+    static void createSongSheetRelaTable(SQLiteDatabase db) {
+        String sql = "create table if not exists " + DBMusicocoController.TABLE_SONG_SHEET_RELA + "(" +
+                DBMusicocoController.RELA_ID + " integer primary key autoincrement," +
+                DBMusicocoController.RELA_SONG_ID + " integer, " +
+                DBMusicocoController.RELA_SORT + " integer, " +
+                DBMusicocoController.RELA_SHEET_ID + " integer)";
         db.execSQL(sql);
     }
 
@@ -99,23 +115,49 @@ public class DBMusicocoController {
             return false;
         }
 
-        int[] sheets = info.sheets;
-        for (int i : sheets) {
-            if (sheetID == i) {
-                return false;
-            }
-        }
-
-        String ss = songSheetsIntArrayToString(sheets) + sheetID + " ";
-
         ContentValues values = new ContentValues();
-        values.put(SONG_SHEETS, ss);
-        String whereClause = SONG_ID + " = ?";
-        String[] whereArgs = {info.id + ""};
-        database.update(TABLE_SONG, values, whereClause, whereArgs);
+        values.put(RELA_SHEET_ID, sheetID);
+        values.put(RELA_SONG_ID, info.id);
+        values.put(RELA_SORT, getCurrentMaxSort(sheetID) + 1);
+
+        database.insert(TABLE_SONG_SHEET_RELA, null, values);
 
         addSheetCount(sheetID);
         return true;
+    }
+
+    private int getCurrentMaxSort(int sheetID) {
+        List<SongSheetRela> rela = getSongSheetRela(sheetID);
+        int max = 0;
+
+        if (rela.size() > 0) {
+            for (SongSheetRela sheetRela : rela) {
+                if (sheetRela.sort > max)
+                    max = sheetRela.sort;
+            }
+        }
+
+        return max;
+    }
+
+    private List<SongSheetRela> getSongSheetRela(int sheetId) {
+        String sql = "select * from " + TABLE_SONG_SHEET_RELA + " where " + RELA_SHEET_ID + " = " + sheetId;
+        Cursor cursor = database.rawQuery(sql, null);
+
+        List<SongSheetRela> relas = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            SongSheetRela rela = new SongSheetRela();
+
+            rela.id = cursor.getInt(cursor.getColumnIndex(RELA_ID));
+            rela.songId = cursor.getInt(cursor.getColumnIndex(RELA_SONG_ID));
+            rela.sheetId = cursor.getInt(cursor.getColumnIndex(RELA_SHEET_ID));
+            rela.sort = cursor.getInt(cursor.getColumnIndex(RELA_SORT));
+
+            relas.add(rela);
+        }
+        cursor.close();
+
+        return relas;
     }
 
     private int addSheetCount(int sheetID) {
@@ -168,9 +210,6 @@ public class DBMusicocoController {
             int far = cursor.getInt(cursor.getColumnIndex(SONG_FAVORITE));
             info.favorite = far == 1;
 
-            String sh = cursor.getString(cursor.getColumnIndex(SONG_SHEETS));
-            info.sheets = songSheetsStringToIntArray(sh);
-
         }
 
         cursor.close();
@@ -202,8 +241,6 @@ public class DBMusicocoController {
             int far = cursor.getInt(cursor.getColumnIndex(SONG_FAVORITE));
             info.favorite = far == 1;
 
-            String sh = cursor.getString(cursor.getColumnIndex(SONG_SHEETS));
-            info.sheets = songSheetsStringToIntArray(sh);
         }
 
         cursor.close();
@@ -232,9 +269,6 @@ public class DBMusicocoController {
             int far = cursor.getInt(cursor.getColumnIndex(SONG_FAVORITE));
             info.favorite = far == 1;
 
-            String sh = cursor.getString(cursor.getColumnIndex(SONG_SHEETS));
-            info.sheets = songSheetsStringToIntArray(sh);
-
             infos.add(info);
         }
 
@@ -244,71 +278,31 @@ public class DBMusicocoController {
 
     public List<DBSongInfo> getSongInfos(int sheetID) {
 
-        String sql = "select * from " + TABLE_SONG;
+        String sql = "select * from " + TABLE_SONG_SHEET_RELA + " where " +
+                RELA_SHEET_ID + "=" + sheetID + " order by " + RELA_SORT + " asc ";
         Cursor cursor = database.rawQuery(sql, null);
 
         List<DBSongInfo> infos = new ArrayList<>();
-
         while (cursor.moveToNext()) {
             DBSongInfo info = new DBSongInfo();
+            info.id = cursor.getInt(cursor.getColumnIndex(RELA_SONG_ID));
+            info.sort = cursor.getInt(cursor.getColumnIndex(RELA_SORT));
 
-            String sh = cursor.getString(cursor.getColumnIndex(SONG_SHEETS));
-            int[] shs = songSheetsStringToIntArray(sh);
-
-            boolean isContain = false;
-            for (int i : shs) {
-                if (i == sheetID) {
-                    isContain = true;
-                }
+            DBSongInfo songInfo = getSongInfo(info.id);
+            if (songInfo != null) {
+                info.path = songInfo.path;
+                info.lastPlayTime = songInfo.lastPlayTime;
+                info.playTimes = songInfo.playTimes;
+                info.remark = songInfo.remark;
+                info.create = songInfo.create;
+                info.favorite = songInfo.favorite;
             }
 
-            if (isContain) {
-                info.sheets = shs;
-
-                info.id = cursor.getInt(cursor.getColumnIndex(SONG_ID));
-                info.path = cursor.getString(cursor.getColumnIndex(SONG_PATH));
-
-                String str = cursor.getString(cursor.getColumnIndex(SONG_LASTPLAYTIME));
-                info.lastPlayTime = Long.valueOf(str);
-
-                info.playTimes = cursor.getInt(cursor.getColumnIndex(SONG_PLAYTIMES));
-                info.remark = cursor.getString(cursor.getColumnIndex(SONG_REMARK));
-
-                String str1 = cursor.getString(cursor.getColumnIndex(SONG_CREATE));
-                info.create = Long.valueOf(str1);
-
-                int far = cursor.getInt(cursor.getColumnIndex(SONG_FAVORITE));
-                info.favorite = far == 1;
-
-                infos.add(info);
-            }
+            infos.add(info);
         }
 
         cursor.close();
         return infos;
-    }
-
-    public void addSongInfo(@NonNull Song song, int playTimes, @Nullable String remark, @Nullable int[] sheets, boolean favorite) {
-
-        if (remark == null) {
-            remark = " ";
-        }
-
-        String ss = songSheetsIntArrayToString(sheets);
-
-        String path = song.path;
-        String lpt = String.valueOf(System.currentTimeMillis()) + "";
-        ContentValues values = new ContentValues();
-        values.put(SONG_CREATE, lpt);
-        values.put(SONG_LASTPLAYTIME, lpt);
-        values.put(SONG_PATH, path);
-        values.put(SONG_PLAYTIMES, playTimes);
-        values.put(SONG_REMARK, remark);
-        values.put(SONG_SHEETS, ss);
-        values.put(SONG_FAVORITE, favorite ? 1 : 0);
-
-        database.insert(TABLE_SONG, null, values);
-
     }
 
     @NonNull
@@ -341,7 +335,19 @@ public class DBMusicocoController {
             database.beginTransaction();
 
             for (Song song : songs) {
-                addSongInfo(song, 0, null, null, false);
+
+                String path = song.path;
+                String lpt = String.valueOf(System.currentTimeMillis()) + "";
+                ContentValues values = new ContentValues();
+                values.put(SONG_CREATE, lpt);
+                values.put(SONG_LASTPLAYTIME, lpt);
+                values.put(SONG_PATH, path);
+                values.put(SONG_PLAYTIMES, 0);
+                values.put(SONG_REMARK, "");
+                values.put(SONG_FAVORITE, 0);
+
+                database.insert(TABLE_SONG, null, values);
+
             }
 
             database.setTransactionSuccessful();
@@ -420,15 +426,6 @@ public class DBMusicocoController {
     public void updateSongFavorite(@NonNull Song song, boolean favorite) {
         ContentValues values = new ContentValues();
         values.put(SONG_FAVORITE, favorite ? 1 : 0);
-        String whereClause = SONG_PATH + " like ?";
-        String[] whereArgs = {song.path};
-        database.update(TABLE_SONG, values, whereClause, whereArgs);
-    }
-
-    public void updateSongSheet(Song song, int[] sheets) {
-        String ss = songSheetsIntArrayToString(sheets);
-        ContentValues values = new ContentValues();
-        values.put(SONG_SHEETS, ss);
         String whereClause = SONG_PATH + " like ?";
         String[] whereArgs = {song.path};
         database.update(TABLE_SONG, values, whereClause, whereArgs);
@@ -582,28 +579,42 @@ public class DBMusicocoController {
             createSheetTable(database);
         } else if (table.equals(TABLE_SONG)) {
             createSongTable(database);
+        } else if (table.equals(TABLE_SONG_SHEET_RELA)) {
+            createSongSheetRelaTable(database);
         }
 
     }
 
     //removeSongInfoFromBothTable
     public boolean removeSongInfo(Song song) {
-        DBSongInfo info = getSongInfo(song);
-        boolean r = false;
 
-        if (info != null) {
-            database.beginTransaction();
+        DBSongInfo songInfo = getSongInfo(song);
+        if (songInfo != null && database.delete(TABLE_SONG,
+                SONG_PATH + " = ?", new String[]{String.valueOf(song.path)}) == 1) {
 
-            int[] sheets = info.sheets;
-            for (int s : sheets) {
+            Set<Integer> ss = getSongSheetIds(songInfo.id);
+            for (Integer s : ss) {
                 minusSheetCount(s);
             }
-            r = removeSongInfoFromSongTable(song);
 
-            database.setTransactionSuccessful();
-            database.endTransaction();
+            return database.delete(TABLE_SONG_SHEET_RELA,
+                    RELA_SONG_ID + " = ?", new String[]{String.valueOf(songInfo.id)}) > 0;
         }
-        return r;
+
+        return false;
+    }
+
+    private Set<Integer> getSongSheetIds(int songId) {
+        String sql = "select * from " + TABLE_SONG_SHEET_RELA + " where " + RELA_SONG_ID + "=" + songId;
+        Cursor cursor = database.rawQuery(sql, null);
+
+        Set<Integer> ids = new HashSet<>();
+        while (cursor.moveToNext()) {
+            ids.add(cursor.getInt(cursor.getColumnIndex(RELA_SHEET_ID)));
+        }
+
+        cursor.close();
+        return ids;
     }
 
     // 这将使歌曲信息从歌曲表中删除，只应在【彻底删除歌曲】时调用
@@ -630,46 +641,67 @@ public class DBMusicocoController {
             return false;
         }
 
-        int[] sheets = info.sheets;
-        int index = -1;
-        for (int j = 0; j < sheets.length; j++) {
-            if (sheetID == sheets[j]) {
-                index = j;
-                break;
-            }
-        }
+        SongSheetRela rela = getSongSheetRela(info.id, sheetID);
+        if (rela != null) {
+            int eff = database.delete(TABLE_SONG_SHEET_RELA,
+                    RELA_SONG_ID + "=? and " + RELA_SHEET_ID + "=?",
+                    new String[]{String.valueOf(info.id), String.valueOf(sheetID)});
 
-        if (-1 == index) {
-            return true;
-        } else {
-            int i = 0;
-            int[] newSheets = new int[sheets.length - 1];
-            for (int j = 0; j < sheets.length; j++) {
-                if (index != j) {
-                    newSheets[i] = sheets[j];
-                    i++;
-                }
+            if (eff == 1) {
+                minusSheetCount(sheetID);
+                recvExeAfterSort(rela.sort + 1, sheetID, -1);
+                return true;
             }
 
-            updateSongSheet(song, newSheets);
-            minusSheetCount(sheetID);
-            return true;
         }
+
+        return false;
+
     }
 
-    public boolean removeSongInfoFromSheet(Song song, String sheetName) {
+    // 歌单从 startSort 开始向后每一条记录都加 ops
+    private void recvExeAfterSort(int startSort, int sheetId, int ops) {
+        String sql = "select * from " + TABLE_SONG_SHEET_RELA + " where " +
+                RELA_SHEET_ID + " = " + sheetId + " and sort >= " + startSort;
+        Cursor cursor = database.rawQuery(sql, null);
 
-        DBSongInfo info = getSongInfo(song);
-        if (info == null) {
-            return false;
+        List<SongSheetRela> relas = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            SongSheetRela rela = new SongSheetRela();
+            rela.id = cursor.getInt(cursor.getColumnIndex(RELA_ID));
+            rela.sort = cursor.getInt(cursor.getColumnIndex(RELA_SORT));
+            relas.add(rela);
+        }
+        cursor.close();
+
+        if (relas.size() > 0) {
+            for (SongSheetRela rela : relas) {
+                ContentValues vs = new ContentValues();
+                vs.put(RELA_SORT, rela.sort + ops);
+                database.update(TABLE_SONG_SHEET_RELA, vs,
+                        RELA_ID + "=?", new String[]{String.valueOf(rela.id)});
+            }
         }
 
-        Sheet sheet = getSheet(sheetName);
-        if (sheet != null) {
-            return removeSongInfoFromSheet(song, sheet.id);
-        } else {
-            return false;
+    }
+
+    private SongSheetRela getSongSheetRela(int songId, int sheetId) {
+        String sql = "select * from " + TABLE_SONG_SHEET_RELA + " where " +
+                RELA_SONG_ID + " = " + songId + " and " + RELA_SHEET_ID + " = " + sheetId;
+        Cursor cursor = database.rawQuery(sql, null);
+        while (cursor.moveToNext()) {
+            SongSheetRela rela = new SongSheetRela();
+
+            rela.id = cursor.getInt(cursor.getColumnIndex(RELA_ID));
+            rela.songId = cursor.getInt(cursor.getColumnIndex(RELA_SONG_ID));
+            rela.sheetId = cursor.getInt(cursor.getColumnIndex(RELA_SHEET_ID));
+            rela.sort = cursor.getInt(cursor.getColumnIndex(RELA_SORT));
+            cursor.close();
+
+            return rela;
         }
+
+        return null;
     }
 
     public String updateSheet(int sheetID, String newName, String newRemark) {
@@ -703,45 +735,42 @@ public class DBMusicocoController {
 
     public boolean removeSheet(int sheetID) {
 
-        Sheet sheet = getSheet(sheetID);
-        if (sheet != null) {
-            database.beginTransaction();
+        if (database.delete(TABLE_SHEET,
+                SHEET_ID + " = ?", new String[]{String.valueOf(sheetID)}) == 1) {
 
-            List<DBSongInfo> infos = getSongInfos();
-            Song song = new Song("");
-            for (DBSongInfo d : infos) {
-                int[] ss = d.sheets;
-                for (int i : ss) {
-                    if (sheetID == i) {
-                        song.path = d.path;
-                        removeSongInfoFromSheet(song, sheetID);
-                    }
-                }
-            }
-
-            removeSheetFromSheetTableOnly(sheetID);
-
-            database.setTransactionSuccessful();
-            database.endTransaction();
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public void removeSheetFromSheetTableOnly(int sheetID) {
-        Sheet sheet = getSheet(sheetID);
-        if (sheet == null) {
-            return;
+            return database.delete(TABLE_SONG_SHEET_RELA,
+                    RELA_SHEET_ID + " = ?", new String[]{String.valueOf(sheetID)}) > 0;
         }
 
-        String where = SHEET_ID + " = ?";
-        String[] whereArg = new String[]{String.valueOf(sheetID)};
-        database.delete(TABLE_SHEET, where, whereArg);
-
+        return false;
     }
 
     public DBSongInfo getSongInfo(String data) {
         return getSongInfo(new Song(data));
+    }
+
+    public List<Sheet> getSongSheets(int songId) {
+        Set<Integer> ids = getSongSheetIds(songId);
+        if (ids.size() > 0) {
+            List<Sheet> sheets = new ArrayList<>();
+            for (Integer id : ids) {
+                sheets.add(getSheet(id));
+            }
+
+            return sheets;
+        }
+
+        return null;
+    }
+
+    public void updateSheetSort(List<SongSheetRela> relas) {
+        for (SongSheetRela rela : relas) {
+            ContentValues vs = new ContentValues();
+            vs.put(RELA_SORT, rela.sort);
+            database.update(TABLE_SONG_SHEET_RELA, vs,
+                    RELA_SHEET_ID + "=? and " + RELA_SONG_ID + "=?",
+                    new String[]{String.valueOf(rela.sheetId), String.valueOf(rela.songId)});
+        }
+
     }
 }

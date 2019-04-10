@@ -2,7 +2,7 @@
     <string name="app_name">My music</string>
     <string name="app_name_us">Musicoco</string>
 
-    <string name="album_save_path">image</string>
+    <string name="album_save_path">Image</string>
     <string name="qq">2217611834</string>
     <string name="phone">18202856027</string>
     <string name="email">Aimeimeits@gmail.com</string>
@@ -11,7 +11,7 @@
     <string name="default_sheet_des">My favorite songs</string>
 
     <string name="guide_url">Http://www.jianshu.com/p/051e214ebc2e</string>
-    <string name="guide_star">http://app.mi.com/details?id=com.duan.musicoco</string>
+    <string name="guide_star">Http://app.mi.com/details?id=com.duan.musicoco</string>
     <string name="share_to_friends">Click the link to download app from the xiaomi store: http://app.mi.com/details?id=com.duan.musicoco</string>
 
     <string name="label_theme_color_custom">Theme color customization</string>
@@ -66,8 +66,8 @@
     <!-- 歌单编辑/新建 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
     <string name="new_sheet">New song list</string>
-    <string name="sheet_name">song list name</string>
-    <string name="sheet_remark">description</string>
+    <string name="sheet_name">Song list name</string>
+    <string name="sheet_remark">Description</string>
     <string name="sheet_input_tip">Enter the song name and description, the description can be empty</string>
 
     <string name="sheet_operation_modify">Edit song list information</string>
@@ -115,32 +115,35 @@
 
     <!-- 公用短词 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <string name="warning">caveat</string>
-    <string name="unknown">wrong :O</string>
-    <string name="save">save</string>
-    <string name="favorite">favorite</string>
-    <string name="tip">prompt</string>
-    <string name="all">all</string>
-    <string name="play">play</string>
-    <string name="count">times</string>
-    <string name="head">songs</string>
-    <string name="search">search</string>
-    <string name="continue_">continue</string>
+    <string name="warning">Caveat</string>
+    <string name="unknown">Wrong :O</string>
+    <string name="save">Save</string>
+    <string name="favorite">Favorite</string>
+    <string name="tip">Prompt</string>
+    <string name="all">All</string>
+    <string name="play">Play</string>
+    <string name="count">Times</string>
+    <string name="head">Songs</string>
+    <string name="search">Search</string>
+    <string name="continue_">Continue</string>
     <string name="deleting">Is being deleted</string>
-    <string name="cancel">cancel</string>
-    <string name="arts">artist</string>
-    <string name="album">album</string>
-    <string name="remove">removed</string>
-    <string name="delete">delete</string>
-    <string name="new_">new</string>
-    <string name="song">song</string>
-    <string name="sheet">song list</string>
-    <string name="minute">minute</string>
-    <string name="hour">hour</string>
-    <string name="custom">customize</string>
-    <string name="detail">details</string>
-    <string name="send">send</string>
-    <string name="share">share</string>
+    <string name="cancel">Cancel</string>
+    <string name="arts">Artist</string>
+    <string name="album">Album</string>
+    <string name="remove">Removed</string>
+    <string name="delete">Delete</string>
+    <string name="new_">New</string>
+    <string name="song">Song</string>
+    <string name="sheet">Song list</string>
+    <string name="minute">Minute</string>
+    <string name="hour">Hour</string>
+    <string name="custom">Customize</string>
+    <string name="detail">Details</string>
+    <string name="send">Send</string>
+    <string name="share">Share</string>
+
+    <string name="multi_select">Multiple selection</string>
+    <string name="sort">Sort</string>
 
     <string name="cancel_favorite">Cancel favorite</string>
     <string name="select_operation">Choose an action</string>
@@ -151,8 +154,8 @@
     <string name="icon_color">Icon color</string>
     <string name="open_whit_browser">Open in the system browser</string>
 
-    <string name="enable">open</string>
-    <string name="disable">not open</string>
+    <string name="enable">Open</string>
+    <string name="disable">Not open</string>
 
     <!-- 提示 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -187,9 +190,9 @@
 
     <!-- 正在处理 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <string name="in_progress_add_songs_to_favorite">adding</string>
+    <string name="in_progress_add_songs_to_favorite">Adding</string>
     <string name="in_progress_remove_songs_from_favorite">Canceling favorite</string>
-    <string name="in_progress_remove_songs_from_sheet">removing</string>
+    <string name="in_progress_remove_songs_from_sheet">Removing</string>
     <string name="in_progress_delete">Being deleted</string>
     <string name="in_progress">Loading</string>
     <string name="in_progress_send_feedback">Sending feedback</string>
@@ -202,7 +205,7 @@
     <string name="replace_rmp_title">The most frequently played * song</string>
     <string name="replace_time_sleep">Stop after * minutes</string>
     <string name="replace_time_sleep_app_quit_at">Musicoco will be shutdown after *</string>
-    <string name="replace_add_songs_to">add * songs to</string>
+    <string name="replace_add_songs_to">Add * songs to</string>
 
     <!-- 对话框等标题 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -218,13 +221,13 @@
 
     <!-- 主页左侧导航及设置 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <string name="setting_tools">tools</string>
+    <string name="setting_tools">Tools</string>
     <string name="setting_scan">Song scan</string>
     <string name="setting_time_sleep">Timed shutdown</string>
     <string name="setting_image_wall">Picture wall</string>
     <string name="setting_equalizer">Equalizer</string> <!-- 升级 -->
 
-    <string name="setting_theme_custom">appearance customization</string>
+    <string name="setting_theme_custom">Appearance customization</string>
     <string name="setting_play_ui_choice">Play panel style</string>
     <string name="setting_theme_color_custom">Theme color customization</string>
     <string name="setting_night_mode">Night mode</string>
@@ -240,12 +243,12 @@
     <string name="memory_play_enable">22:30 - 07:00 The night mode is automatically turned on</string>
     <string name="setting_set_switch_theme_mode_auto">Automatically switch to night mode</string>
 
-    <string name="setting_music_hardware">music hardware</string>
+    <string name="setting_music_hardware">Music hardware</string>
     <string name="setting_set_headphone_wire">Wire cut song</string>
-    <string name="setting_set_headphone_wire_enable">click: play / pause; double click: next one; three hit: previous one</string>
+    <string name="setting_set_headphone_wire_enable">Click: play / pause; double click: next one; three hit: previous one</string>
 
-    <string name="setting_visual_control">visual control</string>
-    <string name="setting_dot_wave">play panel visual effect</string>
+    <string name="setting_visual_control">Visual control</string>
+    <string name="setting_dot_wave">Play panel visual effect (beta)</string>
 
 
     <string name="setting_set_feedback">Feedback</string>
@@ -258,12 +261,12 @@
 
     <!-- 播放界面主题自定义 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
-    <string name="play_theme_custom_dark">night</string>
-    <string name="play_theme_custom_white">day</string>
-    <string name="play_theme_custom_blur">blur</string>
-    <string name="play_theme_custom_color">solid color</string>
-    <string name="play_theme_custom_gradient">gradient</string>
-    <string name="play_theme_custom_mask">cover</string>
+    <string name="play_theme_custom_dark">Night</string>
+    <string name="play_theme_custom_white">Day</string>
+    <string name="play_theme_custom_blur">Blur</string>
+    <string name="play_theme_custom_color">Solid color</string>
+    <string name="play_theme_custom_gradient">Gradient</string>
+    <string name="play_theme_custom_mask">Cover</string>
 
     <!-- 关于 /////////////////////////////////////////////////////////////////////////////////////////// -->
 
@@ -286,11 +289,11 @@
     <string name="me_csdn_url">Http://blog.csdn.net/aimeimeits?viewmode=list</string>
     <string name="me_jianshu">Simple book</string>
     <string name="me_jianshu_url">Http://www.jianshu.com/u/897bb1600def</string>
-    <string name="me_qq">qq</string>
+    <string name="me_qq">QQ</string>
     <string name="me_qq_url">@string/qq</string>
-    <string name="me_email">mailbox</string>
+    <string name="me_email">Mailbox</string>
     <string name="me_email_url">@string/email</string>
-    <string name="me_phone">phone</string>
+    <string name="me_phone">Phone</string>
     <string name="me_phone_url">@string/phone</string>
 
     <!-- 歌曲详情 /////////////////////////////////////////////////////////////////////////////////////////// -->
@@ -307,5 +310,6 @@
     <string name="song_detail_favorite">Favorite</string>
     <string name="song_detail_not_favorite">Not favorite</string>
     <string name="song_detail_song_list">Has been added to the song list</string>
+    <string name="song_detail_sort_tip">Long press song item to drag</string>
 
 </resources>
