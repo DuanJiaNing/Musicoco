@@ -1,6 +1,6 @@
 # Contributor's Guide for Musicoco. 
 
-If you have opened this document purposely, it means you are interested in contributing to the Panic Trigger project. First of all, thank you for your interest in contributing, you are awesome!
+If you have opened this document purposely, it means you are interested in contributing to the Musicoco project. First of all, thank you for your interest in contributing, you are awesome!
 Every contribution is helpful and I thank you for your effort. To ensure the process of contributing is as smooth as possible, here are a few guidelines for you to follow.
 Please take a moment to review this document in order to make the contribution process easy and effective for everyone involved.
 
@@ -83,7 +83,7 @@ Here's a detailed content on how to [Create a pull request](https://help.github.
 
 Simply put, the way to create a Pull request is first to; 
 
-1. Fork the repository of the project which in this case is [Panic Trigger](https://github.com/DuanJiaNing/Musicoco)
+1. Fork the repository of the project which in this case is [Musicoco](https://github.com/DuanJiaNing/Musicoco)
 2. Commit modifications and changes to your fork
 3. Send a [pull request](https://help.github.com/articles/creating-a-pull-request) to the original repository you forked your repository from in step 1
 
