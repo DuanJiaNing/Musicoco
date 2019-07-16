@@ -13,7 +13,7 @@
 
 如果你想体验最新特性可下载 [apk\Musicoco-v2.2.0.apk](https://github.com/DuanJiaNing/Musicoco/blob/master/apk/Musicoco-v2.2.0.apk) 文件，或下载并构建整个项目。
 
-应用下载：[app.mi](http://app.mi.com/details?id=com.duan.musicoco)   [play.google](https://play.google.com/store/apps/details?id=com.duan.musicoco)
+应用下载：[Mi Store](http://app.mi.com/details?id=com.duan.musicoco)  |  [Google Play](https://play.google.com/store/apps/details?id=com.duan.musicoco)
 
 ## 应用截图
 
